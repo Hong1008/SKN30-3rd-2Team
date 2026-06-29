@@ -37,8 +37,8 @@ check-node:
 install-packages:
     @echo ""
     @echo "📦 MCP 글로벌 패키지 설치 상태 확인 중..."
-    @if (Get-Command korean-law-mcp -ErrorAction SilentlyContinue) { echo "[OK] korean-law-mcp가 이미 설치되어 있습니다." } else { echo "[INFO] korean-law-mcp 설치 중..."; npm install -g korean-law-mcp }
-    @if (Get-Command kordoc -ErrorAction SilentlyContinue) { echo "[OK] kordoc가 이미 설치되어 있습니다." } else { echo "[INFO] kordoc 설치 중..."; npm install -g kordoc pdfjs-dist }
+    @if (Get-Command korean-law-mcp -ErrorAction SilentlyContinue) { echo "[OK] korean-law-mcp가 이미 설치되어 있습니다." } else { echo "[INFO] korean-law-mcp 설치 중..."; npm.cmd install -g korean-law-mcp }
+    @if (Get-Command kordoc -ErrorAction SilentlyContinue) { echo "[OK] kordoc가 이미 설치되어 있습니다." } else { echo "[INFO] kordoc 설치 중..."; npm.cmd install -g kordoc pdfjs-dist }
 
 [windows]
 [private]
@@ -145,6 +145,12 @@ law:
     korean-law-mcp
 
 # kordoc cli 실행
+[windows]
+parse file:
+    @echo
+    npx.cmd kordoc "{{file}}" -o 'data/02_converted/{{file_stem(file)}}.md'
+
+[unix]
 parse file:
     @echo
     npx kordoc "{{file}}" -o 'data/02_converted/{{file_stem(file)}}.md'
