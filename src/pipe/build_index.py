@@ -7,20 +7,38 @@
 CLI 실행부는 3.build_index.py 가 이 함수를 호출합니다. (먼저 `just migrate` 로 SQLite 준비)
 """
 
+from adapter import db, vector
 
 def build_standard_index(collection_name: str = "standard_clauses") -> int:
-    """
-    SQLite standard_clauses 전체를 읽어 bge-m3 임베딩 후 Chroma 컬렉션에 적재합니다.
+    # 재빌드 시 중복 ID 오류 방지: 기존 문서를 먼저 삭제
+    existing = vector.get_collection(collection_name).get()
+    if existing["ids"]:
+        vector.delete_documents(collection_name, existing["ids"])
 
-    - 메타데이터에 contract_type·category·clause_id 포함(검색 시 필터·식별용).
-    - 반환: 적재한 문서 수.
-    """
-    # TODO(팀원 B): 아래 순서로 구현
-    #   1. from adapter import db, vector
-    #   2. rows = db.fetch_all("SELECT clause_id, text, contract_type, category, title FROM standard_clauses")
-    #   3. vector.add_documents(collection_name, documents=[...text...], ids=[...clause_id...], metadatas=[...])
-    #   4. return len(rows)
-    raise NotImplementedError("담당: 팀원 B — tests/pipe/test_build_index.py 를 통과시키세요.")
+    # 1. SQLite에서 표준조항 전체 조회
+    rows = db.fetch_all(
+        "SELECT clause_id, text, contract_type, category, title FROM standard_clauses"
+    )
+
+    # 2. Chroma에 적재
+    vector.add_documents(
+        collection_name,
+        documents=[r["text"] for r in rows],
+        ids=[r["clause_id"] for r in rows],
+        metadatas=[
+            {
+                "clause_id": r["clause_id"],
+                "contract_type": r["contract_type"],
+                "category": r["category"],
+                "title": r["title"],
+            }
+            for r in rows
+        ],
+    )
+
+    # 3. 건수 로그 + 반환
+    count = len(rows)
+    return count
 
 if __name__ == "__main__":
     n = build_standard_index()

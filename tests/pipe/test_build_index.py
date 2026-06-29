@@ -16,7 +16,7 @@
 """
 import pytest
 
-pytestmark = pytest.mark.skip(reason="TDD 규격 — 담당: 팀원 B. 구현 시작 시 이 줄 삭제 (통합·느림)")
+pytestmark = pytest.mark.integration
 
 
 def test_빌드하면_시드조항_건수만큼_적재():

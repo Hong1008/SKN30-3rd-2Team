@@ -30,3 +30,6 @@ packages = ["src" ,"tests", "eval"]
 pythonpath = ["src", "."]
 testpaths = ["tests"]
 addopts = "-v"
+markers = [
+    "integration: 외부 DB·모델 필요 — CI에서 별도 실행",
+]
