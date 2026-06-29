@@ -16,10 +16,12 @@ class RawContractFile(Enum):
     """data/01_raw 디렉토리 내의 원본 HWP 계약서 파일 경로에 대한 타입 세이프 Enum 상수를 제공합니다."""
     SW_EMPLOYMENT = RAW_DIR / "201231_SW종사자_기간제,단시간__표준근로계약서.hwp"
     SW_FREELANCE = RAW_DIR / "201231_SW종사자_표준도급계약서.hwp"
-    SW_SUBCONTRACT = RAW_DIR / "상용소프트웨어_공급개발구축업(2022.12.28).hwp"
-    SW_SUBCONTRACT_FULL = RAW_DIR / "상용소프트웨어공급개발구축업종(비밀유지계약서_통합_및_안전등_추가)(2025.11.21).hwp"
+    SI_SUBCONTRACT = RAW_DIR / "221228_상용소프트웨어_공급개발구축업.hwp"
+    SI_SUBCONTRACT_FULL = RAW_DIR / "251221_상용소프트웨어공급개발구축업종(비밀유지계약서_통합_및_안전등_추가).hwp"
+    SM_SUBCONTRACT = RAW_DIR / "221228_상용소프트웨어_유지관리업종.hwp"
+    SM_SUBCONTRACT_FULL = RAW_DIR / "251221_상용소프트웨어유지관리업종(비밀유지계약서_통합_및_안전_추가).hwp"
 
-def convert_raw_to_markdown(raw_file: RawContractFile) -> Path:
+def convert_raw_to_markdown(input_path: Path) -> Path:
     """
     kordoc MCP 어댑터를 사용하여 원본 HWP 계약서 파일을 
     data/02_converted 디렉토리 내에 동명의 마크다운(.md) 파일로 변환하여 저장합니다.
@@ -30,7 +32,6 @@ def convert_raw_to_markdown(raw_file: RawContractFile) -> Path:
     Returns:
         Path: 생성 완료된 마크다운 파일의 절대 경로
     """
-    input_path = raw_file.value
     
     if not input_path.exists():
         raise FileNotFoundError(f"원본 파일을 찾을 수 없습니다: {input_path}")
@@ -145,10 +146,12 @@ if __name__ == "__main__":
     # 스크립트 직접 실행 시 예시로 표준도급계약서 변환 테스트 수행
     try:
         for file in [
-            RawContractFile.SW_SUBCONTRACT_FULL,
-            RawContractFile.SW_EMPLOYMENT,
-            RawContractFile.SW_FREELANCE,
-            RawContractFile.SW_SUBCONTRACT
+            RawContractFile.SI_SUBCONTRACT.value,
+            RawContractFile.SW_EMPLOYMENT.value,
+            RawContractFile.SW_FREELANCE.value,
+            RawContractFile.SI_SUBCONTRACT_FULL.value,
+            RawContractFile.SM_SUBCONTRACT.value,
+            RawContractFile.SM_SUBCONTRACT_FULL.value,
         ]:
             convert_raw_to_markdown(file)
     except Exception as e:
