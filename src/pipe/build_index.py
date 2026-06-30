@@ -54,6 +54,50 @@ def build_standard_index(collection_name: str = "standard_clauses") -> int:
     count = len(rows)
     return count
 
+
+def build_toxic_index(collection_name: str = "toxic_patterns") -> int:
+    # 1. SQLite에서 독소조항 패턴 전체 조회
+    # ★ 변동 가능: toxic_patterns 테이블에 컬럼이 추가될 경우 SELECT 절을 수정할 것.
+    #   현재 컬럼: pattern_id(PK) · pattern(enum) · category · title · text
+    rows = db.fetch_all(
+        "SELECT pattern_id, pattern, category, title, text FROM toxic_patterns"
+    )
+
+    # 빈 테이블이면 조용히 진행하지 않고 명시 예외 (AGENTS.md: 조용한 실패 금지)
+    if not rows:
+        raise RuntimeError(
+            "toxic_patterns 테이블이 비어 있습니다. 먼저 `just migrate`를 실행하세요."
+        )
+
+    # 2. 새 문서를 먼저 적재 — 실패 시 이전 인덱스가 보존되도록 delete는 나중에
+    try:
+        vector.upsert_documents(
+            collection_name,
+            documents=[r["text"] for r in rows],
+            ids=[r["pattern_id"] for r in rows],
+            metadatas=[
+                {
+                    "pattern_id": r["pattern_id"],
+                    "pattern":    r["pattern"],
+                    "category":   r["category"],
+                    "title":      r["title"],
+                }
+                for r in rows
+            ],
+        )
+    except Exception as e:
+        raise RuntimeError(f"Chroma 적재 실패 — 기존 인덱스는 유지됩니다: {e}") from e
+
+    # 3. 적재 성공 후 구 문서 정리 (include=[] 로 ID만 조회해 메모리 절약)
+    existing = vector.get_collection(collection_name).get(include=[])
+    old_ids = [id_ for id_ in existing["ids"] if id_ not in {r["pattern_id"] for r in rows}]
+    if old_ids:
+        vector.delete_documents(collection_name, old_ids)
+
+    # 4. 건수 로그 + 반환
+    count = len(rows)
+    return count
+
 def build_sub_chunk_index(collection_name: str = "standard_sub_chunks") -> int:
     import re
     # 1. SQLite에서 표준조항 전체 조회
