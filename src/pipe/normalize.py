@@ -10,8 +10,12 @@
 import json
 import os
 import re
+import sys
 from pathlib import Path
 from typing import List
+
+# src/ 패키지 절대 경로 추가 (스크립트로 직접 실행하기 위함)
+sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 from contracts.enums import ContractType, Category
 from contracts.models import Clause, StandardClause
@@ -199,7 +203,11 @@ def normalize_file(md_path: str, contract_type: ContractType, version: str) -> L
     standard_clauses = []
     
     for clause in clauses:
-        category = label_category(clause.num, clause.title, clause.text)
+        try:
+            category = label_category(clause.num, clause.title, clause.text)
+        except ValueError as e:
+            print(f"  [SKIP] {clause.num} - score 미달")
+            continue
         
         match = re.search(r"제(\d+)조", clause.num)
         n = match.group(1) if match else str(clause.idx)
