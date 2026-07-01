@@ -157,3 +157,50 @@ parse file:
 parse file:
     @echo
     npx kordoc "{{file}}" -o 'data/02_converted/{{file_stem(file)}}.md'
+
+# runpod
+
+# 한번만 실행
+deploy-embedding:
+    runpodctl serverless create \
+        --name workshield-embed-rerank \
+        --hub-id cmafijsnj000008jr2j7c7x9m \
+        --gpu-id "NVIDIA RTX A4000" \
+        --workers-min 0 \
+        --workers-max 2 \
+        --idle-timeout 300 \
+        --env MODEL_NAMES="dragonkue/BGE-m3-ko;dragonkue/bge-reranker-v2-m3-ko" \
+        --env BATCH_SIZES="16;16" \
+        --env DTYPES="auto;auto" \
+
+# ----------------------------------------------------
+# 🐳 Docker 배포 (Node+Python 런타임, sqlite/chroma 스냅샷 포함, 임베딩/리랭커 모델 제외)
+# ----------------------------------------------------
+
+docker_image := "workshield-mcp"
+
+# 이미지 빌드 (data/03_normalized, data/migration/*.sqlite3 를 COPY — 최신 상태로 갱신하려면 먼저 `just build-db`)
+docker-build:
+    docker build -t {{docker_image}} .
+
+# 포그라운드 실행 (streamable-http :8000). .env의 RUNPOD_API_KEY/RUNPOD_ENDPOINT_ID/OPEN_LAW_API_KEY 필요
+docker-run: docker-build
+    docker run --rm -it \
+        --env-file .env \
+        -e APP_ENV=prod \
+        -p 8000:8000 \
+        --name {{docker_image}} \
+        {{docker_image}}
+
+# 백그라운드 실행
+docker-up: docker-build
+    docker run -d \
+        --env-file .env \
+        -e APP_ENV=prod \
+        -p 8000:8000 \
+        --name {{docker_image}} \
+        {{docker_image}}
+
+# 백그라운드 컨테이너 중지 및 제거
+docker-down:
+    docker rm -f {{docker_image}}
