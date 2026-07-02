@@ -159,6 +159,11 @@ eval track="a" version="" env="local":
     APP_ENV={{env}} PYTHONPATH=src uv run python -m eval.run_eval {{track}} {{version}}
 
 # 테스트 실행 (type: unit (기본), integration, all)
+[windows]
+test type="unit":
+    @if ("{{type}}" -eq "unit") { Write-Host "Running Unit Tests (excluding integration)..."; uv run pytest } elseif ("{{type}}" -eq "integration") { Write-Host "Running Integration Tests (requiring external DB/models)..."; uv run pytest -m "integration" } elseif ("{{type}}" -eq "all") { Write-Host "Running All Tests (Unit + Integration)..."; uv run pytest -m "integration or not integration" } else { Write-Error "Invalid test type '{{type}}'. Choose from: unit, integration, all"; exit 1 }
+
+[unix]
 test type="unit":
     #!/usr/bin/env bash
     set -e
@@ -219,6 +224,11 @@ run-mcp-ui:
 # ----------------------------------------------------
 
 # Runpod CLI 설치 및 상태 점검 (OS 자동 판별)
+[windows]
+install-runpod:
+    @$toolDir = ".tools"; $toolPath = Join-Path $toolDir "runpodctl.exe"; if (-not (Get-Command runpodctl -ErrorAction SilentlyContinue) -and -not (Test-Path $toolPath)) { Write-Host "runpodctl CLI가 설치되어 있지 않습니다. Windows용 실행 파일을 다운로드합니다..."; New-Item -ItemType Directory -Force -Path $toolDir | Out-Null; Invoke-WebRequest -Uri "https://github.com/runpod/runpodctl/releases/latest/download/runpodctl-windows-amd64.exe" -OutFile $toolPath }; $rp = if (Get-Command runpodctl -ErrorAction SilentlyContinue) { "runpodctl" } else { $toolPath }; Write-Host "Running runpodctl doctor..."; & $rp doctor
+
+[unix]
 install-runpod:
     #!/usr/bin/env bash
     set -e
@@ -257,6 +267,11 @@ install-runpod:
     runpodctl doctor
 
 # [최초 1회 실행] Runpod에 임베딩/리랭킹 모델 서빙용 템플릿 및 서버리스 엔드포인트를 생성하고, .env의 RUNPOD_ENDPOINT_ID를 자동 갱신합니다.
+[windows]
+deploy-embedding: install-runpod
+    @$toolPath = ".tools\runpodctl.exe"; $rp = if (Get-Command runpodctl -ErrorAction SilentlyContinue) { "runpodctl" } else { $toolPath }; Write-Host "Creating Runpod template..."; $out = & $rp template create --name workshield-embed-rerank --image ghcr.io/hong1008/workshield-embed-rerank:latest --serverless; Write-Host $out; $templateId = ($out | ConvertFrom-Json).id; if (-not $templateId) { Write-Error "Failed to extract Template ID from runpodctl JSON output."; exit 1 }; Write-Host "Successfully extracted Template ID: $templateId"; Write-Host "Creating Runpod Serverless endpoint..."; $slsOut = & $rp serverless create --name workshield-embed-rerank --template-id $templateId --gpu-id "NVIDIA RTX A4000" --workers-min 0 --workers-max 1 --idle-timeout 60; Write-Host $slsOut; $endpointId = ($slsOut | ConvertFrom-Json).id; if (-not $endpointId) { Write-Error "Failed to extract Endpoint ID from runpodctl JSON output."; exit 1 }; Write-Host "Successfully extracted RUNPOD_ENDPOINT_ID: $endpointId"; $line = "RUNPOD_ENDPOINT_ID='$endpointId'"; if (Test-Path ".env") { $content = Get-Content ".env"; if ($content -match "^RUNPOD_ENDPOINT_ID=") { $content = $content -replace "^RUNPOD_ENDPOINT_ID=.*", $line; Set-Content -Path ".env" -Value $content -Encoding UTF8 } else { Add-Content -Path ".env" -Value $line -Encoding UTF8 } } else { Set-Content -Path ".env" -Value $line -Encoding UTF8 }; Write-Host "Updated .env with $line"
+
+[unix]
 deploy-embedding: install-runpod
     #!/usr/bin/env bash
     set -e
@@ -304,6 +319,11 @@ deploy-embedding: install-runpod
 
 
 # Runpod 임베딩/리랭커 워커 활성화 (웜업 - workers-min 1)
+[windows]
+embed-on:
+    @$toolPath = ".tools\runpodctl.exe"; $rp = if (Get-Command runpodctl -ErrorAction SilentlyContinue) { "runpodctl" } else { $toolPath }; $endpointId = ""; if (Test-Path ".env") { $line = Get-Content ".env" | Where-Object { $_ -match "^RUNPOD_ENDPOINT_ID=" } | Select-Object -First 1; if ($line) { $endpointId = ($line -split "=", 2)[1].Trim("'`"") } }; if (-not $endpointId) { Write-Error "RUNPOD_ENDPOINT_ID가 .env에 설정되어 있지 않습니다."; exit 1 }; Write-Host "Warming up Runpod Serverless endpoint ($endpointId)..."; & $rp serverless update $endpointId --workers-min 1
+
+[unix]
 embed-on:
     #!/usr/bin/env bash
     set -e
@@ -318,6 +338,11 @@ embed-on:
     runpodctl serverless update "$ENDPOINT_ID" --workers-min 1
 
 # Runpod 임베딩/리랭커 워커 비활성화 (과금 방지 - workers-min 0)
+[windows]
+embed-off:
+    @$toolPath = ".tools\runpodctl.exe"; $rp = if (Get-Command runpodctl -ErrorAction SilentlyContinue) { "runpodctl" } else { $toolPath }; $endpointId = ""; if (Test-Path ".env") { $line = Get-Content ".env" | Where-Object { $_ -match "^RUNPOD_ENDPOINT_ID=" } | Select-Object -First 1; if ($line) { $endpointId = ($line -split "=", 2)[1].Trim("'`"") } }; if (-not $endpointId) { Write-Error "RUNPOD_ENDPOINT_ID가 .env에 설정되어 있지 않습니다."; exit 1 }; Write-Host "Cooling down Runpod Serverless endpoint ($endpointId)..."; & $rp serverless update $endpointId --workers-min 0
+
+[unix]
 embed-off:
     #!/usr/bin/env bash
     set -e
