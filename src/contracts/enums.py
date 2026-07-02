@@ -156,3 +156,11 @@ class EdgeRelation(str, Enum):
     """A조항의 변경이 B조항에 의존함"""
     RISK_PROPAGATION = "RISK_PROPAGATION"
     """A조항 이탈 시 B조항도 함께 검토 대상이 됨"""
+
+class ProgressPhase(str, Enum):
+    PREPARE = "PREPARE"
+    BATCH_SEARCH = "BATCH_SEARCH"
+    RERANK = "RERANK"
+    CLAUSE_REVIEW = "CLAUSE_REVIEW"
+    MISSING_DETECTION = "MISSING_DETECTION"
+

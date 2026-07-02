@@ -155,8 +155,14 @@ parse_eval file:
     npx kordoc "{{file}}" -o 'src/eval/golden_b/converted/{{file_stem(file)}}.md'
 
 # 평가 드라이버 실행 (예: just eval, just eval b, just eval a v2, 환경 분기는 env="prod" 등으로 지정)
+[unix]
 eval track="a" version="" env="local":
     APP_ENV={{env}} PYTHONPATH=src uv run python -m eval.run_eval {{track}} {{version}}
+
+# Windows 환경용
+[windows]
+eval track="a" version="" env="local":
+    $env:APP_ENV = '{{env}}'; $env:PYTHONPATH = 'src'; uv run python -m eval.run_eval {{track}} {{version}}
 
 # 테스트 실행 (type: unit (기본), integration, all)
 [windows]
@@ -388,3 +394,11 @@ docker-up: docker-build
 # 백그라운드 컨테이너 중지 및 제거
 docker-down:
     docker rm -f {{docker_image}}
+
+# 절충안 번들: 서버+데모 2개 컨테이너 한 번에 기동 (http://localhost:8501)
+demo-bundle-up:
+    docker compose up --build -d
+
+# 번들 종료
+demo-bundle-down:
+    docker compose down

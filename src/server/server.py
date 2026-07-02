@@ -5,13 +5,14 @@ import uuid
 from pathlib import Path
 from typing import Optional
 
-from mcp.server.fastmcp import FastMCP
+import anyio
+from mcp.server.fastmcp import FastMCP, Context
 
 from config import BASE_DIR
-from contracts.enums import ContractType, Category, Deviation, ToxicPattern
+from contracts.enums import ContractType, Category, Deviation, ToxicPattern, ProgressPhase
 from contracts.models import StandardClause, StandardSubChunk
-from contracts.implement import KordocParser, KoreanLawGrounder
-from adapter import vector, db, reranker
+from adapter import vector, db, reranker, embedder
+from server.deps import get_parser, get_grounder
 from core import classify_clause_deviation, select_best_match, sigmoid
 from pipe.review_pipe import review_contract as review_contract_pipe
 from pipe.exceptions import EmptyDocumentError, CorpusUnavailableError, InvalidConfigError, PipelineIntegrityError
@@ -26,6 +27,8 @@ from server.dto import (
     CategoryInfo,
     ListCategoriesResponse,
     ListToxicPatternsResponse,
+    ToxicPatternDetail,
+    ListToxicPatternDetailsResponse,
 )
 
 logger = logging.getLogger(__name__)
@@ -66,10 +69,6 @@ def _resolve_contract_file(
 
 mcp = FastMCP("WorkShield")
 
-# 싱글턴 어댑터
-_parser = KordocParser()
-_grounder = KoreanLawGrounder()
-
 
 @mcp.tool()
 def parse_contract(
@@ -105,7 +104,7 @@ def parse_contract(
     resolved_path, temp_path = _resolve_contract_file(file_path, file_content, file_name)
     try:
         # FileNotFoundError · RuntimeError(kordoc 변환 실패) → 그대로 raise → FastMCP error 응답
-        clauses = _parser.parse(resolved_path)
+        clauses = get_parser().parse(resolved_path)
     finally:
         if temp_path is not None:
             temp_path.unlink(missing_ok=True)
@@ -188,10 +187,11 @@ def match_clause(
 
     top_k = min(top_k, _MATCH_TOP_K_MAX)
 
-    results = vector.search(
+    query_vector = embedder.embed_query(clause_text)
+    results = vector.hybrid_search(
         collection_name=_STANDARD_CLAUSES_COLLECTION,
+        vector=query_vector,
         query=clause_text,
-        search_type="hybrid",
         metadata_filter={"contract_type": ct.value},
         top_k=top_k,
     )
@@ -248,7 +248,7 @@ def get_grounding(
         )
 
     if clause_text is not None:
-        grounding = _grounder.query_law(clause_text)
+        grounding = get_grounder().query_law(clause_text)
     else:
         try:
             ct = Category(category)
@@ -257,7 +257,7 @@ def get_grounding(
                 f"지원하지 않는 카테고리: '{category}'. "
                 f"가능한 값: {[e.value for e in Category]}"
             )
-        grounding = _grounder.get_grounding(ct)
+        grounding = get_grounder().get_grounding(ct)
 
     if not grounding:
         return GetGroundingResponse(
@@ -269,12 +269,22 @@ def get_grounding(
     return GetGroundingResponse(status="OK", grounding=grounding)
 
 
+# 상태별 한글 메시지 템플릿
+PHASE_MESSAGES = {
+    ProgressPhase.PREPARE: "검토 준비 중...",
+    ProgressPhase.BATCH_SEARCH: "벡터 DB 배치 검색 중...",
+    ProgressPhase.RERANK: "조항별 재정렬 중...",
+    ProgressPhase.CLAUSE_REVIEW: "조항별 이탈 분류 중...",
+    ProgressPhase.MISSING_DETECTION: "누락 표준조항 분석 중..."
+}
+
 @mcp.tool()
-def review_contract(
+async def review_contract(
     contract_type: str,
     file_path: Optional[str] = None,
     file_content: Optional[str] = None,
     file_name: Optional[str] = None,
+    ctx: Context = None,
 ) -> ReviewContractResponse:
     """
     계약서 파일 전체를 검토합니다. 파싱 → 표준조항 매칭 → 이탈 분류 → 법령 근거 부착 순으로 실행합니다.
@@ -292,6 +302,7 @@ def review_contract(
         file_path: 검토할 계약서 파일의 절대 경로 (서버와 파일시스템을 공유할 때만 사용 가능. 로컬 stdio 배포용)
         file_content: base64 인코딩된 계약서 파일 바이트 (네트워크 배포용). file_name과 함께 지정해야 함.
         file_name: 원본 파일명 (확장자 판별용). file_content와 함께 지정해야 함.
+        ctx: MCP 실행 컨텍스트 (실시간 progress 보고용)
     """
     try:
         ct = ContractType(contract_type)
@@ -304,7 +315,7 @@ def review_contract(
     resolved_path, temp_path = _resolve_contract_file(file_path, file_content, file_name)
     try:
         # FileNotFoundError · RuntimeError(kordoc 실패) → 그대로 raise → FastMCP error 응답
-        clauses = _parser.parse(resolved_path)
+        clauses = get_parser().parse(resolved_path)
     finally:
         if temp_path is not None:
             temp_path.unlink(missing_ok=True)
@@ -325,15 +336,29 @@ def review_contract(
             message=f"{ct.value} 표준 코퍼스가 DB에 없습니다. `just build-db`를 먼저 실행하세요.",
         )
 
+    # 1. 스레드 안전한 진행률 전달 콜백 정의
+    def progress_callback(done: int, total: int, phase: ProgressPhase):
+        if ctx:
+            base_msg = PHASE_MESSAGES.get(phase, "검토 진행 중...")
+            if phase == ProgressPhase.CLAUSE_REVIEW:
+                msg = f"{base_msg} ({done}/{total})"
+            else:
+                msg = base_msg
+            anyio.from_thread.run(ctx.report_progress, done, total, msg)
+
     try:
-        results = review_contract_pipe(
-            clauses=clauses,
-            contract_type=ct,
-            retriever=vector,
-            reranker=reranker,
-            grounder=_grounder,
-            all_standard_clauses=standards,
-            all_standard_sub_chunks=_load_sub_chunks(ct),
+        results = await anyio.to_thread.run_sync(
+            lambda: review_contract_pipe(
+                clauses=clauses,
+                contract_type=ct,
+                retriever=vector,
+                embedder=embedder,
+                reranker=reranker,
+                grounder=get_grounder(),
+                all_standard_clauses=standards,
+                all_standard_sub_chunks=_load_sub_chunks(ct),
+                progress_callback=progress_callback,
+            )
         )
     except InvalidConfigError as e:
         return ReviewContractResponse(
@@ -419,10 +444,11 @@ def classify_clause(
         )
     standards_by_id = {std.clause_id: std for std in standards}
 
-    raw_hits = vector.search(
+    query_vector = embedder.embed_query(clause_text)
+    raw_hits = vector.hybrid_search(
         collection_name=_STANDARD_CLAUSES_COLLECTION,
+        vector=query_vector,
         query=clause_text,
-        search_type="hybrid",
         metadata_filter={"contract_type": ct.value},
         top_k=_CLASSIFY_TOP_K,
     )
@@ -454,7 +480,7 @@ def classify_clause(
 
     grounding = []
     if matched is not None and deviation == Deviation.CHANGED and matched.category != Category.GENERAL:
-        grounding = _grounder.get_grounding(matched.category)
+        grounding = get_grounder().get_grounding(matched.category)
 
     return ClassifyClauseResponse(
         status="OK",
@@ -502,6 +528,24 @@ def list_toxic_patterns() -> ListToxicPatternsResponse:
     review_contract 결과의 toxic_patterns 필드에 어떤 값이 나올 수 있는지 확인할 때 사용하세요.
     """
     return ListToxicPatternsResponse(patterns=[p.value for p in ToxicPattern])
+
+
+@mcp.tool()
+def list_toxic_pattern_details() -> ListToxicPatternDetailsResponse:
+    """탐지 대상 독소조항 패턴을 사람이 읽는 대표 제목과 함께 조회합니다 (패턴 enum 1건당 1행).
+
+    review_contract 결과의 toxic_patterns 는 enum 값(예: IP_TOTAL_FREE)만 담고 있어,
+    이를 사람이 읽는 제목으로 라벨링할 때 이 도구를 사용하세요. 반환값은 참고용 분류 정보이며
+    특정 조항의 위법·불리함을 단정하지 않습니다.
+    """
+    rows = db.fetch_all(
+        "SELECT pattern, MIN(category) AS category, MIN(title) AS title, "
+        "COUNT(*) AS example_count "
+        "FROM toxic_patterns GROUP BY pattern ORDER BY pattern"
+    )
+    return ListToxicPatternDetailsResponse(
+        patterns=[ToxicPatternDetail(**row) for row in rows]
+    )
 
 
 @mcp.resource("standard://{contract_type}")
