@@ -5,10 +5,11 @@ import uuid
 from pathlib import Path
 from typing import Optional
 
-from mcp.server.fastmcp import FastMCP
+import anyio
+from mcp.server.fastmcp import FastMCP, Context
 
 from config import BASE_DIR
-from contracts.enums import ContractType, Category, Deviation, ToxicPattern
+from contracts.enums import ContractType, Category, Deviation, ToxicPattern, ProgressPhase
 from contracts.models import StandardClause, StandardSubChunk
 from adapter import vector, db, reranker
 from server.deps import get_parser, get_grounder
@@ -265,12 +266,22 @@ def get_grounding(
     return GetGroundingResponse(status="OK", grounding=grounding)
 
 
+# 상태별 한글 메시지 템플릿
+PHASE_MESSAGES = {
+    ProgressPhase.PREPARE: "검토 준비 중...",
+    ProgressPhase.BATCH_SEARCH: "벡터 DB 배치 검색 중...",
+    ProgressPhase.RERANK: "조항별 재정렬 중...",
+    ProgressPhase.CLAUSE_REVIEW: "조항별 이탈 분류 중...",
+    ProgressPhase.MISSING_DETECTION: "누락 표준조항 분석 중..."
+}
+
 @mcp.tool()
-def review_contract(
+async def review_contract(
     contract_type: str,
     file_path: Optional[str] = None,
     file_content: Optional[str] = None,
     file_name: Optional[str] = None,
+    ctx: Context = None,
 ) -> ReviewContractResponse:
     """
     계약서 파일 전체를 검토합니다. 파싱 → 표준조항 매칭 → 이탈 분류 → 법령 근거 부착 순으로 실행합니다.
@@ -288,6 +299,7 @@ def review_contract(
         file_path: 검토할 계약서 파일의 절대 경로 (서버와 파일시스템을 공유할 때만 사용 가능. 로컬 stdio 배포용)
         file_content: base64 인코딩된 계약서 파일 바이트 (네트워크 배포용). file_name과 함께 지정해야 함.
         file_name: 원본 파일명 (확장자 판별용). file_content와 함께 지정해야 함.
+        ctx: MCP 실행 컨텍스트 (실시간 progress 보고용)
     """
     try:
         ct = ContractType(contract_type)
@@ -321,15 +333,28 @@ def review_contract(
             message=f"{ct.value} 표준 코퍼스가 DB에 없습니다. `just build-db`를 먼저 실행하세요.",
         )
 
+    # 1. 스레드 안전한 진행률 전달 콜백 정의
+    def progress_callback(done: int, total: int, phase: ProgressPhase):
+        if ctx:
+            base_msg = PHASE_MESSAGES.get(phase, "검토 진행 중...")
+            if phase == ProgressPhase.CLAUSE_REVIEW:
+                msg = f"{base_msg} ({done}/{total})"
+            else:
+                msg = base_msg
+            anyio.from_thread.run(ctx.report_progress, done, total, msg)
+
     try:
-        results = review_contract_pipe(
-            clauses=clauses,
-            contract_type=ct,
-            retriever=vector,
-            reranker=reranker,
-            grounder=get_grounder(),
-            all_standard_clauses=standards,
-            all_standard_sub_chunks=_load_sub_chunks(ct),
+        results = await anyio.to_thread.run_sync(
+            lambda: review_contract_pipe(
+                clauses=clauses,
+                contract_type=ct,
+                retriever=vector,
+                reranker=reranker,
+                grounder=get_grounder(),
+                all_standard_clauses=standards,
+                all_standard_sub_chunks=_load_sub_chunks(ct),
+                progress_callback=progress_callback,
+            )
         )
     except InvalidConfigError as e:
         return ReviewContractResponse(

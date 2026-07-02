@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WorkShield — 시연 데모 대시보드</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+<style>
+  /* 파스텔 연보라 팔레트 · 발표용 라이트 고정 (다크모드 분기 없음) */
+  :root{
+    --surface-0:#EDEFFA;
+    --surface-1:#F2F3FB;
+    --surface-2:#FFFFFF;
+    --border:#E3E5F2;
+    --border-strong:#C9CCE4;
+    --text-primary:#3E4557;
+    --text-secondary:#5F6779;
+    --text-muted:#8F94A8;
+    --bg-danger:#F7E2E2;   --text-danger:#B25454;  --fill-danger:#CC6B6B;
+    --bg-warning:#FFF3D6;  --text-warning:#8A6A1F; --fill-warning:#F2C94C;
+    --bg-accent:#E7E9FD;   --text-accent:#4F57C9;  --fill-accent:#6E76F2; --on-accent:#FFFFFF;
+    --bg-success:#E4F3E9;  --text-success:#2E7D4F; --fill-success:#5BB97F; --on-success:#FFFFFF;
+    --bg-pro:#DDEEFB;      --text-pro:#2E6E9E;
+    --radius:12px;
+    --shadow:0 1px 3px rgba(70,80,140,.06), 0 4px 14px rgba(70,80,140,.07);
+    --font-sans:'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    --font-mono:'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+    --font-voice:'Noto Serif KR', serif;
+  }
+  *{box-sizing:border-box}
+  [hidden]{display:none!important}
+  body{
+    margin:0; background:var(--surface-0); color:var(--text-primary);
+    font-family:var(--font-sans); line-height:1.6;
+    padding:40px 20px 80px;
+  }
+  .wrap{max-width:1360px; margin:0 auto}
+  header{margin-bottom:24px;display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap}
+  header .htext p.eyebrow{font-size:13.5px; color:var(--text-muted); margin:0 0 6px; letter-spacing:.02em}
+  header .htext h1{font-size:24px; font-weight:600; margin:0}
+  .info-btn{display:inline-flex;align-items:center;gap:5px;border:0.5px solid var(--border-strong);
+    background:var(--surface-2);color:var(--text-secondary);font-family:var(--font-sans);font-size:13px;
+    font-weight:500;padding:6px 14px;border-radius:20px;cursor:pointer;box-shadow:var(--shadow);margin-left:auto}
+  .info-btn:hover{background:var(--surface-1)}
+  /* ---- 사이드바 (데모 소개) ---- */
+  .sidebar{position:fixed;top:0;right:0;width:360px;max-width:88vw;height:100vh;background:var(--surface-2);
+    box-shadow:-10px 0 34px rgba(70,80,140,.16);padding:28px 26px;transform:translateX(105%);
+    transition:transform .25s ease;z-index:100;overflow-y:auto}
+  .sidebar.open{transform:translateX(0)}
+  .sidebar h2{font-size:16px;font-weight:600;margin:0 0 12px;display:flex;align-items:center;gap:8px}
+  .sidebar p{font-size:14px;color:var(--text-secondary);margin:0 0 12px}
+  .sidebar .close-btn{position:absolute;top:18px;right:18px;border:none;background:none;cursor:pointer;
+    font-size:18px;color:var(--text-muted);padding:4px}
+  .sidebar .close-btn:hover{color:var(--text-primary)}
+  .scrim{position:fixed;inset:0;background:rgba(62,69,87,.25);z-index:99;opacity:0;pointer-events:none;transition:opacity .25s}
+  .scrim.show{opacity:1;pointer-events:auto}
+  .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+  .badge{display:inline-block;font-size:12px;font-weight:500;padding:2px 8px;border-radius:20px;line-height:1.6}
+  .badge.internal{background:var(--surface-1);color:var(--text-secondary);border:0.5px solid var(--border-strong)}
+  .crit{display:inline-flex;align-items:center;gap:3px;font-size:11.5px;font-weight:500;color:var(--text-success);background:var(--bg-success);padding:1px 8px;border-radius:20px;white-space:nowrap}
+  .card{background:var(--surface-2);border:0.5px solid var(--border);border-radius:18px;padding:18px 20px;box-shadow:var(--shadow)}
+  .row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:0.5px solid var(--border);font-size:14px}
+  .row:last-child{border-bottom:none}
+  .mono{font-family:var(--font-mono);font-size:12.5px;color:var(--text-secondary);white-space:pre-wrap;line-height:1.55}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+  .step{border-left:2px solid var(--border-strong);padding:0 0 14px 14px;margin-left:6px;position:relative}
+  .step::before{content:"";position:absolute;left:-5px;top:2px;width:8px;height:8px;border-radius:50%;background:var(--text-muted)}
+  .bar-track{background:var(--surface-1);border-radius:6px;height:12px;overflow:hidden}
+  .bar-fill{height:100%;border-radius:6px}
+  select, button.primary{
+    width:100%; height:36px; border-radius:var(--radius); border:0.5px solid var(--border-strong);
+    background:var(--surface-2); color:var(--text-primary); font-family:var(--font-sans); font-size:14.5px; padding:0 10px;
+  }
+  button.primary{background:var(--fill-accent); color:var(--on-accent); border-color:var(--fill-accent); font-weight:500; cursor:pointer}
+  button.primary:disabled{opacity:.65;cursor:wait}
+  .metric{border-radius:var(--radius); padding:10px; text-align:center}
+  .metric p.label{font-size:12px; margin:0}
+  .metric p.value{font-size:20px; font-weight:600; margin:2px 0 0}
+  .metric p.sub{font-size:10.5px; margin:1px 0 0; opacity:.75}
+  .notice{display:flex;align-items:center;gap:8px;background:var(--surface-2);border:0.5px solid var(--border);
+          border-radius:var(--radius);padding:10px 14px;font-size:13.5px;color:var(--text-secondary);box-shadow:var(--shadow)}
+  .compare{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+  .compare .pane{background:var(--surface-1);border-radius:var(--radius);padding:10px 12px}
+  .compare .pane p.pane-label{font-size:12px;font-weight:500;color:var(--text-muted);margin:0 0 6px}
+  .compare .pane p.pane-text{font-size:13.5px;color:var(--text-secondary);margin:0;line-height:1.65}
+  .compare mark{background:var(--bg-warning);color:var(--text-warning);border-radius:3px;padding:0 2px}
+  /* ---- 플로우 섹션 ---- */
+  #flow{display:flex;flex-direction:column;gap:26px}
+  .sec-label{font-size:13px;font-weight:600;color:var(--text-muted);letter-spacing:.05em;margin:0 0 10px;display:flex;align-items:center;gap:8px}
+  .sec-label::after{content:"";flex:1;height:0.5px;background:var(--border-strong)}
+  section.reveal{animation:fadeUp .5s ease both}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+  /* ---- 이탈 유형별 접이식 그룹 ---- */
+  details.group{background:var(--surface-2);border:0.5px solid var(--border);border-radius:18px;overflow:hidden;box-shadow:var(--shadow)}
+  details.group summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;
+    padding:13px 18px;font-size:14.5px;font-weight:500;user-select:none}
+  details.group summary::-webkit-details-marker{display:none}
+  details.group summary:hover{background:var(--surface-1)}
+  details.group summary .dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+  details.group summary .gdesc{font-size:13px;font-weight:400;color:var(--text-muted)}
+  details.group summary .count{margin-left:auto;font-size:13px;font-weight:500;padding:1px 9px;border-radius:20px}
+  details.group summary .chev{font-size:16px;color:var(--text-muted);transition:transform .15s}
+  details.group[open] summary .chev{transform:rotate(90deg)}
+  details.group .gbody{border-top:0.5px solid var(--border)}
+  details.group .gcard{padding:14px 18px;border-bottom:0.5px solid var(--border)}
+  details.group .gcard:last-child{border-bottom:none}
+  .chiplist{display:flex;flex-wrap:wrap;gap:6px;padding:14px 18px}
+  .chiplist .chip{font-size:13px;color:var(--text-secondary);background:var(--surface-1);border-radius:20px;padding:2px 10px}
+  /* ---- 접힌 그룹 카드 가로 나열 (본 파일 전용) ---- */
+  .groups-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;align-items:start}
+  .groups-row details.group summary{flex-wrap:wrap;padding:12px 14px;font-size:14px;gap:8px}
+  .groups-row details.group summary .gdesc{flex-basis:100%;order:5;font-size:12.5px;line-height:1.45;margin-top:2px}
+  .groups-row details.group summary .count{margin-left:auto}
+  .groups-row details.group .gcard{padding:12px 14px}
+  .groups-row .compare{grid-template-columns:1fr}
+  @media (max-width:860px){ .groups-row{grid-template-columns:repeat(2,1fr)} }
+  @media (max-width:560px){ .groups-row{grid-template-columns:1fr} }
+  /* ---- 파이프라인 세로 스텝퍼 (실시간 진행) ---- */
+  .pipeV{display:flex;flex-direction:column}
+  .pvstep{display:flex;gap:16px;border-left:2px solid var(--border-strong);margin-left:15px;padding:0 0 26px 22px;position:relative}
+  .pvstep:last-child{padding-bottom:0}
+  .pvnum{position:absolute;left:-17px;top:-2px;width:32px;height:32px;border-radius:50%;background:var(--fill-accent);
+    color:var(--on-accent);font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .pvbody{padding-top:2px}
+  .pvbody p.pdesc{font-size:14px;color:var(--text-secondary);margin:8px 0 0;line-height:1.6}
+  .pvbody p.mono{margin:8px 0 0;background:var(--surface-1);border-radius:8px;padding:8px 10px}
+  #sec-pipe .pvstep{opacity:0;transform:translateY(10px);transition:opacity .35s ease, transform .35s ease}
+  #sec-pipe .pvstep.show{opacity:1;transform:none}
+  footer{margin-top:28px; font-size:13px; color:var(--text-muted); text-align:center}
+  @media (max-width:720px){ .grid2,.compare,.merged{grid-template-columns:1fr} }
+  .merged{display:grid;grid-template-columns:1.1fr 1fr;gap:26px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="htext">
+    <p class="eyebrow">내부 시연용 · 사용자 서비스 화면 아님</p>
+    <h1>WorkShield — 근거 기반 계약서 검토 데모</h1>
+  </div>
+  <button class="info-btn" onclick="toggleSidebar(true)" aria-controls="sidebar" aria-expanded="false" id="info-btn">
+    <i class="ti ti-info-circle" style="font-size:15px" aria-hidden="true"></i>데모 소개
+  </button>
+</header>
+
+<!-- ===== 사이드바: 데모 소개 ===== -->
+<div class="scrim" id="scrim" onclick="toggleSidebar(false)"></div>
+<aside class="sidebar" id="sidebar" aria-label="데모 소개">
+  <button class="close-btn" onclick="toggleSidebar(false)" aria-label="사이드바 닫기"><i class="ti ti-x" aria-hidden="true"></i></button>
+  <h2><i class="ti ti-shield-check" style="color:var(--fill-accent)" aria-hidden="true"></i>이 데모는</h2>
+  <p>프리랜서 용역계약서를 표준계약서와 조항 단위로 비교해 이탈(누락·추가·변경)을 탐지하고, 모든 결과에 표준조항·법령 출처를 붙여 반환하는 RAG 파이프라인 데모입니다.</p>
+  <p>근거가 없는 항목은 판단하지 않습니다 — 매칭 실패는 빈 응답 대신 <b>NO_MATCH 명시 표식</b>으로 반환됩니다.</p>
+  <p style="font-size:13px;color:var(--text-muted)">모든 결과는 "검토가 필요한 후보"이며, 위법·불리함을 단정하지 않습니다.</p>
+</aside>
+
+<main id="flow">
+
+<!-- ===== 검토 결과 (완료 시 최상단에 표시) ===== -->
+<section id="sec-results" hidden>
+  <p class="sec-label">검토 결과</p>
+  <div style="display:flex;flex-direction:column;gap:12px">
+
+    <!-- LLM 근거 기반 요약 -->
+    <div style="border:1px dashed var(--border-strong);border-radius:18px;padding:16px 20px;background:var(--surface-1)">
+      <p style="font-size:12px;color:var(--text-muted);margin:0 0 6px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+        <i class="ti ti-sparkles" style="font-size:14px;color:var(--fill-accent)" aria-hidden="true"></i>근거 기반 요약 — LLM (검출 결과만 인용)
+        <span class="crit"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i>근거 없으면 답변 제한</span>
+      </p>
+      <p style="font-size:13.5px;color:var(--text-secondary);margin:0 0 8px;font-family:var(--font-voice)">이 계약서는 저작권 귀속 조항(제12조)이 표준조항과 달라 검토 후보이며 [근거: 저작권법 제5조], 표준의 대금 지급 시기 조항에 대응하는 내용이 없습니다. 제15조는 알려진 독소 패턴(저작권 전부 무상귀속)과 일치합니다. 제17조는 표준·법령에서 근거를 찾지 못해 판단하지 않습니다.</p>
+      <p style="font-size:12px;color:var(--text-muted);margin:0">요약은 위 검출 결과와 법령 조문만 입력받아 생성되며, 자체 법률 해석을 만들지 않습니다. 해석 고도화는 다음 프로젝트에서 진행 예정.</p>
+    </div>
+
+    <!-- 검토 후보 프레이밍 -->
+    <div class="notice">
+      <i class="ti ti-info-circle" style="font-size:16px;flex-shrink:0;color:var(--fill-accent)" aria-hidden="true"></i>
+      <span>아래 결과는 <b>검토가 필요한 후보</b>를 표시한 것이며, 위법·불리함을 단정하지 않습니다. 근거를 찾지 못한 조항은 판단하지 않고 명시 표식으로 반환합니다.</span>
+    </div>
+
+    <!-- 요약 밴드: 카드 순서와 동일 (NONE → CHANGED → MISSING → EXTRA → NO_MATCH) -->
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px">
+      <div class="metric" style="background:var(--bg-success)"><p class="label" style="color:var(--text-success)">NONE</p><p class="value" style="color:var(--text-success)">14</p></div>
+      <div class="metric" style="background:var(--bg-accent)"><p class="label" style="color:var(--text-accent)">CHANGED</p><p class="value" style="color:var(--text-accent)">2</p></div>
+      <div class="metric" style="background:var(--bg-danger)"><p class="label" style="color:var(--text-danger)">MISSING</p><p class="value" style="color:var(--text-danger)">3</p><p class="sub" style="color:var(--text-danger)">표준 기준</p></div>
+      <div class="metric" style="background:var(--bg-warning)"><p class="label" style="color:var(--text-warning)">EXTRA</p><p class="value" style="color:var(--text-warning)">1</p></div>
+      <div class="metric" style="background:var(--surface-2);border:0.5px solid var(--border)"><p class="label" style="color:var(--text-secondary)">NO_MATCH</p><p class="value" style="color:var(--text-secondary)">1</p></div>
+    </div>
+
+    <!-- ▼ 이탈 유형별 접이식 그룹 (가로 나열 · 클릭 시 해당 열 아래로 펼침) -->
+    <div class="groups-row">
+
+    <!-- NONE -->
+    <details class="group">
+      <summary>
+        <span class="dot" style="background:var(--fill-success)"></span>
+        NONE <span class="gdesc">— 표준과 일치, 검토 후보 아님</span>
+        <span class="count" style="background:var(--bg-success);color:var(--text-success)">14건</span>
+        <i class="ti ti-chevron-right chev" aria-hidden="true"></i>
+      </summary>
+      <div class="gbody">
+        <div class="chiplist">
+          <span class="chip">제1조 목적</span><span class="chip">제2조 용어의 정의</span><span class="chip">제3조 계약기간</span>
+          <span class="chip">제4조 성실 의무</span><span class="chip">제6조 검수</span><span class="chip">제7조 대금</span>
+          <span class="chip">제8조 지연 배상</span><span class="chip">제10조 비밀유지</span><span class="chip">제11조 자료 제공</span>
+          <span class="chip">제13조 하자보수</span><span class="chip">외 4건 …</span>
+        </div>
+      </div>
+    </details>
+
+    <!-- CHANGED -->
+    <details class="group">
+      <summary>
+        <span class="dot" style="background:var(--fill-accent)"></span>
+        CHANGED <span class="gdesc">— 표준과 매칭됐지만 본문이 다른 조항</span>
+        <span class="count" style="background:var(--bg-accent);color:var(--text-accent)">2건</span>
+        <i class="ti ti-chevron-right chev" aria-hidden="true"></i>
+      </summary>
+      <div class="gbody">
+        <div class="gcard">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px">
+            <p style="font-size:14px;font-weight:500;margin:0">제12조 · 저작권의 귀속</p>
+            <span style="display:flex;gap:6px;align-items:center">
+              <span class="crit"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i>문서 기반 비교</span>
+              <span class="badge" style="background:var(--bg-accent);color:var(--text-accent)">신뢰도 0.82</span>
+            </span>
+          </div>
+          <div class="compare">
+            <div class="pane">
+              <p class="pane-label">내 계약서 · 제12조</p>
+              <p class="pane-text">용역 수행 과정에서 발생한 결과물의 <mark>모든 저작권(2차적저작물작성권 포함)은 발주자에게 귀속</mark>된다.</p>
+            </div>
+            <div class="pane">
+              <p class="pane-label">표준조항 · sw_std-art12 「저작권의 귀속」</p>
+              <p class="pane-text">결과물의 저작권 귀속은 <mark>상호 협의하여 정하며</mark>, 2차적저작물작성권은 <mark>별도 합의 없이 이전되지 않는다</mark>.</p>
+            </div>
+          </div>
+          <p style="font-size:13px;color:var(--text-muted);margin:10px 0 0">
+            <i class="ti ti-gavel" style="font-size:14px;vertical-align:-2px;margin-right:4px" aria-hidden="true"></i>
+            근거: 저작권법 제5조 (korean-law-mcp) · 표준 출처: SW프리랜서 표준계약서 제12조
+            <span class="crit" style="margin-left:6px"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i>출처 제시</span>
+          </p>
+        </div>
+        <div class="gcard">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <p style="font-size:14px;font-weight:500;margin:0">제5조 · 과업의 범위</p>
+            <span class="badge" style="background:var(--bg-accent);color:var(--text-accent)">신뢰도 0.77</span>
+          </div>
+          <p style="font-size:13.5px;color:var(--text-secondary);margin:4px 0 0">표준(sw_std-art5)과 매칭됐지만 과업 변경 시 협의 절차 문구가 다릅니다. 근거: 표준 출처 제5조</p>
+        </div>
+      </div>
+    </details>
+
+    <!-- MISSING -->
+    <details class="group">
+      <summary>
+        <span class="dot" style="background:var(--fill-danger)"></span>
+        MISSING <span class="gdesc">— 표준에는 있는데 내 계약서에 없는 조항</span>
+        <span class="count" style="background:var(--bg-danger);color:var(--text-danger)">3건</span>
+        <i class="ti ti-chevron-right chev" aria-hidden="true"></i>
+      </summary>
+      <div class="gbody">
+        <div class="gcard">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <p style="font-size:14px;font-weight:500;margin:0">표준 제9조 · 대금 지급 시기</p>
+            <span class="badge" style="background:var(--bg-danger);color:var(--text-danger)">대응 조항 없음</span>
+          </div>
+          <p style="font-size:13.5px;color:var(--text-secondary);margin:4px 0 0">내 계약서에서 대응 조항을 찾지 못했습니다. 표준 출처: SW프리랜서 표준계약서 제9조</p>
+        </div>
+        <div class="gcard">
+          <p style="font-size:14px;font-weight:500;margin:0">표준 제14조 · 계약의 해지</p>
+          <p style="font-size:13.5px;color:var(--text-secondary);margin:4px 0 0">표준 출처: SW프리랜서 표준계약서 제14조</p>
+        </div>
+        <div class="gcard">
+          <p style="font-size:14px;font-weight:500;margin:0">표준 제16조 · 분쟁의 해결</p>
+          <p style="font-size:13.5px;color:var(--text-secondary);margin:4px 0 0">표준 출처: SW프리랜서 표준계약서 제16조</p>
+        </div>
+      </div>
+    </details>
+
+    <!-- EXTRA (+독소) -->
+    <details class="group">
+      <summary>
+        <span class="dot" style="background:var(--fill-warning)"></span>
+        EXTRA <span class="gdesc">— 표준에 없는 추가 조항 (독소 패턴 대조 포함)</span>
+        <span class="count" style="background:var(--bg-warning);color:var(--text-warning)">1건</span>
+        <i class="ti ti-chevron-right chev" aria-hidden="true"></i>
+      </summary>
+      <div class="gbody">
+        <div class="gcard">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px">
+            <p style="font-size:14px;font-weight:500;margin:0">제15조 · 권리의 귀속 특약</p>
+            <span class="badge" style="background:var(--bg-danger);color:var(--text-danger)">독소 패턴 · IP_TOTAL_FREE</span>
+          </div>
+          <p style="font-size:13.5px;color:var(--text-secondary);margin:4px 0 4px">"모든 지식재산권은 어떠한 대가 없이 갑에게 영구 귀속되며…" — 표준에 없는 추가 조항이 독소 패턴 <b>저작권 전부 무상귀속</b>(toxic-ip_total_free)과 매칭됐습니다.</p>
+          <p style="font-size:13px;color:var(--text-muted);margin:0">양방향 검색: 표준→사용자(이탈) + 독소 패턴→사용자(유해 조항) 두 축으로 검토</p>
+        </div>
+      </div>
+    </details>
+
+    <!-- NO_MATCH -->
+    <details class="group">
+      <summary>
+        <span class="dot" style="background:var(--border-strong)"></span>
+        NO_MATCH <span class="gdesc">— 근거를 찾지 못해 판단하지 않은 조항</span>
+        <span class="count" style="background:var(--surface-1);color:var(--text-secondary)">1건</span>
+        <i class="ti ti-chevron-right chev" aria-hidden="true"></i>
+      </summary>
+      <div class="gbody">
+        <div class="gcard">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <p style="font-size:14px;font-weight:500;margin:0">제17조 · 기타 특약</p>
+            <span class="crit"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i>없는 내용은 없다고</span>
+          </div>
+          <p style="font-size:13.5px;color:var(--text-secondary);margin:4px 0 0">표준조항·독소 패턴 어디에도 충분히 매칭되지 않았습니다. 빈 응답 대신 <b>NO_MATCH 명시 표식</b>을 반환하고, 판단을 생성하지 않습니다.</p>
+        </div>
+      </div>
+    </details>
+
+    </div><!-- /.groups-row -->
+
+  </div>
+</section>
+
+<!-- ===== 평가 · 개선 (완료 시 결과 아래 표시) ===== -->
+<section id="sec-eval" hidden>
+  <p class="sec-label">평가 · 개선</p>
+
+  <!-- 설계 · 지표 (상단, 컴팩트) -->
+  <div class="grid2" style="margin-bottom:14px">
+    <div class="card">
+      <p style="font-size:14px;font-weight:500;margin:0 0 4px">골든셋 설계 — 3가지 케이스 유형</p>
+      <p style="font-size:13px;color:var(--text-muted);margin:0 0 8px">가이드라인 테스트 유형과 1:1 대응 · 라벨링 진행 중</p>
+      <div class="row"><span>정상 매칭 (정답이 문서에 있음)</span><span class="badge" style="background:var(--bg-success);color:var(--text-success)">기본</span></div>
+      <div class="row"><span>말바꿈 · 순서 뒤바뀜 (변형·함정)</span><span class="badge" style="background:var(--bg-warning);color:var(--text-warning)">함정</span></div>
+      <div class="row"><span>대응 없음 (문서에 없음 → NO_MATCH가 정답)</span><span class="badge" style="background:var(--bg-danger);color:var(--text-danger)">부정 케이스</span></div>
+    </div>
+
+    <div class="card">
+      <p style="font-size:14px;font-weight:500;margin:0 0 4px">측정 지표 — LLM-judge 없이 전부 결정론적 계산</p>
+      <p style="font-size:13px;color:var(--text-muted);margin:0 0 8px">같은 골든셋에 다시 돌리면 같은 수치가 나오는, 재현 가능한 평가</p>
+      <div class="row"><span>Recall@k · MRR</span><span style="color:var(--text-secondary);font-size:13px">잘 찾는가</span></div>
+      <div class="row"><span>Precision / Recall (이탈·독소)</span><span style="color:var(--text-secondary);font-size:13px">제대로 짚는가</span></div>
+      <div class="row"><span><b>특이도 (Specificity)</b></span><span class="crit"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i>없는 걸 없다고 하는가</span></div>
+    </div>
+  </div>
+
+  <!-- 측정 결과 (중앙, 주인공) -->
+  <div class="card" style="margin-bottom:14px;padding:24px 26px">
+    <p style="font-size:15.5px;font-weight:600;margin:0 0 4px">리트리벌 ablation — 측정 결과</p>
+    <p style="font-size:13px;color:var(--text-muted);margin:0 0 18px">"조항 몇십 개면 체크리스트로도 되지 않나"를 주장이 아닌 수치로 검증 · 골든셋 확정 후 실측값 반영</p>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div>
+        <div style="display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:4px"><span>BM25-only (단어매칭)</span><span style="color:var(--text-muted)">측정 예정</span></div>
+        <div class="bar-track"></div>
+      </div>
+      <div>
+        <div style="display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:4px"><span>Dense-only (의미)</span><span style="color:var(--text-muted)">측정 예정</span></div>
+        <div class="bar-track"></div>
+      </div>
+      <div>
+        <div style="display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:4px"><span>하이브리드 (의미+단어)</span><span style="color:var(--text-muted)">측정 예정</span></div>
+        <div class="bar-track"></div>
+      </div>
+      <div>
+        <div style="display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:4px"><span>하이브리드 + 리랭커</span><span style="color:var(--text-muted)">측정 예정</span></div>
+        <div class="bar-track"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 개선 사이클 (하단, 마무리) -->
+  <div class="card">
+    <p style="font-size:14px;font-weight:500;margin:0;display:flex;align-items:center;gap:8px">
+      테스트 → 개선 사이클
+      <span class="crit"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i>테스트를 통해 개선</span>
+    </p>
+    <div style="margin-top:14px">
+      <div class="step">
+        <span class="badge" style="background:var(--bg-accent);color:var(--text-accent)">v1 측정</span>
+        <p style="font-size:13.5px;margin:6px 0 4px">골든셋으로 검색·이탈·독소 탐지 지표 1차 측정</p>
+      </div>
+      <div class="step">
+        <span class="badge" style="background:var(--bg-warning);color:var(--text-warning)">문제 발견</span>
+        <p style="font-size:13.5px;margin:6px 0 4px">과탐 성향 확인 — 정상 조항까지 검토 후보로 플래깅하는 경향을 특이도 지표로 포착</p>
+      </div>
+      <div class="step" style="border-left-color:transparent">
+        <span class="badge" style="background:var(--bg-success);color:var(--text-success)">v2 개선</span>
+        <p style="font-size:13.5px;margin:6px 0 0">판정 임계값·매칭 로직 조정 후 같은 골든셋으로 재측정 (진행 중)</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 검토 전: 업로드 + 서버 구성 (통합 카드) ===== -->
+<section id="sec-form">
+  <p class="sec-label">검토 시작</p>
+  <div class="card" style="padding:24px 26px">
+    <div class="merged">
+      <div>
+        <p style="font-size:14px;font-weight:500;color:var(--text-secondary);margin:0 0 14px">계약서 업로드</p>
+        <div style="border:1px dashed var(--border-strong);border-radius:var(--radius);padding:28px 12px;text-align:center;margin-bottom:14px;background:var(--surface-1)">
+          <i class="ti ti-file-upload" style="font-size:24px;color:var(--fill-accent)" aria-hidden="true"></i>
+          <p style="font-size:13.5px;color:var(--text-muted);margin:10px 0 0">PDF · HWP · WORD 파일을 끌어다 놓거나 클릭하여 업로드</p>
+        </div>
+        <p style="font-size:13px;color:var(--text-secondary);margin:0 0 4px">표준계약 유형</p>
+        <select style="margin-bottom:6px">
+          <option>SW 프리랜서 표준계약서 (SW_FREELANCE)</option>
+          <option>상용SW 공급·개발·구축 하도급 (SI_SUBCONTRACT)</option>
+          <option>상용SW 유지관리 하도급 (SM_SUBCONTRACT)</option>
+          <option disabled>방송산업 표준계약서 — 추후 지원 예정</option>
+          <option disabled>만화산업 표준계약서 — 추후 지원 예정</option>
+          <option disabled>영화산업 표준계약서 — 추후 지원 예정</option>
+          <option disabled>건설산업 표준계약서 — 추후 지원 예정</option>
+          <option disabled>프리랜서 강사 표준계약서 — 추후 지원 예정</option>
+        </select>
+        <p style="font-size:12.5px;color:var(--text-muted);margin:0 0 14px">새 계약 유형은 코드 수정 없이 <b>표준계약서 1건 + 설정 추가</b>만으로 확장됩니다.</p>
+        <button class="primary" id="start-btn" onclick="startReview()">표준 대비 검토 시작</button>
+      </div>
+
+      <div>
+        <p style="font-size:14px;font-weight:500;color:var(--text-secondary);margin:0 0 14px">서버 구성 사양</p>
+        <div class="row"><span><i class="ti ti-vector" style="font-size:16px;vertical-align:-2px;margin-right:6px" aria-hidden="true"></i>임베딩 모델</span><span>bge-m3 <span class="badge" style="background:var(--bg-pro);color:var(--text-pro)">조합</span></span></div>
+        <div class="row"><span><i class="ti ti-sort-ascending" style="font-size:16px;vertical-align:-2px;margin-right:6px" aria-hidden="true"></i>리랭커</span><span>bge-reranker-v2-m3 <span class="badge" style="background:var(--bg-pro);color:var(--text-pro)">조합</span></span></div>
+        <div class="row"><span><i class="ti ti-database" style="font-size:16px;vertical-align:-2px;margin-right:6px" aria-hidden="true"></i>RDB (SQLite)</span><span>표준조항 273건 적재 (4종·판본별)</span></div>
+        <div class="row"><span><i class="ti ti-vector-triangle" style="font-size:16px;vertical-align:-2px;margin-right:6px" aria-hidden="true"></i>벡터 DB (Chroma)</span><span>서브청크 1,898건 · dense+sparse</span></div>
+        <div class="row"><span><i class="ti ti-shield-exclamation" style="font-size:16px;vertical-align:-2px;margin-right:6px" aria-hidden="true"></i>독소조항 패턴셋</span><span>40건 큐레이션 <span class="badge" style="background:var(--bg-accent);color:var(--text-accent)">직접 구축</span></span></div>
+        <div class="row"><span><i class="ti ti-gavel" style="font-size:16px;vertical-align:-2px;margin-right:6px" aria-hidden="true"></i>korean-law-mcp</span><span style="color:var(--text-success)">연동됨 <span class="badge" style="background:var(--bg-pro);color:var(--text-pro)">조합</span></span></div>
+        <div class="row"><span><i class="ti ti-git-merge" style="font-size:16px;vertical-align:-2px;margin-right:6px" aria-hidden="true"></i>이탈 탐지 로직 · 스키마</span><span class="badge" style="background:var(--bg-accent);color:var(--text-accent)">직접 구축</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 파이프라인 로그 (검토 시작 시 실시간 진행) ===== -->
+<section id="sec-pipe" hidden>
+  <p class="sec-label">파이프라인 진행 로그</p>
+  <div class="card" style="padding:26px 28px">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px">
+      <p style="font-size:16px;font-weight:600;margin:0">RAG 파이프라인 진행 로그</p>
+      <span class="crit"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i>관련 문서 검색</span>
+      <span style="margin-left:auto;font-size:12.5px;color:var(--text-muted);font-weight:400">
+        <span class="badge" style="background:var(--bg-pro);color:var(--text-pro)">MCP 도구</span>
+        <span class="badge internal" style="margin-left:4px">내부 단계</span>
+      </span>
+    </div>
+    <p style="font-size:13.5px;color:var(--text-secondary);margin:0 0 22px">「제12조 · 저작권의 귀속」 조항 하나가 결과로 나오기까지, 실제로 호출되는 도구와 내부 단계를 순서대로 보여줍니다.</p>
+
+    <div class="pipeV">
+      <div class="pvstep">
+        <div class="pvnum">1</div>
+        <div class="pvbody">
+          <span class="badge" style="background:var(--bg-pro);color:var(--text-pro)">parse_contract</span>
+          <p class="pdesc">계약서를 조항 18개로 분해</p>
+          <p class="mono">[{"idx":1,"조번호":"제1조","title":"목적"}, {"idx":12,"조번호":"제12조","title":"저작권의 귀속"}, ...]</p>
+        </div>
+      </div>
+      <div class="pvstep">
+        <div class="pvnum">2</div>
+        <div class="pvbody">
+          <span class="badge internal">embed</span>
+          <p class="pdesc">각 조항을 dense 1024dim + sparse 표현으로 변환 (bge-m3)</p>
+        </div>
+      </div>
+      <div class="pvstep">
+        <div class="pvnum">3</div>
+        <div class="pvbody">
+          <span class="badge" style="background:var(--bg-pro);color:var(--text-pro)">match_clause</span>
+          <p class="pdesc">하이브리드 검색으로 표준조항 top-5 추출 → 리랭커로 재정렬</p>
+          <p class="mono">1. sw_std-art12  score 0.79 → 0.91 (재정렬 후 1위)
+2. sw_std-art14  score 0.81 → 0.63</p>
+        </div>
+      </div>
+      <div class="pvstep">
+        <div class="pvnum">4</div>
+        <div class="pvbody">
+          <span class="badge internal">deviation</span>
+          <p class="pdesc">매칭 확정 → 표준 본문과 차이 감지 → CHANGED 판정 · 독소 패턴 대조</p>
+        </div>
+      </div>
+      <div class="pvstep">
+        <div class="pvnum">5</div>
+        <div class="pvbody">
+          <span class="badge" style="background:var(--bg-pro);color:var(--text-pro)">get_grounding</span>
+          <p class="pdesc">korean-law-mcp 호출 → 저작권법 제5조 조회</p>
+        </div>
+      </div>
+      <div class="pvstep" style="border-left-color:transparent">
+        <div class="pvnum" style="background:var(--fill-success)">✓</div>
+        <div class="pvbody">
+          <span class="badge" style="background:var(--bg-success);color:var(--text-success)">review_contract</span>
+          <p class="pdesc">조항별 최종 응답(매칭·이탈·근거) 조립 완료 → 상단 「검토 결과」에 표시</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>WorkShield 1차 MVP · 시연용 데모 목업 (평가 수치는 골든셋 확정 후 반영)</footer>
+
+</div>
+
+<script>
+/* ---- 사이드바 토글 ---- */
+function toggleSidebar(open){
+  document.getElementById('sidebar').classList.toggle('open', open);
+  document.getElementById('scrim').classList.toggle('show', open);
+  document.getElementById('info-btn').setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+document.addEventListener('keydown', function(e){ if(e.key==='Escape') toggleSidebar(false); });
+
+/* ---- 검토 실행: 로그 실시간 진행 → 완료 시 결과·평가가 위로 쌓임 ---- */
+var running = false;
+function startReview(){
+  if(running) return;
+  running = true;
+
+  var btn     = document.getElementById('start-btn');
+  var pipe    = document.getElementById('sec-pipe');
+  var results = document.getElementById('sec-results');
+  var evalSec = document.getElementById('sec-eval');
+  var form    = document.getElementById('sec-form');
+  var steps   = pipe.querySelectorAll('.pvstep');
+
+  // 재실행 대비 초기화
+  results.hidden = true; results.classList.remove('reveal');
+  evalSec.hidden = true; evalSec.classList.remove('reveal');
+  steps.forEach(function(s){ s.classList.remove('show'); });
+
+  btn.disabled = true;
+  btn.textContent = '검토 중…';
+  pipe.hidden = false;
+  pipe.scrollIntoView({behavior:'smooth', block:'start'});
+
+  var i = 0;
+  var STEP_MS = 700; // 단계별 등장 간격
+  (function next(){
+    if(i < steps.length){
+      steps[i].classList.add('show');
+      i++;
+      setTimeout(next, STEP_MS);
+    } else {
+      setTimeout(finish, 500);
+    }
+  })();
+
+  function finish(){
+    // 결과·평가가 폼 위로 쌓이고 폼은 아래로 밀림 (로그는 폼 바로 위로 이동)
+    form.parentNode.insertBefore(pipe, form);
+    results.hidden = false; results.classList.add('reveal');
+    evalSec.hidden = false; evalSec.classList.add('reveal');
+    btn.disabled = false;
+    btn.textContent = '다시 검토';
+    running = false;
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+}
+</script>
+</body>
+</html>

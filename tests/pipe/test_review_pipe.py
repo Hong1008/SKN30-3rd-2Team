@@ -15,7 +15,7 @@ roll_up_sub_chunks·detect_toxic_patterns)를 조립하고, 외부 작업은 por
 """
 from typing import Any, Dict, List
 
-from contracts.enums import ContractType, Category, Deviation, ToxicPattern
+from contracts.enums import ContractType, Category, Deviation, ToxicPattern, ProgressPhase
 from contracts.models import Clause, StandardClause, StandardSubChunk, GroundingLaw, DeviationResult
 from pipe.review_pipe import review_contract
 
@@ -332,3 +332,30 @@ def test_커버돼도_치명변경_숫자면_CHANGED():
     results = _review58([clause], reranker=HIGH_RERANKER)  # 전부 커버됨
     target = next(r for r in results if r.user_clause == changed_text)
     assert target.deviation == Deviation.CHANGED
+
+def test_progress_callback_호출_검증():
+    called = []
+    def callback(done: int, total: int, phase: ProgressPhase):
+        called.append((done, total, phase))
+
+    clause1 = Clause(idx=1, num="제20조", title="지식재산권", text=ART20.text)
+    clause2 = Clause(idx=2, num="제99조", title="관할법원", text="분쟁 관할")
+
+    review_contract(
+        [clause1, clause2], ContractType.SW_FREELANCE,
+        retriever=FakeRetriever(),
+        reranker=HIGH_RERANKER,
+        grounder=FakeGrounder(),
+        all_standard_clauses=ALL_STANDARD,
+        progress_callback=callback
+    )
+
+    assert called == [
+        (0, 2, ProgressPhase.PREPARE),
+        (0, 2, ProgressPhase.BATCH_SEARCH),
+        (0, 2, ProgressPhase.RERANK),
+        (1, 2, ProgressPhase.CLAUSE_REVIEW),
+        (2, 2, ProgressPhase.CLAUSE_REVIEW),
+        (2, 2, ProgressPhase.MISSING_DETECTION),
+    ]
+
