@@ -155,8 +155,14 @@ parse_eval file:
     npx kordoc "{{file}}" -o 'src/eval/golden_b/converted/{{file_stem(file)}}.md'
 
 # 평가 드라이버 실행 (예: just eval, just eval b, just eval a v2, 환경 분기는 env="prod" 등으로 지정)
+[unix]
 eval track="a" version="" env="local":
     APP_ENV={{env}} PYTHONPATH=src uv run python -m eval.run_eval {{track}} {{version}}
+
+# Windows 환경용
+[windows]
+eval track="a" version="" env="local":
+    $env:APP_ENV = '{{env}}'; $env:PYTHONPATH = 'src'; uv run python -m eval.run_eval {{track}} {{version}}
 
 # 테스트 실행 (type: unit (기본), integration, all)
 [windows]
