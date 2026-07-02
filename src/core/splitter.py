@@ -10,10 +10,15 @@ import re
 _LARGE_CLAUSE_CHAR_LIMIT = 300
 _LARGE_CLAUSE_SYMBOL_LIMIT = 3
 
-# 항·호 기호 패턴 (①~⑳, 줄 시작 숫자+점)
+# 항·호 기호 패턴
+#  - ①~⑳ 원문자
+#  - 줄 시작 숫자 + 마침표/닫는괄호: "1.", "1)", 앞에 대시가 붙는 "- 1)" 도 포함
+#    (표준은 "1."·"①", 실계약은 "숫자)"·"- 1)" 형식을 자주 써서 둘 다 인식해야 한다.
+#    v1_review Track B — 실계약 파싱 시 항 분할이 0건으로 축퇴하던 파서 결함 대응)
+#  - 마침표/닫는괄호를 필수로 요구해 "2024 년" 같은 연도 숫자를 항 기호로 오인하지 않는다.
 _SYMBOL_RE = re.compile(r"[①-⑳]")
-_NUM_RE = re.compile(r"^[0-9]+\.", re.MULTILINE)
-_SPLIT_RE = re.compile(r"(^[①-⑳]|^[0-9]+\.)", re.MULTILINE)
+_NUM_RE = re.compile(r"^[ \t]*-?[ \t]*[0-9]+[.)]", re.MULTILINE)
+_SPLIT_RE = re.compile(r"(^[ \t]*-?[ \t]*[0-9]+[.)]|^[ \t]*[①-⑳])", re.MULTILINE)
 
 
 def is_large_clause(text: str) -> bool:

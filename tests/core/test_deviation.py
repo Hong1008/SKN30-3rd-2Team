@@ -98,6 +98,34 @@ def test_목적격_조사_을은_당사자로_오인하지_않음():
     assert CRITICAL_PARTY not in detect_critical_changes(user, std)
 
 
+def test_당사자_반복_등장은_스왑_아님():
+    """표준이 같은 당사자를 한 번 더 언급해도(개수 차이) 스왑이 아니다 — 오탐 가드.
+
+    v1 실측 오탐: user[수급사업자,원사업자] vs std[수급사업자,원사업자,수급사업자] 를
+    리스트 완전일치로 비교해 CRITICAL_PARTY 로 잘못 잡던 문제. 등장 '집합'으로 비교해야 한다.
+    """
+    user = "수급사업자의 품질관리범위는 계획서로 한정되며, 원사업자는 그 외 품질관리를 요구할 수 없다."
+    std = "수급사업자의 품질관리범위는 계획서로 한정되며, 원사업자는 수급사업자에게 그 외 품질관리를 요구할 수 없다."
+    assert CRITICAL_PARTY not in detect_critical_changes(user, std)
+
+
+def test_항_상호참조_숫자는_숫자변경_아님():
+    """'제1항에 따른'의 1 은 참조 번호일 뿐 내용 숫자가 아니다 — 오탐 가드.
+
+    v1 실측 오탐: std 에만 '제1항' 이 있어 숫자집합 {1} vs {} 로 CRITICAL_NUMBER 오판.
+    """
+    user = "수급사업자의 품질관리범위는 유지관리계획서로 한정된다."
+    std = "제1항에 따른 수급사업자의 품질관리범위는 유지관리계획서로 한정된다."
+    assert CRITICAL_NUMBER not in detect_critical_changes(user, std)
+
+
+def test_상호참조_있어도_내용_숫자_변경은_잡음():
+    """참조 숫자는 빼되, 실제 내용 숫자(금액·기간) 변경은 여전히 검출해야 한다."""
+    user = "제3조에 따라 위약금은 보수의 50%로 한다."
+    std = "제3조에 따라 위약금은 보수의 10%로 한다."
+    assert CRITICAL_NUMBER in detect_critical_changes(user, std)
+
+
 # --- classify_clause_deviation ---
 def test_매칭없으면_EXTRA():
     assert classify_clause_deviation("내 조항", None, 0.0, match_threshold=0.5) == Deviation.EXTRA

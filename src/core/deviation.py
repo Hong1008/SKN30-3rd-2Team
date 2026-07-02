@@ -22,8 +22,16 @@ _HEADER_RE = re.compile(r"^\s*#{0,6}\s*제\s*\d+\s*조(?:의\s*\d+)?\s*\([^)]*\)
 _SYMBOL_PREFIX_RE = re.compile(r"^\s*(?:[①-⑳]|\d+\.)\s*")
 
 _NUMBER_RE = re.compile(r"\d+(?:\.\d+)?")
+# 조·항·호 상호참조("제1항"·"제3조"·"제2호"…)의 숫자는 내용이 아니라 참조이므로 숫자 비교에서 제외.
+# (정규화로 공백이 제거된 텍스트에 적용 — v1 실측 오탐: std 에만 '제1항'이 있어 CRITICAL_NUMBER 오판)
+_REF_RE = re.compile(r"제\d+[조항호]")
 # 부정 표현: 공백 제거 후 텍스트 기준 ("하지 않"→"하지않", "아니 된다"→"아니된다")
 _NEGATION_RE = re.compile(r"아니하|아니한|아니되|않|못한다|못하")
+
+
+def _content_numbers(norm_text: str) -> List[str]:
+    """정규화 텍스트에서 상호참조 숫자(제N조·제N항)를 뺀 '내용 숫자'만 정렬해 반환합니다."""
+    return sorted(_NUMBER_RE.findall(_REF_RE.sub("", norm_text).replace(",", "")))
 # 당사자 토큰: 역할 명사는 그대로, 한 글자 당사자(갑/을)는 조사·경계 문맥이 있을 때만
 # 인정한다 — '결과물을'의 목적격 조사 '을', '갑작스러운'의 '갑' 오탐 방지.
 _PARTY_RE = re.compile(
@@ -96,8 +104,9 @@ def detect_critical_changes(
 
     항↔항 정렬로 짝지어진 쌍(정렬이 유의미한 min_pair_ratio 이상만)에 대해:
     - CRITICAL_NEGATION: 부정어 유무가 한쪽에만 있음 ("부과한다" ↔ "부과하지 아니한다")
-    - CRITICAL_NUMBER: 숫자 집합이 다름 ("10%" ↔ "50%", "1년" ↔ "5년")
-    - CRITICAL_PARTY: 당사자 등장 순서가 다름 ("갑이 부담" ↔ "을이 부담")
+    - CRITICAL_NUMBER: 내용 숫자 집합이 다름 ("10%" ↔ "50%", "1년" ↔ "5년"). 제N조·제N항
+      상호참조 숫자는 제외한다.
+    - CRITICAL_PARTY: 관여 당사자 집합이 다름 ("갑이 부담" ↔ "을이 부담")
 
     반환은 발견 순서의 중복 없는 사유 목록. 빈 목록이면 치명 변경 없음.
     classify_clause_deviation 이 NONE 판정 직전의 마지막 게이트로 사용합니다.
@@ -112,14 +121,14 @@ def detect_critical_changes(
             if CRITICAL_NEGATION not in reasons:
                 reasons.append(CRITICAL_NEGATION)
 
-        if sorted(_NUMBER_RE.findall(u_norm.replace(",", ""))) != sorted(
-            _NUMBER_RE.findall(s_norm.replace(",", ""))
-        ):
+        if _content_numbers(u_norm) != _content_numbers(s_norm):
             if CRITICAL_NUMBER not in reasons:
                 reasons.append(CRITICAL_NUMBER)
 
-        # 당사자는 순서까지 비교 ("갑이 을에게" ↔ "을이 갑에게" 스왑 포착) — 공백 유지 원형 사용
-        if _PARTY_RE.findall(user_sub) != _PARTY_RE.findall(std_sub):
+        # 당사자는 등장 '집합'으로 비교 (같은 당사자를 한쪽이 더 많이 언급해도 스왑이 아니다).
+        # "갑 부담" ↔ "을 부담" 처럼 관여 당사자가 달라지면 집합이 달라져 잡힌다.
+        # (v1 실측 오탐: 리스트 완전일치는 std 의 당사자 반복 언급을 스왑으로 오판했음)
+        if set(_PARTY_RE.findall(user_sub)) != set(_PARTY_RE.findall(std_sub)):
             if CRITICAL_PARTY not in reasons:
                 reasons.append(CRITICAL_PARTY)
     return reasons

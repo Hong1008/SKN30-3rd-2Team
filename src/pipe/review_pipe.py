@@ -23,6 +23,7 @@ from adapter.port import Retriever, Reranker
 from core import (
     check_coverage,
     classify_clause_deviation,
+    detect_critical_changes,
     detect_missing_clauses,
     detect_toxic_patterns,
     roll_up_sub_chunks,
@@ -158,13 +159,16 @@ def review_contract(
 
     절차(기획서 7장):
       1. 컬렉션별 배치 검색(search_many) — 조항 N개를 개별 검색하던 병목을 컬렉션당 1회로 축소
-      2. 조항마다 reranker 재정렬 → sigmoid 정규화 → select_best_match → classify_clause_deviation
+      2. 조항마다 reranker 재정렬 → sigmoid 정규화 → select_best_match 로 매칭 확정
          (검색 후보가 아예 없으면 NO_MATCH, 후보는 있으나 임계 미달이면 EXTRA)
-      3. use_toxic: toxic_patterns 역방향 검색 → detect_toxic_patterns 로 독소 패턴 부착
-      4. CHANGED/MISSING 이탈에 grounder 로 법령 근거, graph 로 연관위험 조항 부착
-      5. detect_missing_clauses 로 누락 표준조항 추가
-      6. use_coverage: 매칭 조항의 표준 서브청크가 사용자 조항에 모두 커버되는지 검사.
-         미커버 항 존재 시 NONE → CHANGED 로 상향 (임베딩 희석으로 인한 오탐 방지, H 설계)
+      3. 매칭 성공 조항의 NONE/CHANGED 는 의미 커버리지(reranker)를 1차 게이트로 확정한다:
+         표준 항이 모두 사용자 조항에 커버되고(check_coverage) 치명변경(부정어·숫자·당사자)이
+         없으면 NONE, 아니면 CHANGED. 서브청크가 없거나 use_coverage=False 면 difflib 폴백
+         (classify_clause_deviation). glyph 유사도(difflib) 단독 게이트는 독립 작성 실계약에서
+         전부 CHANGED 로 축퇴하므로 1차 게이트로 쓰지 않는다(v1_review Track B §3).
+      4. use_toxic: toxic_patterns 역방향 검색 → detect_toxic_patterns 로 독소 패턴 부착
+      5. CHANGED/MISSING 이탈에 grounder 로 법령 근거, graph 로 연관위험 조항 부착
+      6. detect_missing_clauses 로 누락 표준조항 추가
 
     Args:
         retriever: 벡터 DB·BM25 하이브리드 검색 포트. 배치 검색(search_many)으로 호출됩니다.
@@ -256,20 +260,38 @@ def review_contract(
         # 독소 역방향 검색은 매칭 성패와 무관 (표준엔 없지만 사용자에게 해로운 EXTRA 조항 포착)
         toxic_patterns = _toxic_from_hits(toxic_hits, toxic_threshold) if toxic_hits else []
 
-        # 매칭 판정: 후보가 아예 없으면 NO_MATCH, 있으면 EXTRA/CHANGED/NONE 분류
+        # 매칭 판정: 후보가 아예 없으면 NO_MATCH, 임계 미달이면 EXTRA.
+        # 매칭 성공 시 NONE/CHANGED 는 의미 커버리지(reranker)를 1차 게이트로 확정한다.
+        # 글자 유사도(difflib)는 독립 작성 실계약에서 NONE 도달이 원천 불가라 전부 CHANGED 로
+        # 축퇴한다(v1_review Track B §3). 그래서 커버리지 가능 시 difflib 게이트를 쓰지 않고,
+        # 서브청크가 없거나 커버리지 비활성일 때만 difflib 폴백으로 내려간다.
+        std_subs: List[StandardSubChunk] = []
         if not std_hits and not sub_hits:
             deviation = Deviation.NO_MATCH
             matched_standard: Optional[StandardClause] = None
             score = 0.0
         else:
             matched_standard, score = select_best_match(candidates, match_threshold)
-            deviation = classify_clause_deviation(
-                user_text=clause.text,
-                matched_standard=matched_standard,
-                score=score,
-                match_threshold=match_threshold,
-                change_threshold=change_threshold,
-            )
+            if matched_standard is None or score < match_threshold:
+                deviation = Deviation.EXTRA
+            else:
+                std_subs = (
+                    all_standard_sub_chunks.get(matched_standard.clause_id, [])
+                    if (use_coverage and all_standard_sub_chunks is not None)
+                    else []
+                )
+                if std_subs:
+                    # 잠정 NONE — 2차 패스에서 의미 커버리지 + 치명변경으로 확정한다.
+                    deviation = Deviation.NONE
+                else:
+                    # 커버리지 불가(비활성/서브청크 미주입) → difflib 폴백 게이트
+                    deviation = classify_clause_deviation(
+                        user_text=clause.text,
+                        matched_standard=matched_standard,
+                        score=score,
+                        match_threshold=match_threshold,
+                        change_threshold=change_threshold,
+                    )
 
         # 매칭된 표준조항은 커버리지 결과와 무관하게 '커버됨'으로 기록 (MISSING 탐지용)
         if matched_standard is not None:
@@ -287,25 +309,18 @@ def review_contract(
             "cov_count": 0,      # 이 조항이 기여한 표준 항(행) 수
         }
 
-        # ── 커버리지 대상 판별: NONE 판정된 거대 조항 → 실제 M×N 계산은 뒤에서 배치로 ──
-        # 조건: use_coverage ON, 매칭 성공, 현재 NONE(이미 CHANGED면 중복 불필요),
-        #       all_standard_sub_chunks 주입됨, 해당 부모의 서브청크가 2개 이상(거대 조항)
-        if (
-            use_coverage
-            and matched_standard is not None
-            and deviation == Deviation.NONE
-            and all_standard_sub_chunks is not None
-        ):
-            std_subs = all_standard_sub_chunks.get(matched_standard.clause_id, [])
-            if len(std_subs) >= 2:
-                user_sub_texts = split_into_sub_chunks(clause.text)
-                entry["std_ids"] = [s.sub_chunk_id for s in std_subs]
-                entry["cov_start"] = len(cov_queries)
-                entry["cov_count"] = len(std_subs)
-                # 각 표준 항을 쿼리로, 사용자 항 전체를 문서로 flatten (행 = 표준 항)
-                for s in std_subs:
-                    cov_queries.append(s.text)
-                    cov_docs_per_query.append(user_sub_texts)
+        # ── 커버리지 대상: 매칭 성공 + 서브청크 존재 (거대/단순 무관) ──
+        # 단일 항 조항도 의미 게이트를 태워야 실계약에서 NONE 도달이 가능하다(대부분 단일 항 매칭).
+        # 실제 M×N 유사도 계산은 전 조항 쌍을 모아 뒤에서 1회 배치(compute_scores_many)로 처리.
+        if std_subs:
+            user_sub_texts = split_into_sub_chunks(clause.text)
+            entry["std_ids"] = [s.sub_chunk_id for s in std_subs]
+            entry["cov_start"] = len(cov_queries)
+            entry["cov_count"] = len(std_subs)
+            # 각 표준 항을 쿼리로, 사용자 항 전체를 문서로 flatten (행 = 표준 항)
+            for s in std_subs:
+                cov_queries.append(s.text)
+                cov_docs_per_query.append(user_sub_texts)
 
         pending.append(entry)
 
@@ -315,7 +330,7 @@ def review_contract(
         if cov_queries else []
     )
 
-    # 2차 패스: 커버리지 결과 반영(NONE→CHANGED) 후 근거·연관위험 부착해 결과 조립
+    # 2차 패스: 의미 커버리지 + 치명변경으로 NONE/CHANGED 확정 후 근거·연관위험 부착해 결과 조립
     for entry in pending:
         clause = entry["clause"]
         deviation = entry["deviation"]
@@ -331,11 +346,24 @@ def review_contract(
             ]
             covered, uncovered_ids = check_coverage(entry["std_ids"], matrix, coverage_threshold)
             if not covered:
+                # 표준 항 일부가 사용자 조항에 없음 → 내용 누락/변경
                 deviation = Deviation.CHANGED
                 logger.info(
                     f"[review_contract] 조항 #{entry['idx']} ({matched_standard.clause_id}) 표준 항 미커버 감지 -> "
-                    f"NONE에서 CHANGED로 상향 조정 (미커버 항 ID: {uncovered_ids})"
+                    f"CHANGED (미커버 항 ID: {uncovered_ids})"
                 )
+            else:
+                # 의미상 커버됨. 다만 부정어·숫자·당사자 플립은 의미가 뭉개는 치명 변경이므로
+                # 글자 규칙(detect_critical_changes)으로 확인해 있으면 NONE 을 허용하지 않는다.
+                critical = detect_critical_changes(clause.text, matched_standard.text)
+                if critical:
+                    deviation = Deviation.CHANGED
+                    logger.info(
+                        f"[review_contract] 조항 #{entry['idx']} ({matched_standard.clause_id}) 의미 커버됐으나 "
+                        f"치명변경 감지 -> CHANGED (사유: {critical})"
+                    )
+                else:
+                    deviation = Deviation.NONE
 
         grounding: List[GroundingLaw] = []
         related_risks: List[str] = []
