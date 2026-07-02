@@ -65,6 +65,28 @@ def test_숫자목록_기준_분할():
     assert len(chunks) >= 2
 
 
+def test_숫자괄호_목록_분할():
+    """실계약이 자주 쓰는 '숫자)' 형식도 항으로 분할해야 한다 (v1_review Track B 파서 버그)."""
+    text = "1) 갑은 을에게 대금을 지급한다.\n2) 지급 기한은 30일로 한다.\n3) 연체 시 이자를 부과한다."
+    chunks = split_into_sub_chunks(text)
+    assert len(chunks) >= 2
+
+
+def test_대시_숫자괄호_목록_분할():
+    """'- 1)' 형식(test_sunny10 등 실계약)도 항으로 분할해야 한다."""
+    text = "- 1) 본 계약은 독립사업자 계약이다.\n- 2) 근로기준법이 적용되지 않는다.\n- 3) 자유 의사로 체결한다."
+    chunks = split_into_sub_chunks(text)
+    assert len(chunks) >= 2
+
+
+def test_연도_숫자는_항으로_오인하지_않음():
+    """'2024 년'처럼 마침표·괄호가 없는 줄 시작 숫자는 항 기호가 아니다."""
+    text = "제3조 계약기간\n2024 년 02 월 13 일부터 2024 년 04 월 30 일까지로 한다."
+    # 항 기호가 없으므로 분할되지 않고 원문 1개 (거대조항 조건 미달)
+    chunks = split_into_sub_chunks(text)
+    assert len(chunks) == 1
+
+
 def test_빈청크_포함되지_않음():
     text = "① 조항 내용\n\n② 추가 조항 내용\n③ 마지막 조항"
     chunks = split_into_sub_chunks(text)
