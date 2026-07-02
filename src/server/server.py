@@ -9,7 +9,7 @@ from mcp.server.fastmcp import FastMCP
 
 from config import BASE_DIR
 from contracts.enums import ContractType, Category, Deviation, ToxicPattern
-from contracts.models import StandardClause
+from contracts.models import StandardClause, StandardSubChunk
 from contracts.implement import KordocParser, KoreanLawGrounder
 from adapter import vector, db, reranker
 from core import classify_clause_deviation, select_best_match, sigmoid
@@ -135,6 +135,25 @@ def _load_standards(ct: ContractType) -> list[StandardClause]:
         ct.value,
     )
     return [StandardClause(**row) for row in rows]
+
+
+def _load_sub_chunks(ct: ContractType) -> dict[str, list[StandardSubChunk]]:
+    """계약 유형별 표준 서브청크를 {parent_clause_id → [StandardSubChunk, ...]} 로 로드합니다.
+
+    review_contract 의 의미 커버리지 게이트 입력. 미주입 시 커버리지 체크가 스킵되고 difflib
+    폴백으로 내려가 실계약에서 NONE 도달이 불가해집니다(v1_review Track B §3). 오프라인
+    서브청크 인덱스(`just build-db`)가 준비돼 있어야 합니다.
+    """
+    rows = db.fetch_all(
+        "SELECT * FROM standard_sub_chunks WHERE contract_type = ? "
+        "ORDER BY parent_clause_id, sub_chunk_index",
+        ct.value,
+    )
+    by_parent: dict[str, list[StandardSubChunk]] = {}
+    for row in rows:
+        sub = StandardSubChunk(**row)
+        by_parent.setdefault(sub.parent_clause_id, []).append(sub)
+    return by_parent
 _STANDARD_CLAUSES_COLLECTION = "standard_clauses"
 
 
@@ -314,6 +333,7 @@ def review_contract(
             reranker=reranker,
             grounder=_grounder,
             all_standard_clauses=standards,
+            all_standard_sub_chunks=_load_sub_chunks(ct),
         )
     except InvalidConfigError as e:
         return ReviewContractResponse(

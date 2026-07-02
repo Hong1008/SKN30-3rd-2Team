@@ -308,9 +308,27 @@ def test_서브청크_맵_미주입_NONE_유지():
     assert target.deviation == Deviation.NONE
 
 
-def test_서브청크_1개_조항_체크_스킵():
-    """std_subs < 2 이면 단순 조항으로 간주해 커버리지 체크 스킵 → NONE 유지."""
-    clause = Clause(idx=1, num="제58조", title="하도급대금", text=ART58.text)
+def test_단일_항_조항도_의미_커버리지_검사_NONE():
+    """단일 항 표준도 의미 커버리지로 판정한다(의미 게이트 전환). 커버되면 NONE.
+
+    이전 설계는 std_subs<2 를 스킵했으나, 실계약 대부분이 단일 항 매칭이라(v1_review Track B)
+    단일 항도 의미 커버리지 게이트를 태워야 NONE 도달이 가능하다.
+    """
+    clause = Clause(idx=1, num="제58조", title="하도급대금", text=_SUB_00.text)
     results = _review58([clause], sub_map={"sw_freelance-art58": [_SUB_00]})
     target = next(r for r in results if r.user_clause == clause.text)
     assert target.deviation == Deviation.NONE
+    assert target.uncovered_sub_chunk_ids == []
+
+
+def test_커버돼도_치명변경_숫자면_CHANGED():
+    """의미 커버리지는 통과해도 치명변경(숫자 변경)이 있으면 CHANGED 로 강제한다.
+
+    의미 게이트가 '같은 뜻 다른 글자'를 NONE 으로 인정하는 대신, 부정어·숫자·당사자
+    플립은 글자 규칙(detect_critical_changes)으로 반드시 CHANGED 로 되돌린다.
+    """
+    changed_text = ART58.text.replace("60일", "90일")  # ③ 기한 60→90 변경
+    clause = Clause(idx=1, num="제58조", title="하도급대금", text=changed_text)
+    results = _review58([clause], reranker=HIGH_RERANKER)  # 전부 커버됨
+    target = next(r for r in results if r.user_clause == changed_text)
+    assert target.deviation == Deviation.CHANGED
