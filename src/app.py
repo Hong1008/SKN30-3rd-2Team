@@ -4,10 +4,9 @@ import sys
 # 프로젝트 루트와 src 디렉토리를 Python 모듈 검색 경로(sys.path)에 자동으로 추가합니다.
 # 이 파일(src/app.py)은 src 디렉토리 바로 밑에 있으므로 현재 디렉토리가 src 디렉토리가 됩니다.
 current_dir = os.path.dirname(os.path.abspath(__file__))
-src_dir = current_dir
 
-if src_dir not in sys.path:
-    sys.path.insert(0, src_dir)
+if current_dir not in sys.path:
+    sys.path.insert(0, current_dir)
 
 from server.server import mcp
 
