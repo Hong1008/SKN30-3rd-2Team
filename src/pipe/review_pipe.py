@@ -297,7 +297,7 @@ def review_contract(
                     # 잠정 NONE — 2차 패스에서 의미 커버리지 + 치명변경으로 확정한다.
                     deviation = Deviation.NONE
                 else:
-                    # 커버리지 불가(비활성/서브청크 미주입) → difflib 폴백 게이트
+                    # 커버리지 불가(비활성/서브청크 미주입) → 본문 텍스트 일치율 비교 (항↔항 정렬)
                     deviation = classify_clause_deviation(
                         user_text=clause.text,
                         matched_standard=matched_standard,

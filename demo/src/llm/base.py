@@ -1,6 +1,10 @@
 """LLM provider 추상화의 공통 타입 (provider 간 결과 정규화)."""
 from dataclasses import dataclass, field
-from typing import Any, Optional, Protocol, runtime_checkable
+from typing import Any, Optional, Protocol, TypeVar, runtime_checkable
+
+from pydantic import BaseModel
+
+T = TypeVar("T", bound=BaseModel)
 
 
 @dataclass
@@ -10,6 +14,9 @@ class ProviderConfig:
     base_url: Optional[str] = None
     api_key: Optional[str] = None
     supports_tools: bool = True
+    reasoning_effort: Optional[str] = None  # openai reasoning 계열 모델 전용 (Responses API)
+    reasoning_summary: Optional[str] = None
+    chat_template_kwargs: Optional[dict] = None  # vLLM 등 extra_body 전달용 (예: {"enable_thinking": True})
 
 
 @dataclass
@@ -34,4 +41,7 @@ class ChatModel(Protocol):
     def complete(self, messages: list[dict], tools: Optional[list[dict]] = None,
                  temperature: float = 0.2) -> AssistantTurn: ...
 
-    def stream(self, messages: list[dict], temperature: float = 0.2): ...  # Iterator[str] (content 델타)
+    def stream(self, messages: list[dict], temperature: float = 0.2): ...  # Iterator[tuple[str, str]] — (channel, delta), channel ∈ {"thought", "answer"}
+
+    def parse(self, messages: list[dict], response_format: type[T],
+              temperature: float = 0.2) -> Optional[T]: ...  # 구조화 출력; 파싱 실패/거부 시 None
