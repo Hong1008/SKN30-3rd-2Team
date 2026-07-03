@@ -9,19 +9,23 @@ load_dotenv(_DEMO_ENV if _DEMO_ENV.exists() else None)
 
 app_env = os.getenv("APP_ENV", "local")
 
-WORKSHIELD_MCP_URL: str = os.getenv('WORKSHIELD_MCP_URL', 'http://localhost:8000/mcp')
+WORKSHIELD_MCP_URL: str = os.getenv('WORKSHIELD_MCP_URL', 'http://localhost:8001/mcp')
 
 # ──────────────────────────────────────────────────────────────
 # LLM Provider 설정 (데모 요약·질의용)
-# 세 공급자 모두 OpenAI 호환 Chat Completions 로 통일 → openai SDK 하나로 처리(신규 의존성 없음).
-#   openai : OpenAI 정식 API
-#   gemini : Google Gemini 의 OpenAI 호환 엔드포인트
-#   custom : Runpod 등에 띄운 오픈모델(vLLM/TGI) OpenAI 호환 엔드포인트
+# 세 공급자 모두 openai SDK 하나로 처리(신규 의존성 없음).
+#   openai : OpenAI 정식 API — 요약 스트리밍(summarize_stream)만 Responses API + reasoning 사용
+#            (Chat Completions는 reasoning 텍스트를 반환하지 않음), 그 외 경로는 Chat Completions 호환
+#   gemini : Google Gemini 의 OpenAI 호환 Chat Completions 엔드포인트 (<think> 태그로 사고과정 표현)
+#   custom : Runpod 등에 띄운 오픈모델(vLLM/TGI) OpenAI 호환 Chat Completions 엔드포인트 (동일)
 # ──────────────────────────────────────────────────────────────
 LLM_PROVIDER = os.getenv("LLM_PROVIDER", "openai").lower()
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-5-mini")  # reasoning 계열 (gpt-4o-mini 등은 reasoning 미지원)
+# reasoning 끄려면 OPENAI_REASONING_EFFORT="" 로 설정
+OPENAI_REASONING_EFFORT = os.getenv("OPENAI_REASONING_EFFORT", "medium") or None
+OPENAI_REASONING_SUMMARY = os.getenv("OPENAI_REASONING_SUMMARY", "auto") or None
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemma-4-31b-it")

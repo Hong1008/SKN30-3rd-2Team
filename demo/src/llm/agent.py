@@ -10,10 +10,10 @@ from .base import AssistantTurn
 from .mcp_tools import execute_tool_call, load_openai_tools
 from .prompts import AGENT_SYSTEM, SUMMARY_SYSTEM
 from .registry import build_provider
+from .schemas import StructuredSummary
 
 _MCP_READ_TIMEOUT = 300
 
-_THOUGHT_OPENERS = ("<thought>", "<think>")
 _THOUGHT_RE = re.compile(r"<(thought|think)>.*?</\1>", re.DOTALL)
 
 
@@ -35,68 +35,22 @@ def _summary_messages(payload: dict) -> list[dict]:
     return [{"role": "system", "content": SUMMARY_SYSTEM}, {"role": "user", "content": user}]
 
 
-def summarize(payload: dict, provider=None) -> str:
-    """검출 결과+법령만 근거로 한국어 요약 (도구 없음). 비스트리밍 — 사고과정 블록은 제거해 반환."""
+def summarize(payload: dict, provider=None) -> StructuredSummary:
+    """검출 결과+법령만 근거로 구조화 요약 (도구 없음, 비스트리밍).
+    response_format=StructuredSummary 로 강제 — gemini/custom 백엔드가 strict json_schema를
+    지원하지 않아 파싱에 실패하면 RuntimeError (빈 응답 반환 금지)."""
     prov = provider or build_provider()
-    turn = prov.complete(_summary_messages(payload), tools=None, temperature=0.2)
-    return _strip_thought(turn.content or "")
-
-
-def _split_thought(deltas):
-    """토큰 델타 스트림을 (channel, text) 로 분리. channel ∈ {'thought','answer'}.
-    <thought>…</thought>(또는 <think>) 앞부분은 thought, 그 뒤(또는 사고 태그가 없으면 전체)는 answer.
-    태그가 여러 청크에 걸쳐 잘려 와도 안전하도록 경계를 버퍼링한다."""
-    buf = ""
-    started = False
-    mode = "answer"
-    closer = None
-    for d in deltas:
-        if not d:
-            continue
-        buf += d
-        if not started:
-            lead = buf.lstrip()
-            if not lead:
-                continue
-            # 여는 태그가 아직 덜 들어왔으면 판정 유보
-            if any(op.startswith(lead) and len(lead) < len(op) for op in _THOUGHT_OPENERS):
-                continue
-            opener = next((op for op in _THOUGHT_OPENERS if lead.startswith(op)), None)
-            if opener:
-                mode = "thought"
-                closer = opener.replace("<", "</", 1)
-                buf = lead[len(opener):]
-            else:
-                mode = "answer"
-                buf = lead
-            started = True
-        if mode == "thought":
-            idx = buf.find(closer)
-            if idx == -1:
-                hold = len(closer) - 1
-                if len(buf) > hold:
-                    yield ("thought", buf[:-hold])
-                    buf = buf[-hold:]
-            else:
-                if idx:
-                    yield ("thought", buf[:idx])
-                buf = buf[idx + len(closer):]
-                mode = "answer"
-                if buf:
-                    yield ("answer", buf)
-                    buf = ""
-        else:
-            if buf:
-                yield ("answer", buf)
-                buf = ""
-    if buf:
-        yield (mode, buf)
+    parsed = prov.parse(_summary_messages(payload), response_format=StructuredSummary, temperature=0.2)
+    if parsed is None:
+        raise RuntimeError(f"[{prov.config.name}] 구조화 요약 파싱 실패 — 모델이 스키마를 준수하지 않았습니다.")
+    return parsed
 
 
 def summarize_stream(payload: dict, provider=None):
-    """summarize 의 스트리밍 버전 — (channel, delta) 를 순차 yield. channel ∈ {'thought','answer'}."""
+    """summarize 의 스트리밍 버전 — (channel, delta) 를 순차 yield. channel ∈ {'thought','answer'}.
+    태그 파싱(gemini/custom) vs Responses API reasoning(openai) 분기는 provider.stream() 내부에서 처리."""
     prov = provider or build_provider()
-    yield from _split_thought(prov.stream(_summary_messages(payload), temperature=0.2))
+    yield from prov.stream(_summary_messages(payload), temperature=0.2)
 
 
 def _assistant_message(turn: AssistantTurn) -> dict:

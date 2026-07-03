@@ -12,7 +12,9 @@ _SUPPORTED = ("openai", "gemini", "custom")
 def _config_for(name: Optional[str] = None) -> ProviderConfig:
     name = (name or config.LLM_PROVIDER).lower()
     if name == "openai":
-        return ProviderConfig("openai", model=config.OPENAI_MODEL, api_key=config.OPENAI_API_KEY)
+        return ProviderConfig("openai", model=config.OPENAI_MODEL, api_key=config.OPENAI_API_KEY,
+                              reasoning_effort=config.OPENAI_REASONING_EFFORT,
+                              reasoning_summary=config.OPENAI_REASONING_SUMMARY)
     if name == "gemini":
         return ProviderConfig("gemini", model=config.GEMINI_MODEL,
                               base_url=config.GEMINI_BASE_URL, api_key=config.GEMINI_API_KEY)
