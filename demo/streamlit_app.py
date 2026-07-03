@@ -718,6 +718,7 @@ def run_review_pipeline_with_progress(
             
             # Save the final steps to session_state so they can be re-rendered in done phase
             st.session_state.live_steps = [(s["is_tool"], s["name"], s["desc"], s["mono"]) for s in steps]
+            st.session_state.raw_mcp_json = data
             return _convert_server_response(data, contract_type), f"실서버 ({app_env})"
             
         elif msg_type == "error":
@@ -932,6 +933,11 @@ def main() -> None:
         # 완료: 결과가 맨 위, 로그가 그 아래, 검토 시작 카드는 맨 아래로 밀림
         render_results(st.session_state.result)
         st.divider()
+        raw_json = st.session_state.get("raw_mcp_json")
+        if raw_json:
+            with st.expander("🔍 MCP 응답 원본 JSON 보기", expanded=False):
+                st.json(raw_json)
+            st.divider()
         render_pipeline()
         st.divider()
         render_form()
