@@ -17,31 +17,31 @@
   </tr>
 
   <tr>
-    <td><img src="./assets/inside_out1.png" width="60"></td>
+    <td><img src="./assets/1.png" width="60"></td>
     <td align="center"><b>박세빈</b></td>
     <td>-</td>
   </tr>
 
   <tr>
-    <td><img src="./assets/inside_out2.png" width="60"></td>
+    <td><img src="./assets/2.png" width="60"></td>
     <td align="center"><b>홍철민</b></td>
     <td>-</td>
   </tr>
 
   <tr>
-    <td><img src="./assets/inside_out3.png" width="60"></td>
+    <td><img src="./assets/3.png" width="60"></td>
     <td align="center"><b>김효선</b></td>
     <td>-</td>
   </tr>
 
   <tr>
-    <td><img src="./assets/inside_out4.png" width="60"></td>
+    <td><img src="./assets/4.png" width="60"></td>
     <td align="center"><b>장규원</b></td>
     <td>-</td>
   </tr>
 
   <tr>
-    <td><img src="./assets/inside_out5.png" width="60"></td>
+    <td><img src="./assets/5.jpg" width="60"></td>
     <td align="center"><b>박지유</b></td>
     <td>-</td>
   </tr>
