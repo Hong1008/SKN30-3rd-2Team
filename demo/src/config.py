@@ -34,3 +34,8 @@ GEMINI_BASE_URL = os.getenv("GEMINI_BASE_URL", "https://generativelanguage.googl
 CUSTOM_LLM_BASE_URL = os.getenv("CUSTOM_LLM_BASE_URL")   # 예: https://<pod-id>-8000.proxy.runpod.net/v1 (미설정 시 custom 비활성)
 CUSTOM_LLM_API_KEY = os.getenv("CUSTOM_LLM_API_KEY", "EMPTY")
 CUSTOM_LLM_MODEL = os.getenv("CUSTOM_LLM_MODEL")         # 서빙 중인 HF 모델 id
+# Qwen3 등 chat_template의 enable_thinking 스위치. 미설정(None) 시 모델 기본값 사용 — extra_body 자체를 보내지 않음.
+_CUSTOM_LLM_ENABLE_THINKING = os.getenv("CUSTOM_LLM_ENABLE_THINKING")
+CUSTOM_LLM_ENABLE_THINKING = (
+    _CUSTOM_LLM_ENABLE_THINKING.lower() == "true" if _CUSTOM_LLM_ENABLE_THINKING is not None else None
+)

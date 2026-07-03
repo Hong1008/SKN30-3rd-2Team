@@ -80,6 +80,8 @@ class OpenAICompatProvider:
         if tools:
             params["tools"] = tools
             params["tool_choice"] = "auto"
+        if self.config.chat_template_kwargs:
+            params["extra_body"] = {"chat_template_kwargs": self.config.chat_template_kwargs}
         resp = self._client.chat.completions.create(**params)
         msg = resp.choices[0].message
         calls = [
@@ -91,10 +93,13 @@ class OpenAICompatProvider:
     def parse(self, messages, response_format, temperature=0.2):
         """구조화 출력(response_format=pydantic 모델)으로 강제 호출.
         gemini/custom 백엔드가 strict json_schema를 지원하지 않으면 parsed 가 None일 수 있음."""
-        completion = self._client.chat.completions.parse(
-            model=self.config.model, messages=messages,
-            response_format=response_format, temperature=temperature,
-        )
+        params = {
+            "model": self.config.model, "messages": messages,
+            "response_format": response_format, "temperature": temperature,
+        }
+        if self.config.chat_template_kwargs:
+            params["extra_body"] = {"chat_template_kwargs": self.config.chat_template_kwargs}
+        completion = self._client.chat.completions.parse(**params)
         return completion.choices[0].message.parsed
 
     def stream(self, messages, temperature=0.2):
@@ -106,9 +111,13 @@ class OpenAICompatProvider:
 
     def _stream_content(self, messages, temperature):
         """Chat Completions content 델타만 순차 yield (내부용)."""
-        resp = self._client.chat.completions.create(
-            model=self.config.model, messages=messages, temperature=temperature, stream=True,
-        )
+        params = {
+            "model": self.config.model, "messages": messages,
+            "temperature": temperature, "stream": True,
+        }
+        if self.config.chat_template_kwargs:
+            params["extra_body"] = {"chat_template_kwargs": self.config.chat_template_kwargs}
+        resp = self._client.chat.completions.create(**params)
         for chunk in resp:
             if not chunk.choices:
                 continue

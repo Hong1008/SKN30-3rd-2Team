@@ -19,8 +19,13 @@ def _config_for(name: Optional[str] = None) -> ProviderConfig:
         return ProviderConfig("gemini", model=config.GEMINI_MODEL,
                               base_url=config.GEMINI_BASE_URL, api_key=config.GEMINI_API_KEY)
     if name == "custom":
+        chat_template_kwargs = (
+            {"enable_thinking": config.CUSTOM_LLM_ENABLE_THINKING}
+            if config.CUSTOM_LLM_ENABLE_THINKING is not None else None
+        )
         return ProviderConfig("custom", model=config.CUSTOM_LLM_MODEL,
-                              base_url=config.CUSTOM_LLM_BASE_URL, api_key=config.CUSTOM_LLM_API_KEY)
+                              base_url=config.CUSTOM_LLM_BASE_URL, api_key=config.CUSTOM_LLM_API_KEY,
+                              chat_template_kwargs=chat_template_kwargs)
     raise ValueError(f"지원하지 않는 LLM_PROVIDER: {name!r} (가능: {_SUPPORTED})")
 
 

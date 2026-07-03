@@ -24,12 +24,16 @@ def _strip_thought(text: str) -> str:
 
 def _summary_messages(payload: dict) -> list[dict]:
     user = (
-        "다음은 WorkShield 파이프라인의 검출 결과(JSON)입니다. 이 결과와 그 안의 법령 조문만을 "
-        "근거로, 한국어 3~5문장 요약을 작성하세요.\n"
-        "- payload의 'matched_no_review' 목록은 '표준과 일치하여 검토가 불필요한' 조항입니다. "
-        "이를 'NO_MATCH(근거를 찾지 못해 판단하지 않음)'와 절대 혼동하지 마세요.\n"
-        "- detections 의 deviation 이 'NO_MATCH' 인 항목만 '근거를 찾지 못해 판단하지 않았다'고 표현하세요.\n"
-        "- 근거가 없는 항목은 지어내지 말고 판단하지 마세요.\n\n"
+        "다음은 WorkShield 파이프라인의 계약서 검토 결과(JSON)입니다.\n"
+        "제공된 결과와 법령 조문만을 근거로, 데모 시연에 적합한 브리핑 요약을 작성해 주세요.\n\n"
+        "💡 [작성 가이드라인]\n"
+        "1. 요약은 간결하고 가독성 높은 마크다운 글머리 기호(-, 1.) 위주로 구성하세요.\n"
+        "2. 결과는 크게 '⚠️ 주의(검토 필요)'와 '✅ 안전(표준 일치)' 두 가지 섹션으로만 나누어 요약하세요 ('위험/합법' 등의 단정적 판단 금지).\n"
+        "3. payload의 'matched_no_review' 목록은 표준계약서와 일치하므로 '✅ 안전' 섹션에 간략히 묶어서 언급하세요.\n"
+        "4. 불리하게 변경(CHANGED)되거나 누락(MISSING)되는 등 이탈 사항이 있다면 '⚠️ 주의' 섹션에 최우선으로 배치하고, 근거(표준/법령)를 명시하세요.\n"
+        "5. detections의 deviation이 'NO_MATCH' 인 항목은 '근거를 찾지 못해 판단을 보류함'으로 정확히 표기하세요 (안전한 조항과 혼동 금지).\n"
+        "6. 제공된 JSON에 없는 조항이나 법령은 절대 임의로 지어내지 마세요.\n\n"
+        "아래 데이터를 분석하여 브리핑을 출력해 주세요:\n"
         + json.dumps(payload, ensure_ascii=False, indent=2)
     )
     return [{"role": "system", "content": SUMMARY_SYSTEM}, {"role": "user", "content": user}]

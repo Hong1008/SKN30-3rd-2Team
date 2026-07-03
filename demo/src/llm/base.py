@@ -16,6 +16,7 @@ class ProviderConfig:
     supports_tools: bool = True
     reasoning_effort: Optional[str] = None  # openai reasoning 계열 모델 전용 (Responses API)
     reasoning_summary: Optional[str] = None
+    chat_template_kwargs: Optional[dict] = None  # vLLM 등 extra_body 전달용 (예: {"enable_thinking": True})
 
 
 @dataclass
