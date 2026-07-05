@@ -4,6 +4,51 @@
 
 내가 받은 계약서가 정부·공공기관 **표준계약서** 대비 **어디가 빠졌고(누락) / 더 들어갔고(추가) / 다르게 쓰였는지(변경)** 를 찾아주고, 관련 **법령 조문**까지 근거로 붙여줍니다.
 
+
+---
+
+## 👥 팀원
+
+<table>
+  <tr>
+    <th>이미지</th>
+    <th width="120">이름</th>
+    <th>담당 분석 및 업무</th>
+  </tr>
+
+  <tr>
+    <td><img src="./assets/1.png" width="60"></td>
+    <td align="center"><b>박세빈</b></td>
+    <td>-</td>
+  </tr>
+
+  <tr>
+    <td><img src="./assets/2.png" width="60"></td>
+    <td align="center"><b>홍철민</b></td>
+    <td>-</td>
+  </tr>
+
+  <tr>
+    <td><img src="./assets/3.png" width="60"></td>
+    <td align="center"><b>김효선</b></td>
+    <td>-</td>
+  </tr>
+
+  <tr>
+    <td><img src="./assets/4.png" width="60"></td>
+    <td align="center"><b>장규원</b></td>
+    <td>-</td>
+  </tr>
+
+  <tr>
+    <td><img src="./assets/5.jpg" width="60"></td>
+    <td align="center"><b>박지유</b></td>
+    <td>-</td>
+  </tr>
+</table>
+
+---
+
 ## 핵심 명제
 
 **"올바른 법 해석을 생성"하지 않는다. "표준 대비 이탈을 탐지"한다.**
