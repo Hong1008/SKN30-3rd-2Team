@@ -9,7 +9,7 @@ load_dotenv(_DEMO_ENV if _DEMO_ENV.exists() else None)
 
 app_env = os.getenv("APP_ENV", "local")
 
-WORKSHIELD_MCP_URL: str = os.getenv('WORKSHIELD_MCP_URL', 'http://localhost:8001/mcp')
+WORKSHIELD_MCP_URL: str = os.getenv('WORKSHIELD_MCP_URL', 'http://localhost:8000/mcp')
 
 # ──────────────────────────────────────────────────────────────
 # LLM Provider 설정 (데모 요약·질의용)
