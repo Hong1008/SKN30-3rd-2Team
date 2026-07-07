@@ -10,14 +10,11 @@
 import json
 import os
 import re
-import sys
 import numpy as np  
 import logging
 from pathlib import Path
 from typing import List
 
-# src/ 패키지 절대 경로 추가 (스크립트로 직접 실행하기 위함)
-sys.path.append(str(Path(__file__).resolve().parent.parent))
 from contracts.models import StandardSubChunk
 from contracts.enums import ContractType, Category
 from contracts.models import Clause, StandardClause

@@ -16,8 +16,7 @@ from typing import Any, Dict, List
 
 logger = logging.getLogger(__name__)
 
-# adapter/contracts/pipe(src/ 하위) 를 import 하기 위해 모듈 경로에 추가 (실행 위치 무관)
-sys.path.append(str(Path(__file__).resolve().parent.parent))
+
 
 from eval import metrics
 

@@ -70,6 +70,7 @@ just docker-run       # 로컬 Docker 포그라운드 실행 (streamable-http 80
 
 ## 컨벤션
 - 패키지 import는 `src/` 루트 기준: `from contracts...`, `from adapter import db`, `from core import ...`.
+- 로컬 실행/테스트 경로 해결을 위해 코드 내에 `sys.path.append(...)`나 `sys.path.insert(...)`를 삽입하는 것을 금지합니다. 대신 `pyproject.toml`에 기반한 개발 모드 설치(`uv pip install -e .`)를 마친 후 실행해야 합니다.
 - enum 값을 문자열로 직접 쓰지 말 것 (`Deviation.MISSING` ✅ / `"MISSING"` ❌).
 - 주석·docstring은 한국어. 타입힌트 + pydantic 모델 사용.
 - 외부/코어 모두 **조용한 실패 금지** — 빈 값 대신 명시 표식·예외.

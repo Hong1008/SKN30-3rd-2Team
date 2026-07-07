@@ -29,7 +29,7 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-packages = ["src"]
+package-dir = {"" = "src"}
 
 [tool.pytest.ini_options]
 # src/ → `from contracts...`, `from core import ...` 및 `from eval import ...`

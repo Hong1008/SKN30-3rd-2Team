@@ -126,6 +126,28 @@ def test_상호참조_있어도_내용_숫자_변경은_잡음():
     assert CRITICAL_NUMBER in detect_critical_changes(user, std)
 
 
+def test_아니_된다_형태의_부정어도_검출():
+    """'아니되다'(되)와 '아니된다'(되+ㄴ)는 다른 유니코드 문자 — 후자도 잡아야 한다.
+
+    v3 골든셋 작성 중 실측 발견: "~하여서는 아니 된다"는 계약서에서 흔한 금지 표현인데
+    정규식이 "아니되"만 커버해 이 형태를 놓치고 있었다.
+    """
+    user = "제3자에게 유출할 수 있다."
+    std = "제3자에게 유출하여서는 아니 된다."
+    assert CRITICAL_NEGATION in detect_critical_changes(user, std)
+
+
+def test_숫자_뒤_목적격_조사_을은_당사자로_오인하지_않음():
+    """'10000분의 1을 곱하여'의 '을'은 조사이지 당사자 '을'이 아니다 — 오탐 가드.
+
+    v3 골든셋 작성 중 실측 발견: 기존 가드는 '을' 앞이 한글일 때만 조사로 인정했는데,
+    숫자 뒤에 오는 경우("1을")는 걸러내지 못해 지체상금 요율 표현에서 오탐이 났다.
+    """
+    user = "지급액에 10000분의 1을 곱하여 산출한 금액을 지급한다."
+    std = "지급액에 1000분의 1.25를 곱하여 산출한 금액을 지급한다."
+    assert CRITICAL_PARTY not in detect_critical_changes(user, std)
+
+
 # --- classify_clause_deviation ---
 def test_매칭없으면_EXTRA():
     assert classify_clause_deviation("내 조항", None, 0.0, match_threshold=0.5) == Deviation.EXTRA
