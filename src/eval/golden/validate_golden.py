@@ -8,10 +8,9 @@ JSON은 같은 실수를 반복하기 쉽다). 매 버전 눈으로 확인하는
 검사 항목 (docs/tasks/D_eval.md §골든셋 스키마 기준):
   1. gold_toxic 은 항상 list 타입
   2. gold_toxic 의 모든 원소가 contracts.enums.ToxicPattern 값
-  3. gold_deviation 이 {NONE, CHANGED, EXTRA} 중 하나 (트랙 A 엔 MISSING 없음)
+  3. gold_deviation 이 {NONE, EXTRA} 중 하나 (트랙 A 엔 MISSING 없음)
   4. gold_clause_id 가 null 이거나 표준조항 코퍼스(data/03_normalized)에 실재
-  5. trap == "paraphrase" 이면서 gold_deviation == "NONE" 인 조합 금지 (엄격안)
-  6. 같은 파일 내 case_id 중복 금지 (case_id는 계약유형별 파일 스코프 —
+  5. 같은 파일 내 case_id 중복 금지 (case_id는 계약유형별 파일 스코프 —
      si_subcontract·sw_freelance 파일이 서로 g01 등 같은 id를 재사용하는 것은 정상이라
      파일 간이 아니라 파일 내부에서만 검사한다)
 
@@ -34,7 +33,7 @@ from contracts.enums import Deviation, ToxicPattern
 _GOLDEN_DIR = Path(__file__).resolve().parent  # .../src/eval/golden
 
 # 트랙 A 골든셋엔 MISSING 이 없다 (D_eval.md §골든셋 스키마) — 이 3종만 허용
-_TRACK_A_DEVIATIONS = {Deviation.NONE.value, Deviation.CHANGED.value, Deviation.EXTRA.value}
+_TRACK_A_DEVIATIONS = {Deviation.NONE.value, Deviation.EXTRA.value}
 _TOXIC_VALUES = {t.value for t in ToxicPattern}
 
 _STANDARD_CLAUSES_GLOB = "data/03_normalized/standard_clauses.*.json"
@@ -96,12 +95,7 @@ def validate_case(case: dict[str, Any], clause_id_corpus: set[str] | None) -> li
             "detail": f"표준조항 코퍼스에 없는 gold_clause_id: {clause_id!r}",
         })
 
-    # 5) paraphrase + NONE 금지 (엄격안: 말바꿈이면 무조건 CHANGED)
-    if case.get("trap") == "paraphrase" and deviation == Deviation.NONE.value:
-        violations.append({
-            "rule": "paraphrase_none_forbidden",
-            "detail": "trap=paraphrase 이면서 gold_deviation=NONE 조합은 금지 (말바꿈은 반드시 CHANGED)",
-        })
+
 
     return violations
 

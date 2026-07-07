@@ -13,7 +13,7 @@
     "contract_type": "SM_SUBCONTRACT",
     "user_clause": "원사업자는 유지ㆍ관리계획서 작성에 필요한 정보를 제공하지 않을 수 있으며, 자료 부족으로 일정 지연이나 장애 대응 실패가 발생해도 수급사업자가 그 책임을 부담한다.",
     "gold_clause_id": "sm_subcontract-2025-art5",
-    "gold_deviation": "CHANGED",
+    "gold_deviation": "NONE",
     "gold_toxic": "UNFAIR_DAMAGE_CLAIM",
     "trap": "contradiction",
     "note": "원사업자의 정보제공 의무를 삭제하고 책임을 수급사업자에게 전가한 케이스"
@@ -32,7 +32,7 @@
     "contract_type": "SM_SUBCONTRACT",
     "user_clause": "수급사업자는 보안체계를 마련하되 원사업자에게 보고하지 않아도 되고, 보안사고가 실제로 발생한 뒤에만 필요한 조치를 취한다.",
     "gold_clause_id": "sm_subcontract-2025-art6",
-    "gold_deviation": "CHANGED",
+    "gold_deviation": "NONE",
     "trap": "partial",
     "note": "보안체계 보고와 사전 예방 의무를 약화한 부분 변경 케이스"
   },
@@ -50,7 +50,7 @@
     "contract_type": "SM_SUBCONTRACT",
     "user_clause": "원사업자가 지정한 장소에서 업무를 수행하더라도 사무공간, 설비, 전기, 수도, 통신 등 모든 비용은 수급사업자가 부담한다.",
     "gold_clause_id": "sm_subcontract-2025-art7",
-    "gold_deviation": "CHANGED",
+    "gold_deviation": "NONE",
     "gold_toxic": "UNPAID_ADDITIONAL_WORK",
     "trap": "partial",
     "note": "원사업자 제공 영역의 비용을 수급사업자에게 돌린 케이스"
@@ -78,7 +78,7 @@
     "contract_type": "SM_SUBCONTRACT",
     "user_clause": "원사업자는 품질 확보에 필요하다고 판단하면 계약서에 없는 점검 항목이나 관리 기준을 추가할 수 있고, 수급사업자는 별도 대가 없이 이에 따른다.",
     "gold_clause_id": "sm_subcontract-2025-art9",
-    "gold_deviation": "CHANGED",
+    "gold_deviation": "NONE",
     "gold_toxic": "UNILATERAL_CHANGE",
     "trap": "paraphrase",
     "note": "원사업자의 일방적 품질관리 범위 확장 케이스"
@@ -97,7 +97,7 @@
     "contract_type": "SM_SUBCONTRACT",
     "user_clause": "원사업자가 점검을 요구하면 수급사업자는 정당한 사유가 있어도 그 시기나 방법을 조정할 수 없으며 즉시 점검에 응한다.",
     "gold_clause_id": "sm_subcontract-2025-art10",
-    "gold_deviation": "CHANGED",
+    "gold_deviation": "NONE",
     "trap": "contradiction",
     "note": "정당한 사유에 따른 점검 시기 조정 가능성을 삭제한 케이스"
   },
@@ -115,7 +115,7 @@
     "contract_type": "SM_SUBCONTRACT",
     "user_clause": "원사업자는 특별한 사유나 기술능력 부족이 없어도 수급사업자의 유지ㆍ관리 인력을 언제든 교체하도록 요구할 수 있다.",
     "gold_clause_id": "sm_subcontract-2025-art11",
-    "gold_deviation": "CHANGED",
+    "gold_deviation": "NONE",
     "gold_toxic": "UNILATERAL_CHANGE",
     "trap": "partial",
     "note": "인력 교체 요구 요건을 삭제한 일방 변경 케이스"
@@ -134,7 +134,7 @@
     "contract_type": "SM_SUBCONTRACT",
     "user_clause": "원사업자는 서비스 안정화를 위하여 필요한 추가작업을 수급사업자의 동의 없이 지시할 수 있으며, 그 비용은 기존 하도급대금에 포함된다.",
     "gold_clause_id": "sm_subcontract-2025-art16",
-    "gold_deviation": "CHANGED",
+    "gold_deviation": "NONE",
     "gold_toxic": "UNPAID_ADDITIONAL_WORK",
     "trap": "paraphrase",
     "note": "무상 추가작업을 강제하는 변경 케이스"
@@ -153,7 +153,7 @@
     "contract_type": "SM_SUBCONTRACT",
     "user_clause": "원사업자가 대금을 지급하지 않은 경우에도 수급사업자는 유지ㆍ관리 업무를 중지할 수 없고, 업무를 멈춘 기간은 지체일수에 포함한다.",
     "gold_clause_id": "sm_subcontract-2025-art18",
-    "gold_deviation": "CHANGED",
+    "gold_deviation": "NONE",
     "gold_toxic": "PAYMENT_DELAY_UNFAIR",
     "trap": "contradiction",
     "note": "대금 미지급 시 중지권과 지체일수 제외 구조를 반대로 바꾼 케이스"
@@ -172,7 +172,7 @@
     "contract_type": "SM_SUBCONTRACT",
     "user_clause": "수급사업자는 원사업자의 동의 없이 유지ㆍ관리 업무 전부를 제3자에게 재하도급할 수 있고, 제3자의 업무 결과에 대해서는 책임지지 않는다.",
     "gold_clause_id": "sm_subcontract-2025-art19",
-    "gold_deviation": "CHANGED",
+    "gold_deviation": "NONE",
     "trap": "contradiction",
     "note": "재하도급 동의 요건과 책임 구조를 반대로 바꾼 케이스"
   },
@@ -190,7 +190,7 @@
     "contract_type": "SM_SUBCONTRACT",
     "user_clause": "원사업자의 사업장에서 발생한 사고라도 원사업자는 안전보건조치 책임을 부담하지 않고, 관련 손해와 비용은 수급사업자가 모두 부담한다.",
     "gold_clause_id": "sm_subcontract-2025-art20",
-    "gold_deviation": "CHANGED",
+    "gold_deviation": "NONE",
     "gold_toxic": "UNFAIR_DAMAGE_CLAIM",
     "trap": "contradiction",
     "note": "안전보건조치 책임과 손해 부담을 수급사업자에게 돌린 케이스"
@@ -209,7 +209,7 @@
     "contract_type": "SM_SUBCONTRACT",
     "user_clause": "원사업자는 긴급 장애 대응을 이유로 수급사업자의 근로자에게 직접 작업을 지시할 수 있고, 그 결과에 따른 위험과 비용은 수급사업자가 부담한다.",
     "gold_clause_id": "sm_subcontract-2025-art24",
-    "gold_deviation": "CHANGED",
+    "gold_deviation": "NONE",
     "gold_toxic": "UNFAIR_DAMAGE_CLAIM",
     "trap": "paraphrase",
     "note": "직접 지시 제한을 완화하고 책임을 전가한 케이스"
@@ -237,7 +237,7 @@
     "contract_type": "SM_SUBCONTRACT",
     "user_clause": "검사 결과와 관계없이 원사업자의 검사, 재검사 및 제3자 검사에 필요한 모든 비용은 수급사업자가 부담한다.",
     "gold_clause_id": "sm_subcontract-2025-art29",
-    "gold_deviation": "CHANGED",
+    "gold_deviation": "NONE",
     "trap": "contradiction",
     "note": "검사비용 부담 주체를 수급사업자로 바꾼 케이스"
   },
@@ -255,7 +255,7 @@
     "contract_type": "SM_SUBCONTRACT",
     "user_clause": "공급원가나 인건비가 크게 상승하더라도 하도급대금은 조정하지 않고, 수급사업자는 조정 신청이나 협의를 요구할 수 없다.",
     "gold_clause_id": "sm_subcontract-2025-art38",
-    "gold_deviation": "CHANGED",
+    "gold_deviation": "NONE",
     "gold_toxic": "PAYMENT_DELAY_UNFAIR",
     "trap": "contradiction",
     "note": "대금 조정 신청권과 협의 가능성을 배제한 케이스"
@@ -274,7 +274,7 @@
     "contract_type": "SM_SUBCONTRACT",
     "user_clause": "하도급대금은 원사업자의 내부 정산이 완료된 뒤 지급하며, 정산 지연 기간에는 지연배상금이 발생하지 않는다.",
     "gold_clause_id": "sm_subcontract-2025-art41",
-    "gold_deviation": "CHANGED",
+    "gold_deviation": "NONE",
     "gold_toxic": "PAYMENT_DELAY_UNFAIR",
     "trap": "partial",
     "note": "60일 지급기일과 지연배상금 구조를 약화한 케이스"
@@ -293,7 +293,7 @@
     "contract_type": "SM_SUBCONTRACT",
     "user_clause": "수급사업자가 하도급대금 조정이나 분쟁조정을 신청하는 경우 원사업자는 향후 발주 물량을 줄이거나 거래를 중단할 수 있다.",
     "gold_clause_id": "sm_subcontract-2025-art49",
-    "gold_deviation": "CHANGED",
+    "gold_deviation": "NONE",
     "trap": "contradiction",
     "note": "보복조치 금지 조항을 반대로 바꾼 케이스"
   },
@@ -311,7 +311,7 @@
     "contract_type": "SM_SUBCONTRACT",
     "user_clause": "원사업자는 계약기간 중이라도 수급사업자의 유지ㆍ관리 담당 근로자를 직접 채용할 수 있고, 수급사업자는 이에 관하여 이의를 제기하지 않는다.",
     "gold_clause_id": "sm_subcontract-2025-art50",
-    "gold_deviation": "CHANGED",
+    "gold_deviation": "NONE",
     "trap": "contradiction",
     "note": "수급사업자 근로자 채용 제한을 삭제한 케이스"
   },
@@ -329,7 +329,7 @@
     "contract_type": "SM_SUBCONTRACT",
     "user_clause": "계약기간 만료 후 원사업자가 별도 조건을 통지하면 계약은 그 조건으로 자동 갱신되고, 수급사업자는 갱신을 거절할 수 없다.",
     "gold_clause_id": "sm_subcontract-2025-art51",
-    "gold_deviation": "CHANGED",
+    "gold_deviation": "NONE",
     "gold_toxic": "UNILATERAL_CHANGE",
     "trap": "paraphrase",
     "note": "자동 갱신 조건을 원사업자 일방 결정으로 바꾼 케이스"
@@ -348,7 +348,7 @@
     "contract_type": "SM_SUBCONTRACT",
     "user_clause": "주요 원자재 가격이나 유지ㆍ관리 비용이 오르더라도 하도급대금은 최초 계약금액으로 고정되며, 수급사업자는 증액을 요구할 수 없다.",
     "gold_clause_id": "sm_subcontract-2025-art52",
-    "gold_deviation": "CHANGED",
+    "gold_deviation": "NONE",
     "gold_toxic": "PAYMENT_DELAY_UNFAIR",
     "trap": "contradiction",
     "note": "대금 연동 및 조정 가능성을 배제한 케이스"
@@ -367,7 +367,7 @@
     "contract_type": "SM_SUBCONTRACT",
     "user_clause": "원사업자는 수급사업자에게 계약이행보증금을 요구할 수 있으나, 하도급대금 지급보증은 제공하지 않는다.",
     "gold_clause_id": "sm_subcontract-2025-art54",
-    "gold_deviation": "CHANGED",
+    "gold_deviation": "NONE",
     "gold_toxic": "PAYMENT_DELAY_UNFAIR",
     "trap": "partial",
     "note": "상호 보증 구조에서 원사업자의 지급보증만 삭제한 케이스"
@@ -386,7 +386,7 @@
     "contract_type": "SM_SUBCONTRACT",
     "user_clause": "수급사업자는 고의나 과실이 없더라도 원사업자에게 발생한 직접ㆍ간접 손해, 영업손실 및 제3자 청구액 전부를 한도 없이 배상한다.",
     "gold_clause_id": "sm_subcontract-2025-art55",
-    "gold_deviation": "CHANGED",
+    "gold_deviation": "NONE",
     "gold_toxic": "UNFAIR_DAMAGE_CLAIM",
     "trap": "paraphrase",
     "note": "무과실ㆍ무제한 손해배상으로 바꾼 케이스"
@@ -405,7 +405,7 @@
     "contract_type": "SM_SUBCONTRACT",
     "user_clause": "지연의 원인이 원사업자에게 있거나 천재지변 등 불가항력에 해당하더라도 수급사업자는 모든 지체일수에 대해 지체상금을 부담한다.",
     "gold_clause_id": "sm_subcontract-2025-art56",
-    "gold_deviation": "CHANGED",
+    "gold_deviation": "NONE",
     "gold_toxic": "UNFAIR_DAMAGE_CLAIM",
     "trap": "contradiction",
     "note": "지체상금 면책 사유를 배제한 케이스"
@@ -424,7 +424,7 @@
     "contract_type": "SM_SUBCONTRACT",
     "user_clause": "원사업자는 수급사업자의 귀책사유가 없어도 내부 사정, 예산 변경 또는 발주자의 요청을 이유로 즉시 계약을 해지할 수 있고, 이미 수행된 부분의 대금 지급도 보류할 수 있다.",
     "gold_clause_id": "sm_subcontract-2025-art58",
-    "gold_deviation": "CHANGED",
+    "gold_deviation": "NONE",
     "gold_toxic": "UNILATERAL_CANCELLATION",
     "trap": "paraphrase",
     "note": "해지 요건과 기성부분 대금 지급을 원사업자에게 유리하게 바꾼 케이스"

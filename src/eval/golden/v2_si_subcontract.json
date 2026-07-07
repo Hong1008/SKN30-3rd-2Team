@@ -14,7 +14,7 @@
     "contract_type": "SI_SUBCONTRACT",
     "user_clause": "원사업자는 계약 체결 후 지체 없이 상용소프트웨어의 개발 등에 필요한 정보를 수급사업자에게 서면으로 제공하지 아니할 수 있다.",
     "gold_clause_id": "si_subcontract-2025-art5",
-    "gold_deviation": "CHANGED",
+    "gold_deviation": "NONE",
     "gold_toxic": [],
     "trap": "negation",
     "note": "정보제공 의무를 부정어 하나로 배제한 이탈 케이스"
@@ -24,7 +24,7 @@
     "contract_type": "SI_SUBCONTRACT",
     "user_clause": "원사업자가 서면을 교부하지 않거나 제공하지 않은 정보로 인해 발생한 원사업자의 모든 손해에 대해 사유 불문하고 수급사업자가 책임을 진다.",
     "gold_clause_id": "si_subcontract-2025-art5",
-    "gold_deviation": "CHANGED",
+    "gold_deviation": "NONE",
     "gold_toxic": ["liability_transfer"],
     "trap": "party",
     "note": "원사업자의 귀책사유로 인한 손해 책임을 수급사업자에게 떠넘김"
@@ -64,7 +64,7 @@
     "contract_type": "SI_SUBCONTRACT",
     "user_clause": "수급사업자의 상용소프트웨어 개발 등의 업무 수행으로 인하여 발생하는 모든 안전사고에 대한 관리 및 감독 책임은 전적으로 수급사업자가 진다.",
     "gold_clause_id": "si_subcontract-2025-art14",
-    "gold_deviation": "CHANGED",
+    "gold_deviation": "NONE",
     "gold_toxic": ["liability_transfer"],
     "trap": "party",
     "note": "원사업자의 관리감독 의무를 수급사업자에게 전가"
@@ -74,7 +74,7 @@
     "contract_type": "SI_SUBCONTRACT",
     "user_clause": "원사업자는 수급사업자의 근로자가 피로를 풀 수 있도록 휴식시간에 이용할 수 있는 휴게시설을 갖추지 아니할 수 있다.",
     "gold_clause_id": "si_subcontract-2025-art14",
-    "gold_deviation": "CHANGED",
+    "gold_deviation": "NONE",
     "gold_toxic": [],
     "trap": "negation",
     "note": "휴게시설 제공 의무를 부정어로 배제"
@@ -114,7 +114,7 @@
     "contract_type": "SI_SUBCONTRACT",
     "user_clause": "원사업자는 상용소프트웨어 개발 등의 완료를 통지받은 날부터 30일 이내에 검사결과를 수급사업자에게 서면으로 통지한다.",
     "gold_clause_id": "si_subcontract-2025-art22",
-    "gold_deviation": "CHANGED",
+    "gold_deviation": "NONE",
     "gold_toxic": [],
     "trap": "number",
     "note": "검사 기한을 10일에서 30일로 연장한 숫자 트랩"
@@ -124,7 +124,7 @@
     "contract_type": "SI_SUBCONTRACT",
     "user_clause": "정당한 사유가 있는 경우를 제외하고, 수급사업자는 불합격 통지서를 받은 날부터 3일 이내에만 서면으로 이의를 신청할 수 있다.",
     "gold_clause_id": "si_subcontract-2025-art22",
-    "gold_deviation": "CHANGED",
+    "gold_deviation": "NONE",
     "gold_toxic": [],
     "trap": "number",
     "note": "이의신청 기한을 10일에서 3일로 대폭 축소한 트랩"
@@ -134,7 +134,7 @@
     "contract_type": "SI_SUBCONTRACT",
     "user_clause": "원사업자가 10일 이내에 검사결과를 통지하지 않은 경우에도 수급사업자가 명시적인 합격증명서를 받기 전까지는 검사에 합격한 것으로 보지 아니한다.",
     "gold_clause_id": "si_subcontract-2025-art22",
-    "gold_deviation": "CHANGED",
+    "gold_deviation": "NONE",
     "gold_toxic": ["unfair_condition"],
     "trap": "negation",
     "note": "검사 간주 규정을 부정어와 추가 조건으로 무효화"
@@ -164,7 +164,7 @@
     "contract_type": "SI_SUBCONTRACT",
     "user_clause": "원사업자의 경영적자, 판매가격 하락 등 내부 경제상황 변동이 발생할 경우, 원사업자는 합리적 범위 내에서 하도급대금을 일방적으로 감액할 수 있다.",
     "gold_clause_id": "si_subcontract-2025-art30",
-    "gold_deviation": "CHANGED",
+    "gold_deviation": "NONE",
     "gold_toxic": ["unfair_deduction"],
     "trap": "contradiction",
     "note": "경영적자 사유를 정당한 감액 사유로 뒤집은 독소 조항"
@@ -174,7 +174,7 @@
     "contract_type": "SI_SUBCONTRACT",
     "user_clause": "원사업자가 지급해야 할 금액을 인수일로부터 90일이 지난 후에 지급하는 경우에 한하여 공정거래위원회가 고시한 지연배상금을 지급한다.",
     "gold_clause_id": "si_subcontract-2025-art30",
-    "gold_deviation": "CHANGED",
+    "gold_deviation": "NONE",
     "gold_toxic": [],
     "trap": "number",
     "note": "지연이자 발생 기점을 60일에서 90일로 불리하게 변경"
@@ -214,7 +214,7 @@
     "contract_type": "SI_SUBCONTRACT",
     "user_clause": "수급사업자의 책임 없는 사유이거나 원사업자가 원부자재 공급을 지연한 경우라도 일단 개발이 늦어지면 지체일수에 산입하여 지체상금을 물어야 한다.",
     "gold_clause_id": "si_subcontract-2025-art49",
-    "gold_deviation": "CHANGED",
+    "gold_deviation": "NONE",
     "gold_toxic": ["liability_transfer"],
     "trap": "contradiction",
     "note": "원사업자 귀책이나 불가항력의 경우도 지체일수에 포함시키는 트랩"

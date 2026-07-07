@@ -14,7 +14,7 @@
     "contract_type": "SW_FREELANCE",
     "user_clause": "본 계약으로 발생하는 모든 결과물의 저작권 및 지식재산권 일체는 별도의 대가 없이 전부 도급인에게 영구 귀속된다.",
     "gold_clause_id": "sw_freelance-2020-art20",
-    "gold_deviation": "CHANGED",
+    "gold_deviation": "NONE",
     "gold_toxic": [
       "IP_TOTAL_FREE"
     ],
@@ -36,7 +36,7 @@
     "contract_type": "SW_FREELANCE",
     "user_clause": "수급인은 계약 종료 후 5년간 일체의 업무상 정보를 비밀로 유지하며, 위반 시 보수의 3배를 위약벌로 부담한다.",
     "gold_clause_id": "sw_freelance-2020-art17",
-    "gold_deviation": "CHANGED",
+    "gold_deviation": "NONE",
     "gold_toxic": [
       "EXCESSIVE_PENALTY"
     ],
@@ -70,7 +70,7 @@
     "contract_type": "SW_FREELANCE",
     "user_clause": "수급인은 귀책 여부와 무관하게 도급인에게 발생한 일체의 손해를 한도 없이 무제한 배상한다.",
     "gold_clause_id": "sw_freelance-2020-art18",
-    "gold_deviation": "CHANGED",
+    "gold_deviation": "NONE",
     "gold_toxic": [
       "UNFAIR_DAMAGE_CLAIM"
     ],
@@ -92,7 +92,7 @@
     "contract_type": "SW_FREELANCE",
     "user_clause": "도급인은 수급인의 업무 성과가 만족스럽지 않을 경우 즉시 계약을 해지하고 기지급한 보수의 전액 환수를 청구할 수 있다.",
     "gold_clause_id": "sw_freelance-2020-art16",
-    "gold_deviation": "CHANGED",
+    "gold_deviation": "NONE",
     "gold_toxic": [
       "UNILATERAL_CANCELLATION"
     ],
@@ -104,7 +104,7 @@
     "contract_type": "SW_FREELANCE",
     "user_clause": "모든 분쟁은 도급인의 본점 소재지 관할 법원에서 해결하기로 한다.",
     "gold_clause_id": "sw_freelance-2020-art22",
-    "gold_deviation": "CHANGED",
+    "gold_deviation": "NONE",
     "gold_toxic": [],
     "trap": "paraphrase",
     "note": "관할 법원 일방 지정(Changed)"
@@ -124,7 +124,7 @@
     "contract_type": "SW_FREELANCE",
     "user_clause": "본 계약의 결과물은 도급인의 소유이다.",
     "gold_clause_id": "sw_freelance-2020-art20",
-    "gold_deviation": "CHANGED",
+    "gold_deviation": "NONE",
     "gold_toxic": [
       "IP_TOTAL_FREE"
     ],
@@ -146,7 +146,7 @@
     "contract_type": "SW_FREELANCE",
     "user_clause": "대금 지급은 도급인의 사정에 따라 무기한 연기될 수 있으며, 수급인은 이에 대해 이의를 제기할 수 없다.",
     "gold_clause_id": "sw_freelance-2020-art6",
-    "gold_deviation": "CHANGED",
+    "gold_deviation": "NONE",
     "gold_toxic": [
       "PAYMENT_DELAY_UNFAIR"
     ],
@@ -158,7 +158,7 @@
     "contract_type": "SW_FREELANCE",
     "user_clause": "계약 해지 시, 수급인은 이미 수행한 업무에 대해서도 일체의 보수를 청구하지 않는다.",
     "gold_clause_id": "sw_freelance-2020-art16",
-    "gold_deviation": "CHANGED",
+    "gold_deviation": "NONE",
     "gold_toxic": [
       "UNILATERAL_CANCELLATION"
     ],
@@ -170,7 +170,7 @@
     "contract_type": "SW_FREELANCE",
     "user_clause": "본 계약과 관련하여 발생하는 모든 문제는 도급인의 내부 규정에 따라 도급인이 최종 결정한다.",
     "gold_clause_id": "sw_freelance-2020-art21",
-    "gold_deviation": "CHANGED",
+    "gold_deviation": "NONE",
     "gold_toxic": [],
     "trap": "paraphrase",
     "note": "분쟁 해결 절차 무시(독단 결정)"
@@ -180,7 +180,7 @@
     "contract_type": "SW_FREELANCE",
     "user_clause": "수급인은 본 계약 업무를 제3자에게 전부 재하도급할 수 있다.",
     "gold_clause_id": "sw_freelance-2020-art15",
-    "gold_deviation": "CHANGED",
+    "gold_deviation": "NONE",
     "gold_toxic": [],
     "trap": "contradiction",
     "note": "표준(승인 시 가능)과 반대(자유 재하도급)"
@@ -190,7 +190,7 @@
     "contract_type": "SW_FREELANCE",
     "user_clause": "하자보수 기간은 검수 완료일로부터 6개월로 한다.",
     "gold_clause_id": "sw_freelance-2020-art19",
-    "gold_deviation": "CHANGED",
+    "gold_deviation": "NONE",
     "gold_toxic": [
       "WARRANTY_SHORT"
     ],
@@ -202,7 +202,7 @@
     "contract_type": "SW_FREELANCE",
     "user_clause": "대금 지급 지체 시, 수급인은 지체일수마다 지급액에 1000분의 0.5를 곱한 금액을 청구할 수 있다.",
     "gold_clause_id": "sw_freelance-2020-art6",
-    "gold_deviation": "CHANGED",
+    "gold_deviation": "NONE",
     "gold_toxic": [
       "LATE_FEE_TOO_LOW"
     ],

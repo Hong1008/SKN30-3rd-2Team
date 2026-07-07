@@ -3,7 +3,7 @@ from typing import Literal, Optional
 
 from pydantic import BaseModel, Field
 
-DeviationLabel = Literal["CHANGED", "MISSING", "EXTRA", "NO_MATCH"]
+DeviationLabel = Literal["MISSING", "EXTRA", "NO_MATCH"]
 
 
 class Finding(BaseModel):
@@ -17,4 +17,4 @@ class Finding(BaseModel):
 
 class StructuredSummary(BaseModel):
     summary: str = Field(description="계약서 전체에 대한 3~5문장 한국어 요약")
-    findings: list[Finding] = Field(description="detections 중 CHANGED/MISSING/EXTRA/NO_MATCH 항목별 상세")
+    findings: list[Finding] = Field(description="detections 중 MISSING/EXTRA/NO_MATCH 항목별 상세")

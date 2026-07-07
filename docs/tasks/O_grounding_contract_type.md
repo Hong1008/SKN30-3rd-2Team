@@ -70,21 +70,42 @@ SM_SUBCONTRACT(하도급법 적용 대상)도 SW_FREELANCE와 똑같이 민법·
 ## 미결정 / 사인오프 필요 (AGENTS.md §2)
 - ✅ Protocol 확장 방식(가법·하위호환) — 07-07 세션 확정
 - ✅ SW_FREELANCE 불변, SI/SM만 override — 07-07 세션 확정
-- [ ] **`SUBCONTRACTING`·`WARRANTY`·`CONTRACT_PERIOD`(SI/SM 미매핑 잔여 3종)와 `TERMINATION`·`LIABILITY`·
-      `DISPUTE`·`SCOPE_SOW`(SW 매핑이 SI/SM에도 맞는지 재검토 필요한 항목)의 정확한 하도급법 조문** —
-      법률 검토 필요, 이 문서에서 추측으로 채우지 않음(사용자 제공 3건 외 전부 오픈).
+- ✅ **`TERMINATION`·`LIABILITY`·`WARRANTY`의 정확한 조문** — korean-law-mcp로 실측 확인 후 반영
+      (아래 DoD 참조). `TERMINATION`은 하도급법 제8조(부당한 위탁취소의 금지 등, SI/SM 표준계약서의
+      실제 조항명과 일치), `LIABILITY`는 하도급법 제35조(손해배상 책임, 3~5배 가중 특칙)로 SI/SM
+      오버라이드 추가. `WARRANTY`는 민법 제667조(수급인의 담보책임)로 공용 테이블에 추가(도급 계열
+      공통이라 SI/SM 오버라이드 불필요 — 하도급법에 더 구체적인 별도 하자담보 조문을 찾지 못함).
+- [ ] **`SUBCONTRACTING`·`CONTRACT_PERIOD`** — 재검토했으나 하도급법에서 대응하는 단일 조문을 못
+      찾음(`SUBCONTRACTING`은 하도급법 제2조가 "재하도급" 용어만 정의할 뿐 별도 규제 조문은 미발견,
+      `CONTRACT_PERIOD`는 애초에 하도급법 특유 개념이 아닌 것으로 보임) — 공용 폴백(`"민법 도급"`)
+      유지, 필요시 추후 재조사.
+- [ ] `SCOPE_SOW`·`DISPUTE`는 재검토 결과 SI/SM에 별도 오버라이드가 필요해 보이지 않아 공용 매핑
+      유지로 확정(과업범위·관할법원은 하도급 여부와 무관한 일반 조문).
+- ✅ **신규 카테고리 `INDUSTRIAL_SAFETY`(산업안전보건법 제63조)·`INFO_SECURITY`(정보통신망법 제45조)
+      grounding 매핑** — 이 카테고리들은 J 이후 SI/SM 2025 개정 표준계약서 실측으로 신설됐으며
+      (`contracts/enums.py`), 이번에 grounding 쿼리까지 함께 확정.
 - [ ] SI/SM이 각각 2022/2025 두 버전을 가진 것이 grounding 쿼리에도 버전 차이를 요구하는지
       (법 개정 시점과 표준계약서 개정 시점이 다를 수 있음) — 확인 필요.
 - [ ] `query_law(clause_text)`(동적 질의 경로)도 같은 맹점 공유 — `contract_type` 없이 조항 본문만
       질의하므로 "이게 하도급 맥락"이라는 신호가 안 들어감. 이 경로도 `contract_type`을 받아
-      질의 문자열에 힌트를 덧붙일지 여부 결정 필요(범위에 포함할지도 미결정).
+      질의 문자열에 힌트를 덧붙일지 여부 결정 필요(범위에 포함할지도 미결정) — 이번에도 미착수.
 
 ## 완료 조건 (DoD)
-- [ ] `Grounder.get_grounding` 시그니처 확장 + 호출부 3곳 전부 `contract_type` 전달
-- [ ] SI/SM override 테이블에 최소 사용자 제공 3건 반영, 실제 `koreanLaw.query()` 호출 검증
-- [ ] 위 "미결정" 법률 조문이 확정되는 대로 override 테이블 확장
-- [ ] `uv run pytest tests/` 통과 (Grounder 관련 기존 테스트 갱신)
-- [ ] LLM 호출 없음(규칙 #1 무관 — 이 계층은 애초에 결정론 쿼리 매핑) 재확인
+- [x] `Grounder.get_grounding` 시그니처 확장 + 실제 호출부 2곳(`review_pipe._grounding_for`,
+      `server.py` 단독 `get_grounding` 도구) 전부 `contract_type` 전달
+      — ⚠ "구현대상 4"의 `classify_clause`는 J 확장 리팩터로 이미 grounding을 전혀 호출하지 않게
+      바뀌어 있었음(NONE/EXTRA엔 1차에서 법령 근거를 안 붙이는 설계로 확정) — 실제 호출부는
+      3곳이 아니라 2곳.
+- [x] SI/SM override 테이블에 사용자 제공 3건(PAYMENT·DELIVERY_INSPECTION·CONFIDENTIALITY) +
+      이번에 추가한 2건(TERMINATION·LIABILITY) 반영(`korean_law_grounder.py`
+      `SUBCONTRACT_CATEGORY_QUERIES`). 공용 테이블(`CATEGORY_QUERIES`)에도 WARRANTY·
+      INDUSTRIAL_SAFETY·INFO_SECURITY 추가. `koreanLaw.query()` 호출 검증은 mock으로 대체
+      (`tests/contracts/test_korean_law_grounder.py`, 13건) — 실제 MCP 왕복은 수동 확인 필요.
+- [x] `SUBCONTRACTING`·`CONTRACT_PERIOD`(대응 조문 못 찾음)·`SCOPE_SOW`·`DISPUTE`(오버라이드
+      불필요로 확정)는 재검토 완료 — 공용 폴백 유지가 최종 결론.
+- [x] `uv run pytest tests/ -m "not integration"` 통과 (82→88건, Grounder 신규 테스트 6건 포함)
+- [x] LLM 호출 없음 재확인 — `get_grounding`은 정적 쿼리 테이블 조회 + `koreanLaw.query()`(결정론)뿐,
+      변경 없음.
 
 ## 참고
 - [contracts/ports.py](../../src/contracts/ports.py) · [korean_law_grounder.py](../../src/contracts/implement/korean_law_grounder.py)

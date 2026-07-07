@@ -3,7 +3,11 @@
     "allow": [
       "Bash(python3 -c ' *)",
       "Bash(PYTHONPATH=src uv run python -c ' *)",
-      "Bash(PYTHONPATH=src MCP_TRANSPORT=stdio uv run python -c ' *)"
+      "Bash(PYTHONPATH=src MCP_TRANSPORT=stdio uv run python -c ' *)",
+      "Bash(korean-law --help)",
+      "Bash(korean-law query *)",
+      "Bash(korean-law search_law --query \"하도급거래 공정화에 관한 법률\")",
+      "Bash(korean-law get_law_text --mst 273643 --jo \"제2조\")"
     ]
   }
 }

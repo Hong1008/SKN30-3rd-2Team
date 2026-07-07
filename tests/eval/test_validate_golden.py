@@ -60,9 +60,9 @@ def test_gold_deviation_MISSING은_트랙A에서_위반():
     assert "gold_deviation_enum" in rules
 
 
-def test_gold_deviation_NONE_CHANGED_EXTRA는_통과():
+def test_gold_deviation_NONE_EXTRA는_통과():
     from eval.golden.validate_golden import validate_case
-    for d in ("NONE", "CHANGED", "EXTRA"):
+    for d in ("NONE", "EXTRA"):
         assert validate_case(_case(gold_deviation=d), clause_id_corpus=None) == []
 
 
@@ -83,17 +83,7 @@ def test_gold_clause_id_null은_EXTRA로_허용():
     assert violations == []
 
 
-def test_paraphrase와_NONE_조합은_금지():
-    from eval.golden.validate_golden import validate_case
-    violations = validate_case(_case(trap="paraphrase", gold_deviation="NONE"), clause_id_corpus=None)
-    rules = [v["rule"] for v in violations]
-    assert "paraphrase_none_forbidden" in rules
 
-
-def test_paraphrase와_CHANGED_조합은_허용():
-    from eval.golden.validate_golden import validate_case
-    violations = validate_case(_case(trap="paraphrase", gold_deviation="CHANGED"), clause_id_corpus=None)
-    assert violations == []
 
 
 def test_find_duplicate_case_ids_중복_탐지():

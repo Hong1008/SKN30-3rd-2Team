@@ -61,14 +61,14 @@ def test_degeneracy_alerts_빈_집계는_경보_없음():
 
 def test_coverage_degeneracy_단일_클래스면_경보():
     from eval.run_eval import coverage_degeneracy_alert
-    assert coverage_degeneracy_alert({"CHANGED": 10}) is not None
+    assert coverage_degeneracy_alert({"EXTRA": 10}) is not None
 
 
 def test_coverage_degeneracy_혼합_분포면_경보_없음():
     from eval.run_eval import coverage_degeneracy_alert
-    assert coverage_degeneracy_alert({"CHANGED": 6, "NONE": 4}) is None
+    assert coverage_degeneracy_alert({"EXTRA": 6, "NONE": 4}) is None
 
 
 def test_coverage_degeneracy_표본_너무_작으면_판단_보류():
     from eval.run_eval import coverage_degeneracy_alert
-    assert coverage_degeneracy_alert({"CHANGED": 2}) is None
+    assert coverage_degeneracy_alert({"EXTRA": 2}) is None

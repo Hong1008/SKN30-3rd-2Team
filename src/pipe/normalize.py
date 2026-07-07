@@ -50,6 +50,8 @@ _CATEGORY_PRECEDENCE: list[Category] = [
     Category.WARRANTY,
     Category.DELIVERY_INSPECTION,
     Category.SUBCONTRACTING,
+    Category.INDUSTRIAL_SAFETY,
+    Category.INFO_SECURITY,
     Category.SOCIAL_INSURANCE,
     Category.DISPUTE,
     Category.WORKING_HOURS,
@@ -149,17 +151,18 @@ def _parse_sub_chunks(rows: list[StandardClause]) -> list[StandardSubChunk]:
             )
     return sub_chunks
 
-def label_category(title: str, text: str) -> Category:
+def label_category(title: str, text: str, contract_type: ContractType) -> Category:
     """
     제목/본문을 임베딩하고 _category_vectors 와 코사인 유사도를 비교해 단일 Category 를 반환합니다.
 
+    - contract_type 스코핑: Category.contract_types 가 비어있지 않은데 이 contract_type을
+      포함하지 않으면 애초에 경쟁 후보에서 제외한다(예: WORKING_HOURS는 SW_EMPLOYMENT 문서에서만
+      경쟁). 근로계약 특유 개념이 도급 계열 문서에 새어 들어가는 오분류를 원천 차단한다.
     - max-pooling: 카테고리 점수 = 그 카테고리 앵커 중 가장 가까운 1개와의 유사도.
     - 제목 우선: 제목 단독 쿼리와 (제목+본문) 쿼리를 각각 비교한 뒤 카테고리별로 max 를 취해,
       본문 노이즈가 제목 신호를 끌어내리지 못하게 합니다.
     - 저점수(임계값 미만): 특정 카테고리 없음 → Category.GENERAL 로 분류 (드롭/예외 금지).
     - 근접(마진 내 복수 후보): 단일 라벨 강제 + 구체성 우선 규칙으로 더 구체적인 카테고리 선택.
-
-    num 은 시그니처 호환을 위해 받지만 현재 판정에는 사용하지 않습니다.
     """
     if _category_vectors is None:
         raise RuntimeError("Category vectors are not initialized")
@@ -171,7 +174,11 @@ def label_category(title: str, text: str) -> Category:
     q_title, q_full = (np.asarray(v) for v in _embedder.embed_documents([title_query, full_query]))
 
     # GENERAL 은 앵커가 비어 _category_vectors 에 없으므로 자연히 점수 경쟁에서 빠진다.
-    categories = list(_category_vectors.keys())
+    # contract_type에 유효하지 않은 카테고리(예: 도급 문서의 WORKING_HOURS)도 후보에서 제외한다.
+    categories = [
+        c for c in _category_vectors.keys()
+        if not c.contract_types or contract_type in c.contract_types
+    ]
     # 카테고리별로 두 쿼리 점수 중 더 높은 쪽 채택 (제목이 본문 노이즈에 묻히지 않도록)
     scores = np.maximum(_maxpool_scores(q_title, categories), _maxpool_scores(q_full, categories))
 
@@ -211,7 +218,7 @@ def normalize_file(md_path: str, contract_type: ContractType, version: str) ->  
     
     for clause in clauses:
         # 표준 조항은 절대 드롭하지 않는다. 특정 카테고리가 없으면 GENERAL 로 분류된다.
-        category = label_category(clause.title, clause.text)
+        category = label_category(clause.title, clause.text, contract_type)
 
         match = re.search(r"제(\d+)조", clause.num)
         n = match.group(1) if match else str(clause.idx)

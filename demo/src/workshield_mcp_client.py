@@ -181,6 +181,7 @@ class WorkShieldMCPClient:
         self,
         category: Optional[str] = None,
         clause_text: Optional[str] = None,
+        contract_type: Optional[str] = None,
     ) -> Dict[str, Any]:
         """카테고리 또는 조항 본문에 해당하는 관련 법령 조문을 조회합니다."""
         args = {}
@@ -188,6 +189,8 @@ class WorkShieldMCPClient:
             args["category"] = category
         if clause_text is not None:
             args["clause_text"] = clause_text
+        if contract_type is not None:
+            args["contract_type"] = contract_type
 
         try:
             response = await self.session.call_tool("get_grounding", args)

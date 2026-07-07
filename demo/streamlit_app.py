@@ -51,7 +51,6 @@ from workshield_mcp_client import WorkShieldMCPClient
 # ──────────────────────────────────────────────────────────────
 
 DEV_NONE = "NONE"
-DEV_CHANGED = "CHANGED"
 DEV_MISSING = "MISSING"
 DEV_EXTRA = "EXTRA"
 DEV_NO_MATCH = "NO_MATCH"
@@ -96,7 +95,7 @@ class ReviewDemoResult(BaseModel):
     none_titles: list[str]
     """이탈 없음(NONE) 조항 제목 목록"""
     cards: list[ClauseCard]
-    """CHANGED / MISSING / EXTRA / NO_MATCH 카드"""
+    """MISSING / EXTRA / NO_MATCH 카드"""
 
 
 # ──────────────────────────────────────────────────────────────
@@ -211,8 +210,7 @@ def _convert_server_response(data: dict, contract_type: str) -> ReviewDemoResult
                 title=title,
                 deviation=deviation,
                 confidence=item.get("confidence"),
-                body_user=user_clause or None,
-                body_std=(std.get("text") or None) if deviation == DEV_CHANGED else None,
+                body_std=None,
                 std_ref=std.get("source") or None,
                 toxic_pattern=toxic_str or None,
                 toxic_enums=toxic_enums,
@@ -422,7 +420,6 @@ TOXIC_TITLES = {
 # 이탈 유형별 화면 메타: (라벨 점, 한 줄 설명, "배경색;글자색")
 DEVIATION_META: dict[str, tuple[str, str, str]] = {
     DEV_NONE: ("🟢", "표준과 일치, 검토 후보 아님", "#E4F3E9;color:#2E7D4F"),
-    DEV_CHANGED: ("🔵", "표준과 매칭됐지만 본문이 다른 조항", "#E7E9FD;color:#4F57C9"),
     DEV_MISSING: ("🔴", "표준에는 있는데 내 계약서에 없는 조항", "#F7E2E2;color:#B25454"),
     DEV_EXTRA: ("🟡", "표준에 없는 추가 조항 (독소 패턴 대조 포함)", "#FFF3D6;color:#8A6A1F"),
     DEV_NO_MATCH: ("⚪", "근거를 찾지 못해 판단하지 않은 조항", "#F2F3FB;color:#5F6779"),
@@ -762,7 +759,7 @@ def render_results(result: ReviewDemoResult) -> None:
     }
 
     if "selected_dev" not in st.session_state:
-        st.session_state.selected_dev = DEV_CHANGED
+        st.session_state.selected_dev = DEV_EXTRA
 
     # 좌우 분할 컨테이너
     with st.container():
@@ -845,7 +842,6 @@ def render_results(result: ReviewDemoResult) -> None:
     # Dynamic CSS Injection
     DEVIATION_THEMES = {
         DEV_NONE: {"bg": "#E4F3E9", "text": "#2E7D4F", "border": "#2E7D4F"},
-        DEV_CHANGED: {"bg": "#E7E9FD", "text": "#4F57C9", "border": "#4F57C9"},
         DEV_MISSING: {"bg": "#F7E2E2", "text": "#B25454", "border": "#B25454"},
         DEV_EXTRA: {"bg": "#FFF3D6", "text": "#8A6A1F", "border": "#8A6A1F"},
         DEV_NO_MATCH: {"bg": "#F2F3FB", "text": "#5F6779", "border": "#5F6779"},

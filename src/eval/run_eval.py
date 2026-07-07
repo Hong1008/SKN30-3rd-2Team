@@ -151,7 +151,7 @@ class NullGrounder:
     외부 korean-law-mcp 호출을 생략해 평가 속도를 지키고 네트워크 의존을 없앤다.
     """
 
-    def get_grounding(self, _category: Any) -> list:
+    def get_grounding(self, _category: Any, _contract_type: Any = None) -> list:
         return []
 
     def query_law(self, _clause_text: str) -> list:
@@ -216,26 +216,7 @@ def _load_standards(contract_type: str) -> List[Any]:
     return [StandardClause(**row) for row in rows]
 
 
-def _load_sub_chunks(contract_type: str) -> Dict[str, List[Any]]:
-    """계약 유형별 표준 서브청크를 {parent_clause_id → [StandardSubChunk, ...]} 로 로드합니다.
 
-    review_contract 의 의미 커버리지 게이트에 주입됩니다. 이 맵이 없으면 커버리지 체크가
-    스킵되고 difflib 폴백으로 내려가 실계약에서 전부 CHANGED 로 축퇴합니다(v1_review Track B).
-    server.py `_load_sub_chunks(ct)` 와 동일 패턴 — 오프라인 서브청크 인덱스가 준비돼 있어야 함.
-    """
-    from adapter import db
-    from contracts.models import StandardSubChunk
-
-    rows = db.fetch_all(
-        "SELECT * FROM standard_sub_chunks WHERE contract_type = ? "
-        "ORDER BY parent_clause_id, sub_chunk_index",
-        contract_type,
-    )
-    by_parent: Dict[str, List[Any]] = {}
-    for row in rows:
-        sub = StandardSubChunk(**row)
-        by_parent.setdefault(sub.parent_clause_id, []).append(sub)
-    return by_parent
 
 
 def review_golden_clauses(golden: List[Dict], contract_type: str) -> Dict[str, Any]:
@@ -254,7 +235,6 @@ def review_golden_clauses(golden: List[Dict], contract_type: str) -> Dict[str, A
 
     ct = ContractType(contract_type)
     standards = _load_standards(contract_type)
-    sub_chunks = _load_sub_chunks(contract_type)  # 의미 커버리지 게이트 입력 (없으면 difflib 폴백)
     grounder = NullGrounder()
 
     clauses = [
@@ -269,7 +249,6 @@ def review_golden_clauses(golden: List[Dict], contract_type: str) -> Dict[str, A
         reranker=reranker,
         grounder=grounder,
         all_standard_clauses=standards,
-        all_standard_sub_chunks=sub_chunks,
     )
 
     by_text: Dict[str, Any] = {}
@@ -544,11 +523,10 @@ def review_document_against_type(clauses: List[Any], ct: Any) -> tuple[List[Any]
     from adapter import vector, reranker, embedder
 
     standards = _load_standards(ct.value)
-    sub_chunks = _load_sub_chunks(ct.value)  # 의미 커버리지 게이트 입력 (없으면 difflib 폴백)
     results = review_contract(
         clauses, ct,
         retriever=vector, embedder=embedder, reranker=reranker, grounder=NullGrounder(),
-        all_standard_clauses=standards, all_standard_sub_chunks=sub_chunks, use_toxic=False,
+        all_standard_clauses=standards, use_toxic=False,
     )
     return results, len(standards)
 

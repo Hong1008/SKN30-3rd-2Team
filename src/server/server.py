@@ -136,23 +136,7 @@ def _load_standards(ct: ContractType) -> list[StandardClause]:
     return [StandardClause(**row) for row in rows]
 
 
-def _load_sub_chunks(ct: ContractType) -> dict[str, list[StandardSubChunk]]:
-    """계약 유형별 표준 서브청크를 {parent_clause_id → [StandardSubChunk, ...]} 로 로드합니다.
 
-    review_contract 의 의미 커버리지 게이트 입력. 미주입 시 커버리지 체크가 스킵되고 difflib
-    폴백으로 내려가 실계약에서 NONE 도달이 불가해집니다(v1_review Track B §3). 오프라인
-    서브청크 인덱스(`just build-db`)가 준비돼 있어야 합니다.
-    """
-    rows = db.fetch_all(
-        "SELECT * FROM standard_sub_chunks WHERE contract_type = ? "
-        "ORDER BY parent_clause_id, sub_chunk_index",
-        ct.value,
-    )
-    by_parent: dict[str, list[StandardSubChunk]] = {}
-    for row in rows:
-        sub = StandardSubChunk(**row)
-        by_parent.setdefault(sub.parent_clause_id, []).append(sub)
-    return by_parent
 _STANDARD_CLAUSES_COLLECTION = "standard_clauses"
 
 
@@ -167,7 +151,7 @@ def match_clause(
 
     이 도구는 "비슷한 표준조항이 뭐가 있나"만 답합니다. score는 검색 융합 점수(RRF/BM25 등)이며
     match_threshold 같은 판정 임계치와 스케일이 다르므로 "매칭 성공/실패"를 이 점수로 판단하지 마세요.
-    "이 조항이 표준 대비 이탈(MISSING/EXTRA/CHANGED/NONE)인가?"가 필요하면 classify_clause 를 쓰세요.
+    "이 조항이 표준 대비 이탈(EXTRA/NONE)인가?"가 필요하면 classify_clause 를 쓰세요.
     이 도구가 반환하는 것은 "검토 후보" 목록일 뿐 최종 판정이 아닙니다.
 
     사용 예: 계약서 전체가 아니라 특정 조항 하나에 대해 어떤 표준조항이 대응되는지만 빠르게 훑어볼 때.
@@ -227,6 +211,7 @@ def match_clause(
 def get_grounding(
     category: Optional[str] = None,
     clause_text: Optional[str] = None,
+    contract_type: Optional[str] = None,
 ) -> GetGroundingResponse:
     """
     카테고리 또는 조항 본문에 해당하는 관련 법령 조문을 조회합니다.
@@ -239,6 +224,9 @@ def get_grounding(
     Args:
         category: 조항 분류 카테고리. 가능한 값은 list_categories 로 조회하세요. 생략 가능.
         clause_text: 법령 조문을 조회할 조항 본문 텍스트. 생략 가능.
+        contract_type: 계약 유형. SI/SM 하도급 계약은 같은 category라도 적용 법령이 다를 수
+            있어(예: PAYMENT — SW는 민법, SI/SM은 하도급법), category와 함께 제공하면 더
+            정확한 근거를 받습니다. clause_text 단독 조회에는 영향 없습니다. 생략 가능.
     """
     if category is None and clause_text is None:
         return GetGroundingResponse(
@@ -251,13 +239,22 @@ def get_grounding(
         grounding = get_grounder().query_law(clause_text)
     else:
         try:
-            ct = Category(category)
+            cat = Category(category)
         except ValueError:
             raise ValueError(
                 f"지원하지 않는 카테고리: '{category}'. "
                 f"가능한 값: {[e.value for e in Category]}"
             )
-        grounding = get_grounder().get_grounding(ct)
+        ct = None
+        if contract_type is not None:
+            try:
+                ct = ContractType(contract_type)
+            except ValueError:
+                raise ValueError(
+                    f"지원하지 않는 계약 종류: '{contract_type}'. "
+                    f"가능한 값: {[e.value for e in ContractType]}"
+                )
+        grounding = get_grounder().get_grounding(cat, ct)
 
     if not grounding:
         return GetGroundingResponse(
@@ -290,7 +287,7 @@ async def review_contract(
     계약서 파일 전체를 검토합니다. 파싱 → 표준조항 매칭 → 이탈 분류 → 법령 근거 부착 순으로 실행합니다.
     조항이 많은 계약서는 처리에 시간이 걸릴 수 있습니다(전체 조항을 배치로 검색·재정렬).
 
-    결과의 각 항목은 "이탈 검토 후보"입니다 — MISSING/EXTRA/CHANGED 판정 자체가 "위법/불리함"을
+    결과의 각 항목은 "이탈 검토 후보"입니다 — MISSING/EXTRA/NONE 판정 자체가 "위법/불리함"을
     단정하는 것은 아니며, 표준조항과의 기계적 차이를 표시할 뿐입니다. 사용자에게 전달할 때도
     이 프레이밍(검토 후보)을 유지하세요.
 
@@ -356,7 +353,6 @@ async def review_contract(
                 reranker=reranker,
                 grounder=get_grounder(),
                 all_standard_clauses=standards,
-                all_standard_sub_chunks=_load_sub_chunks(ct),
                 progress_callback=progress_callback,
             )
         )
@@ -407,14 +403,13 @@ def classify_clause(
     clause_text: str,
     contract_type: str,
     match_threshold: float = 0.5,
-    change_threshold: float = 0.85,
 ) -> ClassifyClauseResponse:
     """
     단일 조항 텍스트 하나를 표준조항과 비교해 이탈 여부를 판정합니다 (부분 검토 워크플로우용).
 
     review_contract 전체를 돌리지 않고 "이 조항 하나만" 표준 대비 어떤지 알고 싶을 때 씁니다.
     match_clause 가 후보 나열까지만 하는 것과 달리, 이 도구는 재정렬(reranker) → 최적 매칭 선택
-    → 이탈 분류까지 끝내 deviation(NO_MATCH/EXTRA/CHANGED/NONE) 하나를 확정해 반환합니다.
+    → 이탈 분류까지 끝내 deviation(NO_MATCH/EXTRA/NONE) 하나를 확정해 반환합니다.
 
     MISSING은 이 도구로 나오지 않습니다. MISSING은 "표준조항이 계약서 전체에 없다"는 뜻이라
     조항 하나만으로는 판정할 수 없고, review_contract 로 전체를 봐야 발견됩니다.
@@ -425,7 +420,6 @@ def classify_clause(
         clause_text: 판정할 사용자 조항 본문 텍스트
         contract_type: 계약 종류. 가능한 값은 list_contract_types 로 조회하세요.
         match_threshold: 대응 표준조항으로 인정할 최소 정규화 점수(0~1). 기본값 0.5.
-        change_threshold: 매칭된 조항이 '충분히 같다'고 볼 본문 일치율. 기본값 0.85.
     """
     try:
         ct = ContractType(contract_type)
@@ -469,18 +463,8 @@ def classify_clause(
             score = sigmoid(float(hit["rerank_score"])) if "rerank_score" in hit else 0.0
             candidates.append((standard, score))
 
-    matched, score = select_best_match(candidates, match_threshold)
-    deviation = classify_clause_deviation(
-        user_text=clause_text,
-        matched_standard=matched,
-        score=score,
-        match_threshold=match_threshold,
-        change_threshold=change_threshold,
-    )
-
-    grounding = []
-    if matched is not None and deviation == Deviation.CHANGED and matched.category != Category.GENERAL:
-        grounding = get_grounder().get_grounding(matched.category)
+    matched, score = select_best_match(candidates)
+    deviation = classify_clause_deviation(matched, score, match_threshold)
 
     return ClassifyClauseResponse(
         status="OK",
@@ -488,7 +472,7 @@ def classify_clause(
         deviation=deviation.value,
         confidence=score,
         matched_standard=matched,
-        grounding=grounding,
+        grounding=[],  # 1차 검토 NONE/EXTRA에는 법령 근거 부착 안 함
     )
 
 
@@ -505,17 +489,32 @@ def list_contract_types() -> ListContractTypesResponse:
 
 
 @mcp.tool()
-def list_categories() -> ListCategoriesResponse:
+def list_categories(contract_type: Optional[str] = None) -> ListCategoriesResponse:
     """
     조항 분류 카테고리(category) 전체 목록을 설명·앵커 키워드와 함께 조회합니다.
 
     get_grounding 의 category 인자 값을 확인하거나, 계약서의 어떤 카테고리들이
     검토 대상인지 사람에게 설명할 때 사용하세요.
+
+    Args:
+        contract_type: 계약 유형. 제공하면 그 유형에 유효한 카테고리만 필터링합니다
+            (예: SW_EMPLOYMENT는 WORKING_HOURS/HOLIDAY_LEAVE 포함, SW_FREELANCE는 제외).
+            생략하면 전체 카테고리를 반환합니다.
     """
+    ct = None
+    if contract_type is not None:
+        try:
+            ct = ContractType(contract_type)
+        except ValueError:
+            raise ValueError(
+                f"지원하지 않는 계약 종류: '{contract_type}'. "
+                f"가능한 값: {[e.value for e in ContractType]}"
+            )
     return ListCategoriesResponse(
         categories=[
             CategoryInfo(value=c.value, description=c.description, anchors=list(c.anchors))
             for c in Category
+            if ct is None or not c.contract_types or ct in c.contract_types
         ]
     )
 
