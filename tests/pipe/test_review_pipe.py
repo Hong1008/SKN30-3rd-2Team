@@ -78,18 +78,22 @@ class FakeEmbedder:
 
 
 class _Reranker:
-    """모든 후보에 고정 로짓을 부여하는 리랭커 fake (logit>0 → sigmoid>0.5 → 매칭)."""
-    def __init__(self, logit: float):
-        self._logit = logit
+    """모든 후보에 고정 점수를 부여하는 리랭커 fake.
+
+    실제 BgeReranker(CrossEncoder, num_labels=1)는 predict() 내부에서 이미 Sigmoid를
+    적용해 0~1 확률값을 반환하므로, fake도 로짓이 아니라 그 확률값을 직접 준다.
+    """
+    def __init__(self, score: float):
+        self._score = score
 
     def compute_scores(self, query, documents):
-        return [self._logit] * len(documents)
+        return [self._score] * len(documents)
 
     def compute_scores_many(self, queries, docs_per_query):
         return [self.compute_scores(q, docs) for q, docs in zip(queries, docs_per_query)]
 
     def rerank(self, query, items, text_key="text", top_k=None):
-        out = [{**it, "rerank_score": self._logit} for it in items]
+        out = [{**it, "rerank_score": self._score} for it in items]
         out.sort(key=lambda x: x["rerank_score"], reverse=True)
         return out[:top_k] if top_k is not None else out
 
@@ -100,8 +104,8 @@ class _Reranker:
         ]
 
 
-HIGH_RERANKER = _Reranker(8.0)   # sigmoid≈0.9997 → 매칭 인정
-LOW_RERANKER = _Reranker(-8.0)   # sigmoid≈0.0003 → 임계 미달
+HIGH_RERANKER = _Reranker(0.9997)  # 매칭 인정 (match_threshold=0.5 이상)
+LOW_RERANKER = _Reranker(0.0003)   # 임계 미달
 
 
 class FakeGrounder:

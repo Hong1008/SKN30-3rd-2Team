@@ -17,7 +17,7 @@
     "gold_deviation": "NONE",
     "gold_toxic": [],
     "trap": "paraphrase",
-    "note": "의미는 표준과 동일(말바꿈)하나 엄격안에 따라 CHANGED — 문구가 바뀌면 무조건 CHANGED"
+    "note": "의미는 표준과 동일(말바꿈)하여 1차 판정은 NONE(잠정)으로 통과하며, 2차 LLM이 미세 차이를 최종 확인해야 하는 대상"
   },
   {
     "case_id": "v3-sw-03",
@@ -37,7 +37,7 @@
     "gold_deviation": "NONE",
     "gold_toxic": [],
     "trap": "paraphrase",
-    "note": "상호 합의 기반 관할법원 결정을, 도급인 본점 소재지 전속관할로 일방 고정 — 말바꿈이라 엄격안상 CHANGED"
+    "note": "상호 합의 기반 관할법원 결정을, 도급인 본점 소재지 전속관할로 일방 고정 — 말바꿈으로 1차 판정은 NONE(잠정)으로 통과하고 2차 LLM이 미세 차이를 판정할 대상"
   },
   {
     "case_id": "v3-sw-05",
@@ -79,7 +79,7 @@
     "gold_deviation": "NONE",
     "gold_toxic": [],
     "trap": "negation",
-    "note": "제2항의 '유출하여서는 아니 된다'가 '유출할 수 있다'로 부정어 반전 — detect_critical_changes(CRITICAL_NEGATION) 타깃 케이스"
+    "note": "제2항의 '유출하여서는 아니 된다'가 '유출할 수 있다'로 부정어 반전 — 1차에서는 NONE(잠정)으로 통과하지만 2차 LLM이 부정어 의미반전을 잡아내야 하는 케이스"
   },
   {
     "case_id": "v3-sw-09",
@@ -89,12 +89,12 @@
     "gold_deviation": "NONE",
     "gold_toxic": [],
     "trap": "party",
-    "note": "표준은 도급인·수급인 쌍방 의무인데 사용자 조항은 수급인만 의무 주체로 한정(도급인 쪽 의무 삭제) — detect_critical_changes(CRITICAL_PARTY) 타깃 케이스"
+    "note": "표준은 도급인·수급인 쌍방 의무인데 사용자 조항은 수급인만 의무 주체로 한정(도급인 쪽 의무 삭제) — 1차에서는 NONE(잠정)으로 통과하지만 2차 LLM이 당사자 제한 이탈을 잡아내야 하는 케이스"
   },
   {
     "case_id": "v3-sw-10",
     "contract_type": "SW_FREELANCE",
-    "user_clause": "제20조(지식재산권의 귀속)\n1. 수급인이 본 계약의 담당업무를 수행하며 만들어낸 시작품 등 유형적 성과물 일체와 지식재산에 관한 권리는 수급인과 도급인의 공동소유로 한다. 다만, 양 당사자는 별도의 서면 합의로 달리 정할 수 있다.\n2. 제1항의 결과물에 대한 지식재산권의 귀속 여부와 관계없이, 도급인은 수급인에게 발주자 또는 도급인의 영업적, 기술적 기밀을 누설하지 않는 조건으로 제1항의 결과물을 복제, 배포, 개작, 전송 등 영업적으로 사용할 수 있는 권한을 부여한다. 단, 발주자가 있는 계약의 경우 도급인이 지식재산권을 소유한 경우(발주자와 공동으로 소유한 경우를 포함한다)에 한해 본문을 적용한다.\n3. 제2항에도 불구하고, 발주자와 도급인 간의 계약에 의하여 도급인 수급인에게 제2항의 권한을 부여할 수 없는 경우, 수급인의 권한범위를 별도로 상호 협의하여 정할 수 있다.",
+    "user_clause": "제20조(지식재산권의 귀속)\n1. 수급인이 본 계약의 담당업무를 수행하며 만들어낸 시작품 등 유형적 성과물 일체와 지식재산에 관한 권리는 수급인과 도급인의 공동소유로 한다. 다만, 양 당사자는 별도의 서면 합의로 달리 정할 수 .",
     "gold_clause_id": "sw_freelance-2020-art20",
     "gold_deviation": "NONE",
     "gold_toxic": [],
@@ -133,7 +133,7 @@
     "gold_deviation": "NONE",
     "gold_toxic": [],
     "trap": "number",
-    "note": "지체상금 요율이 표준(1000분의 1.25)에서 10000분의 1로 대폭 하향(약 8분의 1 수준). 주의: 항1 문장이 현실적으로 말바꿈돼 있어(지급시기 서술 변경) 표준과의 정렬 일치율이 min_pair_ratio(0.5) 미만으로 떨어져, 오늘 코드의 detect_critical_changes 게이트가 이 쌍을 건너뛰어 CRITICAL_NUMBER 를 못 잡는다 — 07-03 결정 로그 §2가 예견한 '말바꿈이 강할수록 검사가 꺼지는 역설'의 실측 사례로 의도적으로 남겨둠(문구를 표준에 가깝게 순화해 게이트를 통과시키지 않았다 — 그렇게 하면 실제로 더 흔한 유형인 '강하게 말바꿈된 숫자변경'을 골든셋이 감춰버리게 됨)"
+    "note": "지체상금 요율이 표준(1000분의 1.25)에서 10000분의 1로 대폭 하향(약 8분의 1 수준). 주의: 항1 문장이 현실적으로 말바꿈돼 있어 1차 판정은 NONE(잠정)으로 통과하지만, 2차 LLM이 요율 축소 이탈을 최종 검출해야 하는 대표 케이스"
   },
   {
     "case_id": "v3-sw-14",
@@ -180,5 +180,105 @@
     ],
     "trap": "none",
     "note": "표준에 없는 조항 + 3일 지연에 계약금액 20%라는 과도한 손해배상액 설정"
+  },
+  {
+    "case_id": "v3-sw-18",
+    "contract_type": "SW_FREELANCE",
+    "user_clause": "제26조(원격근무 및 협력)\n수급인의 원격 근무지에서 개발을 수행할 때, 도급인은 원활한 소통을 위해 필요한 메신저 및 화상회의 툴을 무상 제공하고 수급인은 이에 적극 협력한다.",
+    "gold_clause_id": null,
+    "gold_deviation": "EXTRA",
+    "gold_toxic": [],
+    "trap": "none",
+    "note": "원격근무 인프라 지원에 관한 합리적인 조항으로, 표준에는 없으나 독소는 아닌 일반 EXTRA 케이스"
+  },
+  {
+    "case_id": "v3-sw-19",
+    "contract_type": "SW_FREELANCE",
+    "user_clause": "제27조(기소유 모듈의 라이선스)\n수급인이 계약 체결 전 이미 개발하여 소유하고 있던 범용 모듈을 본 용역 결과물에 도입하는 경우, 해당 모듈의 소유권은 수급인에게 유보되며 도급인에게는 비독점적이고 영구적인 사용권만 부여한다.",
+    "gold_clause_id": null,
+    "gold_deviation": "EXTRA",
+    "gold_toxic": [],
+    "trap": "none",
+    "note": "기존 지적자산 보호를 위한 합리적인 실무 특약으로, 표준에는 없으나 독소는 아닌 일반 EXTRA 케이스"
+  },
+  {
+    "case_id": "v3-sw-20",
+    "contract_type": "SW_FREELANCE",
+    "user_clause": "제28조(소프트웨어진흥법에 따른 과업변경)\n소프트웨어진흥법 제38조의 취지에 맞춰, 최초 협의된 과업 범위 외에 도급인의 요구로 과업이 추가 및 변경되는 경우 수급인은 보수의 조정 및 기한 연장을 청구할 수 있다.",
+    "gold_clause_id": null,
+    "gold_deviation": "EXTRA",
+    "gold_toxic": [],
+    "trap": "none",
+    "note": "소프트웨어진흥법 제38조 공정계약 원칙을 반영한 정상적인 과업 조정 청구 조항으로, 표준에는 없으나 독소는 아닌 일반 EXTRA 케이스"
+  },
+  {
+    "case_id": "v3-sw-21",
+    "contract_type": "SW_FREELANCE",
+    "user_clause": "제29조(산출물 피드백 기한)\n수급인이 산출물을 제출한 후 도급인은 7일 이내에 피드백을 서면 제공하여야 하며, 정당한 사유 없이 피드백이 지연되는 경우 해당 기간만큼 최종 납기일은 자동으로 순연된다.",
+    "gold_clause_id": null,
+    "gold_deviation": "EXTRA",
+    "gold_toxic": [],
+    "trap": "none",
+    "note": "피드백 지연에 따른 귀책 정리를 위한 합리적 조항으로, 표준에는 없으나 독소는 아닌 일반 EXTRA 케이스"
+  },
+  {
+    "case_id": "v3-sw-22",
+    "contract_type": "SW_FREELANCE",
+    "user_clause": "제30조(불가항력 면책)\n천재지변, 전염병 확산, 디바이스 물리적 도난 등 수급인의 지배 범위를 벗어난 사유로 납기가 지연되는 경우 지체상금은 부과되지 아니하며 상호 합의 하에 기한을 연장한다.",
+    "gold_clause_id": null,
+    "gold_deviation": "EXTRA",
+    "gold_toxic": [],
+    "trap": "none",
+    "note": "민법 일반의 불가항력 면책 취지를 담은 정상 조항으로, 표준에는 없으나 독소는 아닌 일반 EXTRA 케이스"
+  },
+  {
+    "case_id": "v3-sw-23",
+    "contract_type": "SW_FREELANCE",
+    "user_clause": "제31조(계약 해석의 원칙)\n본 계약 해석상 이견이 발생하는 경우 민법 및 관계 법령에 따르는 것을 원칙으로 하며, 법령에 명시되지 않은 사항은 상호 신의성실 원칙에 의거하여 합의 결정한다.",
+    "gold_clause_id": null,
+    "gold_deviation": "EXTRA",
+    "gold_toxic": [],
+    "trap": "none",
+    "note": "해석상 분쟁 시 법령 및 합의를 원칙으로 하는 공정한 조항으로, 표준에는 없으나 독소는 아닌 일반 EXTRA 케이스"
+  },
+  {
+    "case_id": "v3-sw-24",
+    "contract_type": "SW_FREELANCE",
+    "user_clause": "제32조(개발 장비의 대여 및 보존)\n도급인은 개발 편의를 위해 테스트 단말기 2대를 수급인에게 무상 임대하며, 수급인은 이를 선량한 관리자의 주의의무로 보존하고 계약 종료 즉시 반환한다.",
+    "gold_clause_id": null,
+    "gold_deviation": "EXTRA",
+    "gold_toxic": [],
+    "trap": "none",
+    "note": "장비 대여 및 관리 의무를 명시한 합리적인 실무 조항으로, 표준에는 없으나 독소는 아닌 일반 EXTRA 케이스"
+  },
+  {
+    "case_id": "v3-sw-25",
+    "contract_type": "SW_FREELANCE",
+    "user_clause": "제33조(기술 정보 반환 및 파기)\n계약 해지 또는 종료 시 수급인은 용역 수행 과정에서 취득한 도급인의 모든 원천 소스코드와 기술 데이터를 반환하거나 지체 없이 완전 파기하여야 한다.",
+    "gold_clause_id": null,
+    "gold_deviation": "EXTRA",
+    "gold_toxic": [],
+    "trap": "none",
+    "note": "기밀 데이터 보안 회수를 위한 정상적인 종료 절차 조항으로, 표준에는 없으나 독소는 아닌 일반 EXTRA 케이스"
+  },
+  {
+    "case_id": "v3-sw-26",
+    "contract_type": "SW_FREELANCE",
+    "user_clause": "제34조(업무 보고 채널)\n수급인은 용역 진행 현황을 서면(이메일 또는 메신저 채널 등)으로 주 1회 정기 요약 보고하며, 도급인은 수급인의 질의에 지체 없이 응답하도록 한다.",
+    "gold_clause_id": null,
+    "gold_deviation": "EXTRA",
+    "gold_toxic": [],
+    "trap": "none",
+    "note": "정기 보고 채널을 정하는 일상적인 협력 조항으로, 표준에는 없으나 독소는 아닌 일반 EXTRA 케이스"
+  },
+  {
+    "case_id": "v3-sw-27",
+    "contract_type": "SW_FREELANCE",
+    "user_clause": "제35조(분쟁의 사법적 관할)\n본 계약에 기인한 법적 조치 및 분쟁 소송에 있어, 관할 법원은 대한민국 민사소송법이 규정하는 절차 및 관련 법원 관할 규정을 충실히 따른다.",
+    "gold_clause_id": null,
+    "gold_deviation": "EXTRA",
+    "gold_toxic": [],
+    "trap": "none",
+    "note": "법정 관할을 따르는 정상적인 분쟁 관할 조항으로, 표준에는 없으나 독소는 아닌 일반 EXTRA 케이스"
   }
 ]

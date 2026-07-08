@@ -13,7 +13,7 @@ from contracts.enums import ContractType, Category, Deviation, ToxicPattern, Pro
 from contracts.models import StandardClause, StandardSubChunk
 from adapter import vector, db, reranker, embedder
 from server.deps import get_parser, get_grounder
-from core import classify_clause_deviation, select_best_match, sigmoid
+from core import classify_clause_deviation, select_best_match
 from pipe.review_pipe import review_contract as review_contract_pipe
 from pipe.exceptions import EmptyDocumentError, CorpusUnavailableError, InvalidConfigError, PipelineIntegrityError
 from server.dto import (
@@ -460,7 +460,7 @@ def classify_clause(
         clause_id = hit.get("id") or hit.get("clause_id")
         standard = standards_by_id.get(clause_id) if clause_id else None
         if standard is not None:
-            score = sigmoid(float(hit["rerank_score"])) if "rerank_score" in hit else 0.0
+            score = float(hit["rerank_score"]) if "rerank_score" in hit else 0.0
             candidates.append((standard, score))
 
     matched, score = select_best_match(candidates)
