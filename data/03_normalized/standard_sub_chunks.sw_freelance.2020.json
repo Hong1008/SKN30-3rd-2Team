@@ -206,34 +206,76 @@
     "sub_chunk_id": "sw_freelance-2020-art6-sub03",
     "parent_clause_id": "sw_freelance-2020-art6",
     "sub_chunk_index": 3,
-    "text": "③ 수급인이 계약 기간 내에 업무를 완료하지 못한 경우, 그 지체기간에 매 지체일수마다 지급액에 1000분의 1.25를 곱하여 산출한 금액을 공제한 후 지급한다. 단 지체기간의 산정은 다음 각 호에 정한 바와 같다.\n\n가. 지체일수에 포함하지 않는 기간\n\n1) 천재지변 등 불가항력으로 업무수행을 하지 못한 기간\n\n2) 도급인의 책임으로 과업수행에 지연·중단된 기간\n\n3) 기타 수급인의 귀책사유 없이 지체된 기간\n\n나. 지체일수에 포함하는 기간\n\n1) 업무의 완료 보고 후 수정, 보완 등에 소요되는 기간\n\n2) 업무 완료 보고 후 검수에 소요되는 기간\n\n3) 기타 도급인의 귀책사유 없이 지체되는 기간",
+    "text": "③ 수급인이 계약 기간 내에 업무를 완료하지 못한 경우, 그 지체기간에 매 지체일수마다 지급액에 1000분의 1.25를 곱하여 산출한 금액을 공제한 후 지급한다. 단 지체기간의 산정은 다음 각 호에 정한 바와 같다.\n\n가. 지체일수에 포함하지 않는 기간",
     "contract_type": "SW_FREELANCE"
   },
   {
     "sub_chunk_id": "sw_freelance-2020-art6-sub04",
     "parent_clause_id": "sw_freelance-2020-art6",
     "sub_chunk_index": 4,
-    "text": "④ 도급인은 경영상황의 변동 등 수급인에게 귀책사유 없는 불합리한 이유를 들어 제6조의 보수를 감액지급하거나 지급을 연기할 수 없으며, 수급인은 본 계약에서 정한 보수 이외의 어떠한 항목으로도 도급인에게 추가적 지급을 청구할 수 없다.",
+    "text": "1) 천재지변 등 불가항력으로 업무수행을 하지 못한 기간",
     "contract_type": "SW_FREELANCE"
   },
   {
     "sub_chunk_id": "sw_freelance-2020-art6-sub05",
     "parent_clause_id": "sw_freelance-2020-art6",
     "sub_chunk_index": 5,
-    "text": "⑤ 제4항에도 불구하고, 본 계약 제4조에 명시된 업무의 변경 등 합리적인 사유가 있을 경우 양 당사자가 서면 합의로 본 계약의 보수 조건을 변경할 수 있다.",
+    "text": "2) 도급인의 책임으로 과업수행에 지연·중단된 기간",
     "contract_type": "SW_FREELANCE"
   },
   {
     "sub_chunk_id": "sw_freelance-2020-art6-sub06",
     "parent_clause_id": "sw_freelance-2020-art6",
     "sub_chunk_index": 6,
-    "text": "⑥ 수급인은 도급인에게 소프트웨어의 개발 등에 소요되는 재료비, 경비 등 공급원가가 변동되어 보수 조정이 불가피한 경우 보수 변경을 요청할 수 있고, 양 당사자가 서면 합의로 본 계약의 보수 조건을 변경할 수 있다.",
+    "text": "3) 기타 수급인의 귀책사유 없이 지체된 기간\n\n나. 지체일수에 포함하는 기간",
     "contract_type": "SW_FREELANCE"
   },
   {
     "sub_chunk_id": "sw_freelance-2020-art6-sub07",
     "parent_clause_id": "sw_freelance-2020-art6",
     "sub_chunk_index": 7,
+    "text": "1) 업무의 완료 보고 후 수정, 보완 등에 소요되는 기간",
+    "contract_type": "SW_FREELANCE"
+  },
+  {
+    "sub_chunk_id": "sw_freelance-2020-art6-sub08",
+    "parent_clause_id": "sw_freelance-2020-art6",
+    "sub_chunk_index": 8,
+    "text": "2) 업무 완료 보고 후 검수에 소요되는 기간",
+    "contract_type": "SW_FREELANCE"
+  },
+  {
+    "sub_chunk_id": "sw_freelance-2020-art6-sub09",
+    "parent_clause_id": "sw_freelance-2020-art6",
+    "sub_chunk_index": 9,
+    "text": "3) 기타 도급인의 귀책사유 없이 지체되는 기간",
+    "contract_type": "SW_FREELANCE"
+  },
+  {
+    "sub_chunk_id": "sw_freelance-2020-art6-sub10",
+    "parent_clause_id": "sw_freelance-2020-art6",
+    "sub_chunk_index": 10,
+    "text": "④ 도급인은 경영상황의 변동 등 수급인에게 귀책사유 없는 불합리한 이유를 들어 제6조의 보수를 감액지급하거나 지급을 연기할 수 없으며, 수급인은 본 계약에서 정한 보수 이외의 어떠한 항목으로도 도급인에게 추가적 지급을 청구할 수 없다.",
+    "contract_type": "SW_FREELANCE"
+  },
+  {
+    "sub_chunk_id": "sw_freelance-2020-art6-sub11",
+    "parent_clause_id": "sw_freelance-2020-art6",
+    "sub_chunk_index": 11,
+    "text": "⑤ 제4항에도 불구하고, 본 계약 제4조에 명시된 업무의 변경 등 합리적인 사유가 있을 경우 양 당사자가 서면 합의로 본 계약의 보수 조건을 변경할 수 있다.",
+    "contract_type": "SW_FREELANCE"
+  },
+  {
+    "sub_chunk_id": "sw_freelance-2020-art6-sub12",
+    "parent_clause_id": "sw_freelance-2020-art6",
+    "sub_chunk_index": 12,
+    "text": "⑥ 수급인은 도급인에게 소프트웨어의 개발 등에 소요되는 재료비, 경비 등 공급원가가 변동되어 보수 조정이 불가피한 경우 보수 변경을 요청할 수 있고, 양 당사자가 서면 합의로 본 계약의 보수 조건을 변경할 수 있다.",
+    "contract_type": "SW_FREELANCE"
+  },
+  {
+    "sub_chunk_id": "sw_freelance-2020-art6-sub13",
+    "parent_clause_id": "sw_freelance-2020-art6",
+    "sub_chunk_index": 13,
     "text": "⑦ 제5항 및 제6항의 경우 합의한 날로부터 7일 이내에 변경계약을 체결하되, 체결 전까지는 종전의 계약내용이 유효한 것으로 간주한다.",
     "contract_type": "SW_FREELANCE"
   },

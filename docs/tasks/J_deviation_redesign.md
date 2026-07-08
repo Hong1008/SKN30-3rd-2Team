@@ -62,10 +62,10 @@
 
 
 ## 완료 조건 (DoD)
-- [ ] 규칙기반 치명변경 탐지·difflib 폴백 코드 삭제, 참조하는 곳 전부 정리
-- [ ] 새 판정표대로 `classify_clause_deviation`/`review_pipe.py` 동작 확인
-- [ ] `uv run pytest tests/core/ tests/pipe/` 통과 (삭제분 반영한 테스트로 갱신)
-- [ ] LLM 호출 없음(규칙 #1), `DeviationResult` 계약 필드 변경 없음 재확인
+- ✅ 규칙기반 치명변경 탐지·difflib 폴백 코드 삭제, 참조하는 곳 전부 정리
+- ✅ 새 판정표대로 `classify_clause_deviation`/`review_pipe.py` 동작 확인
+- ✅ `uv run pytest tests/core/ tests/pipe/` 통과 (삭제분 반영한 테스트로 갱신)
+- ✅ LLM 호출 없음(규칙 #1), `DeviationResult` 계약 필드 변경 없음 재확인
 
 ## 참고
 - [07-03 결정 로그](../dicision/07-03.md) — 명제 합의 배경
