@@ -1,7 +1,7 @@
 """
-core.splitter — is_large_clause · split_into_sub_chunks 순수 함수 단위 테스트
+core.splitter — is_large_clause · split_into_sub_chunks · normalize_for_search 순수 함수 단위 테스트
 """
-from core.splitter import is_large_clause, split_into_sub_chunks
+from core.splitter import is_large_clause, normalize_for_search, split_into_sub_chunks
 
 
 # ── is_large_clause ───────────────────────────────────────────────────────────
@@ -108,3 +108,59 @@ def test_선도_텍스트_보존():
     assert len(chunks) >= 2
     joined = " ".join(chunks)
     assert "표제" in joined
+
+
+# ── normalize_for_search ──────────────────────────────────────────────────────
+
+def test_마크다운_헤더_제거_제목은_보존():
+    text = "### 제43조(경업금지 및 인력 유출 방지)\n본문 내용입니다."
+    result = normalize_for_search(text)
+    assert "###" not in result
+    assert "제43조" not in result
+    assert "경업금지 및 인력 유출 방지" in result
+    assert "본문 내용입니다." in result
+
+
+def test_괄호없는_헤더는_변형하지_않음():
+    """괄호가 없는 헤더(드문 케이스)는 매칭되지 않아 원문 그대로 통과합니다."""
+    text = "제43조 목적\n본문 내용입니다."
+    result = normalize_for_search(text)
+    assert result == text
+
+
+def test_헤더_없는_평문은_그대로_통과():
+    """독소조항 코퍼스처럼 헤더가 없는 텍스트는 정규화 대상이 없어 원문과 동일합니다."""
+    text = "경업금지 기간에 상한이 없다."
+    assert normalize_for_search(text) == text
+
+
+def test_원문자_항목기호_제거():
+    text = "① 원사업자는 대금을 지급한다.\n② 지연 시 이자를 부과한다."
+    result = normalize_for_search(text)
+    assert "①" not in result and "②" not in result
+    assert "원사업자는 대금을 지급한다." in result
+    assert "지연 시 이자를 부과한다." in result
+
+
+def test_숫자_목록기호_제거():
+    text = "1. 갑은 을에게 대금을 지급한다.\n2) 지급 기한은 30일로 한다."
+    result = normalize_for_search(text)
+    assert "1." not in result and "2)" not in result
+    assert "30일" in result  # 본문 속 실제 숫자는 유지
+
+
+def test_본문_숫자는_보존():
+    """조번호·항목기호가 아닌 본문 속 숫자(계약기간·금액 등)는 지우지 않습니다."""
+    text = "### 제6조(계약기간)\n계약기간은 20년으로 하고 대금은 300만원으로 한다."
+    result = normalize_for_search(text)
+    assert "20년" in result
+    assert "300만원" in result
+
+
+def test_헤더와_항목기호_동시_제거():
+    text = "### 제58조(대금 지급)\n① 원사업자는 대금을 지급한다.\n② 지연 시 이자를 부과한다."
+    result = normalize_for_search(text)
+    assert "###" not in result and "제58조" not in result
+    assert "①" not in result and "②" not in result
+    assert "대금 지급" in result
+    assert "원사업자는 대금을 지급한다." in result

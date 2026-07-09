@@ -25,6 +25,8 @@ app_env = os.getenv("APP_ENV", "local")
 OPEN_LAW_API_KEY: str | None = os.getenv('OPEN_LAW_API_KEY')
 KOREAN_LAW_MCP_URL: str = os.getenv('KOREAN_LAW_MCP_URL', 'https://korean-law-mcp.fly.dev/mcp')
 DB_BASE_FILE: str = os.getenv('DB_BASE_FILE', 'data/migration/contract.sqlite3')
+# Chroma 는 SQLite(RDB)와 생명주기가 달라(재빌드 시 전체 삭제 후 재생성) 별도 폴더에 격리합니다.
+CHROMA_DIR: str = os.getenv('CHROMA_DIR', 'data/chroma')
 
 EMBEDDING_MODEL_NAME: str = os.getenv("EMBEDDING_MODEL_NAME", "dragonkue/BGE-m3-ko")
 RERANKER_MODEL_NAME: str = os.getenv("RERANKER_MODEL_NAME", "dragonkue/bge-reranker-v2-m3-ko")

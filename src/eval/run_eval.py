@@ -18,6 +18,7 @@ logger = logging.getLogger(__name__)
 
 
 
+from core.splitter import normalize_for_search
 from eval import metrics
 
 
@@ -175,7 +176,10 @@ def build_cases_by_variant(golden: List[Dict], k: int, contract_type: str) -> Di
         return {variant: [] for variant in SEARCH_VARIANTS}
 
     logger.info(f"[build_cases_by_variant] 검색 케이스 생성 중 (k={k}, contract_type={contract_type}, 대상 조항={len(scored)}건)...")
-    queries = [g["user_clause"] for g in scored]
+    # review_contract 경로(review_golden_clauses)와 동일하게 검색·임베딩 입력은 정규화된 사본을
+    # 쓴다 — 코퍼스(build_index.py)는 이미 정규화돼 있어 원문 그대로 넘기면 비대칭이 발생한다
+    # (07-09 결정 로그, P_text_normalization.md).
+    queries = [normalize_for_search(g["user_clause"]) for g in scored]
     gold_ids = [g["gold_clause_id"] for g in scored]
     type_filter = {"contract_type": contract_type}
 

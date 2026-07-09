@@ -34,7 +34,7 @@ core(순수함수)     adapter(외부 I/O)   ← ports 구현: db·vector·embed
 | `src/core/` | 이탈 탐지 알고리즘 (순수 함수, TDD 대상) |
 | `src/adapter/` | DB·모델·외부 MCP 어댑터 (싱글톤) |
 | `src/pipe/` | 데이터 준비(1→2→3) + 런타임 검토 파이프 |
-| `data/` | `01_raw`→`02_converted`→`03_normalized`(정답)→`migration`(생성물) |
+| `data/` | `01_raw`→`02_converted`→`03_normalized`(정답)→`migration`(SQLite 생성물)/`chroma`(Chroma 생성물) |
 | `tests/`, `eval/` | pytest 테스트 / 평가 하니스 |
 
 ## 명령

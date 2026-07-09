@@ -29,6 +29,7 @@ from core import (
     roll_up_sub_chunks,
     select_best_match,
 )
+from core.splitter import normalize_for_search
 
 # Chroma 컬렉션 이름 (build_index.py 와 일치)
 STANDARD_COLLECTION = "standard_clauses"
@@ -196,7 +197,10 @@ def review_contract(
     matched_ids: set[str] = set()
     standards_by_id = {std.clause_id: std for std in all_standard_clauses}
     type_filter = {"contract_type": contract_type.value}
-    clause_texts = [clause.text for clause in clauses]
+    # 검색·임베딩·리랭킹에는 정규화된 사본만 쓴다. user_clause 등 결과 표시용 원문은
+    # clause.text 를 그대로 참조하므로 RDB/사용자 원본은 이 정규화의 영향을 받지 않는다
+    # (마크다운 헤더·항호 기호 비대칭 — P_text_normalization.md).
+    clause_texts = [normalize_for_search(clause.text) for clause in clauses]
 
     # ── 1. 배치 검색 ──
     if progress_callback:

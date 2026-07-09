@@ -31,16 +31,21 @@ SW 프리랜서 어휘(도급인·수급인)로만 작성돼 있다 — 실측: 
   체계 정리도 겸사겸사 검토 대상.
 
 ## 미결정 / 사인오프 필요 (AGENTS.md §2)
-- [ ] 방향 1(정규화 코드) vs 방향 2(데이터 증식) 중 우선순위 — `data/03_normalized/*.json`은 git
-      관리 정답 데이터라 변경 시 PR 리뷰 대상
-- [ ] 방향 1 채택 시 정규화 로직 위치(검색 전 전처리 vs 코퍼스 자체 이중화)
+- [x] 방향 1(정규화 코드) vs 방향 2(데이터 증식) 중 우선순위 — **방향 2 확정**(사용자, 07-09). 독소
+      개념 수가 적어(9종) 코퍼스 증식이 더 저비용이라 판단.
+- [x] 방향 2 채택 — `data/03_normalized/*.json`(git 관리 정답 데이터) 40건 → 90건 이중화 완료(07-09).
 
 ## 완료 조건 (DoD)
-- [ ] 채택 방향 확정 + 구현
-- [ ] [L_golden_v3.md](L_golden_v3.md) 골든셋(또는 기존 v2)으로 독소 recall 재측정, SI/SM이 SW 수준으로 개선됐는지 확인
+- [x] 채택 방향 확정 + 구현(07-09, 40→90건 + `INDEFINITE_CONFIDENTIALITY` 신규 작성)
+- [ ] [L_golden_v3.md](L_golden_v3.md) 골든셋으로 독소 recall 재측정, SI/SM이 SW 수준으로 개선됐는지
+      확인 — **⚠️ 07-09 실측: 이 코퍼스 수정만으론 recall이 개선되지 않음.** 별개 원인(쿼리·코퍼스 간
+      마크다운 헤더 포맷 비대칭)이 리랭커 점수를 붕괴시키고 있어 [P_text_normalization.md](P_text_normalization.md)가
+      먼저 해결돼야 이 항목을 실제로 검증할 수 있다. 상세: [07-09 결정 로그](../dicision/07-09.md)
 - [ ] LLM 없이 검색·매칭만(규칙 #1), 지표는 결정론(규칙 #5)
 
 ## 참고
 - [07-03 결정 로그](../dicision/07-03.md) §4 — 실측 표(어휘 일치도 vs recall 상관관계)
+- [07-09 결정 로그](../dicision/07-09.md) — 코퍼스 이중화 구현 + recall 미개선 원인 실측(P 카드로 분리)
+- [P_text_normalization.md](P_text_normalization.md) — recall 검증의 선행 과제로 분리된 헤더 포맷 비대칭 문제
 - [data/03_normalized/toxic_patterns.json](../../data/03_normalized/toxic_patterns.json)
 - [src/core/toxic.py](../../src/core/toxic.py) · [src/pipe/review_pipe.py](../../src/pipe/review_pipe.py) `_toxic_from_hits`

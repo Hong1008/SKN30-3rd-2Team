@@ -23,7 +23,8 @@ wheels/
 data/migration/*.sqlite3
 data/migration/*.sqlite3-shm
 data/migration/*.sqlite3-wal
-data/migration/*/
+# Chroma 벡터 인덱스 (RDB와 생명주기가 달라 별도 폴더에 격리, build_index.py 가 통째로 재생성)
+data/chroma/
 
 # 사용자 업로드 임시 파일
 data/99_uploads/

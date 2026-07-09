@@ -170,6 +170,7 @@ WorkShield MCP 서버의 진입점은 [src/app.py](src/app.py)이며, `MCP_TRANS
 | `APP_ENV` | `local` \| `prod` | `local`이면 임베더/리랭커를 로컬 모델로 직접 로딩, 그 외엔 RunPod API 사용 |
 | `RUNPOD_API_KEY` / `RUNPOD_ENDPOINT_ID` | 운영(prod) 임베딩/리랭킹 | `just deploy-embedding`으로 최초 발급 후 `.env`에 자동 반영 |
 | `DB_BASE_FILE` | SQLite 경로 | 기본 `data/migration/contract.sqlite3` |
+| `CHROMA_DIR` | Chroma persist 경로 | 기본 `data/chroma` (`just build-index` 실행 시 폴더 전체 재생성) |
 | `EMBEDDING_MODEL_NAME` / `RERANKER_MODEL_NAME` | 모델명 오버라이드 | 기본 `dragonkue/BGE-m3-ko` / `dragonkue/bge-reranker-v2-m3-ko` |
 
 데모(Streamlit) 쪽은 `demo/.env`에 `LLM_PROVIDER`, `GEMINI_API_KEY`, `GEMINI_MODEL`, `WORKSHIELD_MCP_URL`을 별도로 설정합니다.
@@ -259,7 +260,8 @@ docker compose up  # mcp(:8000) + demo(:8501) 동시 기동
 │   ├── 01_raw/          # 원본 표준계약서 (HWP)            [커밋]
 │   ├── 02_converted/    # 마크다운 변환 (체크포인트)        [커밋]
 │   ├── 03_normalized/   # 정규화 조항 JSON = 정답           [커밋]
-│   └── migration/       # 스키마 SQL[커밋] + SQLite·Chroma[생성물·미커밋]
+│   ├── migration/       # 스키마 SQL[커밋] + SQLite[생성물·미커밋]
+│   └── chroma/          # Chroma 벡터 인덱스[생성물·미커밋]
 ├── src/
 │   ├── contracts/       # 동결 계약 (enums · models · ports)
 │   ├── core/            # 이탈 탐지 순수 함수 (TDD 대상)
