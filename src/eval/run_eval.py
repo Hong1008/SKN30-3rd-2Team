@@ -100,7 +100,20 @@ def coverage_degeneracy_alert(deviation_dist: Dict[str, int]) -> str | None:
 # ─────────────────────────────────────────────────────────────────────────
 
 STANDARD_COLLECTION = "standard_clauses"
-SEARCH_VARIANTS = ("bm25", "dense", "hybrid", "hybrid_rerank")
+# dense 단독이 동일가중 hybrid보다 우세했던 v3 결과를 검증하기 위한 RRF 비율 스윕이다.
+# 5:5는 기존 기준선, 7:3·8:2·9:1은 BM25 기여를 단계적으로 낮춰 dense 우세 가설을 확인한다.
+# 10:0은 dense 변형과 중복이므로 별도 hybrid 행을 만들지 않는다.
+HYBRID_WEIGHT_VARIANTS = (
+    ("hybrid_5_5", 5.0, 5.0),
+    ("hybrid_7_3", 7.0, 3.0),
+    ("hybrid_8_2", 8.0, 2.0),
+    ("hybrid_9_1", 9.0, 1.0),
+)
+SEARCH_VARIANTS = ("bm25", "dense") + tuple(
+    variant
+    for hybrid_name, _, _ in HYBRID_WEIGHT_VARIANTS
+    for variant in (hybrid_name, hybrid_name.replace("hybrid_", "hybrid_rerank_", 1))
+)
 
 
 class _MemoizingEmbedder:
@@ -160,14 +173,14 @@ class NullGrounder:
 
 
 def build_cases_by_variant(golden: List[Dict], k: int, contract_type: str) -> Dict[str, List[Dict]]:
-    """4변형(bm25/dense/hybrid/hybrid_rerank)의 (retrieved_ids, gold_id) cases 를 한 번에 만듭니다.
+    """A-1 검색 변형군의 (retrieved_ids, gold_id) cases 를 한 번에 만듭니다.
 
     EXTRA(gold_clause_id=null) 케이스는 검색 정답이 없으므로 제외합니다.
     질의별 개별 search 대신 search_many/rerank_many 배치를 써서 임베딩 왕복을 N회→1회로
     줄입니다(07-01 결정 로그 §7 — search_many 도입 취지와 동일한 이유).
-    또한 hybrid 와 hybrid_rerank 는 동일한 hybrid 풀을 공유합니다 — k*4 로 넉넉히 **한 번만**
-    검색해 hybrid 는 상위 k 슬라이스로, hybrid_rerank 는 rerank_many 재정렬로 얻습니다
-    (중복 hybrid 검색 제거; 07-01 §1 불변식: 매칭엔 rerank_score 만 사용).
+    각 dense:BM25 RRF 비율은 k*4 후보 풀을 만들고, 같은 풀로 hybrid 상위 k와
+    hybrid_rerank 재정렬 결과를 함께 계산한다. 따라서 융합 순위와 reranker 후보 풀 변화가
+    모두 A-1에 드러난다.
     """
     from adapter import vector, reranker, embedder  # 지연 임포트: 모델 로드는 driver 실행 시에만
 
@@ -195,17 +208,26 @@ def build_cases_by_variant(golden: List[Dict], k: int, contract_type: str) -> Di
     vectors = embedder.embed_documents(queries)
     dense = vector.dense_search_many(STANDARD_COLLECTION, vectors, type_filter, k)
 
-    # hybrid 풀을 k*4 로 한 번만 검색 → hybrid(상위 k)·hybrid_rerank(재정렬)가 공유
-    pool = vector.hybrid_search_many(STANDARD_COLLECTION, vectors, queries, type_filter, k * 4)
-    hybrid = [hits[:k] for hits in pool]
-    reranked = reranker.rerank_many(queries, pool, text_key="text", top_k=k)
-
-    return {
+    cases_by_variant = {
         "bm25": _to_cases(bm25),
         "dense": _to_cases(dense),
-        "hybrid": _to_cases(hybrid),
-        "hybrid_rerank": _to_cases(reranked),
     }
+    for hybrid_name, dense_weight, bm25_weight in HYBRID_WEIGHT_VARIANTS:
+        pool = vector.hybrid_search_many(
+            STANDARD_COLLECTION,
+            vectors,
+            queries,
+            type_filter,
+            k * 4,
+            dense_weight=dense_weight,
+            bm25_weight=bm25_weight,
+        )
+        cases_by_variant[hybrid_name] = _to_cases([hits[:k] for hits in pool])
+        rerank_name = hybrid_name.replace("hybrid_", "hybrid_rerank_", 1)
+        reranked = reranker.rerank_many(queries, pool, text_key="text", top_k=k)
+        cases_by_variant[rerank_name] = _to_cases(reranked)
+
+    return cases_by_variant
 
 
 def _load_standards(contract_type: str) -> List[Any]:
@@ -350,6 +372,9 @@ def _write_result_md(
         "> 지표는 결정론적이며 LLM-judge 를 쓰지 않는다 (AGENTS.md #5).",
         "",
         f"## A-1. 검색 ablation — 전체 합산 (Recall@{k} · MRR)",
+        "",
+        "> `hybrid_X_Y`와 `hybrid_rerank_X_Y`의 X:Y는 dense:BM25 RRF 가중치입니다. "
+        "각 비율의 rerank 행은 동일 비율의 hybrid 후보 풀을 재정렬한 결과입니다.",
         "",
         f"| variant | recall@{k} | MRR | n |",
         "| --- | --- | --- | --- |",

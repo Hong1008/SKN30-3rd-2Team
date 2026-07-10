@@ -1,16 +1,24 @@
 # v3 — 평가 결과
 
-> 자동 생성: `src/eval/run_eval.py` · 2026-07-09 12:26:42 · `APP_ENV=prod` · 골든 `v3_*.json` (전체 n=117, 유형 3종)
+> 자동 생성: `src/eval/run_eval.py` · 2026-07-10 10:57:37 · `APP_ENV=prod` · 골든 `v3_*.json` (전체 n=117, 유형 3종)
 > 지표는 결정론적이며 LLM-judge 를 쓰지 않는다 (AGENTS.md #5).
 
 ## A-1. 검색 ablation — 전체 합산 (Recall@5 · MRR)
 
+> `hybrid_X_Y`와 `hybrid_rerank_X_Y`의 X:Y는 dense:BM25 RRF 가중치입니다. 각 비율의 rerank 행은 동일 비율의 hybrid 후보 풀을 재정렬한 결과입니다.
+
 | variant | recall@5 | MRR | n |
 | --- | --- | --- | --- |
-| bm25 | 0.880 | 0.561 | 75 |
-| dense | 0.907 | 0.629 | 75 |
-| hybrid | 0.880 | 0.618 | 75 |
-| hybrid_rerank | 0.893 | 0.607 | 75 |
+| bm25 | 0.893 | 0.563 | 75 |
+| dense | 0.893 | 0.633 | 75 |
+| hybrid_5_5 | 0.893 | 0.631 | 75 |
+| hybrid_rerank_5_5 | 0.907 | 0.617 | 75 |
+| hybrid_7_3 | 0.907 | 0.634 | 75 |
+| hybrid_rerank_7_3 | 0.907 | 0.617 | 75 |
+| hybrid_8_2 | 0.907 | 0.637 | 75 |
+| hybrid_rerank_8_2 | 0.907 | 0.617 | 75 |
+| hybrid_9_1 | 0.907 | 0.637 | 75 |
+| hybrid_rerank_9_1 | 0.907 | 0.617 | 75 |
 
 ## A-2/A-3. 이탈·독소 분류 — 계약 유형별 (참음성 포함)
 

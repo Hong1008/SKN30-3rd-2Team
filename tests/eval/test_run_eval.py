@@ -34,6 +34,58 @@ def test_evaluate_빈_케이스():
     assert report["n"] == 0
 
 
+def test_가중치별_hybrid_변형군을_생성한다(monkeypatch):
+    """A-1 스윕은 모든 권장 비율을 retriever에 전달해야 한다."""
+    import adapter
+    from eval.run_eval import HYBRID_WEIGHT_VARIANTS, SEARCH_VARIANTS, build_cases_by_variant
+
+    class FakeVector:
+        def __init__(self):
+            self.hybrid_calls = []
+
+        def bm25_search_many(self, _collection, queries, _filter, _top_k):
+            return [[{"id": "bm25-hit", "text": query}] for query in queries]
+
+        def dense_search_many(self, _collection, vectors, _filter, _top_k):
+            return [[{"id": "dense-hit", "text": str(vector)}] for vector in vectors]
+
+        def hybrid_search_many(
+            self, _collection, _vectors, queries, _filter, _top_k,
+            dense_weight=1.0, bm25_weight=1.0,
+        ):
+            self.hybrid_calls.append((dense_weight, bm25_weight))
+            return [[{"id": f"hybrid-{dense_weight:g}-{bm25_weight:g}", "text": query}] for query in queries]
+
+    class FakeEmbedder:
+        def embed_documents(self, texts):
+            return [[float(index)] for index, _ in enumerate(texts)]
+
+    class FakeReranker:
+        def rerank_many(self, _queries, hits_per_query, text_key, top_k):
+            assert text_key == "text"
+            assert top_k == 5
+            return hits_per_query
+
+    fake_vector = FakeVector()
+    monkeypatch.setattr(adapter, "vector", fake_vector)
+    monkeypatch.setattr(adapter, "embedder", FakeEmbedder())
+    monkeypatch.setattr(adapter, "reranker", FakeReranker())
+
+    result = build_cases_by_variant(
+        [{"user_clause": "제1조 테스트", "gold_clause_id": "gold"}],
+        k=5,
+        contract_type="SW_FREELANCE",
+    )
+
+    assert tuple(result) == SEARCH_VARIANTS
+    assert fake_vector.hybrid_calls == [
+        (dense_weight, bm25_weight)
+        for _, dense_weight, bm25_weight in HYBRID_WEIGHT_VARIANTS
+    ]
+    assert result["hybrid_7_3"][0]["retrieved_ids"] == ["hybrid-7-3"]
+    assert result["hybrid_rerank_9_1"][0]["gold_id"] == "gold"
+
+
 # --- 축퇴 경보 (v1 리뷰 §1 사후 조치: recall 1.0 / 특이도 0 오독을 지표 차원에서 차단) ---
 def _scores(tp, fp, fn, tn):
     return {"tp": tp, "fp": fp, "fn": fn, "tn": tn}

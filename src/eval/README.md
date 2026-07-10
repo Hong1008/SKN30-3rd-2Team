@@ -8,10 +8,11 @@
 | --- | --- | --- |
 | **검색 품질** | `Recall@k`, `MRR` | 사용자 조항에 맞는 표준조항을 상위 k 안에 잘 찾아오는가 |
 | **이탈 탐지** | `Precision` / `Recall` | 짚어낸 이탈 중 진짜 비율 / 진짜 이탈 중 짚어낸 비율 |
-| **ablation (8.5)** | 위 지표 × 4변형 | **RAG가 필요한가**를 증명하는 대표 결과물 |
+| **ablation (8.5)** | 검색 방식·RRF 비율별 위 지표 | **RAG와 융합 비율이 필요한가**를 증명하는 대표 결과물 |
 
-**ablation 4변형:** `BM25-only` / `dense-only` / `hybrid` / `hybrid+reranker`.
-기대 결과 — 말바꿈·순서 뒤집기 함정에서 BM25는 실패하고 dense/hybrid가 잡아내는 비율을 수치로 제시 → RAG 정당성이 경험적으로 증명됩니다.
+**A-1 변형:** `BM25-only` / `dense-only`와 dense:BM25 RRF 비율 `5:5`·`7:3`·`8:2`·`9:1`의
+`hybrid`·`hybrid+reranker`를 함께 비교합니다. `hybrid_7_3`처럼 표기된 숫자는 dense:BM25 가중치이며,
+`hybrid_rerank_*`는 같은 비율의 후보 풀을 재정렬한 결과입니다. 10:0은 dense-only와 중복이라 제외합니다.
 
 ## 구성
 
@@ -145,13 +146,13 @@ def build_cases(golden: list[dict], search_type: str, k: int, contract_type: str
     return cases
 ```
 
-### 4변형을 만드는 법 (ablation 용)
+### 검색 변형군을 만드는 법 (ablation 용)
 | variant | 만드는 법 |
 | --- | --- |
 | `bm25` | `vector.search(..., search_type="bm25")` |
 | `dense` | `vector.search(..., search_type="dense")` |
-| `hybrid` | `vector.search(..., search_type="hybrid")` |
-| `hybrid_rerank` | `hybrid` 로 넉넉히 뽑은 뒤 `reranker.rerank(user_clause, hits)[:k]` 로 재정렬 |
+| `hybrid_5_5` ~ `hybrid_9_1` | `vector.hybrid_search_many(..., dense_weight=X, bm25_weight=Y)` |
+| `hybrid_rerank_5_5` ~ `hybrid_rerank_9_1` | 같은 비율의 hybrid 후보 풀을 `reranker.rerank_many(..., top_k=k)`로 재정렬 |
 
 ### 전체 흐름
 ```
