@@ -81,11 +81,10 @@ recall(0.333)도 이 비대칭의 영향을 받았을 가능성이 높다(코퍼
 
 - [x] 방향 확정 + 구현 — `core/splitter.normalize_for_search` 추가, `build_index.py`·`review_pipe.py`
       배선, `tests/core/test_splitter.py`에 정규화 테스트 8건 추가(102개 전체 테스트 통과, 회귀 없음).
-- [ ] [N_toxic_corpus_bias.md](N_toxic_corpus_bias.md) DoD의 "SI/SM(+SW) 독소 recall 개선 확인"을
-      이 카드 완료 후 재실행하여 검증(N은 이 카드가 선행돼야 실제 효과가 관측됨) — **재인덱싱
-      (`just build-db`)과 `just eval` 재실행이 아직 안 됨**(구현만 완료, 실측 검증은 대기 중).
-- [ ] 표준조항 이탈 탐지 지표(F1 등)에 회귀가 없는지 A-1/A-2 재확인(정규화가 대칭 구조를 깨지 않는지)
-      — 위와 동일하게 재인덱싱 후 실측 필요.
+- [x] [N_toxic_corpus_bias.md](N_toxic_corpus_bias.md) DoD의 독소 recall 재측정 — `just build-db`와
+      v3 prod eval을 재실행해 TP=8/18까지 회복했으나 SI/SM 격차·precision 문제는 N 후속으로 남음.
+- [x] 표준조항 이탈·검색 지표 재확인 — Q 활성코퍼스 적용 뒤 A-1 hybrid Recall@5=0.920·MRR=0.903.
+      A-2의 잔여 FN은 P 회귀가 아니라 Q 후에도 남는 매칭 경계 사례로 분리했다.
 - [x] LLM 없이 규칙 기반 정규화만(규칙 #1), 지표는 결정론(규칙 #5) — `normalize_for_search`는 순수
       정규식 함수(LLM 호출 없음), `run_eval.py` 지표 코드는 변경하지 않아 결정론 그대로 유지.
 

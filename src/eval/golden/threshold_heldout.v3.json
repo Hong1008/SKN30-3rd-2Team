@@ -1,0 +1,14 @@
+{
+  "purpose": "threshold_calibration",
+  "selection": "계약유형별 약 1/3을 고정 held-out으로 분리하고, 각 유형에 이탈 양성 및 독소 양성을 포함한다.",
+  "heldout_case_ids": [
+    "v3-si-01", "v3-si-05", "v3-si-08", "v3-si-12", "v3-si-15",
+    "v3-si-16", "v3-si-20", "v3-si-23", "v3-si-27", "v3-si-29",
+    "v3-si-34", "v3-si-36", "v3-si-40", "v3-si-42", "v3-si-44",
+    "v3-sm-01", "v3-sm-04", "v3-sm-08", "v3-sm-13", "v3-sm-18",
+    "v3-sm-22", "v3-sm-25", "v3-sm-27", "v3-sm-29", "v3-sm-30",
+    "v3-sm-33", "v3-sm-36", "v3-sm-39", "v3-sm-41", "v3-sm-45",
+    "v3-sw-01", "v3-sw-04", "v3-sw-07", "v3-sw-10", "v3-sw-13",
+    "v3-sw-17", "v3-sw-19", "v3-sw-22", "v3-sw-26"
+  ]
+}

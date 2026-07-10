@@ -48,16 +48,36 @@ SI_SUBCONTRACT·SM_SUBCONTRACT 확장이 남았다.
    이 함수 자체가 삭제되므로, J 이후 작성분은 이 사전 검증 단계를 생략하고 커버리지 계산만으로
    sanity-check)** 로 의도한 라벨과 실제 코드 동작이 어긋나지 않는지 1차 점검.
 
+## 2026-07-10 — 임계값 보정용 held-out 확정
+
+- 동결된 골든 케이스 스키마에는 필드를 추가하지 않고,
+  [threshold_heldout.v3.json](../../src/eval/golden/threshold_heldout.v3.json)에 case_id 목록을 별도로
+  보관한다.
+- held-out은 39건(SI 15·SM 15·SW 9), tuning은 78건이다. 각 계약유형의 held-out에는 이탈 양성과
+  독소 양성이 최소 2건씩 포함되도록 고정했다.
+- `run_eval.py`는 전체합산 표와 함께 tuning·held-out 각각의 `match_threshold`·`toxic_threshold`
+  스윕을 출력한다. tuning에서 후보를 고르고, held-out으로만 채택 여부를 확인한다.
+
+### 2026-07-10 — v3 완료 기록
+
+- v3 골든은 SI 45·SM 45·SW 27, 총 117건으로 확정됐고 `validate_golden.py v3` 위반 0건을 확인했다.
+- SI/SM은 2025 활성 표준판 기준이며, 각 파일에 `reorder` trap이 포함된다.
+- held-out 결과에서 `match_threshold=0.45`는 현재 0.50보다 개선을 재현하지 못했고, 독소 0.75도
+  tuning 우세가 held-out에서 재현되지 않았다. 골든 규모 확대·case-level 진단 후에만 새 기본값을
+  채택한다.
+
 ## 미결정 / 사인오프 필요
-- [ ] 유형당 35건(총 87건)이 적정 규모인지, 더 늘릴지 — 통계적 안정성 vs 제작 비용 트레이드오프
-- [ ] SI_SUBCONTRACT의 2022/2025 버전 중 어느 쪽을 표준으로 쓸지(`gold_clause_id` 규약, v1_review §5 미해결 항목 — 제안: 2025 최신판 고정 + 버전 세그먼트 항상 포함)
-- [ ] held-out/tuning split을 케이스 작성 시점에 필드로 분리할지(v1_review §6) 여부
+
+- [ ] 다음 골든(v4)에서 독소 양성 held-out을 늘릴지 — 현재 held-out 양성 6건은 임계값 채택 근거로 작음
+- [x] SI_SUBCONTRACT 기준 표준 — 2025 최신판 고정(Q 카드, 2026-07-10)
+- [x] held-out/tuning split — 별도 manifest로 고정(2026-07-10), 골든 JSON 스키마는 불변
 
 ## 완료 조건 (DoD)
-- [ ] `v3_si_subcontract.json`·`v3_sm_subcontract.json` 작성, 유형당 목표 건수 충족
-- [ ] `validate_golden.py v3` 전 파일 위반 0건
-- [ ] trap 분포에 `reorder` 포함 확인
-- [ ] `gold_clause_id` 규약 문서화(`docs/tasks/D_eval.md` §골든셋 스키마에 반영)
+
+- [x] `v3_si_subcontract.json`·`v3_sm_subcontract.json` 작성 — 유형당 45건
+- [x] `validate_golden.py v3` 전 파일 위반 0건
+- [x] trap 분포에 `reorder` 포함 확인
+- [x] `gold_clause_id`에 `{contract_type}-{version}-art{N}` 규약 사용
 
 ## 참고
 - [src/eval/golden/v3_sw_freelance.json](../../src/eval/golden/v3_sw_freelance.json) — 파일럿 17건(형식 참고용)

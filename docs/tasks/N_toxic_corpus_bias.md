@@ -38,9 +38,9 @@ SW 프리랜서 어휘(도급인·수급인)로만 작성돼 있다 — 실측: 
 ## 완료 조건 (DoD)
 - [x] 채택 방향 확정 + 구현(07-09, 40→90건 + `INDEFINITE_CONFIDENTIALITY` 신규 작성)
 - [ ] [L_golden_v3.md](L_golden_v3.md) 골든셋으로 독소 recall 재측정, SI/SM이 SW 수준으로 개선됐는지
-      확인 — **⚠️ 07-09 실측: 이 코퍼스 수정만으론 recall이 개선되지 않음.** 별개 원인(쿼리·코퍼스 간
-      마크다운 헤더 포맷 비대칭)이 리랭커 점수를 붕괴시키고 있어 [P_text_normalization.md](P_text_normalization.md)가
-      먼저 해결돼야 이 항목을 실제로 검증할 수 있다. 상세: [07-09 결정 로그](../dicision/07-09.md)
+      확인 — **2026-07-10 재측정 완료:** P 정규화·Q 활성코퍼스 적용 뒤 기본 0.60 전체 TP=8/18,
+      SI=2/6·SM=1/6·SW=5/6로 recall 격차가 남았다. tuning 0.75의 F1 우세는 held-out에서 재현되지
+      않아 기본 threshold는 0.60을 유지한다. 다음은 case-level FP/FN 진단과 골든 확대다.
 - [ ] LLM 없이 검색·매칭만(규칙 #1), 지표는 결정론(규칙 #5)
 
 ## 참고

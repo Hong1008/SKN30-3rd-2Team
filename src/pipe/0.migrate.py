@@ -15,6 +15,8 @@ import sys
 import json
 import sqlite3
 import logging
+from collections import defaultdict
+from collections.abc import Iterable
 from pathlib import Path
 
 # config / contracts 를 import 하기 위해 src/ 를 모듈 경로에 추가 (실행 위치 무관)
@@ -28,6 +30,33 @@ logging.basicConfig(level=logging.INFO, format="%(message)s")
 SCHEMA_FILE = BASE_DIR / "data" / "migration" / "01.CREATE_TABLE.sql"
 NORMALIZED_DIR = BASE_DIR / "data" / "03_normalized"
 DB_PATH = BASE_DIR / DB_BASE_FILE
+
+
+def validate_single_active_version(standards: Iterable[StandardClause]) -> None:
+    """계약유형마다 활성 표준계약서 version이 하나인지 검증합니다.
+
+    구버전은 `data/03_normalized/archive/`에 보관하고, 활성 루트에는 현재 검토 기준이 되는
+    최신판만 둡니다. 신규 표준판을 추가할 때 구버전을 archive로 옮기지 않아 검색 풀이 다시
+    혼재되는 일을 막는 마이그레이션 전용 불변식입니다.
+    """
+    versions_by_type: dict[str, set[str]] = defaultdict(set)
+    for standard in standards:
+        versions_by_type[standard.contract_type.value].add(standard.version)
+
+    conflicts = {
+        contract_type: sorted(versions)
+        for contract_type, versions in versions_by_type.items()
+        if len(versions) > 1
+    }
+    if conflicts:
+        detail = "; ".join(
+            f"{contract_type}: {', '.join(versions)}"
+            for contract_type, versions in sorted(conflicts.items())
+        )
+        raise ValueError(
+            "활성 표준 코퍼스에는 계약유형별 하나의 version만 있어야 합니다. "
+            f"구버전 JSON을 data/03_normalized/archive/로 옮기세요. ({detail})"
+        )
 
 
 def _load_normalized(filename: str) -> list[dict]:
@@ -58,14 +87,17 @@ def migrate() -> None:
         logging.info(f"📐 스키마 적용 완료: {SCHEMA_FILE.name}")
 
         # 3. 표준조항 적재 (standard_clauses.*.json 전체)
-        clause_rows = []
+        standards = []
         for normalized_file in sorted(NORMALIZED_DIR.glob("standard_clauses.*.json")):
             for raw in json.loads(normalized_file.read_text(encoding="utf-8")):
                 c = StandardClause(**raw)  # enum/필수필드 검증
-                clause_rows.append(
-                    (c.clause_id, c.contract_type.value, c.category.value,
-                     c.title, c.text, c.source, c.version)
-                )
+                standards.append(c)
+        validate_single_active_version(standards)
+        clause_rows = [
+            (c.clause_id, c.contract_type.value, c.category.value,
+             c.title, c.text, c.source, c.version)
+            for c in standards
+        ]
         conn.executemany(
             "INSERT INTO standard_clauses "
             "(clause_id, contract_type, category, title, text, source, version) "

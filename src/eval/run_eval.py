@@ -100,6 +100,10 @@ def coverage_degeneracy_alert(deviation_dist: Dict[str, int]) -> str | None:
 # ─────────────────────────────────────────────────────────────────────────
 
 STANDARD_COLLECTION = "standard_clauses"
+MATCH_THRESHOLD_SWEEP = (0.40, 0.45, 0.50, 0.55, 0.60)
+TOXIC_THRESHOLD_SWEEP = (0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90)
+DEFAULT_MATCH_THRESHOLD = 0.5
+DEFAULT_TOXIC_THRESHOLD = 0.6
 # dense 단독이 동일가중 hybrid보다 우세했던 v3 결과를 검증하기 위한 RRF 비율 스윕이다.
 # 5:5는 기존 기준선, 7:3·8:2·9:1은 BM25 기여를 단계적으로 낮춰 dense 우세 가설을 확인한다.
 # 10:0은 dense 변형과 중복이므로 별도 hybrid 행을 만들지 않는다.
@@ -245,7 +249,10 @@ def _load_standards(contract_type: str) -> List[Any]:
 
 
 
-def review_golden_clauses(golden: List[Dict], contract_type: str) -> Dict[str, Any]:
+def review_golden_clauses(
+    golden: List[Dict],
+    contract_type: str,
+) -> Dict[str, Any]:
     """골든 케이스 전체를 review_contract 로 **한 번에** 배치 검토해 case_id → DeviationResult 를 모읍니다.
 
     조항별로 review_contract 를 개별 호출하면 배치 크기가 항상 1이 되어 내부의
@@ -311,6 +318,91 @@ def toxic_scores(golden: List[Dict], review_results: Dict[str, Any]) -> Dict[str
     return metrics.binary_scores(predicted, gold, universe)
 
 
+def deviation_threshold_sweep(
+    golden_by_type: Dict[str, List[Dict]],
+    review_results_by_type: Dict[str, Dict[str, Any]],
+    thresholds: tuple[float, ...] = MATCH_THRESHOLD_SWEEP,
+) -> List[Dict[str, float]]:
+    """기존 매칭 confidence로 match_threshold별 이탈 혼동행렬을 재계산합니다.
+
+    현재 1차 이탈 판정은 후보가 있고 score가 임계값 이상이면 NONE, 그 외에는 이탈 표식입니다.
+    `select_best_match`는 임계값 미달 EXTRA에도 최고 후보·confidence를 보존하므로, 이미 실행한
+    review 결과를 재사용해 추가 검색·리랭킹 없이 임계값 효과만 결정론적으로 비교할 수 있습니다.
+    """
+    universe: set[str] = set()
+    gold: set[str] = set()
+    for contract_type, golden in golden_by_type.items():
+        review_results = review_results_by_type[contract_type]
+        universe.update(f"{contract_type}:{case_id}" for case_id in review_results)
+        gold.update(
+            f"{contract_type}:{g['case_id']}"
+            for g in golden
+            if g["gold_deviation"] != "NONE"
+        )
+
+    sweep: List[Dict[str, float]] = []
+    for threshold in thresholds:
+        predicted: set[str] = set()
+        for contract_type, review_results in review_results_by_type.items():
+            predicted.update(
+                f"{contract_type}:{case_id}"
+                for case_id, result in review_results.items()
+                if result.matched_standard is None or result.confidence < threshold
+            )
+        sweep.append({"threshold": threshold, **metrics.binary_scores(predicted, gold, universe)})
+    return sweep
+
+
+def toxic_threshold_sweep(
+    golden_by_type: Dict[str, List[Dict]],
+    toxic_hits_by_type: Dict[str, Dict[str, List[Dict[str, Any]]]],
+    thresholds: tuple[float, ...] = TOXIC_THRESHOLD_SWEEP,
+) -> List[Dict[str, float]]:
+    """한 번 재정렬한 독소 후보에 임계값만 바꿔 전체 혼동행렬을 계산합니다."""
+    from pipe.review_pipe import _toxic_from_hits
+
+    sweep: List[Dict[str, float]] = []
+    for threshold in thresholds:
+        universe: set[str] = set()
+        gold: set[str] = set()
+        predicted: set[str] = set()
+        for contract_type, golden in golden_by_type.items():
+            hits_by_case = toxic_hits_by_type[contract_type]
+            universe.update(f"{contract_type}:{case_id}" for case_id in hits_by_case)
+            gold.update(
+                f"{contract_type}:{g['case_id']}"
+                for g in golden
+                if g.get("gold_toxic")
+            )
+            predicted.update(
+                f"{contract_type}:{case_id}"
+                for case_id, hits in hits_by_case.items()
+                if _toxic_from_hits(hits, threshold)
+            )
+        sweep.append({"threshold": threshold, **metrics.binary_scores(predicted, gold, universe)})
+    return sweep
+
+
+def rerank_toxic_golden_clauses(golden: List[Dict], contract_type: str) -> Dict[str, List[Dict[str, Any]]]:
+    """독소 후보를 한 번만 검색·재정렬해 case_id별 raw hit을 반환합니다.
+
+    `DeviationResult`에는 임계값을 통과한 ToxicPattern만 남아 raw score가 보존되지 않습니다.
+    임계값 스윕은 review_contract를 여러 번 재호출하는 대신, 동일한 `TOXIC_COLLECTION` 후보와
+    rerank_score를 여기서 한 번 확보한 뒤 `_toxic_from_hits`의 임계 필터만 반복 적용합니다.
+    """
+    from adapter import vector, reranker, embedder
+    from pipe.review_pipe import TOXIC_COLLECTION
+
+    queries = [normalize_for_search(g["user_clause"]) for g in golden]
+    vectors = embedder.embed_documents(queries)
+    hits_batch = vector.hybrid_search_many(TOXIC_COLLECTION, vectors, queries, None, 3)
+    reranked_batch = reranker.rerank_many(queries, hits_batch, text_key="text", top_k=3)
+    return {
+        g["case_id"]: hits
+        for g, hits in zip(golden, reranked_batch)
+    }
+
+
 GOLDEN_DIR = "src/eval/golden"
 
 
@@ -327,6 +419,51 @@ def _load_golden(version: str, golden_dir: str = GOLDEN_DIR) -> List[Dict]:
         with open(path, encoding="utf-8") as f:
             golden.extend(json.load(f))
     return golden
+
+
+def _load_threshold_heldout_case_ids(version: str, golden_dir: str = GOLDEN_DIR) -> set[str] | None:
+    """임계값 보정용 고정 held-out manifest가 있으면 case_id 집합을 읽습니다.
+
+    골든 케이스 스키마를 확장하지 않고 `threshold_heldout.vN.json`에 분할을 별도 보관합니다.
+    구버전 골든처럼 manifest가 없는 경우에는 None을 반환해 기존 전체합산 평가를 유지합니다.
+    """
+    import json
+
+    path = Path(golden_dir) / f"threshold_heldout.{version}.json"
+    if not path.exists():
+        return None
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    case_ids = payload.get("heldout_case_ids")
+    if not isinstance(case_ids, list) or not all(isinstance(case_id, str) for case_id in case_ids):
+        raise ValueError(f"임계값 held-out manifest 형식 오류: {path}")
+    return set(case_ids)
+
+
+def split_threshold_calibration_cases(
+    golden: List[Dict],
+    heldout_case_ids: set[str],
+) -> Dict[str, List[Dict]]:
+    """고정 manifest에 따라 골든을 tuning·heldout으로 나눕니다."""
+    golden_case_ids = {case["case_id"] for case in golden}
+    unknown_case_ids = heldout_case_ids - golden_case_ids
+    if unknown_case_ids:
+        raise ValueError(
+            "임계값 held-out manifest에 현재 골든에 없는 case_id가 있습니다: "
+            f"{sorted(unknown_case_ids)}"
+        )
+    heldout = [case for case in golden if case["case_id"] in heldout_case_ids]
+    tuning = [case for case in golden if case["case_id"] not in heldout_case_ids]
+    if not tuning or not heldout:
+        raise ValueError("임계값 보정에는 tuning과 heldout 양쪽에 최소 1건이 필요합니다.")
+    return {"tuning": tuning, "heldout": heldout}
+
+
+def _group_cases_by_contract_type(golden: List[Dict]) -> Dict[str, List[Dict]]:
+    """골든 케이스를 계약유형별 배치로 그룹화합니다."""
+    by_type: Dict[str, List[Dict]] = {}
+    for case in golden:
+        by_type.setdefault(case["contract_type"], []).append(case)
+    return by_type
 
 
 def _detect_latest_version(golden_dir: str = GOLDEN_DIR) -> str:
@@ -351,6 +488,9 @@ def _write_result_md(
     k: int,
     golden_dir: str = GOLDEN_DIR,
     alerts: List[str] | None = None,
+    deviation_sweep: List[Dict[str, float]] | None = None,
+    toxic_sweep: List[Dict[str, float]] | None = None,
+    calibration_sweeps: Dict[str, Dict[str, List[Dict[str, float]]]] | None = None,
 ) -> str:
     """버전 전체 평가 결과를 **단일** `{version}_result.md` 로 저장하고 경로를 반환한다.
 
@@ -399,6 +539,49 @@ def _write_result_md(
                 f"{s['tp']:.0f} | {s['fp']:.0f} | {s['fn']:.0f} | {s['tn']:.0f} |"
             )
             head = " | "  # 같은 유형의 둘째 행은 유형·n 칸 비움
+
+    def _append_threshold_table(title: str, threshold_name: str, sweep: List[Dict[str, float]]) -> None:
+        lines.extend([
+            "",
+            title,
+            "",
+            "> 이 표는 후보 임계값 비교용입니다. 동일 골든셋에서 가장 높은 값을 자동 채택하지 말고, "
+            "별도 held-out 검증과 사람 사인오프 후에만 프로덕션 기본값을 변경합니다.",
+            "",
+            f"| {threshold_name} | P | R | 특이도 | 정확도 | F1 | TP | FP | FN | TN |",
+            "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
+        ])
+        for scores in sweep:
+            lines.append(
+                f"| {scores['threshold']:.2f} | {scores['precision']:.3f} | {scores['recall']:.3f} | "
+                f"{scores['specificity']:.3f} | {scores['accuracy']:.3f} | {scores['f1']:.3f} | "
+                f"{scores['tp']:.0f} | {scores['fp']:.0f} | {scores['fn']:.0f} | {scores['tn']:.0f} |"
+            )
+
+    if deviation_sweep:
+        _append_threshold_table(
+            "## A-2. 이탈 match_threshold 스윕 — 전체 합산",
+            "match_threshold",
+            deviation_sweep,
+        )
+    if toxic_sweep:
+        _append_threshold_table(
+            "## A-3. 독소 toxic_threshold 스윕 — 전체 합산",
+            "toxic_threshold",
+            toxic_sweep,
+        )
+    if calibration_sweeps:
+        for split_name, sweeps in calibration_sweeps.items():
+            _append_threshold_table(
+                f"## A-2. 이탈 match_threshold 스윕 — {split_name} 전체합산",
+                "match_threshold",
+                sweeps["deviation"],
+            )
+            _append_threshold_table(
+                f"## A-3. 독소 toxic_threshold 스윕 — {split_name} 전체합산",
+                "toxic_threshold",
+                sweeps["toxic"],
+            )
     if alerts:
         lines += ["", "## ⚠️ 축퇴 경보", ""]
         lines += [f"- {a}" for a in alerts]
@@ -423,12 +606,11 @@ def _run_track_a(k: int = 5, version: str | None = None) -> None:
     golden = _load_golden(version)
     logger.info(f"=== [{version}] 골든셋 로드: {len(golden)}건 ===")
 
-    by_type: Dict[str, List[Dict]] = {}
-    for g in golden:
-        by_type.setdefault(g["contract_type"], []).append(g)
+    by_type = _group_cases_by_contract_type(golden)
 
     combined: Dict[str, List[Dict]] = {v: [] for v in SEARCH_VARIANTS}
     metrics_by_type: Dict[str, Dict[str, Any]] = {}
+    review_results_by_type: Dict[str, Dict[str, Any]] = {}
     alerts: List[str] = []
     for contract_type, cases in by_type.items():
         cbv = build_cases_by_variant(cases, k, contract_type)
@@ -436,6 +618,7 @@ def _run_track_a(k: int = 5, version: str | None = None) -> None:
             combined[variant].extend(c)
 
         review_results = review_golden_clauses(cases, contract_type)
+        review_results_by_type[contract_type] = review_results
         dev = deviation_scores(cases, review_results)
         tox = toxic_scores(cases, review_results)
         metrics_by_type[contract_type] = {
@@ -468,7 +651,52 @@ def _run_track_a(k: int = 5, version: str | None = None) -> None:
         r = overall[variant]
         logger.info(f"    {variant:15s} recall@{k}={r['recall@k']:.3f}  mrr={r['mrr']:.3f}  n={r['n']}")
 
-    out = _write_result_md(version, len(golden), overall, metrics_by_type, k, alerts=alerts)
+    deviation_sweep = deviation_threshold_sweep(by_type, review_results_by_type)
+    toxic_hits_by_type = {
+        contract_type: rerank_toxic_golden_clauses(cases, contract_type)
+        for contract_type, cases in by_type.items()
+    }
+    toxic_sweep = toxic_threshold_sweep(by_type, toxic_hits_by_type)
+    calibration_sweeps = None
+    heldout_case_ids = _load_threshold_heldout_case_ids(version)
+    if heldout_case_ids is not None:
+        calibration_sweeps = {}
+        for split_name, split_cases in split_threshold_calibration_cases(golden, heldout_case_ids).items():
+            split_by_type = _group_cases_by_contract_type(split_cases)
+            split_review_results_by_type = {
+                contract_type: {
+                    case["case_id"]: review_results_by_type[contract_type][case["case_id"]]
+                    for case in cases
+                }
+                for contract_type, cases in split_by_type.items()
+            }
+            split_toxic_hits_by_type = {
+                contract_type: {
+                    case["case_id"]: toxic_hits_by_type[contract_type][case["case_id"]]
+                    for case in cases
+                }
+                for contract_type, cases in split_by_type.items()
+            }
+            calibration_sweeps[split_name] = {
+                "deviation": deviation_threshold_sweep(split_by_type, split_review_results_by_type),
+                "toxic": toxic_threshold_sweep(split_by_type, split_toxic_hits_by_type),
+            }
+    logger.info(
+        "── 임계값 스윕 완료: "
+        f"match={list(MATCH_THRESHOLD_SWEEP)}, toxic={list(TOXIC_THRESHOLD_SWEEP)}"
+    )
+
+    out = _write_result_md(
+        version,
+        len(golden),
+        overall,
+        metrics_by_type,
+        k,
+        alerts=alerts,
+        deviation_sweep=deviation_sweep,
+        toxic_sweep=toxic_sweep,
+        calibration_sweeps=calibration_sweeps,
+    )
     logger.info(f"=== 결과 저장: {out} ===")
 
 

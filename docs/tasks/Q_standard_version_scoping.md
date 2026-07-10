@@ -53,18 +53,62 @@ DB 확인 결과 `standard_clauses` 테이블에 SI_SUBCONTRACT 표준조항이 
 
 ## 미결정 / 사인오프 필요 (AGENTS.md §2)
 
-- [ ] "버전"의 의미(질문 목록 상단) 자체를 먼저 확정 — 이게 정해져야 방향 1~3 중 선택 가능.
-- [ ] 방향 2 채택 시 `review_contract`/MCP 도구 시그니처 확장 여부 — 동결 계약 변경이라 사람 승인
-      선행.
-- [ ] 구버전(2022년판) 데이터를 검색 풀에서 뺄 뿐 `data/03_normalized`에서 삭제할지, 보관만 할지.
+- [x] 버전 의미 — 1차 MVP는 **현재 최신 표준판과의 비교**만 제공한다(2026-07-10 사용자 확정).
+- [x] 구버전 보관 방식 — Git 관리 archive에 보관하되 SQLite·Chroma 활성 코퍼스에서는 제외한다.
+- [x] MCP 시그니처 — 변경하지 않는다. 특정 시점 표준 비교는 실제 요구가 생겼을 때 별도 카드·사인오프로
+      `version` 입력을 검토한다.
+
+## 확정 구현 — active corpus + archive (2026-07-10)
+
+### 정책
+
+활성 `data/03_normalized/` 루트에는 계약유형별 하나의 version만 둔다. SI·SM 2022판 조항·서브청크
+JSON은 `data/03_normalized/archive/`로 이동해 Git에는 보관하되, 기존 마이그레이션 glob 대상에서는
+제외한다. 현재 `0.migrate.py`는 비재귀 `glob("standard_*.json")`을 사용하므로 archive 하위 파일은
+SQLite·Chroma에 적재되지 않는다.
+
+| 항목 | 계획 |
+| --- | --- |
+| 활성 비교 기준 | SI/SM 2025, SW 유형은 현재 보유한 2020판 |
+| 구버전 데이터 | `03_normalized/archive/`에 보관, 활성 SQLite·Chroma에는 미적재 |
+| MCP/API | `review_contract` 등 동결 시그니처는 변경하지 않음 |
+| 특정 과거 시점 검토 | 이번 범위에서 제외. 실제 요구가 생기면 `version` 입력 추가를 별도 카드·사인오프로 진행 |
+
+`StandardClause.version`은 출처·이력 메타데이터로 보존한다. 새 enum·Pydantic 모델·SQLite DDL·MCP
+시그니처를 추가하거나 바꾸지 않는다.
+
+### 구현 및 검증
+
+1. `tests/pipe/test_migrate.py`에 계약유형별 단일 활성 version 통과·복수 version 명시 실패
+   테스트를 먼저 작성한다.
+2. `0.migrate.py`에 `validate_single_active_version`을 두고, JSON Pydantic 검증 뒤·SQLite 적재 전에
+   호출하게 한다. 혼재가 발견되면 archive 이동 방법을 포함한 `ValueError`로 중단한다.
+3. SI·SM 2022 JSON 네 파일(표준조항·서브청크)을 archive로 이동하고, archive 정책을
+   `data/README.md`에 문서화한다.
+4. `uv run pytest tests/pipe/ tests/eval/ tests/server/ -m "not integration"`을 통과시킨다.
+5. `just build-db`로 활성 데이터베이스·인덱스를 재생성한다. SQLite에서 SI 56건·SM 63건이 2025만
+   포함하는지, archive의 2022 JSON이 미적재인지 확인한다.
+6. `just eval a v3 prod`으로 A-1 및 이탈 지표를 재측정한다. v3-si-45는 2025 조항과의 경계 사례이므로
+   Q만으로 해소된다고 가정하지 않는다.
+
+### 구현·검증 기록
+
+- [x] 2022 SI·SM 표준조항·서브청크 JSON 4개를 `archive/`로 이동
+- [x] `validate_single_active_version` 추가 및 `0.migrate.py` 연결
+- [x] `uv run pytest tests/pipe/ tests/eval/ tests/server/ -m "not integration"` — 42 passed
+- [x] `just build-db` 재생성 및 SQLite 확인 — SI 2025 56건, SM 2025 63건만 활성 적재
+- [x] `validate_golden.py v3` — 117건 위반 0건
+- [x] `just eval a v3 prod` 재실행 — A-1 hybrid Recall@5 0.920, MRR 0.901로 개선
+- [x] 구버전 매칭 제거 확인 — 활성 SQLite·Chroma가 2025 SI/SM만으로 재생성되어 `*-2022-*` 후보는
+      검색 풀에 존재하지 않음. A-2의 잔여 FN은 별도 매칭 경계 문제로 분리
 
 ## 완료 조건 (DoD)
 
-- [ ] "버전"의 용도·의미 확정(질문 목록 상단)
-- [ ] 채택 방향 확정 + 구현
-- [ ] [L_golden_v3.md](L_golden_v3.md) 골든셋으로 SI/SM 이탈 오분류(v3-si-41·44·45 등) 재측정,
-      해소됐는지 확인
-- [ ] LLM 없이 검색·매칭만(규칙 #1), 지표는 결정론(규칙 #5)
+- [x] "버전"의 용도·의미 확정 — 활성 코퍼스는 최신판 하나, 과거판은 archive
+- [x] 채택 방향 확정 + 구현
+- [x] [L_golden_v3.md](L_golden_v3.md) 골든셋으로 재측정 — v3 실행 완료. v3-si-45는 Q와 무관한
+      2025 경계 사례로 후속 매칭 분석에 이관
+- [x] LLM 없이 검색·매칭만(규칙 #1), 지표는 결정론(규칙 #5)
 
 ## 참고
 - [07-09 결정 로그](../dicision/07-09.md) — 실측 경위·재현 데이터

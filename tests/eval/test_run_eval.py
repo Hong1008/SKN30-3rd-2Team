@@ -14,6 +14,7 @@ eval.metrics 의 recall_at_k / mrr 를 재사용합니다. (중복 구현 금지
 👉 구현을 시작하면 pytestmark(skip) 줄을 삭제하세요.
 """
 import pytest
+from types import SimpleNamespace
 
 
 def test_evaluate_집계():
@@ -32,6 +33,93 @@ def test_evaluate_빈_케이스():
     from eval.run_eval import evaluate
     report = evaluate([], k=5)
     assert report["n"] == 0
+
+
+def test_임계값_보정용_고정_heldout을_분리한다():
+    from eval.run_eval import split_threshold_calibration_cases
+
+    golden = [
+        {"case_id": "tuning-1", "contract_type": "SI_SUBCONTRACT"},
+        {"case_id": "heldout-1", "contract_type": "SI_SUBCONTRACT"},
+        {"case_id": "heldout-2", "contract_type": "SM_SUBCONTRACT"},
+    ]
+
+    split = split_threshold_calibration_cases(golden, {"heldout-1", "heldout-2"})
+
+    assert [case["case_id"] for case in split["tuning"]] == ["tuning-1"]
+    assert [case["case_id"] for case in split["heldout"]] == ["heldout-1", "heldout-2"]
+
+
+def test_임계값_heldout에_없는_case_id가_있으면_실패한다():
+    from eval.run_eval import split_threshold_calibration_cases
+
+    with pytest.raises(ValueError, match="ghost"):
+        split_threshold_calibration_cases(
+            [{"case_id": "known", "contract_type": "SI_SUBCONTRACT"}],
+            {"ghost"},
+        )
+
+
+def test_이탈_임계값_스윕은_confidence로_혼동행렬을_재계산한다():
+    from eval.run_eval import deviation_threshold_sweep
+
+    golden_by_type = {
+        "SI_SUBCONTRACT": [
+            {"case_id": "none", "gold_deviation": "NONE"},
+            {"case_id": "extra", "gold_deviation": "EXTRA"},
+        ]
+    }
+    review_results_by_type = {
+        "SI_SUBCONTRACT": {
+            "none": SimpleNamespace(matched_standard=object(), confidence=0.55),
+            "extra": SimpleNamespace(matched_standard=object(), confidence=0.45),
+        }
+    }
+
+    sweep = deviation_threshold_sweep(
+        golden_by_type,
+        review_results_by_type,
+        thresholds=(0.5, 0.6),
+    )
+
+    assert sweep[0]["threshold"] == 0.5
+    assert sweep[0]["tp"] == 1
+    assert sweep[0]["tn"] == 1
+    assert sweep[0]["f1"] == pytest.approx(1.0)
+    assert sweep[1]["threshold"] == 0.6
+    assert sweep[1]["tp"] == 1
+    assert sweep[1]["fp"] == 1
+    assert sweep[1]["f1"] == pytest.approx(2 / 3)
+
+
+def test_독소_임계값_스윕은_임계값별_리뷰결과를_합산한다():
+    from eval.run_eval import toxic_threshold_sweep
+
+    golden_by_type = {
+        "SI_SUBCONTRACT": [
+            {"case_id": "normal", "gold_toxic": []},
+            {"case_id": "toxic", "gold_toxic": ["IP_TOTAL_FREE"]},
+        ]
+    }
+    toxic_hits_by_type = {
+        "SI_SUBCONTRACT": {
+            "normal": [{"pattern": "IP_TOTAL_FREE", "rerank_score": 0.7}],
+            "toxic": [{"pattern": "IP_TOTAL_FREE", "rerank_score": 0.8}],
+        }
+    }
+
+    sweep = toxic_threshold_sweep(
+        golden_by_type,
+        toxic_hits_by_type,
+        thresholds=(0.6, 0.8),
+    )
+
+    assert sweep[0]["threshold"] == 0.6
+    assert sweep[0]["tp"] == 1
+    assert sweep[0]["fp"] == 1
+    assert sweep[1]["threshold"] == 0.8
+    assert sweep[1]["tp"] == 1
+    assert sweep[1]["fp"] == 0
 
 
 def test_가중치별_hybrid_변형군을_생성한다(monkeypatch):
