@@ -13,7 +13,7 @@ from contracts.enums import ContractType, Category, Deviation, ToxicPattern, Pro
 from contracts.models import StandardClause, StandardSubChunk
 from adapter import vector, db, reranker, embedder
 from server.deps import get_parser, get_grounder
-from core import classify_clause_deviation, select_best_match
+from core import classify_clause_deviation, select_best_match, assess_contract_scope as assess_scope_rules
 from pipe.review_pipe import review_contract as review_contract_pipe
 from pipe.exceptions import EmptyDocumentError, CorpusUnavailableError, InvalidConfigError, PipelineIntegrityError
 from server.dto import (
@@ -29,6 +29,8 @@ from server.dto import (
     ListToxicPatternsResponse,
     ToxicPatternDetail,
     ListToxicPatternDetailsResponse,
+    AssessContractScopeResponse,
+    ContractTypeScopeScore,
 )
 
 logger = logging.getLogger(__name__)
@@ -67,10 +69,6 @@ def _resolve_contract_file(
     temp_path.write_bytes(raw)
     return str(temp_path), temp_path
 
-mcp = FastMCP("WorkShield")
-
-
-@mcp.tool()
 def parse_contract(
     file_path: Optional[str] = None,
     file_content: Optional[str] = None,
@@ -124,6 +122,64 @@ def parse_contract(
     )
 
 
+def assess_contract_scope(
+    file_path: Optional[str] = None,
+    file_content: Optional[str] = None,
+    file_name: Optional[str] = None,
+) -> AssessContractScopeResponse:
+    """계약서가 지원 SW 표준계약서 범위에 속하는지 결정론적으로 판별합니다.
+
+    파싱된 조항의 카테고리 앵커와 계약유형 표식을 비교할 뿐 파일명·LLM·법률상
+    유효성 판단은 사용하지 않습니다. CONTRACT_TYPE_UNCERTAIN은 검토 차단이 아닌
+    경고 상태입니다. 호출자는 사용자가 contract_type을 명시하면 그 값으로
+    review_contract를 계속 호출할 수 있습니다.
+
+    Args:
+        file_path: 분석할 계약서 절대 경로(로컬 stdio 환경용).
+        file_content: base64 인코딩 계약서 바이트(네트워크 환경용).
+        file_name: file_content와 함께 쓰는 원본 파일명.
+    """
+    resolved_path, temp_path = _resolve_contract_file(file_path, file_content, file_name)
+    try:
+        clauses = get_parser().parse(resolved_path)
+    finally:
+        if temp_path is not None:
+            temp_path.unlink(missing_ok=True)
+
+    if not clauses:
+        return AssessContractScopeResponse(
+            status="EMPTY_DOCUMENT",
+            message="조항을 찾을 수 없습니다. 범위 판별을 위한 텍스트가 부족합니다.",
+        )
+
+    assessment = assess_scope_rules(clause.text for clause in clauses)
+    candidates = [
+        ContractTypeScopeScore(contract_type=contract_type.value, score=score)
+        for contract_type, score in sorted(
+            assessment.scores.items(), key=lambda item: (-item[1], item[0].value)
+        )
+    ]
+    messages = {
+        "IN_SCOPE": "지원 표준계약서와 비교할 후보입니다. suggested_contract_type으로 review_contract를 호출할 수 있습니다.",
+        "CONTRACT_TYPE_UNCERTAIN": (
+            "지원 SW 계약과 일부 공통점이 있으나 계약유형 근거가 충분하지 않습니다. "
+            "경고를 확인한 뒤 사용자가 contract_type을 명시하여 review_contract를 호출할 수 있습니다."
+        ),
+        "OUT_OF_SCOPE": "현재 지원 SW 표준계약서 코퍼스와의 공통 근거가 부족한 문서입니다. 표준 대비 검토 대상에서 제외하는 것을 권장합니다.",
+    }
+    return AssessContractScopeResponse(
+        status=assessment.status.value,
+        suggested_contract_type=(
+            assessment.suggested_contract_type.value
+            if assessment.suggested_contract_type is not None else None
+        ),
+        candidates=candidates,
+        matched_clause_count=assessment.matched_clause_count,
+        exclusion_markers=list(assessment.exclusion_markers),
+        message=messages[assessment.status.value],
+    )
+
+
 _MATCH_TOP_K_MAX = 10
 _STANDARD_CLAUSES_TABLE = "standard_clauses"
 
@@ -140,7 +196,6 @@ def _load_standards(ct: ContractType) -> list[StandardClause]:
 _STANDARD_CLAUSES_COLLECTION = "standard_clauses"
 
 
-@mcp.tool()
 def match_clause(
     clause_text: str,
     contract_type: str,
@@ -207,7 +262,6 @@ def match_clause(
     )
 
 
-@mcp.tool()
 def get_grounding(
     category: Optional[str] = None,
     clause_text: Optional[str] = None,
@@ -275,7 +329,6 @@ PHASE_MESSAGES = {
     ProgressPhase.MISSING_DETECTION: "누락 표준조항 분석 중..."
 }
 
-@mcp.tool()
 async def review_contract(
     contract_type: str,
     file_path: Optional[str] = None,
@@ -398,7 +451,6 @@ async def review_contract(
 _CLASSIFY_TOP_K = 5
 
 
-@mcp.tool()
 def classify_clause(
     clause_text: str,
     contract_type: str,
@@ -476,7 +528,6 @@ def classify_clause(
     )
 
 
-@mcp.tool()
 def list_contract_types() -> ListContractTypesResponse:
     """
     지원하는 계약 종류(contract_type) 전체 목록을 조회합니다.
@@ -488,7 +539,6 @@ def list_contract_types() -> ListContractTypesResponse:
     return ListContractTypesResponse(contract_types=[e.value for e in ContractType])
 
 
-@mcp.tool()
 def list_categories(contract_type: Optional[str] = None) -> ListCategoriesResponse:
     """
     조항 분류 카테고리(category) 전체 목록을 설명·앵커 키워드와 함께 조회합니다.
@@ -519,7 +569,6 @@ def list_categories(contract_type: Optional[str] = None) -> ListCategoriesRespon
     )
 
 
-@mcp.tool()
 def list_toxic_patterns() -> ListToxicPatternsResponse:
     """
     탐지 대상 독소조항 패턴(toxic_pattern) 전체 목록을 조회합니다.
@@ -529,7 +578,6 @@ def list_toxic_patterns() -> ListToxicPatternsResponse:
     return ListToxicPatternsResponse(patterns=[p.value for p in ToxicPattern])
 
 
-@mcp.tool()
 def list_toxic_pattern_details() -> ListToxicPatternDetailsResponse:
     """탐지 대상 독소조항 패턴을 사람이 읽는 대표 제목과 함께 조회합니다 (패턴 enum 1건당 1행).
 
@@ -547,7 +595,6 @@ def list_toxic_pattern_details() -> ListToxicPatternDetailsResponse:
     )
 
 
-@mcp.resource("standard://{contract_type}")
 def list_standard_clauses(contract_type: str) -> list[dict]:
     """계약 유형별 표준조항 목록을 (clause_id, title, category) 요약으로 읽기 전용 브라우징합니다.
 
@@ -567,7 +614,6 @@ def list_standard_clauses(contract_type: str) -> list[dict]:
     return rows
 
 
-@mcp.resource("standard://{contract_type}/{clause_id}")
 def get_standard_clause(contract_type: str, clause_id: str) -> dict:
     """표준조항 원문 전체(제목·본문·출처·버전)를 clause_id로 조회합니다."""
     try:
@@ -584,3 +630,47 @@ def get_standard_clause(contract_type: str, clause_id: str) -> dict:
     if row is None:
         raise ValueError(f"표준조항을 찾을 수 없습니다: contract_type={contract_type}, clause_id={clause_id}")
     return row
+
+
+class WorkShieldTools:
+    """WorkShield의 도구·리소스를 주입받은 FastMCP 인스턴스에 등록한다.
+
+    DB·벡터·모델은 공유 인프라 싱글턴으로 유지하되, 통신 서버 인스턴스는 이
+    composition 단계에서만 받는다. 기존 모듈 함수는 하위호환·직접 단위 테스트를
+    위해 보존하고, MCP에는 이 클래스의 인스턴스 메서드만 등록한다.
+    """
+
+    parse_contract = staticmethod(parse_contract)
+    assess_contract_scope = staticmethod(assess_contract_scope)
+    match_clause = staticmethod(match_clause)
+    get_grounding = staticmethod(get_grounding)
+    review_contract = staticmethod(review_contract)
+    classify_clause = staticmethod(classify_clause)
+    list_contract_types = staticmethod(list_contract_types)
+    list_categories = staticmethod(list_categories)
+    list_toxic_patterns = staticmethod(list_toxic_patterns)
+    list_toxic_pattern_details = staticmethod(list_toxic_pattern_details)
+
+    def __init__(self, mcp: FastMCP) -> None:
+        for name in (
+            "parse_contract",
+            "assess_contract_scope",
+            "match_clause",
+            "get_grounding",
+            "review_contract",
+            "classify_clause",
+            "list_contract_types",
+            "list_categories",
+            "list_toxic_patterns",
+            "list_toxic_pattern_details",
+        ):
+            mcp.add_tool(getattr(self, name), name=name)
+
+        # 리소스도 전역 데코레이터가 아니라, 주입된 앱에만 바인딩한다.
+        @mcp.resource("standard://{contract_type}")
+        def standard_list_resource(contract_type: str) -> list[dict]:
+            return list_standard_clauses(contract_type)
+
+        @mcp.resource("standard://{contract_type}/{clause_id}")
+        def standard_detail_resource(contract_type: str, clause_id: str) -> dict:
+            return get_standard_clause(contract_type, clause_id)

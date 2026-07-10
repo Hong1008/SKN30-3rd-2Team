@@ -129,7 +129,10 @@ def _toxic_from_hits(
 
 
 def _grounding_for(
-    grounder: Grounder, category: Category, contract_type: ContractType
+    grounder: Grounder,
+    category: Category,
+    contract_type: ContractType,
+    cache: Dict[Tuple[Category, ContractType], Tuple[GroundingLaw, ...]],
 ) -> List[GroundingLaw]:
     """이탈(MISSING) 조항에 법령 근거를 부착합니다. GENERAL 은 grounding 대상 아님.
 
@@ -138,7 +141,15 @@ def _grounding_for(
     """
     if category == Category.GENERAL:
         return []
-    return grounder.get_grounding(category, contract_type)
+    key = (category, contract_type)
+    cached = cache.get(key)
+    if cached is None:
+        # 예외는 캐시에 넣지 않아 다음 누락 조항에서 재시도할 수 있게 한다. 빈 목록은
+        # 정확 법령명 불일치의 명시적 NO_RESULT이므로 정상 결과로 캐시한다.
+        cached = tuple(grounder.get_grounding(category, contract_type))
+        cache[key] = cached
+    # DeviationResult 소비자가 목록/모델을 바꾸어도 동일 요청의 캐시가 오염되지 않는다.
+    return [law.model_copy(deep=True) for law in cached]
 
 
 def review_contract(
@@ -288,6 +299,9 @@ def review_contract(
     logger.info("[review_contract] 3단계: 누락된 표준조항(MISSING) 탐지를 수행합니다.")
     missing_clauses = detect_missing_clauses(all_standard_clauses, matched_ids)
     logger.info(f"[review_contract] 누락 표준조항 탐지 결과: {len(missing_clauses)}건 누락 확인")
+    # 계약 원문을 넘지 않는 정적 grounding만 이 요청 안에서 재사용한다. 함수가 끝나면
+    # 즉시 폐기되어 사용자 계약 정보가 서버 전역 메모리에 남지 않는다.
+    grounding_cache: Dict[Tuple[Category, ContractType], Tuple[GroundingLaw, ...]] = {}
 
     for missing_standard in missing_clauses:
         related = graph.get_related_risks(missing_standard.clause_id) if graph is not None else []
@@ -296,7 +310,9 @@ def review_contract(
             matched_standard=missing_standard,
             deviation=Deviation.MISSING,
             confidence=0.0,
-            grounding=_grounding_for(grounder, missing_standard.category, contract_type),
+            grounding=_grounding_for(
+                grounder, missing_standard.category, contract_type, grounding_cache
+            ),
             related_risk_clauses=related,
         ))
 

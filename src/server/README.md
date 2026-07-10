@@ -31,12 +31,16 @@
 | `list_contract_types` | 지원 계약 종류 조회 (Discovery) | 없음 | `[str]` |
 | `list_categories` | 카테고리 + 설명 + 앵커 키워드 조회 (Discovery) | 없음 | `[{value, description, anchors}]` |
 | `list_toxic_patterns` | 독소 패턴 종류 조회 (Discovery) | 없음 | `[str]` |
+| `assess_contract_scope` | 지원 SW 표준 코퍼스 범위·계약유형 후보 판별 | `file_path` 또는 `file_content`, `file_name` | 범위 상태·유형 후보·근거 점수 |
 
 - `match_clause`(검색 후보만 나열)와 `classify_clause`(최종 이탈 판정까지 완결)는 역할이 다르다.
   프론트가 "이 조항 하나만 빠르게 이탈 판정"하려면 `parse_contract` → `classify_clause` 체이닝을 쓰면
   된다 (전체 `review_contract` 없이도 부분 워크플로우가 성립).
 - Discovery 도구는 `contract_type`/`category`/`toxic_pattern` enum 값을 **하드코딩하지 않고 런타임에
   조회**하게 하기 위함. 도구 docstring에도 값 목록을 박아넣지 말고 이 도구들을 참조하도록 안내할 것.
+- `assess_contract_scope`는 동결된 4개 도구와 별개인 사전 점검 도구다. `OUT_OF_SCOPE`는 표준 대비
+  검토 제외 권고이고, `CONTRACT_TYPE_UNCERTAIN`은 차단이 아니라 경고다. 후자의 경우 사용자가
+  `contract_type`을 명시해 기존 `review_contract`를 호출할 수 있다.
 
 ### 1.2 Resource (읽기 전용 표준조항 브라우징)
 

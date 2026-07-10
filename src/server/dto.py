@@ -78,3 +78,21 @@ class ToxicPatternDetail(BaseModel):
 
 class ListToxicPatternDetailsResponse(BaseModel):
     patterns: list[ToxicPatternDetail]
+
+
+class ContractTypeScopeScore(BaseModel):
+    """범위 판별에서 계약유형별로 계산된 결정론적 근거 점수."""
+
+    contract_type: str
+    score: int
+
+
+class AssessContractScopeResponse(BaseModel):
+    """지원 표준 코퍼스 범위 판별 결과."""
+
+    status: Literal["IN_SCOPE", "CONTRACT_TYPE_UNCERTAIN", "OUT_OF_SCOPE", "EMPTY_DOCUMENT"]
+    suggested_contract_type: Optional[str] = None
+    candidates: list[ContractTypeScopeScore] = Field(default_factory=list)
+    matched_clause_count: int = 0
+    exclusion_markers: list[str] = Field(default_factory=list)
+    message: Optional[str] = None

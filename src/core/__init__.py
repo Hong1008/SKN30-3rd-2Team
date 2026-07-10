@@ -6,6 +6,7 @@ from .deviation import (
 from .graph import traverse_related_risks
 from .toxic import detect_toxic_patterns
 from .splitter import is_large_clause, split_into_sub_chunks
+from .contract_scope import ContractScopeAssessment, ScopeStatus, assess_contract_scope
 
 __all__ = [
     "select_best_match",
@@ -16,4 +17,7 @@ __all__ = [
     "detect_toxic_patterns",
     "is_large_clause",
     "split_into_sub_chunks",
+    "ContractScopeAssessment",
+    "ScopeStatus",
+    "assess_contract_scope",
 ]

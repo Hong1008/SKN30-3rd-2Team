@@ -1,25 +1,49 @@
+"""WorkShield MCP 애플리케이션 조립 및 실행 진입점."""
+
+import logging
 import os
-import sys
+from contextlib import asynccontextmanager
+from collections.abc import AsyncIterator
 
-# 프로젝트 루트와 src 디렉토리를 Python 모듈 검색 경로(sys.path)에 자동으로 추가합니다.
-# 이 파일(src/app.py)은 src 디렉토리 바로 밑에 있으므로 현재 디렉토리가 src 디렉토리가 됩니다.
-current_dir = os.path.dirname(os.path.abspath(__file__))
+from mcp.server.fastmcp import FastMCP
 
-if current_dir not in sys.path:
-    sys.path.insert(0, current_dir)
+from adapter.korean_law_mcp import koreanLaw
+from server.korean_law_wrapper import KoreanLawWrapper
+from server.server import WorkShieldTools
 
-from server.server import mcp
 
-if __name__ == "__main__":
-    import logging
+@asynccontextmanager
+async def _lifespan(_app: FastMCP) -> AsyncIterator[dict[str, object]]:
+    """외부 법률 MCP 세션을 앱 수명과 함께 열고 닫는다."""
+    koreanLaw.start()
+    try:
+        yield {}
+    finally:
+        koreanLaw.close()
+
+
+def create_app() -> FastMCP:
+    """새 MCP 서버 인스턴스를 만들고 모든 도구·리소스를 등록한다."""
+    mcp = FastMCP("WorkShield", lifespan=_lifespan)
+    WorkShieldTools(mcp)
+    # 1차 Grounder와 2차 프록시가 동일한 자식 프로세스/세션/TTL 캐시를 재사용한다.
+    KoreanLawWrapper(mcp, client=koreanLaw)
+    return mcp
+
+
+def main() -> None:
+    """환경 설정에 맞춰 조립된 MCP 서버를 실행한다."""
     logging.basicConfig(
         level=logging.DEBUG,
-        format="[%(asctime)s] [%(levelname)s] (%(filename)s:%(lineno)d) %(message)s"
+        format="[%(asctime)s] [%(levelname)s] (%(filename)s:%(lineno)d) %(message)s",
     )
-
-    # 로컬 개발: 기본 stdio. 컨테이너 배포: MCP_TRANSPORT=streamable-http (Dockerfile 참고)
+    mcp = create_app()
     transport = os.getenv("MCP_TRANSPORT", "stdio")
     if transport != "stdio":
         mcp.settings.host = os.getenv("MCP_HOST", mcp.settings.host)
         mcp.settings.port = int(os.getenv("MCP_PORT", mcp.settings.port))
     mcp.run(transport=transport)
+
+
+if __name__ == "__main__":
+    main()
