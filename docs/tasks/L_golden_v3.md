@@ -13,6 +13,9 @@ SI_SUBCONTRACT·SM_SUBCONTRACT 확장이 남았다.
 
 ## 현재 상태
 
+> **현재 판정: v3 완료.** 아래 SW 파일럿·SI/SM 미착수 표기는 제작 중간 이력이며,
+> 2026-07-10에 SI 45·SM 45·SW 27, 총 117건과 39건 held-out manifest를 확정했다.
+
 - ✅ **검증 스크립트 완성**: [validate_golden.py](../../src/eval/golden/validate_golden.py) — 6종 스키마
   검사(gold_toxic 타입/enum, gold_deviation enum, gold_clause_id 코퍼스존재, paraphrase+NONE 금지,
   case_id 중복). `uv run python src/eval/golden/validate_golden.py v3` 로 실행.
@@ -20,7 +23,7 @@ SI_SUBCONTRACT·SM_SUBCONTRACT 확장이 남았다.
   검증 통과. 단항/다항 조항 NONE, 커버리지형·치명변경형(부정어·숫자·당사자) CHANGED, contradiction
   (규칙탐지 불가 케이스 명시적으로 포함 — `v3-sw-11`), reorder(v1·v2 모두 0건이었던 함정 최초 도입,
   `v3-sw-15`), EXTRA 2건.
-- ⬜ **SI_SUBCONTRACT·SM_SUBCONTRACT 미착수.**
+- ~~SI_SUBCONTRACT·SM_SUBCONTRACT 미착수~~ → ✅ 2026-07-10 완료(아래 완료 기록 참조).
 
 ## 07-07 세션에서 확정된 것 — 이 카드에 영향
 
@@ -68,7 +71,7 @@ SI_SUBCONTRACT·SM_SUBCONTRACT 확장이 남았다.
 
 ## 미결정 / 사인오프 필요
 
-- [ ] 다음 골든(v4)에서 독소 양성 held-out을 늘릴지 — 현재 held-out 양성 6건은 임계값 채택 근거로 작음
+- [x] v3 범위 완료. 독소 양성 held-out 확대는 v3 수정이 아니라 **v4 별도 후속**으로 분리
 - [x] SI_SUBCONTRACT 기준 표준 — 2025 최신판 고정(Q 카드, 2026-07-10)
 - [x] held-out/tuning split — 별도 manifest로 고정(2026-07-10), 골든 JSON 스키마는 불변
 

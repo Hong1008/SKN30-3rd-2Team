@@ -212,3 +212,15 @@ def test_coverage_degeneracy_혼합_분포면_경보_없음():
 def test_coverage_degeneracy_표본_너무_작으면_판단_보류():
     from eval.run_eval import coverage_degeneracy_alert
     assert coverage_degeneracy_alert({"EXTRA": 2}) is None
+
+
+def test_load_golden은_진단_산출물을_골든케이스로_읽지_않는다(tmp_path):
+    import json
+    from eval.run_eval import _load_golden
+
+    (tmp_path / "v9_sw_freelance.json").write_text(
+        json.dumps([{"case_id": "case", "contract_type": "SW_FREELANCE"}]), encoding="utf-8"
+    )
+    (tmp_path / "v9_diagnostics.json").write_text(json.dumps({"deviation": []}), encoding="utf-8")
+
+    assert _load_golden("v9", str(tmp_path)) == [{"case_id": "case", "contract_type": "SW_FREELANCE"}]

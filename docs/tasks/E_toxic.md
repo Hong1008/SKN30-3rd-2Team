@@ -2,6 +2,9 @@
 
 > 기획서 7.2 · 업무 #18 · **코어(A·B·C)가 도는 것을 확인한 뒤 착수**
 
+> **현재 상태(2026-07-10): 완료.** 독소 컬렉션 빌드, 양방향 검색, `DeviationResult` 배선과 v3 골든
+> 평가까지 끝났다. 품질 개선은 [N 후속](N_toxic_corpus_bias.md)의 진단과 v4 검증으로 진행한다.
+
 ## 목표
 "표준엔 없지만 사용자에게 **해로운 추가 조항**"을 잡는다. 기존이 *표준→사용자*(빠짐/다름) 방향이라면,
 여기에 **독소 패턴→사용자** 방향 검색 축을 하나 더 더한다. LLM 없이 검색·매칭으로 동작.
@@ -23,9 +26,9 @@
 
 ## 완료 조건 (DoD)
 - [x] `toxic_patterns` Chroma 컬렉션이 `just build-db` 로 함께 빌드됨
-- [ ] 독소 조항(예: 저작권 전부 무상귀속)이 매칭되어 `toxic_patterns` 에 표식됨
-- [ ] 골든셋 `gold_toxic` 라벨로 검증 (eval 연계)
-- [ ] LLM 없이 검색·매칭만 (AGENTS.md 규칙 #1)
+- [x] 독소 조항이 매칭되어 `toxic_patterns` 에 표식됨
+- [x] 골든셋 `gold_toxic` 라벨로 검증 (eval 연계)
+- [x] LLM 없이 검색·매칭만 (AGENTS.md 규칙 #1)
 
 ## 참고
 - [src/core/README.md](../../src/core/README.md) (`detect_toxic_patterns`), `enums.ToxicPattern`

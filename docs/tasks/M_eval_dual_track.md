@@ -1,5 +1,8 @@
 # [재설계 M] eval — 1차/2차 분리 채점 + 결정론 규칙(#5)과의 공존
 
+> **현재 상태: K 이후 재검토.** K의 structured output 계약과 모델이 미확정이므로 질문과 지표 코드를
+> 먼저 구현하지 않는다. 현재 1차 평가는 [D_eval.md](D_eval.md)의 결정론적 지표를 유지한다.
+
 > 근거: [07-03 결정 로그](../dicision/07-03.md) §3 미해결항목, 07-07 세션(1차/2차 판정 경계 설계).
 > 선행: [J_deviation_redesign.md](J_deviation_redesign.md)(1차 동작 확정), [K_second_stage_llm.md](K_second_stage_llm.md)(2차 존재).
 > 이 카드는 **설계 질문 목록만 정리** — 해결책은 착수 세션에서 결정.

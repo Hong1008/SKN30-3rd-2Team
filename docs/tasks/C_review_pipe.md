@@ -1,5 +1,8 @@
 # 팀원 C (+리드) — 검토 조립 (`pipe/review_pipe`)
 
+> **현재 상태(2026-07-10): 완료·실제 E2E 검증.** 실제 vector/reranker/법령 grounder와 MCP
+> composition root까지 배선됐으며 Golden E2E 12개 정상 문서로 확인했다.
+
 ## 목표
 core 의 순수 함수들을 **조립해 계약서 1건 전체를 검토**한다. MCP `review_contract` 의 본체.
 사용자 조항마다 [매칭 → 이탈분류 → 누락탐지 → 법령근거] 를 수행해 `DeviationResult[]` 반환.
@@ -22,7 +25,7 @@ core 의 순수 함수들을 **조립해 계약서 1건 전체를 검토**한다
 
 ## 완료 조건 (DoD)
 - [x] `tests/pipe/test_review_pipe.py` 전부 통과
-- [ ] (통합) B의 인덱스 빌드 후 실제 `adapter.vector`·`adapter.koreanLaw` 주입으로 동작 확인
+- [x] (통합) 실제 `adapter.vector`·법령 MCP grounder 주입 및 Golden E2E 동작 확인
 - [x] LLM·해석 문장 생성 없음 (검색·비교·분류만 — AGENTS.md 규칙 #1)
 
 ## 참고

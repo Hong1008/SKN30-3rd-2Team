@@ -1,5 +1,8 @@
 # [재설계 K] 2차 판정 — 잠정 NONE·EXTRA의 최종 확인/설명 (서버 밖 LLM)
 
+> **현재 상태: backlog / 미착수.** 1차 품질 진단과 v4 독립 검증 뒤 진행한다. structured output
+> 스키마와 모델 사인오프 전에는 구현하지 않으며, MCP 서버 안에는 LLM 호출을 넣지 않는다.
+
 > 근거: [07-03 결정 로그](../dicision/07-03.md) §3, 07-07 세션(1차/2차 판정 경계 설계).
 > 선행: [J_deviation_redesign.md](J_deviation_redesign.md) — J가 만드는 "잠정 NONE"/근접후보 포함 EXTRA 신호가 있어야 이 카드가 성립.
 >

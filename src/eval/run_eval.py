@@ -100,6 +100,7 @@ def coverage_degeneracy_alert(deviation_dist: Dict[str, int]) -> str | None:
 # ─────────────────────────────────────────────────────────────────────────
 
 STANDARD_COLLECTION = "standard_clauses"
+SUB_CHUNK_COLLECTION = "standard_sub_chunks"
 MATCH_THRESHOLD_SWEEP = (0.40, 0.45, 0.50, 0.55, 0.60)
 TOXIC_THRESHOLD_SWEEP = (0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90)
 DEFAULT_MATCH_THRESHOLD = 0.5
@@ -403,6 +404,36 @@ def rerank_toxic_golden_clauses(golden: List[Dict], contract_type: str) -> Dict[
     }
 
 
+
+def rerank_standard_golden_clauses(golden: List[Dict], contract_type: str) -> Dict[str, List[Dict[str, Any]]]:
+    """이탈 진단용 표준·서브청크 top-3 후보와 출처를 보존합니다.
+
+    review_contract의 반환 계약은 최종 매칭만 노출하므로, eval에서만 검색·재정렬을 한 번 더
+    수행한다. 이 결과는 MCP 응답이나 1차 판정에는 사용하지 않는다.
+    """
+    from adapter import vector, reranker, embedder
+    from pipe.review_pipe import STANDARD_COLLECTION, SUB_CHUNK_COLLECTION
+
+    queries = [normalize_for_search(g["user_clause"]) for g in golden]
+    if not queries:
+        return {}
+    vectors = embedder.embed_documents(queries)
+    type_filter = {"contract_type": contract_type}
+    standard_batch = vector.hybrid_search_many(STANDARD_COLLECTION, vectors, queries, type_filter, 3)
+    sub_chunk_batch = vector.hybrid_search_many(SUB_CHUNK_COLLECTION, vectors, queries, type_filter, 3)
+    standard_reranked = reranker.rerank_many(queries, standard_batch, text_key="text", top_k=3)
+    sub_chunk_reranked = reranker.rerank_many(queries, sub_chunk_batch, text_key="text", top_k=3)
+
+    by_case: Dict[str, List[Dict[str, Any]]] = {}
+    for case, standard_hits, sub_chunk_hits in zip(golden, standard_reranked, sub_chunk_reranked):
+        candidates = [
+            *({**hit, "source": STANDARD_COLLECTION} for hit in standard_hits),
+            *({**hit, "source": SUB_CHUNK_COLLECTION} for hit in sub_chunk_hits),
+        ]
+        candidates.sort(key=lambda hit: (-float(hit.get("rerank_score", 0.0)), str(hit.get("id", ""))))
+        by_case[case["case_id"]] = candidates[:3]
+    return by_case
+
 GOLDEN_DIR = "src/eval/golden"
 
 
@@ -416,6 +447,8 @@ def _load_golden(version: str, golden_dir: str = GOLDEN_DIR) -> List[Dict]:
 
     golden: List[Dict] = []
     for path in sorted(glob.glob(f"{golden_dir}/{version}_*.json")):
+        if path.endswith("_diagnostics.json"):
+            continue
         with open(path, encoding="utf-8") as f:
             golden.extend(json.load(f))
     return golden
@@ -611,14 +644,16 @@ def _run_track_a(k: int = 5, version: str | None = None) -> None:
     combined: Dict[str, List[Dict]] = {v: [] for v in SEARCH_VARIANTS}
     metrics_by_type: Dict[str, Dict[str, Any]] = {}
     review_results_by_type: Dict[str, Dict[str, Any]] = {}
+    standard_hits_by_type: Dict[str, Dict[str, List[Dict[str, Any]]]] = {}
     alerts: List[str] = []
     for contract_type, cases in by_type.items():
         cbv = build_cases_by_variant(cases, k, contract_type)
         for variant, c in cbv.items():
             combined[variant].extend(c)
 
-        review_results = review_golden_clauses(cases, contract_type)
+        review_results, standard_hits = review_golden_clauses_with_trace(cases, contract_type)
         review_results_by_type[contract_type] = review_results
+        standard_hits_by_type[contract_type] = standard_hits
         dev = deviation_scores(cases, review_results)
         tox = toxic_scores(cases, review_results)
         metrics_by_type[contract_type] = {
@@ -657,6 +692,13 @@ def _run_track_a(k: int = 5, version: str | None = None) -> None:
         for contract_type, cases in by_type.items()
     }
     toxic_sweep = toxic_threshold_sweep(by_type, toxic_hits_by_type)
+    from eval.diagnostics import build_case_diagnostics, write_case_diagnostics
+    diagnostics = build_case_diagnostics(
+        by_type, review_results_by_type, toxic_hits_by_type, standard_hits_by_type,
+        match_threshold=DEFAULT_MATCH_THRESHOLD, toxic_threshold=DEFAULT_TOXIC_THRESHOLD,
+    )
+    diagnostic_paths = write_case_diagnostics(version, diagnostics, GOLDEN_DIR)
+    logger.info(f"=== 진단 저장: {diagnostic_paths['json']}, {diagnostic_paths['markdown']} ===")
     calibration_sweeps = None
     heldout_case_ids = _load_threshold_heldout_case_ids(version)
     if heldout_case_ids is not None:
@@ -954,6 +996,68 @@ def _run_track_b(version: str | None = None, coverage_types: List[Any] | None = 
     evaluate_coverage_b(version, coverage_types, write_md=True, verbose_dump=True)
 
 
+
+class _TracingReranker:
+    """eval에서 실제 review 호출의 표준 후보만 보존하는 Reranker 프록시."""
+
+    def __init__(self, delegate: Any):
+        self._delegate = delegate
+        self.standard_hits: List[List[Dict[str, Any]]] | None = None
+        self.sub_chunk_hits: List[List[Dict[str, Any]]] | None = None
+
+    def rerank_many(self, queries: List[str], hits_per_query: List[List[Dict[str, Any]]], text_key: str, top_k: int) -> List[List[Dict[str, Any]]]:
+        reranked = self._delegate.rerank_many(queries, hits_per_query, text_key=text_key, top_k=top_k)
+        sample = next((hit for hits in hits_per_query for hit in hits), None)
+        if sample is None:
+            return reranked
+        if "pattern" in sample:
+            return reranked
+        if "parent_clause_id" in sample:
+            self.sub_chunk_hits = reranked
+        else:
+            self.standard_hits = reranked
+        return reranked
+
+    def candidates_by_case(self, golden: List[Dict]) -> Dict[str, List[Dict[str, Any]]]:
+        standard_batch = self.standard_hits or [[] for _ in golden]
+        sub_chunk_batch = self.sub_chunk_hits or [[] for _ in golden]
+        by_case: Dict[str, List[Dict[str, Any]]] = {}
+        for case, standard_hits, sub_chunk_hits in zip(golden, standard_batch, sub_chunk_batch):
+            candidates = [
+                *({**hit, "source": STANDARD_COLLECTION} for hit in standard_hits),
+                *({**hit, "source": SUB_CHUNK_COLLECTION} for hit in sub_chunk_hits),
+            ]
+            candidates.sort(key=lambda hit: (-float(hit.get("rerank_score", 0.0)), str(hit.get("id", ""))))
+            by_case[case["case_id"]] = candidates[:3]
+        return by_case
+
+
+def review_golden_clauses_with_trace(golden: List[Dict], contract_type: str) -> tuple[Dict[str, Any], Dict[str, List[Dict[str, Any]]]]:
+    """한 번의 실제 review 실행에서 결과와 표준 후보 trace를 함께 얻습니다."""
+    from adapter import vector, reranker, embedder
+    from contracts.enums import ContractType
+    from contracts.models import Clause
+    from pipe.review_pipe import review_contract
+
+    ct = ContractType(contract_type)
+    standards = _load_standards(contract_type)
+    clauses = [Clause(idx=i + 1, num="", title="", text=g["user_clause"]) for i, g in enumerate(golden)]
+    tracing_reranker = _TracingReranker(reranker)
+    review_results = review_contract(
+        clauses, ct,
+        retriever=vector,
+        embedder=embedder,
+        reranker=tracing_reranker,
+        grounder=NullGrounder(),
+        all_standard_clauses=standards,
+    )
+    by_text = {result.user_clause: result for result in review_results if result.user_clause}
+    by_case = {
+        case["case_id"]: by_text[case["user_clause"]]
+        for case in golden
+        if case["user_clause"] in by_text
+    }
+    return by_case, tracing_reranker.candidates_by_case(golden)
 def main(
     track: str = "a", version: str | None = None, k: int = 5,
     coverage_types: List[Any] | None = None,

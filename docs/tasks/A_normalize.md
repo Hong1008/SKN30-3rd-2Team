@@ -1,5 +1,8 @@
 # 팀원 A — 표준조항 정규화 (`pipe/normalize`)
 
+> **현재 상태(2026-07-10): MVP 범위 완료.** 활성 SW·SI·SM 표준 코퍼스 정규화와 마이그레이션을
+> 검증했다. 아래 문화예술 계약 추가는 현재 SW 계약 범위 밖이므로 후속 요구가 생기기 전에는 진행하지 않는다.
+
 ## 목표
 변환된 마크다운(`data/02_converted/*.md`)을 **조항 단위로 분해하고 category 라벨을 붙여**
 `data/03_normalized/*.json`(정답 데이터)을 만든다. 이게 전체 시스템의 **기준(정답)** 이다.
@@ -138,4 +141,3 @@ FILENAME_CONTRACT: dict[str, ContractType] = {
 
 contract_type = FILENAME_CONTRACT[md_file.name]  # 없으면 KeyError → 명시적 실패
 ```
-
