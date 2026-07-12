@@ -222,5 +222,6 @@ def test_load_golden은_진단_산출물을_골든케이스로_읽지_않는다(
         json.dumps([{"case_id": "case", "contract_type": "SW_FREELANCE"}]), encoding="utf-8"
     )
     (tmp_path / "v9_diagnostics.json").write_text(json.dumps({"deviation": []}), encoding="utf-8")
+    (tmp_path / "v9_case_matrix.json").write_text(json.dumps([{"case_id": "metadata"}]), encoding="utf-8")
 
     assert _load_golden("v9", str(tmp_path)) == [{"case_id": "case", "contract_type": "SW_FREELANCE"}]
