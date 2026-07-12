@@ -1,6 +1,6 @@
 # v4 — 평가 결과
 
-> 자동 생성: `src/eval/run_eval.py` · 2026-07-12 00:45:41 · `APP_ENV=prod` · 골든 `v4_*.json` (전체 n=54, 유형 3종)
+> 자동 생성: `src/eval/run_eval.py` · 2026-07-12 19:23:41 · `APP_ENV=prod` · 골든 `v4_*.json` (전체 n=54, 유형 3종)
 > 지표는 결정론적이며 LLM-judge 를 쓰지 않는다 (AGENTS.md #5).
 
 ## A-1. 검색 ablation — 전체 합산 (Recall@5 · MRR)
@@ -9,16 +9,16 @@
 
 | variant | recall@5 | MRR | n |
 | --- | --- | --- | --- |
-| bm25 | 0.688 | 0.520 | 48 |
+| bm25 | 0.688 | 0.531 | 48 |
 | dense | 0.708 | 0.626 | 48 |
 | hybrid_5_5 | 0.729 | 0.607 | 48 |
-| hybrid_rerank_5_5 | 0.729 | 0.581 | 48 |
+| hybrid_rerank_5_5 | 0.729 | 0.571 | 48 |
 | hybrid_7_3 | 0.729 | 0.624 | 48 |
-| hybrid_rerank_7_3 | 0.729 | 0.578 | 48 |
+| hybrid_rerank_7_3 | 0.729 | 0.568 | 48 |
 | hybrid_8_2 | 0.708 | 0.620 | 48 |
-| hybrid_rerank_8_2 | 0.646 | 0.548 | 48 |
+| hybrid_rerank_8_2 | 0.646 | 0.537 | 48 |
 | hybrid_9_1 | 0.708 | 0.620 | 48 |
-| hybrid_rerank_9_1 | 0.646 | 0.542 | 48 |
+| hybrid_rerank_9_1 | 0.646 | 0.532 | 48 |
 
 ## A-2/A-3. 이탈·독소 분류 — 계약 유형별 (참음성 포함)
 

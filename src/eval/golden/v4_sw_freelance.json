@@ -190,11 +190,11 @@
   {
     "case_id": "v4-sw-18",
     "contract_type": "SW_FREELANCE",
-    "user_clause": "### 제6조(지체상금 특약)\n수급인의 책임 있는 사유로 완료일이 순연될 시에는 법정 기준 요율(0.125%/일)에 비례하는 지연 배상금만을 일수 한도로 계산하여 잔금 정산 시 공제하기로 규정한다.",
+    "user_clause": "### 제6조(지체상금 특약)\n수급인의 책임 있는 사유로 완료일이 지연된 경우, 당사자가 서면으로 합의한 요율·적용 일수·상한에 따라 지체상금을 산정하여 정산한다.",
     "gold_clause_id": "sw_freelance-2020-art6",
     "gold_deviation": "NONE",
     "gold_toxic": [],
     "trap": "none",
-    "note": "법정 할인 요율(0.125%/일) 이내 지체 배상 합리적 제한 (v4-sw-17에 대응하는 Hard-Negative) (Held-out)"
+    "note": "귀책사유와 요율·기간·상한을 당사자 합의로 특정한 지체상금 사례로, v4-sw-17에 대응하는 Hard-Negative (Held-out)"
   }
 ]

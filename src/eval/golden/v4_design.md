@@ -2,6 +2,11 @@
 
 본 문서는 v3 대비 독립적인 held-out 검증을 수행하기 위해 새롭게 설계된 v4 골든셋 54건에 대한 매트릭스 명세서입니다.
 
+> [!WARNING]
+> **데이터셋 용도 및 특성 주의**
+> - 본 v4 골든셋은 **독소 조항에 대한 hard-negative challenge set**으로 기획되었습니다.
+> - **이탈 검증(성능 비교 및 튜닝)에는 적합하지 않습니다.** SI 및 SW 계약 유형에는 이탈 양성(EXTRA 등) 케이스가 부재하여, 유형별 Precision/Recall/F1 등의 이탈 지표를 모델 성능 평가나 임계값(Threshold) 변경의 타당한 근거로 채택할 수 없습니다.
+
 ## 1. 케이스 매트릭스 설계 원칙
 
 - **전체 규모:** 총 54건 (Tuning 36건, Held-out 18건)
@@ -85,7 +90,7 @@
 | **v4-sw-15** | Held-out | 양성 | `NONE` | `INDEFINITE_CONFIDENTIALITY` | `negation` | `LEGAL_ANCHOR_4` | 용역 수행을 위해 취득한 기술 지식 전반에 대해 기한 없이 영구적 비밀 의무 |
 | **v4-sw-16** | Held-out | 음성 | `NONE` | 없음 | `none` | `LEGAL_ANCHOR_4` | 기밀 자료 준수 기간을 개발 완료 후 2년 내로 명확히 기한 한정 (Hard-Negative) |
 | **v4-sw-17** | Held-out | 양성 | `NONE` | `UNFAIR_DAMAGE_CLAIM` | `negation` | `LEGAL_ANCHOR_5` | 1일 납기 지연 시 기성 대금의 10%를 삭감하는 비합리적 과도 지체상금 부과 |
-| **v4-sw-18** | Held-out | 음성 | `NONE` | 없음 | `none` | `LEGAL_ANCHOR_5` | 일반적 법정이율 범위 내의 합리적 지연이자 또는 0.1%/일 이내 지체상금 부과 (Hard-Negative) |
+| **v4-sw-18** | Held-out | 음성 | `NONE` | 없음 | `none` | `LEGAL_ANCHOR_5` | 귀책사유와 요율·기간·상한을 당사자 합의로 특정한 지체상금 사례 (Hard-Negative) |
 
 ---
 
@@ -93,3 +98,54 @@
 
 - **사례:** `v4-sw-05` 등 비밀유지 조항 및 정보 공개 위험
 - **설명:** 비밀정보 범위가 불분명하거나 프리랜서가 합법적 용도로도 제3자에게 소스코드 공유를 못 하도록 전면 금지하는 등의 위험이 존재하나, 이는 현 `ToxicPattern`에 속하지 않으므로 골든 JSON 스키마에는 `gold_toxic: []`로 적고 본 설계 명세서 상에만 분석하여 기록함.
+
+---
+
+## 4. 변경 이력 (Revision History)
+
+### 2026-07-12: 변경 전 v4 기준선 기록 (P0-1)
+
+v4 골든셋과 법령 앵커 정합성 수정 전의 기준선을 아래와 같이 기록합니다.
+
+- **기반 Git Commit:** `2219e8ba63e240bec17ac10ccb57f9912a3068d1`
+- **데이터셋 구성:**
+  - 총 54건 (Tuning 36건, Held-out 18건)
+  - 계약 유형별 SI·SM·SW 각 18건
+- **평가 기준 설정:**
+  - `match_threshold`: `0.50`
+  - `toxic_threshold`: `0.60`
+- **검색 및 재정렬 성능:**
+  - `hybrid_5_5`: Recall@5 `0.729`, MRR `0.607`
+  - `hybrid_rerank_5_5`: Recall@5 `0.729`, MRR `0.581`
+- **독소 held-out 성능 지표:**
+  - 혼동 행렬: TP `2`, FP `0`, FN `7`, TN `9`
+  - Precision: `1.000`, Recall: `0.222`, F1: `0.364`
+- **수정 전 주요 파일 SHA-256 해시:**
+  - `v4_design.md`: `642dbd6e…79b6a`
+  - `v4_sw_freelance.json`: `7066543e…619a`
+  - `threshold_heldout.v4.json`: `66ea1591…b1e`
+  - `v4_result.md`: `65af415b…bdf`
+  - `v4_diagnostics.json`: `5cd6863b…fca4`
+  - `v4_diagnostics.md`: `0b38573b…24fb`
+  - `v4_legal_anchors.md`: `580ba266…e9`
+
+### 2026-07-12: 변경 후 v4 기준선 및 재평가 기록
+
+가치 판단을 배제하는 프레이밍(`v4-sw-18` 및 법령 앵커 완화 등)을 수용하여 `prod` 환경에서 재평가를 거친 지표와 해시 정보를 기록합니다.
+
+- **재평가 실행 시각 및 환경:** `2026-07-12 19:23:41`, `APP_ENV=prod`
+- **변경 후 기준선:** 본 변경을 포함하는 Git 커밋으로 동결한다. 커밋 식별자는 Git 이력으로 관리한다.
+- **검색 및 재정렬 성능:**
+  - `hybrid_5_5`: Recall@5 `0.729`, MRR `0.607` (07-11.md 인용 기준값)
+  - `hybrid_rerank_5_5`: Recall@5 `0.729`, MRR `0.571` (held-out 완화로 인한 재배치로 0.010 감소)
+- **독소 held-out 성능 지표:**
+  - 혼동 행렬: TP `2`, FP `0`, FN `7`, TN `9` (Precision `1.000`, Recall `0.222`, F1 `0.364`로 변동 없음)
+- **변경 후 주요 파일 전체 SHA-256 해시:**
+  - `v4_sw_freelance.json`: `a7bc5c887e3c34b142386f7ed90cf2c2b5ae5be8ca54453733b5bea3b5216477` (수정됨)
+  - `v4_legal_anchors.md`: `37fc3743372db464f88b927551fa78989d28ff67bcae3c5037dab3dd70052b6d` (피드백 반영 수정됨)
+  - `v4_result.md`: `3146bffca97e67c689485fbac0c30ae5a776ac121a232bfb3fe97ff78b6fa9d1` (재평가 결과 갱신됨)
+  - `v4_diagnostics.json`: `f097da447495f0a2ce561ba145d708480f0c132949d9a9cb0905d6eb3c648110` (재생성됨)
+  - `v4_diagnostics.md`: `0b38573b0182d7a0b89019983e76abdd056d63f07648c9948f0c5169deed24fb` (재생성 결과 내용 변경 없음)
+  - `threshold_heldout.v4.json`: `66ea1591d30ed813e7128262179fd72d2a47574cafd263bcefaf975e97424ccb` (내용 변경 없음)
+
+*(참고: v4_design.md 자기 자신의 해시는 자기참조 문제를 방지하기 위해 파일 내 기록에서 제외하며, Git 커밋 ID 및 별도 manifest로 동결을 식별합니다.)*
