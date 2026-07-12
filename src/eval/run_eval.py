@@ -447,7 +447,7 @@ def _load_golden(version: str, golden_dir: str = GOLDEN_DIR) -> List[Dict]:
 
     golden: List[Dict] = []
     for path in sorted(glob.glob(f"{golden_dir}/{version}_*.json")):
-        if path.endswith("_diagnostics.json"):
+        if path.endswith("_diagnostics.json") or path.endswith("_case_matrix.json"):
             continue
         with open(path, encoding="utf-8") as f:
             golden.extend(json.load(f))

@@ -112,9 +112,12 @@ def find_duplicate_case_ids(cases: list[dict[str, Any]]) -> dict[str, int]:
 
 
 def load_golden_files(version: str, golden_dir: Path = _GOLDEN_DIR) -> list[tuple[Path, list[dict]]]:
-    """{golden_dir}/{version}_*.json 전부 로드한다. (파일경로, 케이스목록) 튜플 목록 반환."""
+    """골든 입력 JSON만 로드한다. sidecar matrix는 평가 입력이 아니므로 제외한다."""
     files: list[tuple[Path, list[dict]]] = []
     for path in sorted(golden_dir.glob(f"{version}_*.json")):
+        # v5의 진단 sidecar는 골든 평가 입력이 아니므로 스키마 검사 대상에서 제외한다.
+        if path.name.endswith("_case_matrix.json"):
+            continue
         with open(path, encoding="utf-8") as f:
             files.append((path, json.load(f)))
     return files
