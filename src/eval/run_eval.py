@@ -19,6 +19,7 @@ logger = logging.getLogger(__name__)
 
 
 from core.splitter import normalize_for_search
+from core import prepare_toxic_rerank_candidates
 from eval import metrics
 
 
@@ -397,7 +398,12 @@ def rerank_toxic_golden_clauses(golden: List[Dict], contract_type: str) -> Dict[
     queries = [normalize_for_search(g["user_clause"]) for g in golden]
     vectors = embedder.embed_documents(queries)
     hits_batch = vector.hybrid_search_many(TOXIC_COLLECTION, vectors, queries, None, 3)
-    reranked_batch = reranker.rerank_many(queries, hits_batch, text_key="text", top_k=3)
+    reranked_batch = reranker.rerank_many(
+        queries,
+        [prepare_toxic_rerank_candidates(hits) for hits in hits_batch],
+        text_key="rerank_text",
+        top_k=3,
+    )
     return {
         g["case_id"]: hits
         for g, hits in zip(golden, reranked_batch)
@@ -452,6 +458,20 @@ def _load_golden(version: str, golden_dir: str = GOLDEN_DIR) -> List[Dict]:
         with open(path, encoding="utf-8") as f:
             golden.extend(json.load(f))
     return golden
+
+
+def _select_case_ids(golden: List[Dict], case_ids: set[str] | None) -> List[Dict]:
+    """실험 case ID를 검증하고 요청된 순서가 아닌 골든 원래 순서를 유지합니다."""
+    if case_ids is None:
+        return golden
+    known = {case["case_id"] for case in golden}
+    unknown = case_ids - known
+    if unknown:
+        raise ValueError(f"골든셋에 없는 case_id가 있습니다: {sorted(unknown)}")
+    selected = [case for case in golden if case["case_id"] in case_ids]
+    if not selected:
+        raise ValueError("case_ids에 해당하는 골든 케이스가 없습니다.")
+    return selected
 
 
 def _load_threshold_heldout_case_ids(version: str, golden_dir: str = GOLDEN_DIR) -> set[str] | None:
@@ -631,12 +651,23 @@ def _write_result_md(
     return path
 
 
-def _run_track_a(k: int = 5, version: str | None = None) -> None:
-    """트랙 A (합성 조항 단위): 검색 ablation + 이탈·독소 분류 → `{version}_result.md`."""
+def _run_track_a(
+    k: int = 5,
+    version: str | None = None,
+    *,
+    case_ids: set[str] | None = None,
+    write_output: bool = True,
+    output_dir: str | None = None,
+) -> Dict[str, Any]:
+    """트랙 A를 실행합니다.
+
+    ``case_ids``로 실험 split을 제한하고 ``write_output=False`` 또는 ``output_dir``로
+    동결 골든 산출물을 덮어쓰지 않게 할 수 있습니다.
+    """
     from eval.ablation import run_ablation
 
     version = version or _detect_latest_version()
-    golden = _load_golden(version)
+    golden = _select_case_ids(_load_golden(version), case_ids)
     logger.info(f"=== [{version}] 골든셋 로드: {len(golden)}건 ===")
 
     by_type = _group_cases_by_contract_type(golden)
@@ -645,15 +676,17 @@ def _run_track_a(k: int = 5, version: str | None = None) -> None:
     metrics_by_type: Dict[str, Dict[str, Any]] = {}
     review_results_by_type: Dict[str, Dict[str, Any]] = {}
     standard_hits_by_type: Dict[str, Dict[str, List[Dict[str, Any]]]] = {}
+    toxic_hits_by_type: Dict[str, Dict[str, List[Dict[str, Any]]]] = {}
     alerts: List[str] = []
     for contract_type, cases in by_type.items():
         cbv = build_cases_by_variant(cases, k, contract_type)
         for variant, c in cbv.items():
             combined[variant].extend(c)
 
-        review_results, standard_hits = review_golden_clauses_with_trace(cases, contract_type)
+        review_results, standard_hits, toxic_hits = review_golden_clauses_with_trace(cases, contract_type)
         review_results_by_type[contract_type] = review_results
         standard_hits_by_type[contract_type] = standard_hits
+        toxic_hits_by_type[contract_type] = toxic_hits
         dev = deviation_scores(cases, review_results)
         tox = toxic_scores(cases, review_results)
         metrics_by_type[contract_type] = {
@@ -687,20 +720,20 @@ def _run_track_a(k: int = 5, version: str | None = None) -> None:
         logger.info(f"    {variant:15s} recall@{k}={r['recall@k']:.3f}  mrr={r['mrr']:.3f}  n={r['n']}")
 
     deviation_sweep = deviation_threshold_sweep(by_type, review_results_by_type)
-    toxic_hits_by_type = {
-        contract_type: rerank_toxic_golden_clauses(cases, contract_type)
-        for contract_type, cases in by_type.items()
-    }
     toxic_sweep = toxic_threshold_sweep(by_type, toxic_hits_by_type)
     from eval.diagnostics import build_case_diagnostics, write_case_diagnostics
     diagnostics = build_case_diagnostics(
         by_type, review_results_by_type, toxic_hits_by_type, standard_hits_by_type,
         match_threshold=DEFAULT_MATCH_THRESHOLD, toxic_threshold=DEFAULT_TOXIC_THRESHOLD,
     )
-    diagnostic_paths = write_case_diagnostics(version, diagnostics, GOLDEN_DIR)
-    logger.info(f"=== 진단 저장: {diagnostic_paths['json']}, {diagnostic_paths['markdown']} ===")
+    destination = output_dir or GOLDEN_DIR
+    diagnostic_paths = None
+    if write_output:
+        Path(destination).mkdir(parents=True, exist_ok=True)
+        diagnostic_paths = write_case_diagnostics(version, diagnostics, destination)
+        logger.info(f"=== 진단 저장: {diagnostic_paths['json']}, {diagnostic_paths['markdown']} ===")
     calibration_sweeps = None
-    heldout_case_ids = _load_threshold_heldout_case_ids(version)
+    heldout_case_ids = None if case_ids is not None else _load_threshold_heldout_case_ids(version)
     if heldout_case_ids is not None:
         calibration_sweeps = {}
         for split_name, split_cases in split_threshold_calibration_cases(golden, heldout_case_ids).items():
@@ -728,18 +761,20 @@ def _run_track_a(k: int = 5, version: str | None = None) -> None:
         f"match={list(MATCH_THRESHOLD_SWEEP)}, toxic={list(TOXIC_THRESHOLD_SWEEP)}"
     )
 
-    out = _write_result_md(
-        version,
-        len(golden),
-        overall,
-        metrics_by_type,
-        k,
-        alerts=alerts,
-        deviation_sweep=deviation_sweep,
-        toxic_sweep=toxic_sweep,
-        calibration_sweeps=calibration_sweeps,
-    )
-    logger.info(f"=== 결과 저장: {out} ===")
+    out = None
+    if write_output:
+        Path(destination).mkdir(parents=True, exist_ok=True)
+        out = _write_result_md(
+            version, len(golden), overall, metrics_by_type, k,
+            golden_dir=destination, alerts=alerts,
+            deviation_sweep=deviation_sweep, toxic_sweep=toxic_sweep,
+            calibration_sweeps=calibration_sweeps,
+        )
+        logger.info(f"=== 결과 저장: {out} ===")
+    return {
+        "version": version, "n": len(golden), "metrics_by_type": metrics_by_type,
+        "diagnostics": diagnostics, "result_md": out, "diagnostic_paths": diagnostic_paths,
+    }
 
 
 # ─────────────────────────────────────────────────────────────────────────
@@ -998,12 +1033,13 @@ def _run_track_b(version: str | None = None, coverage_types: List[Any] | None = 
 
 
 class _TracingReranker:
-    """eval에서 실제 review 호출의 표준 후보만 보존하는 Reranker 프록시."""
+    """eval에서 실제 review 호출의 표준·서브청크·독소 후보를 보존하는 프록시."""
 
     def __init__(self, delegate: Any):
         self._delegate = delegate
         self.standard_hits: List[List[Dict[str, Any]]] | None = None
         self.sub_chunk_hits: List[List[Dict[str, Any]]] | None = None
+        self.toxic_hits: List[List[Dict[str, Any]]] | None = None
 
     def rerank_many(self, queries: List[str], hits_per_query: List[List[Dict[str, Any]]], text_key: str, top_k: int) -> List[List[Dict[str, Any]]]:
         reranked = self._delegate.rerank_many(queries, hits_per_query, text_key=text_key, top_k=top_k)
@@ -1011,6 +1047,7 @@ class _TracingReranker:
         if sample is None:
             return reranked
         if "pattern" in sample:
+            self.toxic_hits = reranked
             return reranked
         if "parent_clause_id" in sample:
             self.sub_chunk_hits = reranked
@@ -1031,9 +1068,26 @@ class _TracingReranker:
             by_case[case["case_id"]] = candidates[:3]
         return by_case
 
+    def toxic_candidates_by_case(self, golden: List[Dict]) -> Dict[str, List[Dict[str, Any]]]:
+        """동일 review 실행에서 재정렬된 독소 top-3를 case별로 반환합니다."""
+        toxic_batch = self.toxic_hits or [[] for _ in golden]
+        return {
+            case["case_id"]: [
+                {**hit, "source": "toxic_patterns"}
+                for hit in hits[:3]
+            ]
+            for case, hits in zip(golden, toxic_batch)
+        }
 
-def review_golden_clauses_with_trace(golden: List[Dict], contract_type: str) -> tuple[Dict[str, Any], Dict[str, List[Dict[str, Any]]]]:
-    """한 번의 실제 review 실행에서 결과와 표준 후보 trace를 함께 얻습니다."""
+
+def review_golden_clauses_with_trace(
+    golden: List[Dict], contract_type: str,
+) -> tuple[
+    Dict[str, Any],
+    Dict[str, List[Dict[str, Any]]],
+    Dict[str, List[Dict[str, Any]]],
+]:
+    """한 번의 실제 review 실행에서 결과와 표준·독소 후보 trace를 함께 얻습니다."""
     from adapter import vector, reranker, embedder
     from contracts.enums import ContractType
     from contracts.models import Clause
@@ -1057,10 +1111,17 @@ def review_golden_clauses_with_trace(golden: List[Dict], contract_type: str) -> 
         for case in golden
         if case["user_clause"] in by_text
     }
-    return by_case, tracing_reranker.candidates_by_case(golden)
+    return (
+        by_case,
+        tracing_reranker.candidates_by_case(golden),
+        tracing_reranker.toxic_candidates_by_case(golden),
+    )
 def main(
     track: str = "a", version: str | None = None, k: int = 5,
     coverage_types: List[Any] | None = None,
+    *, case_ids: set[str] | None = None,
+    write_output: bool = True,
+    output_dir: str | None = None,
 ) -> None:
     """평가 드라이버 진입점. track 인자로 트랙을 분기한다(기본 'a').
 
@@ -1074,7 +1135,31 @@ def main(
     if track == "b":
         _run_track_b(version, coverage_types)
     else:
-        _run_track_a(k, version)
+        _run_track_a(
+            k, version, case_ids=case_ids,
+            write_output=write_output, output_dir=output_dir,
+        )
+
+
+def _parse_cli_args(argv: List[str]) -> Dict[str, Any]:
+    """평가 격리 옵션을 포함한 간단한 CLI 인자를 결정론적으로 파싱합니다."""
+    track = argv[0] if argv and not argv[0].startswith("--") else "a"
+    version_index = 1 if track != "a" or (argv and not argv[0].startswith("--")) else 0
+    version = argv[version_index] if len(argv) > version_index and not argv[version_index].startswith("--") else None
+    case_ids: set[str] | None = None
+    output_dir: str | None = None
+    write_output = True
+    for arg in argv:
+        if arg.startswith("--case-ids="):
+            case_ids = {value for value in arg.split("=", 1)[1].split(",") if value}
+        elif arg.startswith("--output-dir="):
+            output_dir = arg.split("=", 1)[1]
+        elif arg == "--no-write":
+            write_output = False
+    return {
+        "track": track, "version": version, "case_ids": case_ids,
+        "output_dir": output_dir, "write_output": write_output,
+    }
 
 
 if __name__ == "__main__":
@@ -1083,6 +1168,4 @@ if __name__ == "__main__":
     #   python -m eval.run_eval b          # 트랙 B, 새 vN 자동 증가 (raw/ × SW·SI·SM M:N 커버리지)
     #   python -m eval.run_eval b v2       # 트랙 B, v2 로 덮어쓰기
     #   python -m eval.run_eval a v2       # 트랙 A, v2
-    _track = sys.argv[1] if len(sys.argv) > 1 else "a"
-    _version = sys.argv[2] if len(sys.argv) > 2 else None
-    main(track=_track, version=_version)
+    main(**_parse_cli_args(sys.argv[1:]))

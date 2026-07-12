@@ -1,5 +1,31 @@
-from typing import List, Tuple
+from typing import Any, Dict, List, Tuple
 from contracts.enums import ToxicPattern
+
+
+def prepare_toxic_rerank_candidates(
+    hits: List[Dict[str, Any]],
+) -> List[Dict[str, Any]]:
+    """독소 후보의 리랭커 입력만 보강한 사본을 만듭니다.
+
+    검색·진단 원문인 ``text``는 유지하고, 제목이 있는 후보에는 ``rerank_text``를
+    추가합니다. 본문이 없거나 문자열이 아니면 리랭커에 빈 입력을 넘기지 않도록
+    명시적으로 실패합니다.
+    """
+    prepared: List[Dict[str, Any]] = []
+    for index, hit in enumerate(hits):
+        copied = dict(hit)
+        raw_text = hit.get("text")
+        title = hit.get("title")
+        if not isinstance(raw_text, str) or not raw_text:
+            hit_id = hit.get("id") or hit.get("pattern_id") or index
+            raise ValueError(f"독소 후보 본문(text)이 없습니다: {hit_id}")
+        copied["rerank_text"] = (
+            f"검토 패턴: {title}\n예문: {raw_text}"
+            if isinstance(title, str) and title
+            else raw_text
+        )
+        prepared.append(copied)
+    return prepared
 
 def detect_toxic_patterns(
     matches: List[Tuple[ToxicPattern, float]],

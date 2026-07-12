@@ -104,6 +104,16 @@ class _Reranker:
         ]
 
 
+class _CapturingReranker(_Reranker):
+    def __init__(self, score: float):
+        super().__init__(score)
+        self.calls = []
+
+    def rerank_many(self, queries, items_per_query, text_key="text", top_k=None):
+        self.calls.append((text_key, items_per_query))
+        return super().rerank_many(queries, items_per_query, text_key=text_key, top_k=top_k)
+
+
 HIGH_RERANKER = _Reranker(0.9997)  # 매칭 인정 (match_threshold=0.5 이상)
 LOW_RERANKER = _Reranker(0.0003)   # 임계 미달
 
@@ -131,6 +141,18 @@ def test_반환은_DeviationResult_리스트():
     results = _review([Clause(idx=1, num="제5조", title="저작권", text="저작권 귀속은 회사에 있다")])
     assert isinstance(results, list)
     assert all(isinstance(r, DeviationResult) for r in results)
+
+
+def test_독소_리랭커만_rerank_text와_원문을_함께_받는다():
+    reranker = _CapturingReranker(0.9)
+    _review(
+        [Clause(idx=1, num="제5조", title="저작권", text="저작권 전부 무상")],
+        reranker=reranker,
+    )
+
+    toxic_call = next(items for text_key, items in reranker.calls if text_key == "rerank_text")
+    assert toxic_call[0][0]["text"] == _TOXIC_HIT["text"]
+    assert toxic_call[0][0]["rerank_text"].startswith("검토 패턴: IP 전부 무상 귀속\n예문: ")
 
 
 def test_검색결과_없으면_NO_MATCH():

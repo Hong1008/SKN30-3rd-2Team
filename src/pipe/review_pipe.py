@@ -26,6 +26,7 @@ from core import (
     classify_clause_deviation,
     detect_missing_clauses,
     detect_toxic_patterns,
+    prepare_toxic_rerank_candidates,
     roll_up_sub_chunks,
     select_best_match,
 )
@@ -242,7 +243,12 @@ def review_contract(
     logger.info("[review_contract] 2단계: 조항별 재정렬(Rerank) 및 이탈(Deviation) 분류를 수행합니다.")
     std_hits_batch = reranker.rerank_many(clause_texts, std_batch, text_key="text", top_k=top_k)
     sub_hits_batch = reranker.rerank_many(clause_texts, sub_batch, text_key="text", top_k=top_k)
-    toxic_hits_batch = reranker.rerank_many(clause_texts, toxic_batch, text_key="text", top_k=toxic_top_k)
+    toxic_hits_batch = reranker.rerank_many(
+        clause_texts,
+        [prepare_toxic_rerank_candidates(hits) for hits in toxic_batch],
+        text_key="rerank_text",
+        top_k=toxic_top_k,
+    )
 
     for i, (clause, std_hits, sub_hits, toxic_hits) in enumerate(
         zip(clauses, std_hits_batch, sub_hits_batch, toxic_hits_batch), 1

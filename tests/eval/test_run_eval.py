@@ -225,3 +225,93 @@ def test_load_golden은_진단_산출물을_골든케이스로_읽지_않는다(
     (tmp_path / "v9_case_matrix.json").write_text(json.dumps([{"case_id": "metadata"}]), encoding="utf-8")
 
     assert _load_golden("v9", str(tmp_path)) == [{"case_id": "case", "contract_type": "SW_FREELANCE"}]
+
+
+def test_case_ids는_선택된_케이스만_남기고_미지_ID는_실패한다():
+    from eval.run_eval import _select_case_ids
+
+    golden = [{"case_id": "a"}, {"case_id": "b"}]
+    assert [case["case_id"] for case in _select_case_ids(golden, {"b"})] == ["b"]
+    with pytest.raises(ValueError, match="ghost"):
+        _select_case_ids(golden, {"b", "ghost"})
+
+
+def test_cli_격리_옵션을_파싱한다():
+    from eval.run_eval import _parse_cli_args
+
+    args = _parse_cli_args([
+        "a", "v4", "--case-ids=v4-si-01,v4-sw-01",
+        "--no-write", "--output-dir=/tmp/s-experiment",
+    ])
+    assert args == {
+        "track": "a", "version": "v4",
+        "case_ids": {"v4-si-01", "v4-sw-01"},
+        "output_dir": "/tmp/s-experiment", "write_output": False,
+    }
+
+
+def test_run_track_a_no_write는_기존_산출물_작성자를_호출하지_않는다(monkeypatch, tmp_path):
+    import eval.ablation
+    import eval.diagnostics
+    import eval.run_eval as run_eval
+
+    case = {"case_id": "chosen", "contract_type": "SW_FREELANCE", "user_clause": "원문",
+            "gold_deviation": "NONE", "gold_toxic": []}
+    result = SimpleNamespace(deviation="NONE", toxic_patterns=[], confidence=0.9,
+                             matched_standard=None)
+    monkeypatch.setattr(run_eval, "_load_golden", lambda _version: [case])
+    monkeypatch.setattr(run_eval, "build_cases_by_variant", lambda *_args: {v: [] for v in run_eval.SEARCH_VARIANTS})
+    monkeypatch.setattr(run_eval, "review_golden_clauses_with_trace", lambda *_args: ({"chosen": result}, {"chosen": []}, {"chosen": []}))
+    zero_scores = {"precision": 0.0, "recall": 0.0, "specificity": 1.0, "accuracy": 1.0, "f1": 0.0,
+                   "tp": 0, "fp": 0, "fn": 0, "tn": 1}
+    monkeypatch.setattr(run_eval, "deviation_scores", lambda *_args: zero_scores)
+    monkeypatch.setattr(run_eval, "toxic_scores", lambda *_args: zero_scores)
+    monkeypatch.setattr(run_eval, "deviation_threshold_sweep", lambda *_args: [])
+    monkeypatch.setattr(run_eval, "toxic_threshold_sweep", lambda *_args: [])
+    monkeypatch.setattr(eval.ablation, "run_ablation", lambda combined, k: {v: {"recall@k": 0, "mrr": 0, "n": 0} for v in run_eval.SEARCH_VARIANTS})
+    monkeypatch.setattr(eval.diagnostics, "build_case_diagnostics", lambda *args, **kwargs: {"deviation": [], "toxic": []})
+    monkeypatch.setattr(run_eval, "_write_result_md", lambda *args, **kwargs: pytest.fail("결과 파일을 쓰면 안 됩니다"))
+    monkeypatch.setattr(eval.diagnostics, "write_case_diagnostics", lambda *args, **kwargs: pytest.fail("진단 파일을 쓰면 안 됩니다"))
+
+    report = run_eval._run_track_a(
+        version="v4", case_ids={"chosen"}, write_output=False, output_dir=str(tmp_path)
+    )
+
+    assert report["n"] == 1
+    assert list(report["metrics_by_type"]) == ["SW_FREELANCE"]
+
+
+def test_run_track_a_output_dir는_지정_경로에만_산출물을_쓴다(monkeypatch, tmp_path):
+    import eval.ablation
+    import eval.diagnostics
+    import eval.run_eval as run_eval
+
+    case = {"case_id": "chosen", "contract_type": "SW_FREELANCE", "user_clause": "원문",
+            "gold_deviation": "NONE", "gold_toxic": []}
+    result = SimpleNamespace(deviation="NONE", toxic_patterns=[], confidence=0.9,
+                             matched_standard=None)
+    monkeypatch.setattr(run_eval, "_load_golden", lambda _version: [case])
+    monkeypatch.setattr(run_eval, "build_cases_by_variant", lambda *_args: {v: [] for v in run_eval.SEARCH_VARIANTS})
+    monkeypatch.setattr(run_eval, "review_golden_clauses_with_trace", lambda *_args: ({"chosen": result}, {"chosen": []}, {"chosen": []}))
+    zero_scores = {"precision": 0.0, "recall": 0.0, "specificity": 1.0, "accuracy": 1.0, "f1": 0.0,
+                   "tp": 0, "fp": 0, "fn": 0, "tn": 1}
+    monkeypatch.setattr(run_eval, "deviation_scores", lambda *_args: zero_scores)
+    monkeypatch.setattr(run_eval, "toxic_scores", lambda *_args: zero_scores)
+    monkeypatch.setattr(run_eval, "deviation_threshold_sweep", lambda *_args: [])
+    monkeypatch.setattr(run_eval, "toxic_threshold_sweep", lambda *_args: [])
+    monkeypatch.setattr(eval.ablation, "run_ablation", lambda combined, k: {v: {"recall@k": 0, "mrr": 0, "n": 0} for v in run_eval.SEARCH_VARIANTS})
+    monkeypatch.setattr(eval.diagnostics, "build_case_diagnostics", lambda *args, **kwargs: {"deviation": [], "toxic": []})
+    written = {}
+    monkeypatch.setattr(
+        eval.diagnostics, "write_case_diagnostics",
+        lambda version, diagnostics, destination: (
+            written.update({"diagnostics": destination})
+            or {"json": str(tmp_path / "diagnostics.json"), "markdown": str(tmp_path / "diagnostics.md")}
+        ),
+    )
+    monkeypatch.setattr(run_eval, "_write_result_md", lambda *args, **kwargs: written.setdefault("result", kwargs["golden_dir"]) or "")
+
+    report = run_eval._run_track_a(version="v4", case_ids={"chosen"}, output_dir=str(tmp_path))
+
+    assert written == {"diagnostics": str(tmp_path), "result": str(tmp_path)}
+    assert report["result_md"] == str(tmp_path)

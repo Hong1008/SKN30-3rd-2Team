@@ -30,6 +30,8 @@ def _toxic_candidate(hit: dict[str, Any], rank: int) -> dict[str, Any]:
         "pattern_id": hit.get("id") or hit.get("pattern_id"),
         "pattern": _value(hit.get("pattern")),
         "category": _value(hit.get("category")),
+        "text": hit.get("text"),
+        "rerank_text": hit.get("rerank_text"),
         "score": float(hit.get("rerank_score", 0.0)),
     }
 
