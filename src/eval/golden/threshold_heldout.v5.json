@@ -1,0 +1,20 @@
+{
+  "purpose": "v5_deviation_evaluation_heldout",
+  "selection": "SI·SM·SW 각 15건씩 총 45건을 held-out으로 고정한다. 유형별로 검토 강화 EXTRA 5건, 일반 EXTRA 5건, 표준 대응 NONE 5건을 포함하며 동일 topic_group은 split을 넘지 않는다.",
+  "production_thresholds": {
+    "match_threshold": 0.50,
+    "toxic_threshold": 0.60
+  },
+  "case_id_policy": "held-out 목록은 예정된 v5 케이스 ID를 참조한다. 후보 threshold 결과는 프로덕션 기준 결과와 분리하고, 사람 승인 없이 프로덕션 설정을 변경하지 않는다.",
+  "heldout_case_ids": [
+    "v5-si-31", "v5-si-32", "v5-si-33", "v5-si-34", "v5-si-35",
+    "v5-si-36", "v5-si-37", "v5-si-38", "v5-si-39", "v5-si-40",
+    "v5-si-41", "v5-si-42", "v5-si-43", "v5-si-44", "v5-si-45",
+    "v5-sm-31", "v5-sm-32", "v5-sm-33", "v5-sm-34", "v5-sm-35",
+    "v5-sm-36", "v5-sm-37", "v5-sm-38", "v5-sm-39", "v5-sm-40",
+    "v5-sm-41", "v5-sm-42", "v5-sm-43", "v5-sm-44", "v5-sm-45",
+    "v5-sw-31", "v5-sw-32", "v5-sw-33", "v5-sw-34", "v5-sw-35",
+    "v5-sw-36", "v5-sw-37", "v5-sw-38", "v5-sw-39", "v5-sw-40",
+    "v5-sw-41", "v5-sw-42", "v5-sw-43", "v5-sw-44", "v5-sw-45"
+  ]
+}
