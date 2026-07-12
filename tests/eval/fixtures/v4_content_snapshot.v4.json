@@ -1,0 +1,492 @@
+{
+  "normalization": "NFC; CRLF/CR→LF; trim; collapse whitespace; preserve punctuation/negation/numbers/%/periods",
+  "cases": {
+    "v4-si-01": {
+      "user_clause_sha256": "41c936df5de2546fae84e36f4307f1096a123e6a8b0a463d0b3fc613dc94aae2",
+      "note_sha256": "135ed3a24c50be9c56cc115eeb8ca8e6785ced34a74963f7ad1ad5de27c82b76",
+      "gold_deviation": "NONE",
+      "gold_clause_id": "si_subcontract-2025-art11",
+      "gold_toxic": [
+        "UNPAID_ADDITIONAL_WORK"
+      ],
+      "heldout": false
+    },
+    "v4-si-02": {
+      "user_clause_sha256": "4225038b368d3e59f57c9b29af33f63fe4313a47bcbd7b03230b5320240f007f",
+      "note_sha256": "698320e2caff00544a8e92ae75e6d6c5e6e14e987a487e6514f42065e5923bc1",
+      "gold_deviation": "NONE",
+      "gold_clause_id": "si_subcontract-2025-art11",
+      "gold_toxic": [],
+      "heldout": false
+    },
+    "v4-si-03": {
+      "user_clause_sha256": "cb7729ee70ac90bd7ae15eff8f748f99b0f12212eb1571c58249d5c46835889d",
+      "note_sha256": "033887b009f2f329ec0dc09b58c4352dcec7126c05577dbdf3335cfc9a2eba8f",
+      "gold_deviation": "NONE",
+      "gold_clause_id": "si_subcontract-2025-art10",
+      "gold_toxic": [
+        "IP_TOTAL_FREE"
+      ],
+      "heldout": false
+    },
+    "v4-si-04": {
+      "user_clause_sha256": "901420dd3b68cfec79ae0aad7efae531a208ed591f1c4463c11d30caa5570ce5",
+      "note_sha256": "30c828e9fdb13db5d794fde74d9a56e408362572545ba3331376f330046cc76d",
+      "gold_deviation": "NONE",
+      "gold_clause_id": "si_subcontract-2025-art10",
+      "gold_toxic": [],
+      "heldout": false
+    },
+    "v4-si-05": {
+      "user_clause_sha256": "505888f5d6e02ca24faa4e7d3cfd928c98ad4c6b87d3f34d8a7aa13144ccea25",
+      "note_sha256": "804bc0af16bd37a3e37e0fcd9c9b55cfcfe4aaecaebef98effd1300cb1215735",
+      "gold_deviation": "NONE",
+      "gold_clause_id": "si_subcontract-2025-art6",
+      "gold_toxic": [
+        "INDEFINITE_CONFIDENTIALITY"
+      ],
+      "heldout": false
+    },
+    "v4-si-06": {
+      "user_clause_sha256": "9d9fe63521043f636bfa91ddad108767528244d94b00543d5acc704f85cd7afb",
+      "note_sha256": "b200680c6c35641e33f34bd4d521349b0b285e57c4e9cab8271654d0172f387e",
+      "gold_deviation": "NONE",
+      "gold_clause_id": "si_subcontract-2025-art6",
+      "gold_toxic": [],
+      "heldout": false
+    },
+    "v4-si-07": {
+      "user_clause_sha256": "0927cd7b742c3250dcc1c68b6e09b254fb7963deab5648aa5465640eb317c40b",
+      "note_sha256": "4c2c3542f83c28a8bfddbfa170d7fb8b5d8d56b5cb256e1076716248b011aefd",
+      "gold_deviation": "NONE",
+      "gold_clause_id": "si_subcontract-2025-art40",
+      "gold_toxic": [
+        "UNILATERAL_INTERPRETATION"
+      ],
+      "heldout": false
+    },
+    "v4-si-08": {
+      "user_clause_sha256": "955b1c8945ea0f111af80ec4e45a5335f8304a88646962ec503c3df5d1d13192",
+      "note_sha256": "251bad89eb6bbb30c73ed8a0fc7223bc6f8bcbca00e3c900b0c34f5323ee7b79",
+      "gold_deviation": "NONE",
+      "gold_clause_id": "si_subcontract-2025-art40",
+      "gold_toxic": [],
+      "heldout": false
+    },
+    "v4-si-09": {
+      "user_clause_sha256": "cdae0f7a16900fd16c6c74bc752557ca3414393889555ced2be18a032664760f",
+      "note_sha256": "f68d9ea22d6633106c65beb8552574e289af05dd6c65a60f7af014b56371d94f",
+      "gold_deviation": "NONE",
+      "gold_clause_id": "si_subcontract-2025-art38",
+      "gold_toxic": [
+        "UNFAIR_DAMAGE_CLAIM"
+      ],
+      "heldout": false
+    },
+    "v4-si-10": {
+      "user_clause_sha256": "acc47609808927ca31ef8c0778c3b450f3a388fa7c759593be2a3b54a687028b",
+      "note_sha256": "74a66971597e24fed362ac73c51cd2056f5020804989cfb9d1959391cd10fbae",
+      "gold_deviation": "NONE",
+      "gold_clause_id": "si_subcontract-2025-art38",
+      "gold_toxic": [],
+      "heldout": false
+    },
+    "v4-si-11": {
+      "user_clause_sha256": "92e76865b19ebd3ebc7bb43d314b4162c7ef17eb901d4f78d69adb9ec2d6e0e3",
+      "note_sha256": "ce28da92f219d3c7c4a420026aa41068109b4f09be7c99346891e3ee075c0088",
+      "gold_deviation": "NONE",
+      "gold_clause_id": "si_subcontract-2025-art24",
+      "gold_toxic": [
+        "UNILATERAL_CHANGE"
+      ],
+      "heldout": false
+    },
+    "v4-si-12": {
+      "user_clause_sha256": "1501e8af88306c53d35c4e526029a2701e55de1af345a2c65bcd5408062d31a6",
+      "note_sha256": "b37ed5b46a0a0ba1c6293944da56673ffc64ea72a0f29df2ce4922f65195cfc5",
+      "gold_deviation": "NONE",
+      "gold_clause_id": "si_subcontract-2025-art24",
+      "gold_toxic": [],
+      "heldout": false
+    },
+    "v4-si-13": {
+      "user_clause_sha256": "b7bd8ed5f029d20a288ea042073dbaf6261999d0d9c884eca9d4050b3fb3aabc",
+      "note_sha256": "fcf83611a50dcb9c3286ab31b855456ebdaefaed79aefe4d5b4d0348eddf6b7b",
+      "gold_deviation": "NONE",
+      "gold_clause_id": "si_subcontract-2025-art11",
+      "gold_toxic": [
+        "UNPAID_ADDITIONAL_WORK"
+      ],
+      "heldout": true
+    },
+    "v4-si-14": {
+      "user_clause_sha256": "9d7d63ee02c2a42eb439ce17b33e714f095b58d73835e43a88abe0b1a86f7eac",
+      "note_sha256": "8aed06aa016381b0fe926d5e0f0596adc55ab322b9e8545ebe4fdc7c1231d946",
+      "gold_deviation": "NONE",
+      "gold_clause_id": "si_subcontract-2025-art11",
+      "gold_toxic": [],
+      "heldout": true
+    },
+    "v4-si-15": {
+      "user_clause_sha256": "ec3b898c8c3a578e9b902f69fef873134b556d5a55ccaf2217ea9bda1e210052",
+      "note_sha256": "742e95236fad71b1e71dca4e4ae7e682ab19d12b76a01a4d28b6306964a67ac0",
+      "gold_deviation": "NONE",
+      "gold_clause_id": "si_subcontract-2025-art10",
+      "gold_toxic": [
+        "IP_TOTAL_FREE"
+      ],
+      "heldout": true
+    },
+    "v4-si-16": {
+      "user_clause_sha256": "87f8ad632ba957ef647ed942aac047c64b245cd5d49a03dd6fd74e4ee5197166",
+      "note_sha256": "730d69a6b8a406554eb5e7ff710e4b2a04a2ae85ad57bddd4a9420350c4b0f1a",
+      "gold_deviation": "NONE",
+      "gold_clause_id": "si_subcontract-2025-art10",
+      "gold_toxic": [],
+      "heldout": true
+    },
+    "v4-si-17": {
+      "user_clause_sha256": "0d5f675cb19464b0f01b10b53d3da3d3cbe33fd3e11f17844fbb654bc7505e89",
+      "note_sha256": "566cd9b8712e3ed0516ab9b33e0c425930864e6d2e1081a37580b198c719108a",
+      "gold_deviation": "NONE",
+      "gold_clause_id": "si_subcontract-2025-art6",
+      "gold_toxic": [
+        "INDEFINITE_CONFIDENTIALITY"
+      ],
+      "heldout": true
+    },
+    "v4-si-18": {
+      "user_clause_sha256": "f9171b7dd63e360a30b621c930aa6beaa69020009a7a3af1e94fb2fa5fe01592",
+      "note_sha256": "529e0e1da39975e2c5bb711d4529e817bc0b8d766489476494603cdade700426",
+      "gold_deviation": "NONE",
+      "gold_clause_id": "si_subcontract-2025-art6",
+      "gold_toxic": [],
+      "heldout": true
+    },
+    "v4-sm-01": {
+      "user_clause_sha256": "479791a0ea0b73141657054a7f05bac8497e57d22968d47a00d0c7ea9a0d9327",
+      "note_sha256": "364e06f4caf65be0ee135aee01ffa9ffe22af94acd54c5462cb45f049d69ba0f",
+      "gold_deviation": "NONE",
+      "gold_clause_id": "sm_subcontract-2025-art16",
+      "gold_toxic": [
+        "UNPAID_ADDITIONAL_WORK"
+      ],
+      "heldout": false
+    },
+    "v4-sm-02": {
+      "user_clause_sha256": "27c090497e6e9195328dd32970fd81e59e547e3d191ee2ed75a38a718ed0657b",
+      "note_sha256": "f672e02ac9d28d95b6b3c3e5eda22ddde963bd716daa982b7300208dc684ff83",
+      "gold_deviation": "NONE",
+      "gold_clause_id": "sm_subcontract-2025-art16",
+      "gold_toxic": [],
+      "heldout": false
+    },
+    "v4-sm-03": {
+      "user_clause_sha256": "73fd321b54c9c0427ac945978ac8d5316909b22eaa01dfe88d6ea1782e51ed80",
+      "note_sha256": "f4f3196804e7587af2fb1cc79c41270ce41bf2ba2298de3d026c29e416503db1",
+      "gold_deviation": "NONE",
+      "gold_clause_id": "sm_subcontract-2025-art15",
+      "gold_toxic": [
+        "IP_TOTAL_FREE"
+      ],
+      "heldout": false
+    },
+    "v4-sm-04": {
+      "user_clause_sha256": "528d067b4f260d353c7f69ee3d96f698ab95bc31b47e52088e475352a39cc29f",
+      "note_sha256": "c42563bc1e2ced4756277df9b8e8f270e3797a0fb5d847551a9845edf0f8b701",
+      "gold_deviation": "NONE",
+      "gold_clause_id": "sm_subcontract-2025-art15",
+      "gold_toxic": [],
+      "heldout": false
+    },
+    "v4-sm-05": {
+      "user_clause_sha256": "b5488d6b0fa77f73bd5aea7fd03522b7f10be5a0da93a30ae904ad7cf1ddab3f",
+      "note_sha256": "76abedf5a9f28a5c95c4fb2d00e187668af573c47389c52a8865fdd4e9008145",
+      "gold_deviation": "NONE",
+      "gold_clause_id": "sm_subcontract-2025-art45",
+      "gold_toxic": [
+        "INDEFINITE_CONFIDENTIALITY"
+      ],
+      "heldout": false
+    },
+    "v4-sm-06": {
+      "user_clause_sha256": "3ca762c4bd402f29052b8874ef85eedf17b0843224f6f0a13e65761cfd5d3134",
+      "note_sha256": "83be49239749826b68d34eea9dcbfa1bf2d0fa44a39bb05af82fd19859f1f4c9",
+      "gold_deviation": "NONE",
+      "gold_clause_id": "sm_subcontract-2025-art45",
+      "gold_toxic": [],
+      "heldout": false
+    },
+    "v4-sm-07": {
+      "user_clause_sha256": "1d1f502f7c2045acf75f6b85612aaa25b19193eefd60317806731aaa45e09fab",
+      "note_sha256": "d5076a06592c3ffe5b291e1eb50718cc8c7ba3df6c16d92c4659ff3ad758d066",
+      "gold_deviation": "NONE",
+      "gold_clause_id": "sm_subcontract-2025-art10",
+      "gold_toxic": [
+        "UNILATERAL_INTERPRETATION"
+      ],
+      "heldout": false
+    },
+    "v4-sm-08": {
+      "user_clause_sha256": "89a6cad1f19eb6acd5abae86123a0e37a3b5db0d0525ddf4ba99d8462e6a1cfc",
+      "note_sha256": "5de027e0ada3851293d02f213b3abd381ff77e9442f835ccb162d1852344e073",
+      "gold_deviation": "NONE",
+      "gold_clause_id": "sm_subcontract-2025-art10",
+      "gold_toxic": [],
+      "heldout": false
+    },
+    "v4-sm-09": {
+      "user_clause_sha256": "cc37178e27f421de29721a925a6b0e1f841b1df57d83c54266fe7b1d5b7dba21",
+      "note_sha256": "b67d731c7a1cd8231ab1a233b03a0704ed81822c1119809805ee4f5fe80cc9a0",
+      "gold_deviation": "EXTRA",
+      "gold_clause_id": null,
+      "gold_toxic": [
+        "NONCOMPETE_EXCESS"
+      ],
+      "heldout": false
+    },
+    "v4-sm-10": {
+      "user_clause_sha256": "9339f8b9ad0c1348e65e46bdc2b39ea86d9b4e174ea214873e1b93d2ebd76d8a",
+      "note_sha256": "78fcfb4427288e52250e609786849583a37b04189a787e38544fc49e6d1f345d",
+      "gold_deviation": "EXTRA",
+      "gold_clause_id": null,
+      "gold_toxic": [],
+      "heldout": false
+    },
+    "v4-sm-11": {
+      "user_clause_sha256": "5ae1bbf061f0b28a03c51b1de8136c9de9800cfe1938cd6597fdd55a0530c99f",
+      "note_sha256": "0390890ce5c9218d90726b00f02954f5f908c36363023cafb28b3fd379e72df4",
+      "gold_deviation": "EXTRA",
+      "gold_clause_id": null,
+      "gold_toxic": [
+        "UNILATERAL_CANCELLATION"
+      ],
+      "heldout": false
+    },
+    "v4-sm-12": {
+      "user_clause_sha256": "510eac66c3aa83bbfabc9e708b7ef612ff53b1ffd6168130aaec38b6a4a116c8",
+      "note_sha256": "82674080df966081f9c2eee40d653c78ceced392c64ecb22a97b3528f9e1fd19",
+      "gold_deviation": "EXTRA",
+      "gold_clause_id": null,
+      "gold_toxic": [],
+      "heldout": false
+    },
+    "v4-sm-13": {
+      "user_clause_sha256": "e72408f972f60174c16072928b0689cef4b95866d84b6e9165b9ab5eaf00132d",
+      "note_sha256": "9d79c8c725c28e3bc28f0cf18019e3268e27f593cdf1f1b53cfc7db3f6fc2428",
+      "gold_deviation": "EXTRA",
+      "gold_clause_id": null,
+      "gold_toxic": [
+        "NONCOMPETE_EXCESS"
+      ],
+      "heldout": true
+    },
+    "v4-sm-14": {
+      "user_clause_sha256": "c2f67dd63abd392afd90c543f80a639e55edbf191db172296368824c050ea40b",
+      "note_sha256": "2eb34b7e4180724da821f44c4b6b729b1b7137a3b1e2671a3483581983ca1911",
+      "gold_deviation": "EXTRA",
+      "gold_clause_id": null,
+      "gold_toxic": [],
+      "heldout": true
+    },
+    "v4-sm-15": {
+      "user_clause_sha256": "d9c7c9595632ffb8f860b0928696c1850aab57687dec40c2c0fbf0b228c553db",
+      "note_sha256": "be758fa210080ed1e62928f033f0fe4ec244dd02e117928fd7d3a5c9432fd96a",
+      "gold_deviation": "NONE",
+      "gold_clause_id": "sm_subcontract-2025-art16",
+      "gold_toxic": [
+        "UNILATERAL_CHANGE"
+      ],
+      "heldout": true
+    },
+    "v4-sm-16": {
+      "user_clause_sha256": "48f489310710c1924d0ea1a36e89ff461df50b426a7baa668651c0802014bf7c",
+      "note_sha256": "3f09dc98079576892ed574638ce7033ef568f404aea6065fc16209a01404a160",
+      "gold_deviation": "NONE",
+      "gold_clause_id": "sm_subcontract-2025-art16",
+      "gold_toxic": [],
+      "heldout": true
+    },
+    "v4-sm-17": {
+      "user_clause_sha256": "b99c738885f90ee07b4a54e75e6a7759174b9e15d0f7611940b1d79e28fb8918",
+      "note_sha256": "61db768d863c2ea12ea7cced0249afefc0b1dd2f26a04355c542f333cab14cf0",
+      "gold_deviation": "NONE",
+      "gold_clause_id": "sm_subcontract-2025-art22",
+      "gold_toxic": [
+        "UNFAIR_DAMAGE_CLAIM"
+      ],
+      "heldout": true
+    },
+    "v4-sm-18": {
+      "user_clause_sha256": "7747794b8d771a2dbc011f7743650da47b610245554b8cf6f1ca600c3e0071ae",
+      "note_sha256": "401609ba31031c73493cd9427d8687f96fa2d78d757c462c87868970506db89f",
+      "gold_deviation": "NONE",
+      "gold_clause_id": "sm_subcontract-2025-art22",
+      "gold_toxic": [],
+      "heldout": true
+    },
+    "v4-sw-01": {
+      "user_clause_sha256": "ff66b40eb8a4e53fce64cd8a2c663df70582f5a57da175192e3ed3a062fc69e3",
+      "note_sha256": "76297e9adb9d19a57d469c574346fd8ae034f41e6147b2a98a3d0a88596847ea",
+      "gold_deviation": "NONE",
+      "gold_clause_id": "sw_freelance-2020-art4",
+      "gold_toxic": [
+        "UNPAID_ADDITIONAL_WORK"
+      ],
+      "heldout": false
+    },
+    "v4-sw-02": {
+      "user_clause_sha256": "f5065d18414c3f5e56b10077e0e238f7a23370a849d47ca306758064497563af",
+      "note_sha256": "4f2edcb917a1a2283e9004095bb931285f9b84778041bcf4f7aab2756462c531",
+      "gold_deviation": "NONE",
+      "gold_clause_id": "sw_freelance-2020-art4",
+      "gold_toxic": [],
+      "heldout": false
+    },
+    "v4-sw-03": {
+      "user_clause_sha256": "1c35e52502be09e798cb8ff82f54d35f0b5ef7d81887558b17beb7d09b3bbfb9",
+      "note_sha256": "ed535f9d9b41673df0b16751a66c8a014fa178c06067ed6b4baf8e1f2301410e",
+      "gold_deviation": "NONE",
+      "gold_clause_id": "sw_freelance-2020-art20",
+      "gold_toxic": [
+        "IP_TOTAL_FREE"
+      ],
+      "heldout": false
+    },
+    "v4-sw-04": {
+      "user_clause_sha256": "b74570f522ea4bb4d805c467f5bc80f6ab2ae28b0975a0cde9f57c64b8d644c1",
+      "note_sha256": "8087085f7485203c17d01adda6393fd0b2b149e4b82dbf3bacd6d34faa6b844b",
+      "gold_deviation": "NONE",
+      "gold_clause_id": "sw_freelance-2020-art20",
+      "gold_toxic": [],
+      "heldout": false
+    },
+    "v4-sw-05": {
+      "user_clause_sha256": "653ca5a7ea3b63227bdd22de1ed7b3e799d2ac800c2e21bf1846c60e486a1cd2",
+      "note_sha256": "21b646a6dec8301361361e94081a3da9603a60cd0304e93e8af12efcde9fe8d1",
+      "gold_deviation": "NONE",
+      "gold_clause_id": "sw_freelance-2020-art17",
+      "gold_toxic": [
+        "INDEFINITE_CONFIDENTIALITY"
+      ],
+      "heldout": false
+    },
+    "v4-sw-06": {
+      "user_clause_sha256": "e69d554b7fa3d4bfaf0cf74a8ef0c7cd537f2697b22c6db46c73a028b53da2f7",
+      "note_sha256": "396c58beb6a43263eb28a397d7b2765b365eaa38e78c71c1b62bc53a8aa35b24",
+      "gold_deviation": "NONE",
+      "gold_clause_id": "sw_freelance-2020-art17",
+      "gold_toxic": [],
+      "heldout": false
+    },
+    "v4-sw-07": {
+      "user_clause_sha256": "e10524128bd95d06c1ddc98240bc648ee2fae051d9facb99e042bad32f926fbe",
+      "note_sha256": "64cce19e3ee91ac8b51b8e0ab04dc8978a3f75a09121952fedf3a9fb8a8942c0",
+      "gold_deviation": "NONE",
+      "gold_clause_id": "sw_freelance-2020-art21",
+      "gold_toxic": [
+        "UNILATERAL_INTERPRETATION"
+      ],
+      "heldout": false
+    },
+    "v4-sw-08": {
+      "user_clause_sha256": "3eb8d1ef95d843fbf41fcc6f10785bdbde715dff070fe8fbf47030ed5508bfa5",
+      "note_sha256": "87d0839a8958ee153effc339651b9f14a6d9476c0b94aad8a35d2b15a6addada",
+      "gold_deviation": "NONE",
+      "gold_clause_id": "sw_freelance-2020-art21",
+      "gold_toxic": [],
+      "heldout": false
+    },
+    "v4-sw-09": {
+      "user_clause_sha256": "410d7faae0ac02daaffa1a4d2e60b1434495d45938dd94f214848b7125dcc6a5",
+      "note_sha256": "0a186d2e4bc5cb213695a341dd93e22b27c23032715cba1401b862a63e9faafd",
+      "gold_deviation": "NONE",
+      "gold_clause_id": "sw_freelance-2020-art18",
+      "gold_toxic": [
+        "UNFAIR_DAMAGE_CLAIM"
+      ],
+      "heldout": false
+    },
+    "v4-sw-10": {
+      "user_clause_sha256": "24deedba3c9ae0f20abf08a630e24070a4d80f1d115ad1b7a4b5dbf374ba897a",
+      "note_sha256": "0c451da3a4f2d022a2de0dd4458ef942b4dd8d716f0ce53e89f97bc0c1f1f261",
+      "gold_deviation": "NONE",
+      "gold_clause_id": "sw_freelance-2020-art18",
+      "gold_toxic": [],
+      "heldout": false
+    },
+    "v4-sw-11": {
+      "user_clause_sha256": "8d6d7c099c91ebb42722322a6f68f0147b1df1077463e3bf12073e9892543829",
+      "note_sha256": "b9d1f18c9c4e2ddbbf4f5ba4cb37dd1fd30fc0add9b9ed685c428e9236eae564",
+      "gold_deviation": "NONE",
+      "gold_clause_id": "sw_freelance-2020-art16",
+      "gold_toxic": [
+        "UNILATERAL_CANCELLATION"
+      ],
+      "heldout": false
+    },
+    "v4-sw-12": {
+      "user_clause_sha256": "a1b9f63ed85c48c7eff3a9f7b5bb843fb90157a96709bbe62aaf47a2f1d88274",
+      "note_sha256": "21000f287ed5a9c9884c3e68a768773d434500c09a26fada28311e230e0ff4d5",
+      "gold_deviation": "NONE",
+      "gold_clause_id": "sw_freelance-2020-art16",
+      "gold_toxic": [],
+      "heldout": false
+    },
+    "v4-sw-13": {
+      "user_clause_sha256": "489b7de2270ad46a0a35c05d7d68f2bc7512ea3f61bf3f300090b680fd68cee8",
+      "note_sha256": "ca59fa83ad528389f3a929e226fd69886314b8a96d5f57f4051161e2bc734665",
+      "gold_deviation": "NONE",
+      "gold_clause_id": "sw_freelance-2020-art4",
+      "gold_toxic": [
+        "UNPAID_ADDITIONAL_WORK"
+      ],
+      "heldout": true
+    },
+    "v4-sw-14": {
+      "user_clause_sha256": "40f4dd1e83b4d681ea311a5375cd29d0097617ee343f436766cffd52704909ee",
+      "note_sha256": "4ebf159d6f6bf2181c3e9f12c4db8f769ea8bbae5df2a265a11ac223ce7dba38",
+      "gold_deviation": "NONE",
+      "gold_clause_id": "sw_freelance-2020-art4",
+      "gold_toxic": [],
+      "heldout": true
+    },
+    "v4-sw-15": {
+      "user_clause_sha256": "80947d259c816bb067fbd8dbd9ce3b67a1f605f387b9ea0d9de8fe5980230295",
+      "note_sha256": "880356c9025b8cd27e65c6ccf7818408bdf093451807fac139da9c630e660e90",
+      "gold_deviation": "NONE",
+      "gold_clause_id": "sw_freelance-2020-art17",
+      "gold_toxic": [
+        "INDEFINITE_CONFIDENTIALITY"
+      ],
+      "heldout": true
+    },
+    "v4-sw-16": {
+      "user_clause_sha256": "3aeacbf5a76dbe64a52466ec56bc9ec97c4ad720888806f8f8ce2ffff1f39b66",
+      "note_sha256": "d241dd8d6d1a8fecf6dacc46f8529d518ac6b359228333282d50fe788653301b",
+      "gold_deviation": "NONE",
+      "gold_clause_id": "sw_freelance-2020-art17",
+      "gold_toxic": [],
+      "heldout": true
+    },
+    "v4-sw-17": {
+      "user_clause_sha256": "a57a1661c3f3d59d651806b4442c6451971d77b114bd3f71d67144286400511b",
+      "note_sha256": "89641b4ef6ca19966af06c3fcf3235a7ea52755f5e13cbdd54c5f362ab687799",
+      "gold_deviation": "NONE",
+      "gold_clause_id": "sw_freelance-2020-art6",
+      "gold_toxic": [
+        "UNFAIR_DAMAGE_CLAIM"
+      ],
+      "heldout": true
+    },
+    "v4-sw-18": {
+      "user_clause_sha256": "c46c90372dbfd724910d7ff1f4769a5a69ce25c8122b3a863ba949618879e4f4",
+      "note_sha256": "15818e915fbd8c49dedec37ae4abf3f20e2d2c3f0252288144cda005174824d5",
+      "gold_deviation": "NONE",
+      "gold_clause_id": "sw_freelance-2020-art6",
+      "gold_toxic": [],
+      "heldout": true
+    }
+  }
+}
+

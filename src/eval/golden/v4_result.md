@@ -1,6 +1,6 @@
 # v4 — 평가 결과
 
-> 자동 생성: `src/eval/run_eval.py` · 2026-07-12 19:50:42 · `APP_ENV=prod` · 골든 `v4_*.json` (전체 n=54, 유형 3종)
+> 자동 생성: `src/eval/run_eval.py` · 2026-07-12 20:36:25 · `APP_ENV=prod` · 골든 `v4_*.json` (전체 n=54, 유형 3종)
 > 지표는 결정론적이며 LLM-judge 를 쓰지 않는다 (AGENTS.md #5).
 
 ## A-1. 검색 ablation — 전체 합산 (Recall@5 · MRR)
