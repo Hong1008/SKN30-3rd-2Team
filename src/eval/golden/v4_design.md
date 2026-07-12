@@ -55,11 +55,11 @@
 | **v4-sm-05** | Tuning | 양성 | `NONE` | `INDEFINITE_CONFIDENTIALITY` | `negation` | `LEGAL_ANCHOR_4` | 시스템 접속 중 취득한 일체 기술 사양에 대해 영구 비밀 의무 부과 |
 | **v4-sm-06** | Tuning | 음성 | `NONE` | 없음 | `none` | `LEGAL_ANCHOR_4` | 시스템 접근 영업비밀 유지 준수 기간을 계약 종료 시점부터 1년 한정 (Hard-Negative) |
 | **v4-sm-07** | Tuning | 양성 | `NONE` | `UNILATERAL_INTERPRETATION` | `party` | `LEGAL_ANCHOR_6` | 유지관리 장애 수준 및 검수 합격 통지 여부는 원사업자 독단적 해석에 따름 |
-| **v4-sm-08** | Tuning | 음성 | `NONE` | 없음 | `none` | `LEGAL_ANCHOR_6` | 장애 및 긴급도 판단은 계약서상 SLA(서비스수준약정)의 합리적 기준 준용 (Hard-Negative) |
+| **v4-sm-08** | Tuning | 음성 | `NONE` | 없음 | `none` | `LEGAL_ANCHOR_6` | 장애 및 긴급도 판단은 계약서상 SLA(서비스수준약정)의 정량적 기준 준용 (Hard-Negative) |
 | **v4-sm-09** | Tuning | 양성 | `NONE` | `NONCOMPETE_EXCESS` | `negation` | `LEGAL_ANCHOR_4` | 유지보수 계약 종료 후 3년간 경쟁사에 대한 동종 유지관리 서비스 전면 금지 |
 | **v4-sm-10** | Tuning | 음성 | `NONE` | 없음 | `none` | `LEGAL_ANCHOR_4` | 계약 종료 시점 이후 경업을 특별 제약하지 않고 일반적 비밀유지만 준수 (Hard-Negative) |
 | **v4-sm-11** | Tuning | 양성 | `NONE` | `UNILATERAL_CANCELLATION` | `party` | `LEGAL_ANCHOR_2` | 시스템 교체 등 원사업자 사정으로 1주일 전 통지로 무보상 즉각 일방 해지 |
-| **v4-sm-12** | Tuning | 음성 | `NONE` | 없음 | `none` | `LEGAL_ANCHOR_2` | 계약 해지 시 최소 1개월 전 서면 통보 및 잔여 기간에 준하는 합리적 정산 (Hard-Negative) |
+| **v4-sm-12** | Tuning | 음성 | `NONE` | 없음 | `none` | `LEGAL_ANCHOR_2` | 계약 해지 시 최소 1개월 전 서면 통보 및 잔여 기간 기성 발생 비례 정산 (Hard-Negative) |
 | **v4-sm-13** | Held-out | 양성 | `NONE` | `NONCOMPETE_EXCESS` | `negation` | `LEGAL_ANCHOR_4` | 유지보수 인력이 퇴사 후 2년 내 이직 시 보수 총액의 100%를 위약벌 배상 |
 | **v4-sm-14** | Held-out | 음성 | `NONE` | 없음 | `none` | `LEGAL_ANCHOR_4` | 기술 유출 방지 및 직업 선택 자유를 부당 제한하지 않는 범위로 조율 (Hard-Negative) |
 | **v4-sm-15** | Held-out | 양성 | `NONE` | `UNILATERAL_CHANGE` | `party` | `LEGAL_ANCHOR_2` | 유지보수 대상 시스템의 대상을 원사업자가 임의 추가/변경하되 용역비는 동결 |
@@ -89,7 +89,7 @@
 | **v4-sw-14** | Held-out | 음성 | `NONE` | 없음 | `none` | `LEGAL_ANCHOR_1` | 합의 규격 외 추가 검수 보완 요구는 용역비 가산 및 신규 위탁 계약 체결 (Hard-Negative) |
 | **v4-sw-15** | Held-out | 양성 | `NONE` | `INDEFINITE_CONFIDENTIALITY` | `negation` | `LEGAL_ANCHOR_4` | 용역 수행을 위해 취득한 기술 지식 전반에 대해 기한 없이 영구적 비밀 의무 |
 | **v4-sw-16** | Held-out | 음성 | `NONE` | 없음 | `none` | `LEGAL_ANCHOR_4` | 기밀 자료 준수 기간을 개발 완료 후 2년 내로 명확히 기한 한정 (Hard-Negative) |
-| **v4-sw-17** | Held-out | 양성 | `NONE` | `UNFAIR_DAMAGE_CLAIM` | `negation` | `LEGAL_ANCHOR_5` | 1일 납기 지연 시 기성 대금의 10%를 삭감하는 비합리적 과도 지체상금 부과 |
+| **v4-sw-17** | Held-out | 양성 | `NONE` | `UNFAIR_DAMAGE_CLAIM` | `negation` | `LEGAL_ANCHOR_5` | 1일 납기 지연 시 기성 대금의 10%를 삭감하는 과도한 지체상금 부과 조항 (1일당 기성 10% 삭감) |
 | **v4-sw-18** | Held-out | 음성 | `NONE` | 없음 | `none` | `LEGAL_ANCHOR_5` | 귀책사유와 요율·기간·상한을 당사자 합의로 특정한 지체상금 사례 (Hard-Negative) |
 
 ---
@@ -133,19 +133,18 @@ v4 골든셋과 법령 앵커 정합성 수정 전의 기준선을 아래와 같
 
 가치 판단을 배제하는 프레이밍(`v4-sw-18` 및 법령 앵커 완화 등)을 수용하여 `prod` 환경에서 재평가를 거친 지표와 해시 정보를 기록합니다.
 
-- **재평가 실행 시각 및 환경:** `2026-07-12 19:23:41`, `APP_ENV=prod`
+- **재평가 실행 시각 및 환경:** `2026-07-12 19:50:43`, `APP_ENV=prod`
 - **변경 후 기준선:** 본 변경을 포함하는 Git 커밋으로 동결한다. 커밋 식별자는 Git 이력으로 관리한다.
 - **검색 및 재정렬 성능:**
   - `hybrid_5_5`: Recall@5 `0.729`, MRR `0.607` (07-11.md 인용 기준값)
-  - `hybrid_rerank_5_5`: Recall@5 `0.729`, MRR `0.571` (held-out 완화로 인한 재배치로 0.010 감소)
+  - `hybrid_rerank_5_5`: Recall@5 `0.688`, MRR `0.567` (P0-2 문구 정정에 따른 재배치로 Recall@5 0.041 감소, MRR 0.004 감소)
 - **독소 held-out 성능 지표:**
   - 혼동 행렬: TP `2`, FP `0`, FN `7`, TN `9` (Precision `1.000`, Recall `0.222`, F1 `0.364`로 변동 없음)
-- **변경 후 주요 파일 전체 SHA-256 해시:**
-  - `v4_sw_freelance.json`: `a7bc5c887e3c34b142386f7ed90cf2c2b5ae5be8ca54453733b5bea3b5216477` (수정됨)
-  - `v4_legal_anchors.md`: `37fc3743372db464f88b927551fa78989d28ff67bcae3c5037dab3dd70052b6d` (피드백 반영 수정됨)
-  - `v4_result.md`: `3146bffca97e67c689485fbac0c30ae5a776ac121a232bfb3fe97ff78b6fa9d1` (재평가 결과 갱신됨)
-  - `v4_diagnostics.json`: `f097da447495f0a2ce561ba145d708480f0c132949d9a9cb0905d6eb3c648110` (재생성됨)
-  - `v4_diagnostics.md`: `0b38573b0182d7a0b89019983e76abdd056d63f07648c9948f0c5169deed24fb` (재생성 결과 내용 변경 없음)
-  - `threshold_heldout.v4.json`: `66ea1591d30ed813e7128262179fd72d2a47574cafd263bcefaf975e97424ccb` (내용 변경 없음)
+- **동결 대상 원천 파일 5종 SHA-256 해시:**
+  - `v4_si_subcontract.json`: `651ca5f4bdb5d4a6f1109c5f9c8cabefc1f375af458dc37843317541e59cdb49` (수정됨)
+  - `v4_sm_subcontract.json`: `f8c7ad61ec93b920da4316ea5ea2cd080dda3255068a958b87ae33a096984a6c` (수정됨)
+  - `v4_sw_freelance.json`: `33a95ad01bb3af922f18aaa1525016b083824116a8b6eac92f6c4d3d4c29bb46` (수정됨)
+  - `threshold_heldout.v4.json`: `66ea1591d30ed813e7128262179fd72d2a47574cafd263bcefaf975e97424ccb` (변경 없음)
+  - `v4_legal_anchors.md`: `12cb4b23e626d3f85729888068477653011956be2adb6956da5963229929ccc7` (피드백 반영 수정됨)
 
-*(참고: v4_design.md 자기 자신의 해시는 자기참조 문제를 방지하기 위해 파일 내 기록에서 제외하며, Git 커밋 ID 및 별도 manifest로 동결을 식별합니다.)*
+*(참고: v4_design.md 자기 자신의 해시는 자기참조 문제를 방지하기 위해 파일 내 기록에서 제외하며, 평가 결과 및 진단 파일 3종은 Git 커밋 ID 및 실행 설정으로 관리하므로 본 해시 목록에서 배제합니다.)*
