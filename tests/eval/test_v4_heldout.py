@@ -5,8 +5,8 @@ import pytest
 
 from contracts.enums import Deviation, ToxicPattern
 
-# 경로 설정: tests/eval/test_v4_heldout.py에서 src/eval/golden 위치
-GOLDEN_DIR = Path(__file__).resolve().parents[2] / "src/eval/golden"
+# 경로 설정: tests/eval/test_v4_heldout.py에서 legacy golden 위치
+GOLDEN_DIR = Path(__file__).resolve().parents[2] / "quality/fixtures/legacy/golden"
 
 def normalize_text(text: str) -> str:
     """공백과 개행, 특수 기호 등을 제거하여 문구 일치를 정규화한다."""

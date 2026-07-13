@@ -1,86 +1,41 @@
-# AGENTS.md — WorkShield
+# WorkShield 작업 규칙
 
-## 한 줄
-사용자 프리랜서 용역계약서를 표준계약서와 **조항 단위로 비교**해 이탈(누락/추가/변경)을
-탐지하는 RAG MCP 시스템. **1차는 LLM 없이** 검색·비교·규칙만. (기획서: [docs/01.mvp_기획.md](docs/01.mvp_기획.md))
+## 제품 경계
 
-## ⛔ 절대 규칙 (위반 시 명제가 무너짐)
-1. **1차 코드에 LLM 호출 금지.** 조항 "해석"·"불리함 판단"을 생성하지 말 것.
-   검색·매칭·분류만. (해석은 2차) (데모는 허용)
-2. **동결 계약이 단일 진실원.** 조항 스키마(기획서 3장)·MCP 시그니처(4장)를
-   임의 변경 금지. 변경이 필요하면 코드 수정 전에 사람에게 먼저 물을 것.
-3. **사용자 표면 문구는 "검토 후보" 프레이밍.** "위법/합법", "소송에서 이긴다"
-   같은 단정 생성 금지.
-4. **빈 응답 금지.** 매칭 없음은 `deviation:"NO_MATCH"` 등 명시 표식으로 반환.
-5. **평가에 LLM-judge 금지.** 지표는 결정론적·재현 가능한 계산만.
+- 1차 MCP는 표준 대비 **검토 후보**를 결정론적으로 검색·매칭·분류한다.
+- 1차 코드(`src/contracts`, `src/core`, `src/adapter`, `src/pipe`, `src/server`)에 LLM 호출을 넣지 않는다.
+- 2차 LLM은 서버 밖 `demo/` 또는 클라이언트에서만 사용한다.
+- 사용자 표면에는 위법·합법·승소·불리함을 단정하지 않는다.
 
-## 아키텍처 (헥사고날: 코어는 외부를 모른다)
-```
-contracts(동결 계약)  ← 모두가 의존하는 약속: enums · models · ports(Protocol)
-   ▲              ▲
-core(순수함수)     adapter(외부 I/O)   ← ports 구현: db·vector·embedder·reranker·kordoc·koreanLaw
-   ▲              ▲
-   └──── pipe(조립) ────┘            ← 오프라인 준비 + 런타임 review_contract
-                  ▲
-            mcp_server / demo         ← FastMCP 노출 + 데모
-```
-- **core**는 adapter를 직접 import하지 않음. 외부 작업은 **인자로 주입**. → 순수 → 테스트 용이.
-- 각 폴더에 `README.md` 있음 — 작업 전 해당 폴더 README를 읽을 것.
+## 계약과 구조
 
-## 폴더 지도
-| 경로 | 역할 |
-| --- | --- |
-| `src/contracts/` | 동결 스키마·포트 (단일 진실원) |
-| `src/core/` | 이탈 탐지 알고리즘 (순수 함수, TDD 대상) |
-| `src/adapter/` | DB·모델·외부 MCP 어댑터 (싱글톤) |
-| `src/pipe/` | 데이터 준비(1→2→3) + 런타임 검토 파이프 |
-| `data/` | `01_raw`→`02_converted`→`03_normalized`(정답)→`migration`(SQLite 생성물)/`chroma`(Chroma 생성물) |
-| `tests/`, `eval/` | pytest 테스트 / 평가 하니스 |
+- `src/contracts/`의 enum·Pydantic 모델·port는 동결 계약이다. 변경 전 사람 승인을 받는다.
+- `core`는 adapter·외부 I/O를 import하지 않는다. 외부 작업은 port 또는 인자로 주입한다.
+- 매칭 실패는 빈 응답으로 숨기지 않고 `NO_MATCH` 등 명시 상태를 반환한다.
+- enum 값은 문자열 리터럴 대신 enum으로 사용한다.
 
-## 명령
+## 품질
+
+- 1차 평가는 결정론적 계산만 사용한다. LLM-judge는 사용하지 않는다.
+- 활성 회귀 기준은 v5이며, 추가 튜닝·기존 held-out 재실행은 금지한다.
+- 새 1차 실험은 새 독립 데이터, 단일 가설, 사전 승인, 독립 held-out이 있을 때만 시작한다.
+- 새 로직은 관련 테스트를 먼저 읽고 추가·수정한다.
+
+## 구현 규칙
+
+- 타입힌트와 Pydantic 모델을 사용하고 주석·docstring은 한국어로 작성한다.
+- 외부 I/O는 조용히 실패하지 않는다. 빈 값 대신 명시 상태 또는 예외를 사용한다.
+- 로컬 경로 문제를 해결하려고 코드에 `sys.path`를 삽입하지 않는다.
+- 데이터 원천은 `data/03_normalized`와 migration SQL이며 SQLite·Chroma는 재생성물이다.
+
+## 검증
+
 ```bash
-# 최초 환경 구축
-just setup            # 최초 1회: node·MCP·uv·모델 다운로드
-just install-runpod   # Runpod CLI 설치 및 상태 점검 (OS 자동 판별)
-
-# 로컬 DB / 인덱스 빌드
-just build-db         # [통합] normalize → SQLite → Chroma 인덱스 재생성
-just migrate          # SQLite 마이그레이션까지만 실행
-
-# 테스트 & 검증
-just test             # 단위 테스트 실행 (integration 제외)
-just test [type]      # 테스트 유형 선택 실행 (unit, integration, all)
-just eval [t] [v] [e] # 평가 드라이버 실행 (t: a/b, v: 골든버전, e: local/prod)
-just run-mcp [t] [p]  # MCP 서버 로컬 실행 (t: stdio/sse/streamable-http, p: 포트)
-just run-mcp-ui       # MCP Inspector 웹 테스트 UI 실행 (.env 바인딩)
-
-# Runpod 배포 및 워커 제어
-just deploy-embedding # [최초 1회] Runpod 템플릿/서버리스 생성 및 .env 갱신
-just embed-on         # Runpod 서버리스 워커 웜업 (min_workers=1)
-just embed-off        # Runpod 서버리스 워커 과금 차단 (min_workers=0)
-
-# Docker 빌드 & 실행
-just docker-build     # Docker 이미지 빌드
-just docker-run       # 로컬 Docker 포그라운드 실행 (streamable-http 8000포트 서빙)
+just test unit
+just test all
+just build-db
+just docker-build
 ```
 
-## 형상관리 (정답은 git, 인덱스는 재생성)
-- git 관리: `data/03_normalized/*.json`(정답) · `data/migration/*.sql`(스키마) · `02_converted/*.md`.
-- git 제외(재생성물): `*.sqlite3` · Chroma 인덱스. → 바이너리 주고받지 않음. 자세히는 [data/README.md](data/README.md).
-
-## 컨벤션
-- 패키지 import는 `src/` 루트 기준: `from contracts...`, `from adapter import db`, `from core import ...`.
-- 로컬 실행/테스트 경로 해결을 위해 코드 내에 `sys.path.append(...)`나 `sys.path.insert(...)`를 삽입하는 것을 금지합니다. 대신 `pyproject.toml`에 기반한 개발 모드 설치(`uv pip install -e .`)를 마친 후 실행해야 합니다.
-- enum 값을 문자열로 직접 쓰지 말 것 (`Deviation.MISSING` ✅ / `"MISSING"` ❌).
-- 주석·docstring은 한국어. 타입힌트 + pydantic 모델 사용.
-- 외부/코어 모두 **조용한 실패 금지** — 빈 값 대신 명시 표식·예외.
-
-## 테스트 (TDD)
-- 모듈 규격은 `tests/`의 테스트로 고정됨. **테스트를 먼저 읽고**, 그것을 통과하도록 구현.
-- `core/`는 순수 함수라 테스트가 곧 명세. 새 로직은 테스트부터.
-
-## 스킬 (작업 전 참조)
-도구별 스킬은 `.agents/skills/<name>/SKILL.md`에 있다.
-- `kordoc` — 한국 공문서(HWP/HWPX/PDF…) 파싱·생성·비교
-- `just` — command runner 레퍼런스
-- `korean-law-mcp` — 한국 법령 MCP
+현재 상태는 [docs/START_HERE.md](docs/START_HERE.md), 구조는 [docs/architecture.md](docs/architecture.md)를
+참조한다. 세부 작업 이력은 archive 문서이며 현행 명세가 아니다.

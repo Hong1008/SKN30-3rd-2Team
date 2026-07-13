@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 
 
-_MANIFEST = Path("src/eval/golden_b/scope_manifest.json")
+_MANIFEST = Path("quality/fixtures/track_b/golden_b/scope_manifest.json")
 
 
 def test_범위_매니페스트의_원문과_기대값이_유효하다():
@@ -13,7 +13,7 @@ def test_범위_매니페스트의_원문과_기대값이_유효하다():
     assert manifest["schema_version"] == 1
     documents = manifest["documents"]
     assert documents
-    assert all((Path("src/eval/golden_b") / document["path"]).is_file() for document in documents)
+    assert all((Path("quality/fixtures/track_b/golden_b") / document["path"]).is_file() for document in documents)
     assert {
         "raw/[별지 제6호의2서식] 표준근로계약서(농업ㆍ축산업ㆍ어업 분야).hwp",
         "raw/선원법.pdf",

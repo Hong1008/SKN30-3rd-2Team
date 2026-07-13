@@ -1,44 +1,24 @@
 # WorkShield 🛡️
 
-> **프리랜서 용역계약서를 표준계약서와 조항 단위로 비교해 "표준 대비 이탈"을 탐지하는 RAG MCP 시스템**
+> 프리랜서 용역계약서를 표준계약서와 **조항 단위로 비교**해, 사람이 다시 확인할 지점을 찾는 RAG 기반 MCP 서비스
 
-내가 받은 계약서가 정부·공공기관 **표준계약서** 대비 **어디가 빠졌고(누락) / 더 들어갔고(추가) / 다르게 쓰였는지(변경)** 를 찾아주고, 관련 **법령 조문**까지 근거로 붙여줍니다.
+WorkShield는 사용자가 받은 계약서를 정부·공공기관 표준계약서와 대조해 **빠진 조항**, **추가된
+조항**, **대응 후보를 찾지 못한 조항**을 구조화된 결과로 반환합니다. 법률 판단을 생성하는 대신,
+재현 가능한 검색·매칭 결과를 바탕으로 검토 범위를 좁히는 것이 목표입니다.
 
----
+| 한눈에 보기 | 내용 |
+| --- | --- |
+| 입력 | HWP/HWPX/PDF/DOCX 등 계약서 |
+| 비교 단위 | 계약서의 `제N조` 조항 ↔ 계약 유형별 표준조항 |
+| 1차 결과 | `NONE` · `EXTRA` · `MISSING` · `NO_MATCH` |
+| 1차 실행 | LLM 없이 hybrid 검색 · rerank · 결정론 규칙 |
+| 2차 실행 | MCP 서버 밖 데모/클라이언트에서 structured output LLM 사용 |
+| 인터페이스 | FastMCP 도구·리소스, stdio/SSE/streamable HTTP |
+| 품질 기준 | v5 골든 135건과 결정론적 평가 하니스 |
 
-## 목차
+> WorkShield의 출력은 법률 자문이나 위법성 판단이 아니라 **표준 대비 검토 후보**입니다.
 
-1. [프로젝트 개요](#1-프로젝트-개요)
-2. [기술 스택 & 시스템 아키텍처](#2-기술-스택--시스템-아키텍처)
-3. [시작하기](#3-시작하기)
-4. [MCP 서버 연동 가이드](#4-mcp-서버-연동-가이드)
-5. [MCP 도구 및 리소스 명세](#5-mcp-도구-및-리소스-명세)
-6. [개발 및 유지보수 명령어 레퍼런스](#6-개발-및-유지보수-명령어-레퍼런스)
-7. [프로젝트 폴더 구조](#7-프로젝트-폴더-구조)
-8. [개발 시 절대 규칙](#8-개발-시-절대-규칙)
-9. [라이선스 / 출처](#9-라이선스--출처)
-
----
-
-## 1. 프로젝트 개요
-
-### WorkShield 소개
-정부·공공기관이 배포한 **표준계약서**를 정답(기준)으로 고정하고, 사용자가 실제로 받은 프리랜서 용역계약서를 조항 단위로 비교해 표준 대비 이탈(누락/추가/변경)을 찾아내는 RAG(검색 증강) 기반 MCP 시스템입니다. 이탈이 발견된 조항에는 관련 법령 조문을 근거로 함께 붙여줍니다.
-
-### 핵심 개발 철학
-
-**"올바른 법 해석을 생성"하지 않는다. "표준 대비 이탈을 탐지"한다.**
-
-법 해석을 AI가 지어내면 정답 기준이 무너지고 책임 문제가 생깁니다. 그래서 **표준계약서를 정답(기준)으로 고정**하고, 사용자 조항이 그 기준에서 벗어난 지점을 검색으로 찾습니다. "벗어남"은 검증·측정이 가능한 문제입니다.
-
-- **1차 MVP (현재):** LLM 없이 **검색·비교·규칙**만으로 이탈 탐지 → MCP 도구로 제공. LLM 없이 정량 평가(Recall@k·MRR·ablation).
-- **2차 (예정):** 1차 MCP를 LLM에 붙인 웹앱 — "불리함" 해석·협상 초안 생성.
-- **결정론적 판정:** 같은 입력엔 항상 같은 출력. 매칭 없음은 빈 응답이 아니라 `Deviation.NO_MATCH` 같은 명시 표식으로 반환합니다.
-- **"검토 후보" 프레이밍:** 모든 도구의 출력은 "이탈 검토 후보"이며, "위법/합법", "소송에서 이긴다" 같은 단정적 결론을 만들지 않습니다.
-
-> 자세한 기획은 [docs/01.mvp_기획.md](docs/01.mvp_기획.md), 시스템 구성은 [docs/시스템 아키텍처.md](docs/시스템%20아키텍처.md) 참고.
-
-### 팀원
+## 팀원
 
 <table>
   <tr align="center">
@@ -66,240 +46,272 @@
 
 ---
 
-## 2. 기술 스택 & 시스템 아키텍처
+## 무엇을 해결하나요?
 
-### 기술 스택
+계약서를 처음부터 끝까지 읽으면서 표준계약서와 수작업으로 비교하면 시간이 오래 걸리고, 긴 조항이나
+비슷한 표현 사이에서 누락을 놓치기 쉽습니다. WorkShield는 이 과정을 다음과 같이 나눕니다.
 
-| 영역 | 사용 도구 |
+1. 업로드한 계약서를 조항 단위로 분해합니다.
+2. 각 사용자 조항과 가까운 표준조항을 hybrid 검색하고 rerank합니다.
+3. 점수와 후보 유무에 따라 결정론적 검토 신호를 만듭니다.
+4. 계약 전체에서 대응되지 않은 표준조항을 누락 후보로 추가합니다.
+5. 알려진 독소 패턴 신호와 관련 법령 원문을 근거 자료로 연결합니다.
+6. 필요한 경우에만 서버 밖 2차 LLM이 원문 간 의미 차이를 설명합니다.
+
+```text
+계약서 업로드
+    ↓
+kordoc 파싱 · 조항 분리
+    ↓
+Chroma dense + Kiwi/BM25 sparse 검색
+    ↓
+CrossEncoder rerank
+    ↓
+NONE / EXTRA / NO_MATCH 판정 ── 계약 전체 대조 ── MISSING 탐지
+    ↓
+독소 패턴 · 법령 근거 · 대응 표준조항
+    ↓
+MCP 구조화 응답 ── 선택적으로 서버 밖 2차 LLM 설명
+```
+
+## 판정 신호
+
+| 신호 | 의미 |
 | --- | --- |
-| 임베딩 / 리랭커 | `dragonkue/BGE-m3-ko` · `dragonkue/bge-reranker-v2-m3-ko` |
-| 벡터 검색 | Chroma (dense) + `rank_bm25` + Kiwi 형태소 (sparse) + RRF 융합 |
-| 조항 분해(청킹) | LlamaIndex `MarkdownNodeParser` |
-| 저장소 | SQLite (조항·관계·독소패턴) |
-| 법령 근거 | korean-law-mcp (외부 MCP) |
-| 문서 변환 | kordoc (HWP 3.x/5.x, HWPX, HWPML, PDF, XLS, XLSX, DOCX → 마크다운) |
-| 인터페이스 | MCP (`mcp[cli]` / FastMCP) |
-| 검증 · 도구 | pydantic · uv · just · pytest |
+| `NONE` | 표준조항과 1차 잠정 매칭된 조항. 의미가 완전히 같다는 법적 확정은 아님 |
+| `EXTRA` | 근접 표준후보가 있더라도 매칭 임계값에 미치지 못한 추가·변형 검토 후보 |
+| `NO_MATCH` | 검색 후보 자체가 없음을 나타내는 명시 상태 |
+| `MISSING` | 사용자 계약 전체에서 대응 조항을 찾지 못한 표준조항 |
 
-### 서비스 토폴로지
+1차 MCP는 의미 동치성이나 유불리를 생성하지 않습니다. `NONE`과 `EXTRA`의 원문 비교·설명은
+서버 밖 2차 계층의 책임이며, `MISSING`과 `NO_MATCH`는 2차 재판정 대상이 아닙니다.
 
-로컬/운영 모두 **MCP 서버(`mcp`)와 데모 웹(`demo`)이 별개 컨테이너**로 뜨고, 무거운 임베딩/리랭킹 연산만 RunPod 서버리스 GPU 워커로 분리됩니다 ([docker-compose.yml](docker-compose.yml)).
+## 핵심 특징
 
-```mermaid
-graph LR
-    subgraph "Docker Compose"
-        DEMO["demo 컨테이너<br/>Streamlit :8501"]
-        MCP["mcp 컨테이너<br/>FastMCP streamable-http :8000"]
-    end
-    RUNPOD["RunPod Serverless GPU Worker<br/>BGE-m3-ko + bge-reranker-v2-m3-ko"]
-    LAWMCP["korean-law-mcp (외부 MCP)"]
+- **LLM 없는 1차 검토:** 동일한 입력과 인덱스에는 동일한 결과를 반환합니다.
+- **조항 단위 근거:** 결과마다 사용자 조항, 대응 표준조항, confidence를 함께 제공합니다.
+- **빈 응답 방지:** 검색 실패도 `NO_MATCH` 등 명시적인 상태로 반환합니다.
+- **표준계약서 스코핑:** SW 프리랜서·SI 하도급·상용SW 유지관리 등 계약 유형별 코퍼스를 분리합니다.
+- **양방향 검토 신호:** 표준 대비 누락뿐 아니라 별도 독소 패턴 검색 결과도 제공합니다.
+- **법령 원문 연결:** `korean-law-mcp`를 통해 관련 법령 조문을 조회하되 해석을 덧붙이지 않습니다.
+- **MCP 조합성:** 전체 계약 검토와 단일 조항 검색·분류를 각각 독립 도구로 사용할 수 있습니다.
 
-    사용자 --> DEMO
-    DEMO -->|"http://mcp:8000/mcp"| MCP
-    MCP -->|"APP_ENV=prod 시 RunPod API"| RUNPOD
-    MCP --> LAWMCP
-    MCP --> SQLITE[("SQLite")]
-    MCP --> CHROMA[("Chroma 벡터 인덱스")]
+## 아키텍처
+
+코어 비즈니스 규칙과 외부 I/O를 분리한 헥사고날 구조입니다.
+
+```text
+contracts  ← 동결 enum · Pydantic 모델 · port
+   ↑   ↑
+core    adapter  ← 순수 판정 / DB·검색·문서·법령 I/O
+   ↑   ↑
+     pipe        ← 오프라인 코퍼스 빌드 + 런타임 검토 조립
+       ↑
+     server/     ← WorkShield 도구·리소스 + 법령 프록시 등록기
+       ↑
+     app.py      ← FastMCP 조립·lifespan·transport 실행
+       ↑
+  demo/client    ← 사용자 경험 + 서버 밖 2차 LLM
 ```
 
-### 헥사고날(포트-어댑터) 구조
+`src/server/` 자체가 실행 서버는 아닙니다. [`WorkShieldTools`](src/server/server.py)는 계약서
+파싱·검색·검토 도구와 표준조항 리소스를, [`KoreanLawWrapper`](src/server/korean_law_wrapper.py)는 외부
+`korean-law-mcp` 법령·판례 프록시 도구를 주입받은 FastMCP 인스턴스에 등록합니다. 최상위
+[`src/app.py`](src/app.py)의 `create_app()`이 두 등록기를 하나의 앱으로 조립하고, 공용 법령 MCP 세션의
+lifespan과 transport 실행을 관리합니다.
 
-**코어는 외부를 모른다.** 동결된 계약(`contracts`)에만 의존해 여러 명이 병렬로 개발합니다.
+운영 환경에서는 MCP 서버와 Streamlit 데모를 별도 컨테이너로 실행하고, 임베딩·rerank 연산은 RunPod
+Serverless GPU worker에 위임합니다. SQLite와 Chroma는 정규화 JSON과 migration SQL로부터 재생성되는
+파생물입니다.
 
-```mermaid
-flowchart TD
-    subgraph 동결["contracts (단일 진실원)"]
-        E[enums · models · ports]
-    end
-    CORE[core<br/>이탈 탐지 순수 함수] --> 동결
-    ADP[adapter<br/>DB·임베딩·검색·법령 MCP] --> 동결
-    PIPE[pipe<br/>오프라인 빌드 + 런타임 검토] --> CORE
-    PIPE --> ADP
-    MCP[mcp_server / demo] --> PIPE
-```
+자세한 경계와 데이터 흐름은 [아키텍처 문서](docs/architecture.md)를 참고하세요.
 
-### 런타임 검토 흐름 (`review_contract`)
+## 기술 스택
 
-```mermaid
-flowchart LR
-    A[계약서 업로드<br/>PDF/HWP] --> B[조항 분해<br/>제N조 단위]
-    B --> C[하이브리드 검색<br/>Chroma+BM25]
-    C --> D[리랭커<br/>매칭 정밀화]
-    D --> E[이탈 분류<br/>누락·추가·변경]
-    E --> F[법령 근거 부착<br/>korean-law-mcp]
-    F --> G[DeviationResult 반환]
-    K[(표준조항 코퍼스<br/>SQLite + Chroma)] -.기준.-> D
-```
-
-> 모듈별 상세는 각 폴더 README: [contracts](src/contracts/README.md) · [core](src/core/README.md) · [adapter](src/adapter/README.md) · [pipe](src/pipe/README.md), 전체 아키텍처는 [docs/시스템 아키텍처.md](docs/시스템%20아키텍처.md).
-
----
-
-## 3. 시작하기
-
-### 사전 준비물
-- [uv](https://docs.astral.sh/uv/) (Python 패키지 매니저), Python 3.13
-- Node.js (없으면 `just setup`이 자동 설치 시도)
-- 법제처 API 인증키 `OPEN_LAW_API_KEY` ([open.law.go.kr](https://open.law.go.kr) 발급) — `just setup` 중 입력 안내
-
-### 설치 & 빌드
-```bash
-uv tool install rust-just     # just 명령 러너 설치 (최초 1회)
-just setup                    # node·MCP패키지·uv동기화·모델다운로드·DB마이그레이션 일괄
-just build-db                 # 03_normalized(정답) → SQLite → Chroma 인덱스 재생성
-```
-
-### 로컬 실행 확인
-```bash
-just run-mcp                  # MCP 서버를 stdio 트랜스포트로 로컬 기동 (PYTHONPATH=src, src/app.py)
-just run-mcp-ui                # MCP Inspector 웹 UI로 도구 호출 테스트 (.env 자동 바인딩)
-```
-
----
-
-## 4. MCP 서버 연동 가이드
-
-WorkShield MCP 서버의 진입점은 [src/app.py](src/app.py)이며, `MCP_TRANSPORT` 환경변수로 트랜스포트를 전환합니다(기본 `stdio`, 컨테이너 배포는 `streamable-http`).
-
-### 환경 변수 (`.env`)
-루트 `.env`에 다음 값을 설정합니다 (`src/config.py` 기준).
-
-| 변수 | 용도 | 비고 |
-| --- | --- | --- |
-| `OPEN_LAW_API_KEY` | 법제처 Open API 인증키 | `just setup` 중 입력 안내, `korean-law-mcp` 연동에 사용 |
-| `APP_ENV` | `local` \| `prod` | `local`이면 임베더/리랭커를 로컬 모델로 직접 로딩, 그 외엔 RunPod API 사용 |
-| `RUNPOD_API_KEY` / `RUNPOD_ENDPOINT_ID` | 운영(prod) 임베딩/리랭킹 | `just deploy-embedding`으로 최초 발급 후 `.env`에 자동 반영 |
-| `DB_BASE_FILE` | SQLite 경로 | 기본 `data/migration/contract.sqlite3` |
-| `CHROMA_DIR` | Chroma persist 경로 | 기본 `data/chroma` (`just build-index` 실행 시 폴더 전체 재생성) |
-| `EMBEDDING_MODEL_NAME` / `RERANKER_MODEL_NAME` | 모델명 오버라이드 | 기본 `dragonkue/BGE-m3-ko` / `dragonkue/bge-reranker-v2-m3-ko` |
-
-데모(Streamlit) 쪽은 `demo/.env`에 `LLM_PROVIDER`, `GEMINI_API_KEY`, `GEMINI_MODEL`, `WORKSHIELD_MCP_URL`을 별도로 설정합니다.
-
-### Stdio 클라이언트 연동 (Cursor / Claude Desktop 등)
-로컬 stdio 트랜스포트는 클라이언트가 프로세스를 직접 실행하는 방식이라, MCP 설정 파일에 `uv run` 커맨드를 등록하면 됩니다. Cursor는 `.cursor/mcp.json`, Claude Desktop은 `claude_desktop_config.json`에 동일한 형태로 등록합니다.
-
-```json
-{
-  "mcpServers": {
-    "workshield": {
-      "command": "uv",
-      "args": ["run", "python", "src/app.py"],
-      "cwd": "/absolute/path/to/SKN30-3rd-2Team",
-      "env": {
-        "PYTHONPATH": "src"
-      }
-    }
-  }
-}
-```
-
-`cwd`는 이 저장소의 절대 경로로 바꿔야 하며, `.env`가 저장소 루트에 있어야 `OPEN_LAW_API_KEY` 등이 로드됩니다.
-
-### 네트워크(streamable-http) / Docker 연동
-컨테이너 또는 원격 배포 환경에서는 `streamable-http` 트랜스포트로 띄우고 URL로 접속합니다.
-
-```bash
-just docker-run    # 로컬 Docker 포그라운드 실행 (APP_ENV=prod, 8000 포트, --env-file .env)
-# 또는
-docker compose up  # mcp(:8000) + demo(:8501) 동시 기동
-```
-
-클라이언트에서는 `http://<host>:8000/mcp`를 MCP 엔드포인트로 지정합니다(`docker-compose.yml`의 `demo` 서비스가 `WORKSHIELD_MCP_URL=http://mcp:8000/mcp`로 접속하는 것과 동일한 방식). `streamable-http`는 클라이언트-서버가 파일시스템을 공유하지 않으므로, 계약서 파일은 로컬 `file_path` 대신 `file_content`(base64)+`file_name`으로 전달해야 합니다.
-
----
-
-## 5. MCP 도구 및 리소스 명세
-
-[src/server/server.py](src/server/server.py)가 노출하는 전체 표면입니다. 모든 도구의 응답은 "이탈 검토 후보"이며 법적 결론을 단정하지 않습니다.
-
-| 도구 / 리소스 | 역할 | 이탈 판정 |
-| --- | --- | --- |
-| `parse_contract` | 계약서(HWP/PDF) → 조항(`Clause[]`) 분해 | 없음 |
-| `match_clause` | 단일 조항 텍스트 → 유사 표준조항 후보 나열 (검색 전용) | 없음 |
-| `classify_clause` | 단일 조항 → 재정렬·매칭·판정 (부분 검토용) | `EXTRA`/`NONE`/`NO_MATCH` (`MISSING` 불가) |
-| `review_contract` | 계약서 전체 → 파싱→매칭→분류→법령근거 (`async`, 진행률 보고) | 전체 (`MISSING` 포함) |
-| `get_grounding` | 카테고리 또는 조항 텍스트 → 관련 법령 조문 조회 | 없음 (근거 조회) |
-| `list_contract_types` | 지원 계약 종류(`ContractType`) 목록 조회 | 없음 |
-| `list_categories` | 조항 분류 카테고리(`Category`) + 설명/앵커 키워드 조회 | 없음 |
-| `list_toxic_patterns` / `list_toxic_pattern_details` | 독소조항 패턴(`ToxicPattern`) 목록 / 상세 조회 | 없음 |
-| `standard://{contract_type}` (resource) | 계약 유형별 표준조항 요약 브라우징 | 없음 |
-| `standard://{contract_type}/{clause_id}` (resource) | 표준조항 원문 전체 조회 | 없음 |
-
-전체 계약서를 다 돌리지 않고 조항 하나만 볼 때는 `match_clause`(후보 나열) 또는 `classify_clause`(판정까지)를 쓰는 편이 `review_contract`보다 빠릅니다. `contract_type`/`category` 등 enum 인자값은 하드코딩하지 말고 `list_contract_types`/`list_categories`로 런타임에 조회하세요(값 집합이 버전에 따라 바뀔 수 있음).
-
-### 1차·2차 책임 경계
-
-1차 MCP는 LLM 없이 표준 대비 **검토 후보**만 반환합니다. 조항별 후보가 없으면 `NO_MATCH`, 최고 후보 점수가 임계값 미만이면 `EXTRA`, 이상이면 잠정 `NONE`이며, 계약 전체에서 매칭되지 않은 표준조항은 `MISSING`으로 추가합니다. `NONE`은 본문 의미 동치의 법적·의미적 확정이 아닙니다.
-
-2차 LLM은 MCP 서버 밖의 데모/클라이언트에서만 동작합니다. `NONE`과 `EXTRA`의 `user_clause`, `matched_standard`, `toxic_patterns`, `confidence`를 받아 의미 차이 또는 추가조항 성격을 설명하며, `MISSING`과 `NO_MATCH`는 2차 재판정 대상이 아닙니다. 이 과정에서도 "위법/합법"이나 유불리를 단정하지 않고 검토 후보 프레이밍을 유지합니다.
-
----
-
-## 6. 개발 및 유지보수 명령어 레퍼런스
-
-| 명령 | 설명 |
+| 영역 | 기술 |
 | --- | --- |
-| `just setup` | 최초 1회: node·MCP·uv·모델 다운로드 |
-| `just install-runpod` | Runpod CLI 설치 및 상태 점검 (OS 자동 판별) |
-| `just build-db` | [통합] normalize → SQLite → Chroma 인덱스 재생성 |
-| `just migrate` | SQLite 마이그레이션까지만 실행 |
-| `just build-index` | SQLite → bge-m3 임베딩 → Chroma 인덱스 빌드만 실행 |
-| `just test` | 단위 테스트 실행 (integration 제외) |
-| `just test [type]` | 테스트 유형 선택 실행 (unit, integration, all) |
-| `just eval [t] [v] [e]` | 평가 드라이버 실행 (t: a/b, v: 골든버전, e: local/prod) |
-| `just run-mcp [t] [p]` | MCP 서버 로컬 실행 (t: stdio/sse/streamable-http, p: 포트, 기본 stdio/8000) |
-| `just run-mcp-ui` | MCP Inspector 웹 테스트 UI 실행 (.env 바인딩) |
-| `just deploy-embedding` | [최초 1회] Runpod 템플릿/서버리스 생성 및 .env 갱신 |
-| `just embed-on` | Runpod 서버리스 워커 웜업 (min_workers=1) |
-| `just embed-off` | Runpod 서버리스 워커 과금 차단 (min_workers=0) |
-| `just docker-build` | Docker 이미지 빌드 |
-| `just docker-run` | 로컬 Docker 포그라운드 실행 (streamable-http 8000포트 서빙) |
-| `just docker-up` | 로컬 Docker 백그라운드(detached) 실행 |
+| 문서 변환 | kordoc |
+| 임베딩 | `dragonkue/BGE-m3-ko` |
+| reranker | `dragonkue/bge-reranker-v2-m3-ko` |
+| 검색 | Chroma · Kiwi · BM25 · RRF |
+| 저장소 | SQLite · Chroma |
+| 법령 근거 | korean-law-mcp |
+| 서버 | Python · FastMCP · Pydantic |
+| 데모 | Streamlit · structured output LLM |
+| 개발·검증 | uv · just · pytest · Docker |
 
----
+## 빠른 시작
 
-## 7. 프로젝트 폴더 구조
+### 준비물
 
-```
-.
-├── data/
-│   ├── 01_raw/          # 원본 표준계약서 (HWP)            [커밋]
-│   ├── 02_converted/    # 마크다운 변환 (체크포인트)        [커밋]
-│   ├── 03_normalized/   # 정규화 조항 JSON = 정답           [커밋]
-│   ├── migration/       # 스키마 SQL[커밋] + SQLite[생성물·미커밋]
-│   └── chroma/          # Chroma 벡터 인덱스[생성물·미커밋]
-├── src/
-│   ├── contracts/       # 동결 계약 (enums · models · ports)
-│   ├── core/            # 이탈 탐지 순수 함수 (TDD 대상)
-│   ├── adapter/         # 외부 I/O (db · vector · embedder · 법령·문서 MCP)
-│   ├── pipe/            # 파이프라인 (오프라인 빌드 + 런타임 review)
-│   ├── server/          # FastMCP 서버 (도구/리소스 정의, dto)
-│   ├── eval/            # 평가 하니스 (metrics · run_eval · ablation)
-│   ├── app.py           # MCP 서버 진입점
-│   └── config.py
-├── demo/                 # Streamlit 데모 웹 (별도 컨테이너)
-├── deploy/runpod_worker/ # RunPod 서버리스 워커 이미지/핸들러
-├── tests/                # pytest (TDD 규격서)
-├── docs/                 # 기획서 + 시스템 아키텍처 + 작업 분배 카드(tasks/)
-├── AGENTS.md              # AI·개발자 공용 가이드 (절대 규칙)
-├── docker-compose.yml     # mcp + demo 컨테이너 번들
-└── justfile               # 명령 모음
+- Python 3.13 이상
+- [uv](https://docs.astral.sh/uv/)
+- [just](https://github.com/casey/just)
+- Node.js — kordoc와 korean-law-mcp CLI 실행에 사용
+
+### 설치와 실행
+
+```bash
+cp .env.example .env
+just setup
+just build-db
+just test unit
+just run-mcp
 ```
 
----
+기본 `just run-mcp`는 stdio transport로 서버를 실행합니다. HTTP로 실행하려면 다음 명령을 사용합니다.
 
-## 8. 개발 시 절대 규칙
+```bash
+just run-mcp streamable-http 8000
+```
 
-1. **1차 코드에 LLM 호출 금지** — 검색·매칭·분류만 (해석은 2차).
-2. **동결 계약이 단일 진실원** — 스키마·MCP 시그니처 변경은 사전 합의.
-3. 사용자 표면 문구는 **"검토 후보"** 프레이밍 ("위법/합법" 단정 금지).
-4. **빈 응답 금지** — 매칭 없음은 `NO_MATCH` 등 명시 표식.
-5. **평가에 LLM-judge 금지** — 결정론적·재현 가능한 계산만.
+MCP Inspector에서 도구를 직접 호출하려면:
 
-자세한 배경과 아키텍처 규칙은 [AGENTS.md](AGENTS.md) 참고.
+```bash
+just run-mcp-ui
+```
 
----
+### 데모와 Docker
 
-## 9. 라이선스 / 출처
-- 표준계약서: 소프트웨어산업협회(sw.or.kr) · 문화체육관광부(mcst.go.kr)
-- korean-law-mcp · kordoc (MIT) / bge 모델 (BAAI) / Chroma (Apache-2.0)
+```bash
+just docker-build
+just demo-bundle-up
+```
+
+데모는 `http://localhost:8501`, MCP streamable HTTP endpoint는 `http://localhost:8000/mcp`에서
+접근할 수 있습니다.
+
+```bash
+just demo-bundle-down
+```
+
+## 환경 변수
+
+`.env.example`을 복사한 뒤 필요한 값만 로컬 `.env`에 설정합니다. `.env`는 Git에 커밋하지 않습니다.
+
+| 변수 | 용도 |
+| --- | --- |
+| `APP_ENV` | `local` 또는 `prod` 실행 환경 |
+| `OPEN_LAW_API_KEY` | 법령 API 인증 |
+| `KOREAN_LAW_MCP_URL` | 외부 korean-law-mcp endpoint |
+| `RUNPOD_API_KEY` | 운영 GPU worker 인증 |
+| `RUNPOD_ENDPOINT_ID` | RunPod Serverless endpoint |
+
+로컬 단위 테스트에는 모든 외부 키가 필요하지 않습니다. 운영 실행과 법령·RunPod 연동에는 해당 키를
+설정해야 합니다.
+
+## MCP 도구와 리소스
+
+최종 MCP 표면은 `src/app.py`가 `WorkShieldTools`와 `KoreanLawWrapper`를 조립해 만듭니다.
+`server.py`가 단독으로 모든 도구를 노출하거나 실행되는 구조가 아닙니다.
+
+### WorkShield 1차 도구
+
+| 도구 | 역할 |
+| --- | --- |
+| `assess_contract_scope` | 지원 범위와 계약 유형 후보를 사전 점검 |
+| `parse_contract` | 계약서 파일을 조항 목록으로 분해 |
+| `match_clause` | 단일 조항과 가까운 표준조항 후보 검색 |
+| `classify_clause` | 단일 조항 검색·rerank·1차 판정 |
+| `review_contract` | 계약서 전체 파싱·매칭·누락·독소·근거 조회 |
+| `get_grounding` | 카테고리 또는 조항에 관련된 법령 원문 조회 |
+| `list_contract_types` | 지원 계약 유형 조회 |
+| `list_categories` | 표준조항 카테고리와 검색 앵커 조회 |
+| `list_toxic_patterns` | 독소 패턴 종류 조회 |
+| `list_toxic_pattern_details` | 독소 패턴의 상세 기준 조회 |
+
+`WorkShieldTools`는 읽기 전용 MCP resource도 함께 등록합니다.
+
+- `standard://{contract_type}` — 계약 유형별 표준조항 목록
+- `standard://{contract_type}/{clause_id}` — 특정 표준조항 원문
+
+### 외부 법령 MCP 프록시 도구
+
+`KoreanLawWrapper`는 2차 클라이언트가 법령·판례 원문과 검증 기능을 사용할 수 있도록 다음 도구를 같은
+WorkShield MCP 표면에 등록합니다. WorkShield 서버가 LLM 해석을 생성하는 것이 아니라, 공용
+`KoreanLawMCPClient`를 통해 외부 `korean-law-mcp` 기능을 전달하는 계층입니다.
+
+| 도구 | 역할 |
+| --- | --- |
+| `search_law` | 법령명 키워드로 법령 식별자 검색 |
+| `get_law_text` | 법령·조문 본문 조회 |
+| `get_annexes` | 법령의 별표·서식 조회 |
+| `legal_research` | 외부 법률 MCP의 다단계 리서치 실행 |
+| `legal_analysis` | 외부 법률 MCP의 인용 검증·행위시법 분석 실행 |
+| `discover_tools` | 외부 법률 MCP의 추가 도구 탐색 |
+| `execute_tool` | 탐색한 외부 도구 실행 |
+| `search_decisions` | 판례·해석례 등 결정 검색 |
+| `get_decision_text` | 결정 식별자로 전문 조회 |
+
+## 자주 쓰는 명령
+
+| 명령 | 용도 |
+| --- | --- |
+| `just build-db` | 정규화 데이터로 SQLite와 Chroma 재생성 |
+| `just test unit` | 외부 연동을 제외한 결정론적 단위 테스트 |
+| `just test integration` | 외부 DB·모델이 필요한 통합 테스트 |
+| `just eval a v5` | 활성 v5 Track A 평가 |
+| `just run-mcp` | 로컬 MCP 서버 실행 |
+| `just run-mcp-ui` | MCP Inspector 실행 |
+| `just docker-build` | 운영 MCP 이미지 빌드 |
+| `just demo-bundle-up` | MCP와 데모 컨테이너 실행 |
+| `just embed-on` / `just embed-off` | RunPod worker 활성화·과금 차단 |
+
+전체 레시피는 `just --list`로 확인할 수 있습니다.
+
+## 품질 기준과 현재 상태
+
+1차의 활성 회귀 기준은 **v5 골든 135건**입니다. SI·SM·SW 유형별 45건으로 구성되며, 지표는
+LLM-judge 없이 결정론적으로 계산합니다.
+
+- 기본 임계값: `match_threshold=0.50`, `toxic_threshold=0.60`
+- 독소 제목 접두 실험 S: tuning 실패로 폐기
+- SW OVER_MATCH 규칙 C1: held-out FP 기준 초과로 보류
+- 1차 검색·임계값·독소 패턴의 추가 튜닝: 종료
+- 현재 활성 작업: 서버 밖 **K — 2차 structured output LLM 제품화**
+
+현재 상태는 [START_HERE](docs/START_HERE.md), 동결 수치와 실험 근거는
+[품질 기준](docs/quality/baseline-v5.md), 다음 작업은 [로드맵](docs/roadmap.md)에서 확인할 수 있습니다.
+
+## 프로젝트 구조
+
+```text
+src/
+  app.py       FastMCP 앱 조립·외부 세션 lifespan·실행 진입점
+  contracts/   동결 enum·모델·port
+  core/        외부 I/O 없는 순수 검색·판정 규칙
+  adapter/     DB·벡터·모델·문서·법령 연동
+  pipe/        데이터 준비와 런타임 검토 파이프라인
+  server/      WorkShield 도구·리소스와 법령 프록시 등록 클래스
+quality/       활성 평가 코드와 v5 회귀 fixture
+demo/          Streamlit UI와 서버 밖 2차 LLM
+data/          표준계약서 원천·정규화 데이터·migration
+tests/         단위·통합 테스트
+docs/          현재 상태·아키텍처·결정·품질 근거
+```
+
+완료·폐기된 작업과 과거 평가 기록은 [docs/archive](docs/archive/)에 보존합니다. 개발자가 가장 먼저 볼
+문서는 [docs/START_HERE.md](docs/START_HERE.md)입니다.
+
+## 프로젝트 원칙
+
+- 1차 MCP 서버에는 LLM 호출을 넣지 않습니다.
+- 동결된 계약 모델과 MCP 시그니처는 승인 없이 변경하지 않습니다.
+- 사용자 표면에서는 항상 “검토 후보”로 표현합니다.
+- 매칭 실패와 빈 결과를 조용히 숨기지 않습니다.
+- 평가는 LLM-judge 없이 재현 가능한 계산으로 수행합니다.
+
+## 주요 문서
+
+- [현재 상태와 실행 안내](docs/START_HERE.md)
+- [시스템 아키텍처](docs/architecture.md)
+- [현재 로드맵](docs/roadmap.md)
+- [v5 품질 기준선](docs/quality/baseline-v5.md)
+- [날짜별 의사결정](docs/decisions/)
+- [필수 산출물](docs/deliverables/)
+- [보안 정책](docs/보안정책.md)
+
+## 라이선스와 출처
+
+표준계약서와 법령 자료의 권리는 각 배포 기관에 있습니다. 모델·라이브러리·샘플 자료를 사용할 때는
+각 원출처의 라이선스와 이용 조건을 따릅니다.

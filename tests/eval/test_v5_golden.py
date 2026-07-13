@@ -6,10 +6,10 @@ import json
 from collections import Counter, defaultdict
 from pathlib import Path
 
-from eval.golden.validate_golden import load_clause_id_corpus
+from quality.validation.validate_golden import load_clause_id_corpus
 
 
-GOLDEN_DIR = Path(__file__).resolve().parents[2] / "src/eval/golden"
+GOLDEN_DIR = Path(__file__).resolve().parents[2] / "quality/fixtures/v5"
 TYPES = {
     "si_subcontract": "SI_SUBCONTRACT",
     "sm_subcontract": "SM_SUBCONTRACT",

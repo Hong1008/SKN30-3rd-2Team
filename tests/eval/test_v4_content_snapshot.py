@@ -4,7 +4,7 @@ import unicodedata
 from pathlib import Path
 
 
-GOLDEN_DIR = Path(__file__).resolve().parents[2] / "src/eval/golden"
+GOLDEN_DIR = Path(__file__).resolve().parents[2] / "quality/fixtures/legacy/golden"
 SNAPSHOT = Path(__file__).parent / "fixtures/v4_content_snapshot.v4.json"
 
 

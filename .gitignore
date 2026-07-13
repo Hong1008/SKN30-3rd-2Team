@@ -10,6 +10,7 @@ wheels/
 .venv
 .env
 .env.*
+!.env.example
 .tools
 
 # IDE
@@ -33,4 +34,4 @@ data/99_uploads/
 *onnx*/
 *onnx*.zip
 # eval 트랙 B: kordoc 변환 산출물(재생성물)
-src/eval/golden_b/converted/
+quality/fixtures/track_b/golden_b/converted/

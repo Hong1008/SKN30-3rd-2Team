@@ -21,7 +21,7 @@ def _case(**overrides):
 
 
 def test_gold_toxic_문자열이면_타입_위반():
-    from eval.golden.validate_golden import validate_case
+    from quality.validation.validate_golden import validate_case
     violations = validate_case(_case(gold_toxic="UNFAIR_DAMAGE_CLAIM"), clause_id_corpus=None)
     rules = [v["rule"] for v in violations]
     assert "gold_toxic_type" in rules
@@ -29,14 +29,14 @@ def test_gold_toxic_문자열이면_타입_위반():
 
 def test_gold_toxic_문자열_순회로_인한_문자단위_오탐_방지():
     """타입 위반 시 문자열을 순회해 문자 단위로 enum 위반을 만들면 안 된다."""
-    from eval.golden.validate_golden import validate_case
+    from quality.validation.validate_golden import validate_case
     violations = validate_case(_case(gold_toxic="AB"), clause_id_corpus=None)
     enum_violations = [v for v in violations if v["rule"] == "gold_toxic_enum"]
     assert enum_violations == []
 
 
 def test_gold_toxic_리스트에_잘못된_enum값():
-    from eval.golden.validate_golden import validate_case
+    from quality.validation.validate_golden import validate_case
     violations = validate_case(_case(gold_toxic=["liability_transfer"]), clause_id_corpus=None)
     rules = [v["rule"] for v in violations]
     assert "gold_toxic_enum" in rules
@@ -44,32 +44,32 @@ def test_gold_toxic_리스트에_잘못된_enum값():
 
 
 def test_gold_toxic_정상_리스트는_위반_없음():
-    from eval.golden.validate_golden import validate_case
+    from quality.validation.validate_golden import validate_case
     violations = validate_case(_case(gold_toxic=["IP_TOTAL_FREE"]), clause_id_corpus=None)
     assert violations == []
 
 
 def test_gold_toxic_없으면_통과():
-    from eval.golden.validate_golden import validate_case
+    from quality.validation.validate_golden import validate_case
     violations = validate_case(_case(gold_toxic=None), clause_id_corpus=None)
     assert violations == []
 
 
 def test_gold_deviation_MISSING은_트랙A에서_위반():
-    from eval.golden.validate_golden import validate_case
+    from quality.validation.validate_golden import validate_case
     violations = validate_case(_case(gold_deviation="MISSING"), clause_id_corpus=None)
     rules = [v["rule"] for v in violations]
     assert "gold_deviation_enum" in rules
 
 
 def test_gold_deviation_NONE_EXTRA는_통과():
-    from eval.golden.validate_golden import validate_case
+    from quality.validation.validate_golden import validate_case
     for d in ("NONE", "EXTRA"):
         assert validate_case(_case(gold_deviation=d), clause_id_corpus=None) == []
 
 
 def test_gold_clause_id_코퍼스에_없으면_위반():
-    from eval.golden.validate_golden import validate_case
+    from quality.validation.validate_golden import validate_case
     violations = validate_case(
         _case(gold_clause_id="not_in_corpus"), clause_id_corpus={"sm_subcontract-2025-art1"}
     )
@@ -78,7 +78,7 @@ def test_gold_clause_id_코퍼스에_없으면_위반():
 
 
 def test_gold_clause_id_null은_EXTRA로_허용():
-    from eval.golden.validate_golden import validate_case
+    from quality.validation.validate_golden import validate_case
     violations = validate_case(
         _case(gold_clause_id=None, gold_deviation="EXTRA"), clause_id_corpus={"a"}
     )
@@ -89,21 +89,21 @@ def test_gold_clause_id_null은_EXTRA로_허용():
 
 
 def test_find_duplicate_case_ids_중복_탐지():
-    from eval.golden.validate_golden import find_duplicate_case_ids
+    from quality.validation.validate_golden import find_duplicate_case_ids
     cases = [_case(case_id="g01"), _case(case_id="g01"), _case(case_id="g02")]
     dups = find_duplicate_case_ids(cases)
     assert dups == {"g01": 2}
 
 
 def test_find_duplicate_case_ids_중복없으면_빈딕셔너리():
-    from eval.golden.validate_golden import find_duplicate_case_ids
+    from quality.validation.validate_golden import find_duplicate_case_ids
     cases = [_case(case_id="g01"), _case(case_id="g02")]
     assert find_duplicate_case_ids(cases) == {}
 
 
 def test_load_golden_files는_진단과_case_matrix_sidecar를_제외한다(tmp_path):
     """검증 CLI가 v5 sidecar를 골든 케이스로 해석하지 않는다."""
-    from eval.golden.validate_golden import load_golden_files
+    from quality.validation.validate_golden import load_golden_files
 
     (tmp_path / "v5_sw_freelance.json").write_text(
         json.dumps([_case(case_id="v5-case")]), encoding="utf-8"
@@ -158,7 +158,7 @@ def _rules(violations):
 
 
 def test_v5_정상_fixture는_정확한_분포를_통과한다():
-    from eval.golden.validate_golden import validate_v5_cases
+    from quality.validation.validate_golden import validate_v5_cases
 
     cases, matrix = _v5_fixture()
     heldout = [case["case_id"] for case, row in zip(cases, matrix) if row["split"] == "HELD_OUT"]
@@ -166,7 +166,7 @@ def test_v5_정상_fixture는_정확한_분포를_통과한다():
 
 
 def test_v5_matrix와_case_ID_집합이_다르면_위반한다():
-    from eval.golden.validate_golden import validate_v5_cases
+    from quality.validation.validate_golden import validate_v5_cases
 
     cases, matrix = _v5_fixture()
     matrix[-1]["case_id"] = "ghost"
@@ -175,7 +175,7 @@ def test_v5_matrix와_case_ID_집합이_다르면_위반한다():
 
 
 def test_v5_matrix_split_타입과_enum을_검증한다():
-    from eval.golden.validate_golden import validate_v5_cases
+    from quality.validation.validate_golden import validate_v5_cases
 
     cases, matrix = _v5_fixture()
     matrix[0]["split"] = 1
@@ -185,7 +185,7 @@ def test_v5_matrix_split_타입과_enum을_검증한다():
 
 
 def test_v5_역할별_정확한_분포를_검증한다():
-    from eval.golden.validate_golden import validate_v5_cases
+    from quality.validation.validate_golden import validate_v5_cases
 
     cases, matrix = _v5_fixture()
     matrix[0]["design_role"] = "일반 EXTRA"
@@ -194,7 +194,7 @@ def test_v5_역할별_정확한_분포를_검증한다():
 
 
 def test_v5_design_role과_gold_deviation_대응을_검증한다():
-    from eval.golden.validate_golden import validate_v5_cases
+    from quality.validation.validate_golden import validate_v5_cases
 
     cases, matrix = _v5_fixture()
     matrix[0]["design_role"] = "알 수 없는 역할"
@@ -205,7 +205,7 @@ def test_v5_design_role과_gold_deviation_대응을_검증한다():
 
 
 def test_v5_topic_group은_계약유형별로_split_누출을_검증한다():
-    from eval.golden.validate_golden import validate_v5_cases
+    from quality.validation.validate_golden import validate_v5_cases
 
     cases, matrix = _v5_fixture()
     matrix[30]["topic_group"] = matrix[0]["topic_group"]
@@ -214,7 +214,7 @@ def test_v5_topic_group은_계약유형별로_split_누출을_검증한다():
 
 
 def test_v5_전역_case_ID_중복을_탐지한다():
-    from eval.golden.validate_golden import find_global_duplicate_case_ids
+    from quality.validation.validate_golden import find_global_duplicate_case_ids
 
     assert find_global_duplicate_case_ids([
         [{"case_id": "same"}],
@@ -223,7 +223,7 @@ def test_v5_전역_case_ID_중복을_탐지한다():
 
 
 def test_v5_다른_계약유형의_동일_topic_group은_누출이_아니다():
-    from eval.golden.validate_golden import validate_v5_cases
+    from quality.validation.validate_golden import validate_v5_cases
 
     _, si_matrix = _v5_fixture("si", "SI_SUBCONTRACT")
     si_cases, _ = _v5_fixture("si", "SI_SUBCONTRACT")
@@ -239,7 +239,7 @@ def test_v5_다른_계약유형의_동일_topic_group은_누출이_아니다():
 
 
 def test_v5_유효한_role이라도_gold_deviation이_반대면_위반한다():
-    from eval.golden.validate_golden import validate_v5_cases
+    from quality.validation.validate_golden import validate_v5_cases
 
     cases, matrix = _v5_fixture()
     cases[0]["gold_deviation"] = "NONE"
@@ -249,7 +249,7 @@ def test_v5_유효한_role이라도_gold_deviation이_반대면_위반한다():
 
 
 def test_v5_manifest_중복과_전역_unknown을_분리한다():
-    from eval.golden.validate_golden import validate_v5_manifest
+    from quality.validation.validate_golden import validate_v5_manifest
 
     cases, matrix = _v5_fixture()
     violations = validate_v5_manifest(
@@ -262,7 +262,7 @@ def test_v5_manifest_중복과_전역_unknown을_분리한다():
 
 
 def test_v5_manifest와_matrix의_heldout_선언은_양방향으로_일치해야_한다():
-    from eval.golden.validate_golden import validate_v5_manifest
+    from quality.validation.validate_golden import validate_v5_manifest
 
     cases, matrix = _v5_fixture()
     heldout = [case["case_id"] for case, row in zip(cases, matrix) if row["split"] == "HELD_OUT"]
@@ -274,7 +274,7 @@ def test_v5_manifest와_matrix의_heldout_선언은_양방향으로_일치해야
 
 
 def test_v5_manifest에_있지만_matrix가_TUNING이면_역방향_위반이다():
-    from eval.golden.validate_golden import validate_v5_manifest
+    from quality.validation.validate_golden import validate_v5_manifest
 
     cases, matrix = _v5_fixture()
     tuning_id = cases[0]["case_id"]
@@ -285,7 +285,7 @@ def test_v5_manifest에_있지만_matrix가_TUNING이면_역방향_위반이다(
 
 
 def test_v5_manifest_세_계약유형_정상_fixture는_통과한다():
-    from eval.golden.validate_golden import validate_v5_cases, validate_v5_manifest
+    from quality.validation.validate_golden import validate_v5_cases, validate_v5_manifest
 
     cases_by_type = {}
     matrices_by_type = {}
@@ -307,7 +307,7 @@ def test_v5_manifest_세_계약유형_정상_fixture는_통과한다():
 
 
 def test_v5_단일_클래스_split은_비교_대상으로_허용하지_않는다():
-    from eval.golden.validate_golden import validate_v5_cases
+    from quality.validation.validate_golden import validate_v5_cases
 
     cases, matrix = _v5_fixture()
     for case, row in zip(cases, matrix):
@@ -318,7 +318,7 @@ def test_v5_단일_클래스_split은_비교_대상으로_허용하지_않는다
 
 
 def test_cli_v4는_v5_sidecar_없이_기존_흐름을_유지한다(tmp_path, monkeypatch, capsys):
-    import eval.golden.validate_golden as validator
+    import quality.validation.validate_golden as validator
 
     (tmp_path / "v4_sw_freelance.json").write_text(
         json.dumps([_case(case_id="v4-1")]), encoding="utf-8"
@@ -336,7 +336,7 @@ def test_cli_v4는_v5_sidecar_없이_기존_흐름을_유지한다(tmp_path, mon
 
 
 def test_cli_v5는_matrix_manifest_누락을_규칙과_종료코드로_보고한다(tmp_path, monkeypatch, capsys):
-    import eval.golden.validate_golden as validator
+    import quality.validation.validate_golden as validator
 
     for stem, contract_type in (
         ("si_subcontract", "SI_SUBCONTRACT"),

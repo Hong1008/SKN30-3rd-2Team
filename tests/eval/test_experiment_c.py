@@ -5,15 +5,15 @@ import pytest
 
 
 def _sw_cases_and_baseline():
-    cases = json.loads(open("src/eval/golden/v5_sw_freelance.json", encoding="utf-8").read())
-    rows = json.loads(open("src/eval/golden/v5_diagnostics.json", encoding="utf-8").read())["deviation"]
+    cases = json.loads(open("quality/fixtures/v5/v5_sw_freelance.json", encoding="utf-8").read())
+    rows = json.loads(open("quality/fixtures/v5/v5_diagnostics.json", encoding="utf-8").read())["deviation"]
     return cases, [row for row in rows if row["contract_type"] == "SW_FREELANCE"]
 
 
 def test_v5_sw는_topic_group_누출없이_30_15로_분할된다():
     from eval.experiment_c import split_sw_cases
 
-    cases = json.loads(open("src/eval/golden/v5_sw_freelance.json", encoding="utf-8").read())
+    cases = json.loads(open("quality/fixtures/v5/v5_sw_freelance.json", encoding="utf-8").read())
     result = split_sw_cases(cases)
     assert len(result["tuning"]) == 30
     assert len(result["held-out"]) == 15
