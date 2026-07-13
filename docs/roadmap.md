@@ -1,9 +1,14 @@
 # WorkShield 로드맵
 
-## 활성: K — 2차 LLM 제품화
+## 현재 활성 개발 작업 없음
 
-1차 MCP가 반환한 `NONE`·`EXTRA` 후보를 서버 밖 데모/클라이언트에서 structured output LLM으로 검토한다.
-구현 범위와 완료 조건은 [K_second_stage_llm.md](tasks/K_second_stage_llm.md)를 따른다.
+1차 MCP 구현과 v5 기준선 검증이 완료됐다. 서버는 외부 클라이언트가 `review_contract`,
+`get_grounding`, 표준조항 리소스를 독립적으로 조합할 수 있도록 제공하며, 특정 2차 LLM 클라이언트의
+구현은 현 프로젝트 범위에 포함하지 않는다.
+
+LLM 기반 의미 비교·설명 기능이 별도 제품에서 필요해질 경우에는
+[선택적 2차 클라이언트 연동 지침](archive/tasks/K_second_stage_llm.md)을 출발점으로 삼되,
+provider·모델·structured output·사용자 경험은 그 클라이언트 소유자가 결정한다.
 
 ## 동결된 1차
 

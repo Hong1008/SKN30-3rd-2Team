@@ -13,7 +13,6 @@ dependencies = [
     "python-dotenv>=1.2.2",
     "kiwipiepy>=0.23.2",
     "llama-index-core>=0.14.23",
-    "streamlit>=1.58.0",
 ]
 
 [dependency-groups]
@@ -38,9 +37,4 @@ testpaths = ["tests"]
 addopts = "-v -m 'not integration'"
 markers = [
     "integration: 외부 DB·모델 필요 — CI에서 별도 실행",
-]
-
-[tool.uv.workspace]
-members = [
-    "demo",
 ]

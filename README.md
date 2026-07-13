@@ -12,7 +12,7 @@ WorkShield는 사용자가 받은 계약서를 정부·공공기관 표준계약
 | 비교 단위 | 계약서의 `제N조` 조항 ↔ 계약 유형별 표준조항 |
 | 1차 결과 | `NONE` · `EXTRA` · `MISSING` · `NO_MATCH` |
 | 1차 실행 | LLM 없이 hybrid 검색 · rerank · 결정론 규칙 |
-| 2차 실행 | MCP 서버 밖 데모/클라이언트에서 structured output LLM 사용 |
+| 2차 실행 | 선택 사항 — 외부 클라이언트가 필요에 따라 구현 |
 | 인터페이스 | FastMCP 도구·리소스, stdio/SSE/streamable HTTP |
 | 품질 기준 | v5 골든 135건과 결정론적 평가 하니스 |
 
@@ -56,7 +56,7 @@ WorkShield는 사용자가 받은 계약서를 정부·공공기관 표준계약
 3. 점수와 후보 유무에 따라 결정론적 검토 신호를 만듭니다.
 4. 계약 전체에서 대응되지 않은 표준조항을 누락 후보로 추가합니다.
 5. 알려진 독소 패턴 신호와 관련 법령 원문을 근거 자료로 연결합니다.
-6. 필요한 경우에만 서버 밖 2차 LLM이 원문 간 의미 차이를 설명합니다.
+6. 필요한 경우 외부 클라이언트가 서버 밖에서 원문 간 의미 차이를 설명할 수 있습니다.
 
 ```text
 계약서 업로드
@@ -83,8 +83,8 @@ MCP 구조화 응답 ── 선택적으로 서버 밖 2차 LLM 설명
 | `NO_MATCH` | 검색 후보 자체가 없음을 나타내는 명시 상태 |
 | `MISSING` | 사용자 계약 전체에서 대응 조항을 찾지 못한 표준조항 |
 
-1차 MCP는 의미 동치성이나 유불리를 생성하지 않습니다. `NONE`과 `EXTRA`의 원문 비교·설명은
-서버 밖 2차 계층의 책임이며, `MISSING`과 `NO_MATCH`는 2차 재판정 대상이 아닙니다.
+1차 MCP는 의미 동치성이나 유불리를 생성하지 않습니다. 원문 비교·설명이 필요한 외부 클라이언트는
+`NONE`과 `EXTRA`를 소비할 수 있으며, `MISSING`과 `NO_MATCH`는 재판정 대상이 아닙니다.
 
 독소 패턴은 위 네 가지 `deviation`과 별개의 보조 신호입니다. 각 사용자 조항은 표준 대비
 `NONE`, `EXTRA` 또는 `NO_MATCH`이면서 동시에 `toxic_patterns`를 0개 이상 가질 수 있습니다. 이 값은
@@ -118,7 +118,7 @@ core    adapter  ← 순수 판정 / DB·검색·문서·법령 I/O
        ↑
      app.py      ← FastMCP 조립·lifespan·transport 실행
        ↑
-  demo/client    ← 사용자 경험 + 서버 밖 2차 LLM
+  외부 client    ← 선택적 사용자 경험 + 서버 밖 2차 LLM
 ```
 
 `src/server/` 자체가 실행 서버는 아닙니다. [`WorkShieldTools`](src/server/server.py)는 계약서
@@ -127,9 +127,8 @@ core    adapter  ← 순수 판정 / DB·검색·문서·법령 I/O
 [`src/app.py`](src/app.py)의 `create_app()`이 두 등록기를 하나의 앱으로 조립하고, 공용 법령 MCP 세션의
 lifespan과 transport 실행을 관리합니다.
 
-운영 환경에서는 MCP 서버와 Streamlit 데모를 별도 컨테이너로 실행하고, 임베딩·rerank 연산은 RunPod
-Serverless GPU worker에 위임합니다. SQLite와 Chroma는 정규화 JSON과 migration SQL로부터 재생성되는
-파생물입니다.
+운영 환경의 MCP 서버는 외부 클라이언트와 분리돼 있으며, 임베딩·rerank 연산은 RunPod Serverless GPU
+worker에 위임합니다. SQLite와 Chroma는 정규화 JSON과 migration SQL로부터 재생성되는 파생물입니다.
 
 자세한 경계와 데이터 흐름은 [아키텍처 문서](docs/architecture.md)를 참고하세요.
 
@@ -144,7 +143,6 @@ Serverless GPU worker에 위임합니다. SQLite와 Chroma는 정규화 JSON과 
 | 저장소 | SQLite · Chroma |
 | 법령 근거 | korean-law-mcp |
 | 서버 | Python · FastMCP · Pydantic |
-| 데모 | Streamlit · structured output LLM |
 | 개발·검증 | uv · just · pytest · Docker |
 
 ## 빠른 시작
@@ -178,19 +176,14 @@ MCP Inspector에서 도구를 직접 호출하려면:
 just run-mcp-ui
 ```
 
-### 데모와 Docker
+### Docker
 
 ```bash
 just docker-build
-just demo-bundle-up
 ```
 
-데모는 `http://localhost:8501`, MCP streamable HTTP endpoint는 `http://localhost:8000/mcp`에서
-접근할 수 있습니다.
-
-```bash
-just demo-bundle-down
-```
+Docker 배포는 MCP 서버 단일 컨테이너만 지원하며, streamable HTTP endpoint는
+`http://localhost:8000/mcp`입니다.
 
 ## 환경 변수
 
@@ -224,7 +217,6 @@ just demo-bundle-down
 | `just run-mcp` | 로컬 MCP 서버 실행 |
 | `just run-mcp-ui` | MCP Inspector 실행 |
 | `just docker-build` | 운영 MCP 이미지 빌드 |
-| `just demo-bundle-up` | MCP와 데모 컨테이너 실행 |
 | `just embed-on` / `just embed-off` | RunPod worker 활성화·과금 차단 |
 
 전체 레시피는 `just --list`로 확인할 수 있습니다.
@@ -238,7 +230,7 @@ LLM-judge 없이 결정론적으로 계산합니다.
 - 독소 제목 접두 실험 S: tuning 실패로 폐기
 - SW OVER_MATCH 규칙 C1: held-out FP 기준 초과로 보류
 - 1차 검색·임계값·독소 패턴의 추가 튜닝: 종료
-- 현재 활성 작업: 서버 밖 **K — 2차 structured output LLM 제품화**
+- 현재 활성 개발 작업 없음 — 1차 MCP 완료·동결
 
 현재 상태는 [START_HERE](docs/START_HERE.md), 동결 수치와 실험 근거는
 [품질 기준](docs/quality/baseline-v5.md), 다음 작업은 [로드맵](docs/roadmap.md)에서 확인할 수 있습니다.
@@ -254,7 +246,6 @@ src/
   pipe/        데이터 준비와 런타임 검토 파이프라인
   server/      WorkShield 도구·리소스와 법령 프록시 등록 클래스
 quality/       활성 평가 코드와 v5 회귀 fixture
-demo/          Streamlit UI와 서버 밖 2차 LLM
 data/          표준계약서 원천·정규화 데이터·migration
 tests/         단위·통합 테스트
 docs/          현재 상태·아키텍처·결정·품질 근거

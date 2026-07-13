@@ -14,7 +14,7 @@ core    adapter  ← 순수 판정 / DB·검색·문서·법령 I/O
        ↑
      server      ← FastMCP 표면
        ↑
-  demo/client    ← 2차 LLM과 사용자 경험
+  외부 client    ← 선택적 2차 LLM과 사용자 경험
 ```
 
 ## 1차 흐름
@@ -40,7 +40,8 @@ core    adapter  ← 순수 판정 / DB·검색·문서·법령 I/O
 ## 데이터와 배포
 
 `data/03_normalized`와 migration SQL이 원천이다. SQLite와 Chroma는 `just build-db`로 재생성한다.
-MCP와 Streamlit demo는 별도 컨테이너이며, 운영 환경의 임베딩·rerank는 RunPod worker를 사용한다.
+운영 Docker 배포는 MCP 단일 컨테이너이며, 임베딩·rerank는 RunPod worker를 사용한다. `demo/`는 배포
+대상이 아닌 deprecated된 과거 시연 소스다.
 
 현재 상태·동결 기준선·실행 명령은 [START_HERE](START_HERE.md)를, MCP 도구 상세는
 [`src/server/server.py`](../src/server/server.py)를 참조한다.
