@@ -65,6 +65,15 @@ class FakeSubChunkRetriever(FakeRetriever):
         return super()._search_one(collection_name, query)
 
 
+class FakeConflictingParentRetriever(FakeRetriever):
+    """표준 조항과 서브청크 부모가 서로 다른 후보를 반환한다."""
+    def _search_one(self, collection_name, query):
+        if collection_name == "standard_sub_chunks" and ("저작권" in query or "지식재산" in query):
+            return [{"id": "sw_freelance-art99-sub01", "text": ART99_UNMATCHED.text,
+                     "parent_clause_id": "sw_freelance-art99", "sub_chunk_index": 0}]
+        return super()._search_one(collection_name, query)
+
+
 class FakeEmbedder:
     """검색 fake 가 벡터 값 자체는 쓰지 않으므로, 텍스트 수만큼 더미 벡터를 반환한다."""
     def embed_documents(self, texts: List[str]) -> List[List[float]]:
@@ -221,6 +230,18 @@ def test_서브청크_rollup으로_부모조항_매칭():
     results = _review([clause], retriever=FakeSubChunkRetriever())
     matched = [r for r in results if r.matched_standard and r.matched_standard.clause_id == "sw_freelance-art20"]
     assert matched and matched[0].deviation != Deviation.NO_MATCH
+
+
+def test_표준조항과_서브청크부모가_충돌하면_EXTRA_검토후보():
+    clause = Clause(idx=1, num="제20조", title="지식재산권", text=ART20.text)
+
+    results = _review([clause], retriever=FakeConflictingParentRetriever())
+
+    target = next(result for result in results if result.user_clause == clause.text)
+    assert target.deviation == Deviation.EXTRA
+    # 최고 표준 후보는 유지해 2차가 비교 근거로 사용할 수 있게 한다.
+    assert target.matched_standard is not None
+    assert target.matched_standard.clause_id == "sw_freelance-art20"
 
 
 def test_progress_callback_호출_검증():

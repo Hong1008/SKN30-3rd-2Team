@@ -32,6 +32,7 @@ detect_toxic_patterns()      ← 동일 조항에 대해 독소 패턴 역방향
 | 함수 | 파이프라인 단계 | 반환 |
 | --- | --- | --- |
 | `select_best_match(candidates)` | 리랭커 직후 — 최고 후보 선택(임계값 미적용) | `(StandardClause \| None, float)` |
+| `has_conflicting_parent_candidates(standard, sub_parent)` | 조항·서브청크 후보 부모 불일치 확인 | `bool` |
 | `classify_clause_deviation(matched_standard, score, match_threshold)` | 조항 단위 루프 — EXTRA / NONE 판정 | `Deviation` |
 | `detect_missing_clauses(all_standard, matched_ids)` | 루프 종료 후 1회 — 한 번도 매칭 안 된 표준조항 수집 | `List[StandardClause]` |
 | `traverse_related_risks(adjacency_list, clause_id, max_depth)` | 표준조항 기준 연관 조항 DFS 탐색 (고도화 A) | `List[str]` clause_id |
@@ -53,6 +54,9 @@ detect_toxic_patterns()      ← 동일 조항에 대해 독소 패턴 역방향
 > `MISSING`의 주어가 사용자 조항이 아니라 표준조항이기 때문에, 단일 조항 루프 안에서 판단할 수 없어 `detect_missing_clauses`로 분리됩니다.
 >
 > `NO_MATCH`는 검색 결과가 비어 있음을 나타내는 명시 표식이므로 core가 아닌 pipe에서 직접 처리합니다. `classify_clause_deviation`에 후보 없음(`matched_standard=None`)이 들어오는 경우는 `EXTRA`가 올바릅니다.
+
+표준 조항 최고 후보와 서브청크 roll-up 부모가 서로 다르면, pipe는 해당 조항을 `EXTRA` 검토
+후보로 보수 처리한다. 최고 후보 자체는 보존해 2차가 비교 근거로 사용할 수 있게 한다.
 
 ---
 

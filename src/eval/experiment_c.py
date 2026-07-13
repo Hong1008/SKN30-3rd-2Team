@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import argparse
 from collections import Counter
 from pathlib import Path
 from typing import Any
@@ -91,6 +92,123 @@ def classify_overmatch(rows: list[dict[str, Any]], matrix: list[dict[str, Any]])
     return sorted(result, key=lambda item: item["case_id"])
 
 
+def build_candidate_comparison(
+    rows: list[dict[str, Any]], *, only_overmatch: bool = True,
+) -> list[dict[str, Any]]:
+    """표준 조항·서브청크 부모 후보를 같은 행에서 비교합니다.
+
+    기본값은 후보 변경을 고르기 위한 OVER_MATCH 전용 진단이다. ``only_overmatch=False``이면
+    tuning 전체를 반환해 출처 불일치 규칙이 NONE에 미칠 부작용도 확인한다. 두 출처가 모두
+    top-3에 없으면 해당 값은 ``None``으로 남겨, 관측하지 못한 점수를 추정하지 않습니다.
+    """
+    comparisons: list[dict[str, Any]] = []
+    for row in rows:
+        if only_overmatch and not is_overmatch(row):
+            continue
+        standard = next(
+            (candidate for candidate in row.get("top_candidates", [])
+             if candidate.get("source") == "standard_clauses"),
+            None,
+        )
+        sub_chunk = next(
+            (candidate for candidate in row.get("top_candidates", [])
+             if candidate.get("source") == "standard_sub_chunks"),
+            None,
+        )
+        standard_id = standard.get("standard_id") if standard else None
+        standard_score = float(standard["score"]) if standard else None
+        parent_id = sub_chunk.get("parent_clause_id") if sub_chunk else None
+        sub_chunk_score = float(sub_chunk["score"]) if sub_chunk else None
+        if standard_score is None and sub_chunk_score is None:
+            winner, gap = "NONE", None
+        elif standard_score is None:
+            winner, gap = "SUB_CHUNK", None
+        elif sub_chunk_score is None:
+            winner, gap = "STANDARD_CLAUSE", None
+        elif sub_chunk_score > standard_score:
+            winner, gap = "SUB_CHUNK", round(sub_chunk_score - standard_score, 6)
+        else:
+            winner, gap = "STANDARD_CLAUSE", round(standard_score - sub_chunk_score, 6)
+        comparisons.append({
+            "case_id": row["case_id"],
+            "outcome": row.get("outcome"),
+            "is_overmatch": is_overmatch(row),
+            "standard_clause_id": standard_id,
+            "standard_clause_score": standard_score,
+            "sub_chunk_parent_clause_id": parent_id,
+            "sub_chunk_score": sub_chunk_score,
+            "parents_agree": (
+                standard_id == parent_id
+                if standard_id is not None and parent_id is not None else None
+            ),
+            "winner": winner,
+            "winner_score_gap": gap,
+        })
+    return sorted(comparisons, key=lambda item: item["case_id"])
+
+
+def write_candidate_comparison(
+    path: str | Path, rows: list[dict[str, Any]], *, title: str = "C — 후보 출처 비교",
+    scope_description: str = "tuning OVER_MATCH만 사용합니다.",
+) -> str:
+    """후보 비교 진단을 Markdown으로 저장합니다."""
+    lines = [
+        f"# {title}",
+        "",
+        f"> {scope_description} `없음`은 top-3에서 해당 출처를 관측하지 못했다는 뜻이며 점수 0을 뜻하지 않습니다.",
+        "",
+        "| case_id | outcome | OVER_MATCH | 표준 조항(score) | 서브청크 부모(score) | 부모 일치 | 승자 | 점수 차 |",
+        "| --- | --- | --- | --- | --- | --- | --- | ---: |",
+    ]
+    for row in rows:
+        standard = (
+            "없음" if row["standard_clause_id"] is None
+            else f"{row['standard_clause_id']} ({row['standard_clause_score']:.6f})"
+        )
+        sub_chunk = (
+            "없음" if row["sub_chunk_parent_clause_id"] is None
+            else f"{row['sub_chunk_parent_clause_id']} ({row['sub_chunk_score']:.6f})"
+        )
+        agreement = "미관측" if row["parents_agree"] is None else ("일치" if row["parents_agree"] else "불일치")
+        gap = "미관측" if row["winner_score_gap"] is None else f"{row['winner_score_gap']:.6f}"
+        lines.append(
+            f"| {row['case_id']} | {row['outcome'] or '없음'} | {'예' if row['is_overmatch'] else '아니오'} | "
+            f"{standard} | {sub_chunk} | {agreement} | {row['winner']} | {gap} |"
+        )
+    destination = Path(path)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    destination.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return str(destination)
+
+
+def prepare_candidate_diagnostics(output_dir: str | Path = "docs/experiments/C") -> dict[str, str]:
+    """동결된 v5 tuning 진단만 읽어 C 후보 선택용 비교표를 생성합니다.
+
+    모델·검색·리랭커를 호출하지 않으며 held-out 케이스도 읽지 않습니다. 따라서 개선 후보를
+    구현하기 전 1·2번 진단을 안전하게 준비하는 전용 단계입니다.
+    """
+    validate_baseline_inputs()
+    cases = json.loads((GOLDEN_DIR / "v5_sw_freelance.json").read_text(encoding="utf-8"))
+    tuning_ids = {case["case_id"] for case in split_sw_cases(cases)["tuning"]}
+    payload = json.loads(BASELINE_DIAGNOSTICS_PATH.read_text(encoding="utf-8"))
+    tuning_rows = [
+        row for row in payload["deviation"]
+        if row.get("contract_type") == EXPERIMENT_C.contract_type and row.get("case_id") in tuning_ids
+    ]
+    destination = Path(output_dir)
+    return {
+        "overmatch": write_candidate_comparison(
+            destination / "C_candidate_comparison.md", build_candidate_comparison(tuning_rows),
+        ),
+        "all_tuning": write_candidate_comparison(
+            destination / "C_source_agreement.md",
+            build_candidate_comparison(tuning_rows, only_overmatch=False),
+            title="C — tuning 전체 후보 출처 비교",
+            scope_description="tuning 전체만 사용합니다. held-out은 읽지 않습니다.",
+        ),
+    }
+
+
 def taxonomy_summary(rows: list[dict[str, Any]]) -> dict[str, Any]:
     """오류 축별 빈도를 집계합니다. 해석 문장을 생성하지 않습니다."""
     return {field: dict(Counter(row.get(field) for row in rows)) for field in (
@@ -117,4 +235,17 @@ def validate_c_approval(approval: dict[str, Any], *, manifest_sha256: str, tunin
     validate_approval(approval, config=EXPERIMENT_C, manifest_sha256=manifest_sha256, tuning_report_sha256=tuning_report_sha256, code_commit=code_commit)
 
 
-__all__ = ["EXPERIMENT_C", "MANIFEST_PATH", "CASE_MATRIX_PATH", "BASELINE_DIAGNOSTICS_PATH", "BASELINE_PATH", "split_sw_cases", "is_overmatch", "classify_overmatch", "taxonomy_summary", "write_taxonomy", "validate_baseline_inputs", "validate_c_approval"]
+__all__ = ["EXPERIMENT_C", "MANIFEST_PATH", "CASE_MATRIX_PATH", "BASELINE_DIAGNOSTICS_PATH", "BASELINE_PATH", "split_sw_cases", "is_overmatch", "classify_overmatch", "build_candidate_comparison", "write_candidate_comparison", "prepare_candidate_diagnostics", "taxonomy_summary", "write_taxonomy", "validate_baseline_inputs", "validate_c_approval"]
+
+
+def _main() -> None:
+    """C 후보 선택용 동결 진단을 실행합니다."""
+    parser = argparse.ArgumentParser(description="실험 C tuning 후보 비교 진단")
+    parser.add_argument("--output-dir", default="docs/experiments/C")
+    args = parser.parse_args()
+    paths = prepare_candidate_diagnostics(args.output_dir)
+    print(json.dumps(paths, ensure_ascii=False))
+
+
+if __name__ == "__main__":
+    _main()

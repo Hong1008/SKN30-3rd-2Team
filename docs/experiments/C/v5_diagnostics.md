@@ -1,0 +1,73 @@
+# v5 — case-level 진단
+
+> eval 전용 결정론적 후보·오류 분해 기록입니다. MCP 응답이나 계약 판정에는 사용하지 않습니다.
+
+## 이탈 case-level 진단
+
+| case_id | 유형 | outcome | reason |
+| --- | --- | --- | --- |
+| v5-sw-01 | SW_FREELANCE | FN | OVER_MATCH |
+| v5-sw-02 | SW_FREELANCE | TP | BELOW_THRESHOLD |
+| v5-sw-03 | SW_FREELANCE | FP | UNDER_MATCH |
+| v5-sw-04 | SW_FREELANCE | FN | OVER_MATCH |
+| v5-sw-05 | SW_FREELANCE | FN | OVER_MATCH |
+| v5-sw-06 | SW_FREELANCE | TN | CORRECT |
+| v5-sw-07 | SW_FREELANCE | FN | OVER_MATCH |
+| v5-sw-08 | SW_FREELANCE | TP | BELOW_THRESHOLD |
+| v5-sw-09 | SW_FREELANCE | TN | CORRECT |
+| v5-sw-10 | SW_FREELANCE | FN | OVER_MATCH |
+| v5-sw-11 | SW_FREELANCE | FN | OVER_MATCH |
+| v5-sw-12 | SW_FREELANCE | TN | CORRECT |
+| v5-sw-13 | SW_FREELANCE | FN | OVER_MATCH |
+| v5-sw-14 | SW_FREELANCE | TP | BELOW_THRESHOLD |
+| v5-sw-15 | SW_FREELANCE | FP | UNDER_MATCH |
+| v5-sw-16 | SW_FREELANCE | TP | BELOW_THRESHOLD |
+| v5-sw-17 | SW_FREELANCE | TP | BELOW_THRESHOLD |
+| v5-sw-18 | SW_FREELANCE | TN | CORRECT |
+| v5-sw-19 | SW_FREELANCE | FN | OVER_MATCH |
+| v5-sw-20 | SW_FREELANCE | TP | BELOW_THRESHOLD |
+| v5-sw-21 | SW_FREELANCE | TN | CORRECT |
+| v5-sw-22 | SW_FREELANCE | FN | OVER_MATCH |
+| v5-sw-23 | SW_FREELANCE | TP | BELOW_THRESHOLD |
+| v5-sw-24 | SW_FREELANCE | TN | CORRECT |
+| v5-sw-25 | SW_FREELANCE | TP | BELOW_THRESHOLD |
+| v5-sw-26 | SW_FREELANCE | TP | BELOW_THRESHOLD |
+| v5-sw-27 | SW_FREELANCE | TN | CORRECT |
+| v5-sw-28 | SW_FREELANCE | FN | OVER_MATCH |
+| v5-sw-29 | SW_FREELANCE | TP | BELOW_THRESHOLD |
+| v5-sw-30 | SW_FREELANCE | TN | CORRECT |
+
+## 독소 case-level 진단
+
+| case_id | 유형 | outcome | reason |
+| --- | --- | --- | --- |
+| v5-sw-01 | SW_FREELANCE | TP | SEARCH_MISS |
+| v5-sw-02 | SW_FREELANCE | TN | CORRECT |
+| v5-sw-03 | SW_FREELANCE | TN | CORRECT |
+| v5-sw-04 | SW_FREELANCE | TP | CORRECT |
+| v5-sw-05 | SW_FREELANCE | TN | CORRECT |
+| v5-sw-06 | SW_FREELANCE | TN | CORRECT |
+| v5-sw-07 | SW_FREELANCE | TP | CORRECT |
+| v5-sw-08 | SW_FREELANCE | TN | CORRECT |
+| v5-sw-09 | SW_FREELANCE | FP | WRONG_PATTERN |
+| v5-sw-10 | SW_FREELANCE | TP | CORRECT |
+| v5-sw-11 | SW_FREELANCE | TN | CORRECT |
+| v5-sw-12 | SW_FREELANCE | TN | CORRECT |
+| v5-sw-13 | SW_FREELANCE | TP | CORRECT |
+| v5-sw-14 | SW_FREELANCE | TN | CORRECT |
+| v5-sw-15 | SW_FREELANCE | TN | CORRECT |
+| v5-sw-16 | SW_FREELANCE | FN | BELOW_THRESHOLD |
+| v5-sw-17 | SW_FREELANCE | TN | CORRECT |
+| v5-sw-18 | SW_FREELANCE | FP | WRONG_PATTERN |
+| v5-sw-19 | SW_FREELANCE | TP | CORRECT |
+| v5-sw-20 | SW_FREELANCE | TN | CORRECT |
+| v5-sw-21 | SW_FREELANCE | TN | CORRECT |
+| v5-sw-22 | SW_FREELANCE | TN | CORRECT |
+| v5-sw-23 | SW_FREELANCE | TN | CORRECT |
+| v5-sw-24 | SW_FREELANCE | TN | CORRECT |
+| v5-sw-25 | SW_FREELANCE | TN | CORRECT |
+| v5-sw-26 | SW_FREELANCE | TN | CORRECT |
+| v5-sw-27 | SW_FREELANCE | FP | WRONG_PATTERN |
+| v5-sw-28 | SW_FREELANCE | TN | CORRECT |
+| v5-sw-29 | SW_FREELANCE | TN | CORRECT |
+| v5-sw-30 | SW_FREELANCE | TN | CORRECT |

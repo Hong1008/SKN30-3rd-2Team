@@ -48,10 +48,12 @@ from eval.experiment_c import (
     CASE_MATRIX_PATH as EXPERIMENT_C_CASE_MATRIX,
     EXPERIMENT_C,
     MANIFEST_PATH as EXPERIMENT_C_MANIFEST,
+    build_candidate_comparison,
     classify_overmatch,
     split_sw_cases,
     validate_baseline_inputs,
     validate_c_approval,
+    write_candidate_comparison,
     write_taxonomy,
 )
 from eval.experiment_governance import passed, validate_approval_repository_state as validate_generic_approval_repository_state
@@ -1014,6 +1016,11 @@ def _run_experiment_c(
         "before": before, "after": after, "passed": passed_result,
         "decision": "통과" if passed_result else ("폐기" if split == "tuning" else "보류"),
         "overmatch_taxonomy": classify_overmatch(before_rows, json.loads(EXPERIMENT_C_CASE_MATRIX.read_text(encoding="utf-8"))) if split == "tuning" else [],
+        "candidate_comparison": build_candidate_comparison(before_rows) if split == "tuning" else [],
+        "source_agreement_diagnostic": (
+            build_candidate_comparison(before_rows, only_overmatch=False)
+            if split == "tuning" else []
+        ),
         "candidate_diff": build_top3_diff(before_rows, after_rows),
     }
     result_path = output_dir / ("tuning-result.json" if split == "tuning" else "heldout-result.json")
@@ -1021,6 +1028,12 @@ def _run_experiment_c(
     _write_experiment_report(output_dir / ("tuning-result.md" if split == "tuning" else "heldout-result.md"), payload)
     if split == "tuning":
         write_taxonomy(output_dir / "C_overmatch_taxonomy.md", payload["overmatch_taxonomy"])
+        write_candidate_comparison(output_dir / "C_candidate_comparison.md", payload["candidate_comparison"])
+        write_candidate_comparison(
+            output_dir / "C_source_agreement.md", payload["source_agreement_diagnostic"],
+            title="C — tuning 전체 후보 출처 비교",
+            scope_description="tuning 전체만 사용합니다. held-out은 읽지 않습니다.",
+        )
     else:
         update_run_record(record_path, {"status": "SUCCEEDED", "result_sha256": sha256_file(result_path), "confusion_matrix": after, "decision": payload["decision"]})
     return payload

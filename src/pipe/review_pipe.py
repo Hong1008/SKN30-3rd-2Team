@@ -26,6 +26,7 @@ from core import (
     classify_clause_deviation,
     detect_missing_clauses,
     detect_toxic_patterns,
+    has_conflicting_parent_candidates,
     prepare_toxic_rerank_candidates,
     roll_up_sub_chunks,
     select_best_match,
@@ -253,7 +254,10 @@ def review_contract(
     for i, (clause, std_hits, sub_hits, toxic_hits) in enumerate(
         zip(clauses, std_hits_batch, sub_hits_batch, toxic_hits_batch), 1
     ):
-        candidates = _clause_candidates(std_hits, standards_by_id, contract_type)
+        standard_candidates = _clause_candidates(std_hits, standards_by_id, contract_type)
+        candidates = list(standard_candidates)
+        standard_candidate, _ = select_best_match(standard_candidates)
+        sub_candidate: Optional[Tuple[StandardClause, float]] = None
 
         if sub_hits:
             sub_candidate = _sub_chunk_candidate(sub_hits, standards_by_id)
@@ -273,6 +277,13 @@ def review_contract(
         else:
             matched_standard, score = select_best_match(candidates)
             deviation = classify_clause_deviation(matched_standard, score, match_threshold)
+            # C 실험: 표준 조항 후보와 서브청크가 가리키는 부모가 다르면 어느 한쪽을
+            # 잠정 NONE으로 확정하지 않는다. 최고 후보는 2차 비교 근거로 그대로 보존한다.
+            if has_conflicting_parent_candidates(
+                standard_candidate,
+                sub_candidate[0] if sub_candidate is not None else None,
+            ):
+                deviation = Deviation.EXTRA
 
         # 표준조항 "커버됨" 기록(MISSING 탐지용)·연관위험 조회는 실제로 매칭이 확정된
         # NONE에서만 한다 — 임계 미달 근접후보(EXTRA)까지 커버로 치면 MISSING 탐지가 오염된다.

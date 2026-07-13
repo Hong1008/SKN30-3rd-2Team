@@ -1,0 +1,3114 @@
+{
+  "deviation": [
+    {
+      "case_id": "v5-sw-01",
+      "contract_type": "SW_FREELANCE",
+      "trap": "paraphrase",
+      "gold_deviation": "EXTRA",
+      "predicted_deviation": "NONE",
+      "confidence": 0.9763206839561462,
+      "matched_standard": {
+        "id": "sw_freelance-2020-art4",
+        "version": "2020",
+        "category": "SCOPE_SOW"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sw_freelance-2020-art4-sub06",
+          "parent_clause_id": "sw_freelance-2020-art4",
+          "category": null,
+          "version": null,
+          "score": 0.9763206839561462,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sw_freelance-2020-art5-sub02",
+          "parent_clause_id": "sw_freelance-2020-art5",
+          "category": null,
+          "version": null,
+          "score": 0.11774859577417374,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sw_freelance-2020-art6-sub12",
+          "parent_clause_id": "sw_freelance-2020-art6",
+          "category": null,
+          "version": null,
+          "score": 0.11524079740047455,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "FN",
+      "predicted_by_threshold": {
+        "0.40": false,
+        "0.45": false,
+        "0.50": false,
+        "0.55": false,
+        "0.60": false
+      },
+      "reason": "OVER_MATCH"
+    },
+    {
+      "case_id": "v5-sw-02",
+      "contract_type": "SW_FREELANCE",
+      "trap": "partial",
+      "gold_deviation": "EXTRA",
+      "predicted_deviation": "EXTRA",
+      "confidence": 0.0238186027854681,
+      "matched_standard": {
+        "id": "sw_freelance-2020-art10",
+        "version": "2020",
+        "category": "DELIVERY_INSPECTION"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sw_freelance-2020-art10-sub00",
+          "parent_clause_id": "sw_freelance-2020-art10",
+          "category": null,
+          "version": null,
+          "score": 0.0238186027854681,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sw_freelance-2020-art19-sub01",
+          "parent_clause_id": "sw_freelance-2020-art19",
+          "category": null,
+          "version": null,
+          "score": 3.9431866753147915e-05,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sw_freelance-2020-art2-sub03",
+          "parent_clause_id": "sw_freelance-2020-art2",
+          "category": null,
+          "version": null,
+          "score": 4.20651895183255e-06,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "TP",
+      "predicted_by_threshold": {
+        "0.40": true,
+        "0.45": true,
+        "0.50": true,
+        "0.55": true,
+        "0.60": true
+      },
+      "reason": "BELOW_THRESHOLD"
+    },
+    {
+      "case_id": "v5-sw-03",
+      "contract_type": "SW_FREELANCE",
+      "trap": "reorder",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "EXTRA",
+      "confidence": 0.3678493797779083,
+      "matched_standard": {
+        "id": "sw_freelance-2020-art14",
+        "version": "2020",
+        "category": "DELIVERY_INSPECTION"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sw_freelance-2020-art14-sub01",
+          "parent_clause_id": "sw_freelance-2020-art14",
+          "category": null,
+          "version": null,
+          "score": 0.3678493797779083,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sw_freelance-2020-art2-sub02",
+          "parent_clause_id": "sw_freelance-2020-art2",
+          "category": null,
+          "version": null,
+          "score": 0.3210533857345581,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sw_freelance-2020-art4-sub01",
+          "parent_clause_id": "sw_freelance-2020-art4",
+          "category": null,
+          "version": null,
+          "score": 0.14207938313484192,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "FP",
+      "predicted_by_threshold": {
+        "0.40": true,
+        "0.45": true,
+        "0.50": true,
+        "0.55": true,
+        "0.60": true
+      },
+      "reason": "UNDER_MATCH"
+    },
+    {
+      "case_id": "v5-sw-04",
+      "contract_type": "SW_FREELANCE",
+      "trap": "number",
+      "gold_deviation": "EXTRA",
+      "predicted_deviation": "NONE",
+      "confidence": 0.9990907907485962,
+      "matched_standard": {
+        "id": "sw_freelance-2020-art20",
+        "version": "2020",
+        "category": "IP_OWNERSHIP"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sw_freelance-2020-art20-sub00",
+          "parent_clause_id": "sw_freelance-2020-art20",
+          "category": null,
+          "version": null,
+          "score": 0.9990907907485962,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sw_freelance-2020-art20-sub02",
+          "parent_clause_id": "sw_freelance-2020-art20",
+          "category": null,
+          "version": null,
+          "score": 0.10948577523231506,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sw_freelance-2020-art20",
+          "parent_clause_id": null,
+          "category": "IP_OWNERSHIP",
+          "version": "2020",
+          "score": 0.027691613882780075,
+          "source": "standard_clauses"
+        }
+      ],
+      "outcome": "FN",
+      "predicted_by_threshold": {
+        "0.40": false,
+        "0.45": false,
+        "0.50": false,
+        "0.55": false,
+        "0.60": false
+      },
+      "reason": "OVER_MATCH"
+    },
+    {
+      "case_id": "v5-sw-05",
+      "contract_type": "SW_FREELANCE",
+      "trap": "negation",
+      "gold_deviation": "EXTRA",
+      "predicted_deviation": "NONE",
+      "confidence": 0.8539405465126038,
+      "matched_standard": {
+        "id": "sw_freelance-2020-art20",
+        "version": "2020",
+        "category": "IP_OWNERSHIP"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sw_freelance-2020-art20-sub00",
+          "parent_clause_id": "sw_freelance-2020-art20",
+          "category": null,
+          "version": null,
+          "score": 0.8539405465126038,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sw_freelance-2020-art20-sub02",
+          "parent_clause_id": "sw_freelance-2020-art20",
+          "category": null,
+          "version": null,
+          "score": 0.00015229346172418445,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sw_freelance-2020-art20",
+          "parent_clause_id": null,
+          "category": "IP_OWNERSHIP",
+          "version": "2020",
+          "score": 7.408005330944434e-05,
+          "source": "standard_clauses"
+        }
+      ],
+      "outcome": "FN",
+      "predicted_by_threshold": {
+        "0.40": false,
+        "0.45": false,
+        "0.50": false,
+        "0.55": false,
+        "0.60": false
+      },
+      "reason": "OVER_MATCH"
+    },
+    {
+      "case_id": "v5-sw-06",
+      "contract_type": "SW_FREELANCE",
+      "trap": "party",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "NONE",
+      "confidence": 0.9999892711639404,
+      "matched_standard": {
+        "id": "sw_freelance-2020-art20",
+        "version": "2020",
+        "category": "IP_OWNERSHIP"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sw_freelance-2020-art20-sub00",
+          "parent_clause_id": "sw_freelance-2020-art20",
+          "category": null,
+          "version": null,
+          "score": 0.9999892711639404,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sw_freelance-2020-art20-sub01",
+          "parent_clause_id": "sw_freelance-2020-art20",
+          "category": null,
+          "version": null,
+          "score": 0.06540454179048538,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sw_freelance-2020-art20",
+          "parent_clause_id": null,
+          "category": "IP_OWNERSHIP",
+          "version": "2020",
+          "score": 0.0038918787613511086,
+          "source": "standard_clauses"
+        }
+      ],
+      "outcome": "TN",
+      "predicted_by_threshold": {
+        "0.40": false,
+        "0.45": false,
+        "0.50": false,
+        "0.55": false,
+        "0.60": false
+      },
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v5-sw-07",
+      "contract_type": "SW_FREELANCE",
+      "trap": "contradiction",
+      "gold_deviation": "EXTRA",
+      "predicted_deviation": "NONE",
+      "confidence": 0.8912804126739502,
+      "matched_standard": {
+        "id": "sw_freelance-2020-art6",
+        "version": "2020",
+        "category": "PAYMENT"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sw_freelance-2020-art6",
+          "parent_clause_id": null,
+          "category": "PAYMENT",
+          "version": "2020",
+          "score": 0.8912804126739502,
+          "source": "standard_clauses"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sw_freelance-2020-art16-sub07",
+          "parent_clause_id": "sw_freelance-2020-art16",
+          "category": null,
+          "version": null,
+          "score": 0.17581972479820251,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sw_freelance-2020-art6-sub01",
+          "parent_clause_id": "sw_freelance-2020-art6",
+          "category": null,
+          "version": null,
+          "score": 0.10128902643918991,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "FN",
+      "predicted_by_threshold": {
+        "0.40": false,
+        "0.45": false,
+        "0.50": false,
+        "0.55": false,
+        "0.60": false
+      },
+      "reason": "OVER_MATCH"
+    },
+    {
+      "case_id": "v5-sw-08",
+      "contract_type": "SW_FREELANCE",
+      "trap": "paraphrase",
+      "gold_deviation": "EXTRA",
+      "predicted_deviation": "EXTRA",
+      "confidence": 0.0003964098577853292,
+      "matched_standard": {
+        "id": "sw_freelance-2020-art10",
+        "version": "2020",
+        "category": "DELIVERY_INSPECTION"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sw_freelance-2020-art10-sub00",
+          "parent_clause_id": "sw_freelance-2020-art10",
+          "category": null,
+          "version": null,
+          "score": 0.0003964098577853292,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sw_freelance-2020-art6-sub07",
+          "parent_clause_id": "sw_freelance-2020-art6",
+          "category": null,
+          "version": null,
+          "score": 5.746490387537051e-06,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sw_freelance-2020-art6",
+          "parent_clause_id": null,
+          "category": "PAYMENT",
+          "version": "2020",
+          "score": 1.918466750794323e-06,
+          "source": "standard_clauses"
+        }
+      ],
+      "outcome": "TP",
+      "predicted_by_threshold": {
+        "0.40": true,
+        "0.45": true,
+        "0.50": true,
+        "0.55": true,
+        "0.60": true
+      },
+      "reason": "BELOW_THRESHOLD"
+    },
+    {
+      "case_id": "v5-sw-09",
+      "contract_type": "SW_FREELANCE",
+      "trap": "partial",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "NONE",
+      "confidence": 0.9942914247512817,
+      "matched_standard": {
+        "id": "sw_freelance-2020-art6",
+        "version": "2020",
+        "category": "PAYMENT"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sw_freelance-2020-art6",
+          "parent_clause_id": null,
+          "category": "PAYMENT",
+          "version": "2020",
+          "score": 0.9942914247512817,
+          "source": "standard_clauses"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sw_freelance-2020-art6-sub01",
+          "parent_clause_id": "sw_freelance-2020-art6",
+          "category": null,
+          "version": null,
+          "score": 0.8652192950248718,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sw_freelance-2020-art19-sub07",
+          "parent_clause_id": "sw_freelance-2020-art19",
+          "category": null,
+          "version": null,
+          "score": 0.3898824155330658,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "TN",
+      "predicted_by_threshold": {
+        "0.40": false,
+        "0.45": false,
+        "0.50": false,
+        "0.55": false,
+        "0.60": false
+      },
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v5-sw-10",
+      "contract_type": "SW_FREELANCE",
+      "trap": "reorder",
+      "gold_deviation": "EXTRA",
+      "predicted_deviation": "NONE",
+      "confidence": 0.9960030913352966,
+      "matched_standard": {
+        "id": "sw_freelance-2020-art16",
+        "version": "2020",
+        "category": "TERMINATION"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sw_freelance-2020-art16",
+          "parent_clause_id": null,
+          "category": "TERMINATION",
+          "version": "2020",
+          "score": 0.9960030913352966,
+          "source": "standard_clauses"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sw_freelance-2020-art16-sub01",
+          "parent_clause_id": "sw_freelance-2020-art16",
+          "category": null,
+          "version": null,
+          "score": 0.994809627532959,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sw_freelance-2020-art16-sub10",
+          "parent_clause_id": "sw_freelance-2020-art16",
+          "category": null,
+          "version": null,
+          "score": 0.9927346706390381,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "FN",
+      "predicted_by_threshold": {
+        "0.40": false,
+        "0.45": false,
+        "0.50": false,
+        "0.55": false,
+        "0.60": false
+      },
+      "reason": "OVER_MATCH"
+    },
+    {
+      "case_id": "v5-sw-11",
+      "contract_type": "SW_FREELANCE",
+      "trap": "number",
+      "gold_deviation": "EXTRA",
+      "predicted_deviation": "NONE",
+      "confidence": 0.995991051197052,
+      "matched_standard": {
+        "id": "sw_freelance-2020-art16",
+        "version": "2020",
+        "category": "TERMINATION"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sw_freelance-2020-art16-sub00",
+          "parent_clause_id": "sw_freelance-2020-art16",
+          "category": null,
+          "version": null,
+          "score": 0.995991051197052,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sw_freelance-2020-art7-sub03",
+          "parent_clause_id": "sw_freelance-2020-art7",
+          "category": null,
+          "version": null,
+          "score": 3.6710818676510826e-05,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sw_freelance-2020-art16-sub01",
+          "parent_clause_id": "sw_freelance-2020-art16",
+          "category": null,
+          "version": null,
+          "score": 3.3649826946202666e-05,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "FN",
+      "predicted_by_threshold": {
+        "0.40": false,
+        "0.45": false,
+        "0.50": false,
+        "0.55": false,
+        "0.60": false
+      },
+      "reason": "OVER_MATCH"
+    },
+    {
+      "case_id": "v5-sw-12",
+      "contract_type": "SW_FREELANCE",
+      "trap": "negation",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "NONE",
+      "confidence": 0.999980092048645,
+      "matched_standard": {
+        "id": "sw_freelance-2020-art16",
+        "version": "2020",
+        "category": "TERMINATION"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sw_freelance-2020-art16-sub00",
+          "parent_clause_id": "sw_freelance-2020-art16",
+          "category": null,
+          "version": null,
+          "score": 0.999980092048645,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sw_freelance-2020-art16",
+          "parent_clause_id": null,
+          "category": "TERMINATION",
+          "version": "2020",
+          "score": 0.9995236396789551,
+          "source": "standard_clauses"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sw_freelance-2020-art16-sub05",
+          "parent_clause_id": "sw_freelance-2020-art16",
+          "category": null,
+          "version": null,
+          "score": 0.9993922710418701,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "TN",
+      "predicted_by_threshold": {
+        "0.40": false,
+        "0.45": false,
+        "0.50": false,
+        "0.55": false,
+        "0.60": false
+      },
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v5-sw-13",
+      "contract_type": "SW_FREELANCE",
+      "trap": "party",
+      "gold_deviation": "EXTRA",
+      "predicted_deviation": "NONE",
+      "confidence": 0.9507372975349426,
+      "matched_standard": {
+        "id": "sw_freelance-2020-art17",
+        "version": "2020",
+        "category": "CONFIDENTIALITY"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sw_freelance-2020-art17",
+          "parent_clause_id": null,
+          "category": "CONFIDENTIALITY",
+          "version": "2020",
+          "score": 0.9507372975349426,
+          "source": "standard_clauses"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sw_freelance-2020-art17-sub04",
+          "parent_clause_id": "sw_freelance-2020-art17",
+          "category": null,
+          "version": null,
+          "score": 0.014257057569921017,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sw_freelance-2020-art17-sub01",
+          "parent_clause_id": "sw_freelance-2020-art17",
+          "category": null,
+          "version": null,
+          "score": 0.010512487031519413,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "FN",
+      "predicted_by_threshold": {
+        "0.40": false,
+        "0.45": false,
+        "0.50": false,
+        "0.55": false,
+        "0.60": false
+      },
+      "reason": "OVER_MATCH"
+    },
+    {
+      "case_id": "v5-sw-14",
+      "contract_type": "SW_FREELANCE",
+      "trap": "contradiction",
+      "gold_deviation": "EXTRA",
+      "predicted_deviation": "EXTRA",
+      "confidence": 0.017713800072669983,
+      "matched_standard": {
+        "id": "sw_freelance-2020-art17",
+        "version": "2020",
+        "category": "CONFIDENTIALITY"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sw_freelance-2020-art17-sub00",
+          "parent_clause_id": "sw_freelance-2020-art17",
+          "category": null,
+          "version": null,
+          "score": 0.017713800072669983,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sw_freelance-2020-art17-sub03",
+          "parent_clause_id": "sw_freelance-2020-art17",
+          "category": null,
+          "version": null,
+          "score": 0.0001376941509079188,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sw_freelance-2020-art17-sub02",
+          "parent_clause_id": "sw_freelance-2020-art17",
+          "category": null,
+          "version": null,
+          "score": 1.245993007614743e-05,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "TP",
+      "predicted_by_threshold": {
+        "0.40": true,
+        "0.45": true,
+        "0.50": true,
+        "0.55": true,
+        "0.60": true
+      },
+      "reason": "BELOW_THRESHOLD"
+    },
+    {
+      "case_id": "v5-sw-15",
+      "contract_type": "SW_FREELANCE",
+      "trap": "paraphrase",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "EXTRA",
+      "confidence": 0.24467630684375763,
+      "matched_standard": {
+        "id": "sw_freelance-2020-art17",
+        "version": "2020",
+        "category": "CONFIDENTIALITY"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sw_freelance-2020-art17-sub00",
+          "parent_clause_id": "sw_freelance-2020-art17",
+          "category": null,
+          "version": null,
+          "score": 0.24467630684375763,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sw_freelance-2020-art17",
+          "parent_clause_id": null,
+          "category": "CONFIDENTIALITY",
+          "version": "2020",
+          "score": 0.24266846477985382,
+          "source": "standard_clauses"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sw_freelance-2020-art17-sub03",
+          "parent_clause_id": "sw_freelance-2020-art17",
+          "category": null,
+          "version": null,
+          "score": 0.03278573974967003,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "FP",
+      "predicted_by_threshold": {
+        "0.40": true,
+        "0.45": true,
+        "0.50": true,
+        "0.55": true,
+        "0.60": true
+      },
+      "reason": "UNDER_MATCH"
+    },
+    {
+      "case_id": "v5-sw-16",
+      "contract_type": "SW_FREELANCE",
+      "trap": "partial",
+      "gold_deviation": "EXTRA",
+      "predicted_deviation": "EXTRA",
+      "confidence": 9.126229997491464e-05,
+      "matched_standard": {
+        "id": "sw_freelance-2020-art16",
+        "version": "2020",
+        "category": "TERMINATION"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sw_freelance-2020-art16-sub07",
+          "parent_clause_id": "sw_freelance-2020-art16",
+          "category": null,
+          "version": null,
+          "score": 9.126229997491464e-05,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sw_freelance-2020-art6-sub03",
+          "parent_clause_id": "sw_freelance-2020-art6",
+          "category": null,
+          "version": null,
+          "score": 2.4030383428907953e-05,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sw_freelance-2020-art5-sub02",
+          "parent_clause_id": "sw_freelance-2020-art5",
+          "category": null,
+          "version": null,
+          "score": 1.0371954886068124e-05,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "TP",
+      "predicted_by_threshold": {
+        "0.40": true,
+        "0.45": true,
+        "0.50": true,
+        "0.55": true,
+        "0.60": true
+      },
+      "reason": "BELOW_THRESHOLD"
+    },
+    {
+      "case_id": "v5-sw-17",
+      "contract_type": "SW_FREELANCE",
+      "trap": "reorder",
+      "gold_deviation": "EXTRA",
+      "predicted_deviation": "EXTRA",
+      "confidence": 2.237545959360432e-05,
+      "matched_standard": {
+        "id": "sw_freelance-2020-art19",
+        "version": "2020",
+        "category": "WARRANTY"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sw_freelance-2020-art19-sub07",
+          "parent_clause_id": "sw_freelance-2020-art19",
+          "category": null,
+          "version": null,
+          "score": 2.237545959360432e-05,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sw_freelance-2020-art19-sub01",
+          "parent_clause_id": "sw_freelance-2020-art19",
+          "category": null,
+          "version": null,
+          "score": 1.770836388459429e-05,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sw_freelance-2020-art19-sub06",
+          "parent_clause_id": "sw_freelance-2020-art19",
+          "category": null,
+          "version": null,
+          "score": 1.1336439456499647e-05,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "TP",
+      "predicted_by_threshold": {
+        "0.40": true,
+        "0.45": true,
+        "0.50": true,
+        "0.55": true,
+        "0.60": true
+      },
+      "reason": "BELOW_THRESHOLD"
+    },
+    {
+      "case_id": "v5-sw-18",
+      "contract_type": "SW_FREELANCE",
+      "trap": "number",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "NONE",
+      "confidence": 0.933207631111145,
+      "matched_standard": {
+        "id": "sw_freelance-2020-art18",
+        "version": "2020",
+        "category": "LIABILITY"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sw_freelance-2020-art18",
+          "parent_clause_id": null,
+          "category": "LIABILITY",
+          "version": "2020",
+          "score": 0.933207631111145,
+          "source": "standard_clauses"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sw_freelance-2020-art18-sub00",
+          "parent_clause_id": "sw_freelance-2020-art18",
+          "category": null,
+          "version": null,
+          "score": 0.9332073330879211,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sw_freelance-2020-art19-sub07",
+          "parent_clause_id": "sw_freelance-2020-art19",
+          "category": null,
+          "version": null,
+          "score": 0.11585845053195953,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "TN",
+      "predicted_by_threshold": {
+        "0.40": false,
+        "0.45": false,
+        "0.50": false,
+        "0.55": false,
+        "0.60": false
+      },
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v5-sw-19",
+      "contract_type": "SW_FREELANCE",
+      "trap": "negation",
+      "gold_deviation": "EXTRA",
+      "predicted_deviation": "NONE",
+      "confidence": 0.679970383644104,
+      "matched_standard": {
+        "id": "sw_freelance-2020-art21",
+        "version": "2020",
+        "category": "DISPUTE"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sw_freelance-2020-art21-sub00",
+          "parent_clause_id": "sw_freelance-2020-art21",
+          "category": null,
+          "version": null,
+          "score": 0.679970383644104,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sw_freelance-2020-art21",
+          "parent_clause_id": null,
+          "category": "DISPUTE",
+          "version": "2020",
+          "score": 0.679968535900116,
+          "source": "standard_clauses"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sw_freelance-2020-art4-sub01",
+          "parent_clause_id": "sw_freelance-2020-art4",
+          "category": null,
+          "version": null,
+          "score": 0.021615706384181976,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "FN",
+      "predicted_by_threshold": {
+        "0.40": false,
+        "0.45": false,
+        "0.50": false,
+        "0.55": false,
+        "0.60": false
+      },
+      "reason": "OVER_MATCH"
+    },
+    {
+      "case_id": "v5-sw-20",
+      "contract_type": "SW_FREELANCE",
+      "trap": "party",
+      "gold_deviation": "EXTRA",
+      "predicted_deviation": "EXTRA",
+      "confidence": 0.005162117537111044,
+      "matched_standard": {
+        "id": "sw_freelance-2020-art21",
+        "version": "2020",
+        "category": "DISPUTE"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sw_freelance-2020-art21-sub00",
+          "parent_clause_id": "sw_freelance-2020-art21",
+          "category": null,
+          "version": null,
+          "score": 0.005162117537111044,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sw_freelance-2020-art21",
+          "parent_clause_id": null,
+          "category": "DISPUTE",
+          "version": "2020",
+          "score": 0.005162097979336977,
+          "source": "standard_clauses"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sw_freelance-2020-art22-sub00",
+          "parent_clause_id": "sw_freelance-2020-art22",
+          "category": null,
+          "version": null,
+          "score": 1.1807903774752049e-06,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "TP",
+      "predicted_by_threshold": {
+        "0.40": true,
+        "0.45": true,
+        "0.50": true,
+        "0.55": true,
+        "0.60": true
+      },
+      "reason": "BELOW_THRESHOLD"
+    },
+    {
+      "case_id": "v5-sw-21",
+      "contract_type": "SW_FREELANCE",
+      "trap": "contradiction",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "NONE",
+      "confidence": 0.9999943971633911,
+      "matched_standard": {
+        "id": "sw_freelance-2020-art21",
+        "version": "2020",
+        "category": "DISPUTE"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sw_freelance-2020-art21",
+          "parent_clause_id": null,
+          "category": "DISPUTE",
+          "version": "2020",
+          "score": 0.9999943971633911,
+          "source": "standard_clauses"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sw_freelance-2020-art21-sub00",
+          "parent_clause_id": "sw_freelance-2020-art21",
+          "category": null,
+          "version": null,
+          "score": 0.9999943971633911,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sw_freelance-2020-art14-sub03",
+          "parent_clause_id": "sw_freelance-2020-art14",
+          "category": null,
+          "version": null,
+          "score": 0.00026879634242504835,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "TN",
+      "predicted_by_threshold": {
+        "0.40": false,
+        "0.45": false,
+        "0.50": false,
+        "0.55": false,
+        "0.60": false
+      },
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v5-sw-22",
+      "contract_type": "SW_FREELANCE",
+      "trap": "paraphrase",
+      "gold_deviation": "EXTRA",
+      "predicted_deviation": "NONE",
+      "confidence": 0.9999973773956299,
+      "matched_standard": {
+        "id": "sw_freelance-2020-art15",
+        "version": "2020",
+        "category": "SUBCONTRACTING"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sw_freelance-2020-art15",
+          "parent_clause_id": null,
+          "category": "SUBCONTRACTING",
+          "version": "2020",
+          "score": 0.9999973773956299,
+          "source": "standard_clauses"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sw_freelance-2020-art15-sub00",
+          "parent_clause_id": "sw_freelance-2020-art15",
+          "category": null,
+          "version": null,
+          "score": 0.9999973773956299,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sw_freelance-2020-art16-sub08",
+          "parent_clause_id": "sw_freelance-2020-art16",
+          "category": null,
+          "version": null,
+          "score": 0.9884958267211914,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "FN",
+      "predicted_by_threshold": {
+        "0.40": false,
+        "0.45": false,
+        "0.50": false,
+        "0.55": false,
+        "0.60": false
+      },
+      "reason": "OVER_MATCH"
+    },
+    {
+      "case_id": "v5-sw-23",
+      "contract_type": "SW_FREELANCE",
+      "trap": "partial",
+      "gold_deviation": "EXTRA",
+      "predicted_deviation": "EXTRA",
+      "confidence": 0.03607344627380371,
+      "matched_standard": {
+        "id": "sw_freelance-2020-art15",
+        "version": "2020",
+        "category": "SUBCONTRACTING"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sw_freelance-2020-art15",
+          "parent_clause_id": null,
+          "category": "SUBCONTRACTING",
+          "version": "2020",
+          "score": 0.03607344627380371,
+          "source": "standard_clauses"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sw_freelance-2020-art15-sub00",
+          "parent_clause_id": "sw_freelance-2020-art15",
+          "category": null,
+          "version": null,
+          "score": 0.03607344627380371,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sw_freelance-2020-art4-sub01",
+          "parent_clause_id": "sw_freelance-2020-art4",
+          "category": null,
+          "version": null,
+          "score": 0.0003945893549825996,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "TP",
+      "predicted_by_threshold": {
+        "0.40": true,
+        "0.45": true,
+        "0.50": true,
+        "0.55": true,
+        "0.60": true
+      },
+      "reason": "BELOW_THRESHOLD"
+    },
+    {
+      "case_id": "v5-sw-24",
+      "contract_type": "SW_FREELANCE",
+      "trap": "reorder",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "NONE",
+      "confidence": 0.9999966621398926,
+      "matched_standard": {
+        "id": "sw_freelance-2020-art15",
+        "version": "2020",
+        "category": "SUBCONTRACTING"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sw_freelance-2020-art15",
+          "parent_clause_id": null,
+          "category": "SUBCONTRACTING",
+          "version": "2020",
+          "score": 0.9999966621398926,
+          "source": "standard_clauses"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sw_freelance-2020-art15-sub00",
+          "parent_clause_id": "sw_freelance-2020-art15",
+          "category": null,
+          "version": null,
+          "score": 0.9999966621398926,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sw_freelance-2020-art16-sub08",
+          "parent_clause_id": "sw_freelance-2020-art16",
+          "category": null,
+          "version": null,
+          "score": 0.9981685876846313,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "TN",
+      "predicted_by_threshold": {
+        "0.40": false,
+        "0.45": false,
+        "0.50": false,
+        "0.55": false,
+        "0.60": false
+      },
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v5-sw-25",
+      "contract_type": "SW_FREELANCE",
+      "trap": "number",
+      "gold_deviation": "EXTRA",
+      "predicted_deviation": "EXTRA",
+      "confidence": 0.03816353902220726,
+      "matched_standard": {
+        "id": "sw_freelance-2020-art12",
+        "version": "2020",
+        "category": "DELIVERY_INSPECTION"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sw_freelance-2020-art12-sub03",
+          "parent_clause_id": "sw_freelance-2020-art12",
+          "category": null,
+          "version": null,
+          "score": 0.03816353902220726,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sw_freelance-2020-art12",
+          "parent_clause_id": null,
+          "category": "DELIVERY_INSPECTION",
+          "version": "2020",
+          "score": 0.006401597056537867,
+          "source": "standard_clauses"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sw_freelance-2020-art12-sub04",
+          "parent_clause_id": "sw_freelance-2020-art12",
+          "category": null,
+          "version": null,
+          "score": 8.682326733833179e-05,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "TP",
+      "predicted_by_threshold": {
+        "0.40": true,
+        "0.45": true,
+        "0.50": true,
+        "0.55": true,
+        "0.60": true
+      },
+      "reason": "BELOW_THRESHOLD"
+    },
+    {
+      "case_id": "v5-sw-26",
+      "contract_type": "SW_FREELANCE",
+      "trap": "negation",
+      "gold_deviation": "EXTRA",
+      "predicted_deviation": "EXTRA",
+      "confidence": 0.018721237778663635,
+      "matched_standard": {
+        "id": "sw_freelance-2020-art12",
+        "version": "2020",
+        "category": "DELIVERY_INSPECTION"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sw_freelance-2020-art12-sub00",
+          "parent_clause_id": "sw_freelance-2020-art12",
+          "category": null,
+          "version": null,
+          "score": 0.018721237778663635,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sw_freelance-2020-art12",
+          "parent_clause_id": null,
+          "category": "DELIVERY_INSPECTION",
+          "version": "2020",
+          "score": 5.186293492442928e-06,
+          "source": "standard_clauses"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sw_freelance-2020-art23",
+          "parent_clause_id": null,
+          "category": "IP_OWNERSHIP",
+          "version": "2020",
+          "score": 3.3912492654053494e-06,
+          "source": "standard_clauses"
+        }
+      ],
+      "outcome": "TP",
+      "predicted_by_threshold": {
+        "0.40": true,
+        "0.45": true,
+        "0.50": true,
+        "0.55": true,
+        "0.60": true
+      },
+      "reason": "BELOW_THRESHOLD"
+    },
+    {
+      "case_id": "v5-sw-27",
+      "contract_type": "SW_FREELANCE",
+      "trap": "party",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "NONE",
+      "confidence": 0.9999921321868896,
+      "matched_standard": {
+        "id": "sw_freelance-2020-art12",
+        "version": "2020",
+        "category": "DELIVERY_INSPECTION"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sw_freelance-2020-art12",
+          "parent_clause_id": null,
+          "category": "DELIVERY_INSPECTION",
+          "version": "2020",
+          "score": 0.9999921321868896,
+          "source": "standard_clauses"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sw_freelance-2020-art12-sub01",
+          "parent_clause_id": "sw_freelance-2020-art12",
+          "category": null,
+          "version": null,
+          "score": 0.9999517202377319,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sw_freelance-2020-art12-sub00",
+          "parent_clause_id": "sw_freelance-2020-art12",
+          "category": null,
+          "version": null,
+          "score": 0.9997872710227966,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "TN",
+      "predicted_by_threshold": {
+        "0.40": false,
+        "0.45": false,
+        "0.50": false,
+        "0.55": false,
+        "0.60": false
+      },
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v5-sw-28",
+      "contract_type": "SW_FREELANCE",
+      "trap": "contradiction",
+      "gold_deviation": "EXTRA",
+      "predicted_deviation": "NONE",
+      "confidence": 0.5460959076881409,
+      "matched_standard": {
+        "id": "sw_freelance-2020-art10",
+        "version": "2020",
+        "category": "DELIVERY_INSPECTION"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sw_freelance-2020-art10-sub00",
+          "parent_clause_id": "sw_freelance-2020-art10",
+          "category": null,
+          "version": null,
+          "score": 0.5460959076881409,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sw_freelance-2020-art12-sub01",
+          "parent_clause_id": "sw_freelance-2020-art12",
+          "category": null,
+          "version": null,
+          "score": 0.028038615360856056,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sw_freelance-2020-art11",
+          "parent_clause_id": null,
+          "category": "DELIVERY_INSPECTION",
+          "version": "2020",
+          "score": 0.02132280543446541,
+          "source": "standard_clauses"
+        }
+      ],
+      "outcome": "FN",
+      "predicted_by_threshold": {
+        "0.40": false,
+        "0.45": false,
+        "0.50": false,
+        "0.55": true,
+        "0.60": true
+      },
+      "reason": "OVER_MATCH"
+    },
+    {
+      "case_id": "v5-sw-29",
+      "contract_type": "SW_FREELANCE",
+      "trap": "paraphrase",
+      "gold_deviation": "EXTRA",
+      "predicted_deviation": "EXTRA",
+      "confidence": 0.001721533597446978,
+      "matched_standard": {
+        "id": "sw_freelance-2020-art11",
+        "version": "2020",
+        "category": "DELIVERY_INSPECTION"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sw_freelance-2020-art11-sub00",
+          "parent_clause_id": "sw_freelance-2020-art11",
+          "category": null,
+          "version": null,
+          "score": 0.001721533597446978,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sw_freelance-2020-art11",
+          "parent_clause_id": null,
+          "category": "DELIVERY_INSPECTION",
+          "version": "2020",
+          "score": 0.0017215326661244035,
+          "source": "standard_clauses"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sw_freelance-2020-art12-sub01",
+          "parent_clause_id": "sw_freelance-2020-art12",
+          "category": null,
+          "version": null,
+          "score": 0.00020775945449713618,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "TP",
+      "predicted_by_threshold": {
+        "0.40": true,
+        "0.45": true,
+        "0.50": true,
+        "0.55": true,
+        "0.60": true
+      },
+      "reason": "BELOW_THRESHOLD"
+    },
+    {
+      "case_id": "v5-sw-30",
+      "contract_type": "SW_FREELANCE",
+      "trap": "partial",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "NONE",
+      "confidence": 0.9999836683273315,
+      "matched_standard": {
+        "id": "sw_freelance-2020-art11",
+        "version": "2020",
+        "category": "DELIVERY_INSPECTION"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sw_freelance-2020-art11",
+          "parent_clause_id": null,
+          "category": "DELIVERY_INSPECTION",
+          "version": "2020",
+          "score": 0.9999836683273315,
+          "source": "standard_clauses"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sw_freelance-2020-art11-sub00",
+          "parent_clause_id": "sw_freelance-2020-art11",
+          "category": null,
+          "version": null,
+          "score": 0.9999836683273315,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sw_freelance-2020-art12-sub01",
+          "parent_clause_id": "sw_freelance-2020-art12",
+          "category": null,
+          "version": null,
+          "score": 0.9287100434303284,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "TN",
+      "predicted_by_threshold": {
+        "0.40": false,
+        "0.45": false,
+        "0.50": false,
+        "0.55": false,
+        "0.60": false
+      },
+      "reason": "CORRECT"
+    }
+  ],
+  "toxic": [
+    {
+      "case_id": "v5-sw-01",
+      "contract_type": "SW_FREELANCE",
+      "gold_patterns": [
+        "UNPAID_ADDITIONAL_WORK"
+      ],
+      "predicted_patterns": [
+        "UNILATERAL_CHANGE"
+      ],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-unilateral_change-05",
+          "pattern": "UNILATERAL_CHANGE",
+          "category": "SCOPE_SOW",
+          "text": "계약서에 명시되지 않은 사항이라도 도급인이 업무 범위에 포함되는 것으로 판단하는 경우 수급인은 이를 수행할 의무가 있으며, 이에 대한 별도의 보수는 지급되지 아니한다.",
+          "rerank_text": "검토 패턴: 일방적인 과업 범위 변경 권한\n예문: 계약서에 명시되지 않은 사항이라도 도급인이 업무 범위에 포함되는 것으로 판단하는 경우 수급인은 이를 수행할 의무가 있으며, 이에 대한 별도의 보수는 지급되지 아니한다.",
+          "score": 0.9998993873596191
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unilateral_change-01",
+          "pattern": "UNILATERAL_CHANGE",
+          "category": "SCOPE_SOW",
+          "text": "도급인은 필요에 따라 수급인과의 사전 협의 없이 업무 범위, 납기일, 산출물 규격을 변경할 수 있으며, 수급인은 추가 보수 청구 없이 이에 응하여야 한다.",
+          "rerank_text": "검토 패턴: 일방적인 과업 범위 변경 권한\n예문: 도급인은 필요에 따라 수급인과의 사전 협의 없이 업무 범위, 납기일, 산출물 규격을 변경할 수 있으며, 수급인은 추가 보수 청구 없이 이에 응하여야 한다.",
+          "score": 0.8577108979225159
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-unilateral_change-02",
+          "pattern": "UNILATERAL_CHANGE",
+          "category": "SCOPE_SOW",
+          "text": "도급인은 프로젝트 진행 중 업무 내용 및 범위를 변경하거나 추가할 수 있으며, 수급인은 변경 또는 추가된 업무가 계약 당초 범위를 초과하더라도 기존 보수 범위 내에서 이를 수행하여야 한다.",
+          "rerank_text": "검토 패턴: 일방적인 과업 범위 변경 권한\n예문: 도급인은 프로젝트 진행 중 업무 내용 및 범위를 변경하거나 추가할 수 있으며, 수급인은 변경 또는 추가된 업무가 계약 당초 범위를 초과하더라도 기존 보수 범위 내에서 이를 수행하여야 한다.",
+          "score": 0.6351120471954346
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [
+          "UNILATERAL_CHANGE"
+        ],
+        "0.65": [
+          "UNILATERAL_CHANGE"
+        ],
+        "0.70": [
+          "UNILATERAL_CHANGE"
+        ],
+        "0.75": [
+          "UNILATERAL_CHANGE"
+        ],
+        "0.80": [
+          "UNILATERAL_CHANGE"
+        ],
+        "0.85": [
+          "UNILATERAL_CHANGE"
+        ],
+        "0.90": [
+          "UNILATERAL_CHANGE"
+        ]
+      },
+      "outcome": "TP",
+      "reason": "SEARCH_MISS"
+    },
+    {
+      "case_id": "v5-sw-02",
+      "contract_type": "SW_FREELANCE",
+      "gold_patterns": [],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-unilateral_change-05",
+          "pattern": "UNILATERAL_CHANGE",
+          "category": "SCOPE_SOW",
+          "text": "계약서에 명시되지 않은 사항이라도 도급인이 업무 범위에 포함되는 것으로 판단하는 경우 수급인은 이를 수행할 의무가 있으며, 이에 대한 별도의 보수는 지급되지 아니한다.",
+          "rerank_text": "검토 패턴: 일방적인 과업 범위 변경 권한\n예문: 계약서에 명시되지 않은 사항이라도 도급인이 업무 범위에 포함되는 것으로 판단하는 경우 수급인은 이를 수행할 의무가 있으며, 이에 대한 별도의 보수는 지급되지 아니한다.",
+          "score": 2.4493301680195145e-05
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unilateral_change-sub-05",
+          "pattern": "UNILATERAL_CHANGE",
+          "category": "SCOPE_SOW",
+          "text": "계약서에 명시되지 않은 사항이라도 원사업자가 업무 범위에 포함되는 것으로 판단하는 경우 수급사업자는 이를 수행할 의무가 있으며, 이에 대한 별도의 하도급대금은 지급되지 아니한다.",
+          "rerank_text": "검토 패턴: 일방적인 과업 범위 변경 권한\n예문: 계약서에 명시되지 않은 사항이라도 원사업자가 업무 범위에 포함되는 것으로 판단하는 경우 수급사업자는 이를 수행할 의무가 있으며, 이에 대한 별도의 하도급대금은 지급되지 아니한다.",
+          "score": 5.223835614742711e-06
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-unilateral_change-01",
+          "pattern": "UNILATERAL_CHANGE",
+          "category": "SCOPE_SOW",
+          "text": "도급인은 필요에 따라 수급인과의 사전 협의 없이 업무 범위, 납기일, 산출물 규격을 변경할 수 있으며, 수급인은 추가 보수 청구 없이 이에 응하여야 한다.",
+          "rerank_text": "검토 패턴: 일방적인 과업 범위 변경 권한\n예문: 도급인은 필요에 따라 수급인과의 사전 협의 없이 업무 범위, 납기일, 산출물 규격을 변경할 수 있으며, 수급인은 추가 보수 청구 없이 이에 응하여야 한다.",
+          "score": 4.542555416264804e-06
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "TN",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v5-sw-03",
+      "contract_type": "SW_FREELANCE",
+      "gold_patterns": [],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-unilateral_change-05",
+          "pattern": "UNILATERAL_CHANGE",
+          "category": "SCOPE_SOW",
+          "text": "계약서에 명시되지 않은 사항이라도 도급인이 업무 범위에 포함되는 것으로 판단하는 경우 수급인은 이를 수행할 의무가 있으며, 이에 대한 별도의 보수는 지급되지 아니한다.",
+          "rerank_text": "검토 패턴: 일방적인 과업 범위 변경 권한\n예문: 계약서에 명시되지 않은 사항이라도 도급인이 업무 범위에 포함되는 것으로 판단하는 경우 수급인은 이를 수행할 의무가 있으며, 이에 대한 별도의 보수는 지급되지 아니한다.",
+          "score": 0.010492956265807152
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unilateral_change-02",
+          "pattern": "UNILATERAL_CHANGE",
+          "category": "SCOPE_SOW",
+          "text": "도급인은 프로젝트 진행 중 업무 내용 및 범위를 변경하거나 추가할 수 있으며, 수급인은 변경 또는 추가된 업무가 계약 당초 범위를 초과하더라도 기존 보수 범위 내에서 이를 수행하여야 한다.",
+          "rerank_text": "검토 패턴: 일방적인 과업 범위 변경 권한\n예문: 도급인은 프로젝트 진행 중 업무 내용 및 범위를 변경하거나 추가할 수 있으며, 수급인은 변경 또는 추가된 업무가 계약 당초 범위를 초과하더라도 기존 보수 범위 내에서 이를 수행하여야 한다.",
+          "score": 0.00017330999253317714
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-ip_total_free-01",
+          "pattern": "IP_TOTAL_FREE",
+          "category": "IP_OWNERSHIP",
+          "text": "본 계약에 따라 발생하는 모든 결과물, 산출물 및 그에 관한 저작권·지식재산권 일체는 별도의 대가 없이 전부 도급인에게 영구적으로 귀속되며, 수급인은 저작인격권을 포함한 어떠한 권리도 주장하지 아니한다.",
+          "rerank_text": "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 본 계약에 따라 발생하는 모든 결과물, 산출물 및 그에 관한 저작권·지식재산권 일체는 별도의 대가 없이 전부 도급인에게 영구적으로 귀속되며, 수급인은 저작인격권을 포함한 어떠한 권리도 주장하지 아니한다.",
+          "score": 0.00013729256170336157
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "TN",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v5-sw-04",
+      "contract_type": "SW_FREELANCE",
+      "gold_patterns": [
+        "IP_TOTAL_FREE"
+      ],
+      "predicted_patterns": [
+        "IP_TOTAL_FREE"
+      ],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-ip_total_free-01",
+          "pattern": "IP_TOTAL_FREE",
+          "category": "IP_OWNERSHIP",
+          "text": "본 계약에 따라 발생하는 모든 결과물, 산출물 및 그에 관한 저작권·지식재산권 일체는 별도의 대가 없이 전부 도급인에게 영구적으로 귀속되며, 수급인은 저작인격권을 포함한 어떠한 권리도 주장하지 아니한다.",
+          "rerank_text": "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 본 계약에 따라 발생하는 모든 결과물, 산출물 및 그에 관한 저작권·지식재산권 일체는 별도의 대가 없이 전부 도급인에게 영구적으로 귀속되며, 수급인은 저작인격권을 포함한 어떠한 권리도 주장하지 아니한다.",
+          "score": 0.9983497858047485
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-ip_total_free-02",
+          "pattern": "IP_TOTAL_FREE",
+          "category": "IP_OWNERSHIP",
+          "text": "수급인이 본 계약 수행 중 개발하거나 개선한 소프트웨어, 알고리즘, 기술 노하우 및 이와 관련된 일체의 지식재산권은 계약 체결과 동시에 도급인에게 이전된 것으로 보며, 수급인은 추가적인 보상을 청구할 수 없다.",
+          "rerank_text": "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 수급인이 본 계약 수행 중 개발하거나 개선한 소프트웨어, 알고리즘, 기술 노하우 및 이와 관련된 일체의 지식재산권은 계약 체결과 동시에 도급인에게 이전된 것으로 보며, 수급인은 추가적인 보상을 청구할 수 없다.",
+          "score": 0.991612434387207
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-ip_total_free-sub-01",
+          "pattern": "IP_TOTAL_FREE",
+          "category": "IP_OWNERSHIP",
+          "text": "본 계약에 따라 발생하는 모든 결과물, 산출물 및 그에 관한 저작권·지식재산권 일체는 별도의 하도급대금 없이 전부 원사업자에게 영구적으로 귀속되며, 수급사업자는 저작인격권을 포함한 어떠한 권리도 주장하지 아니한다.",
+          "rerank_text": "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 본 계약에 따라 발생하는 모든 결과물, 산출물 및 그에 관한 저작권·지식재산권 일체는 별도의 하도급대금 없이 전부 원사업자에게 영구적으로 귀속되며, 수급사업자는 저작인격권을 포함한 어떠한 권리도 주장하지 아니한다.",
+          "score": 0.8200193643569946
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [
+          "IP_TOTAL_FREE"
+        ],
+        "0.65": [
+          "IP_TOTAL_FREE"
+        ],
+        "0.70": [
+          "IP_TOTAL_FREE"
+        ],
+        "0.75": [
+          "IP_TOTAL_FREE"
+        ],
+        "0.80": [
+          "IP_TOTAL_FREE"
+        ],
+        "0.85": [
+          "IP_TOTAL_FREE"
+        ],
+        "0.90": [
+          "IP_TOTAL_FREE"
+        ]
+      },
+      "outcome": "TP",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v5-sw-05",
+      "contract_type": "SW_FREELANCE",
+      "gold_patterns": [],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-ip_total_free-02",
+          "pattern": "IP_TOTAL_FREE",
+          "category": "IP_OWNERSHIP",
+          "text": "수급인이 본 계약 수행 중 개발하거나 개선한 소프트웨어, 알고리즘, 기술 노하우 및 이와 관련된 일체의 지식재산권은 계약 체결과 동시에 도급인에게 이전된 것으로 보며, 수급인은 추가적인 보상을 청구할 수 없다.",
+          "rerank_text": "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 수급인이 본 계약 수행 중 개발하거나 개선한 소프트웨어, 알고리즘, 기술 노하우 및 이와 관련된 일체의 지식재산권은 계약 체결과 동시에 도급인에게 이전된 것으로 보며, 수급인은 추가적인 보상을 청구할 수 없다.",
+          "score": 0.0010963132372125983
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-ip_total_free-03",
+          "pattern": "IP_TOTAL_FREE",
+          "category": "IP_OWNERSHIP",
+          "text": "본 계약의 결과물에 대한 저작권 및 특허권 등 모든 지식재산권은 도급인에게 귀속되고, 수급인이 계약 이전부터 보유하던 기술·도구를 활용한 경우에도 해당 결과물에 관한 권리는 도급인의 소유로 한다.",
+          "rerank_text": "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 본 계약의 결과물에 대한 저작권 및 특허권 등 모든 지식재산권은 도급인에게 귀속되고, 수급인이 계약 이전부터 보유하던 기술·도구를 활용한 경우에도 해당 결과물에 관한 권리는 도급인의 소유로 한다.",
+          "score": 5.0629943871172145e-05
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-ip_total_free-sub-03",
+          "pattern": "IP_TOTAL_FREE",
+          "category": "IP_OWNERSHIP",
+          "text": "본 계약의 결과물에 대한 저작권 및 특허권 등 모든 지식재산권은 원사업자에게 귀속되고, 수급사업자가 계약 이전부터 보유하던 기술·도구를 활용한 경우에도 해당 결과물에 관한 권리는 원사업자의 소유로 한다.",
+          "rerank_text": "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 본 계약의 결과물에 대한 저작권 및 특허권 등 모든 지식재산권은 원사업자에게 귀속되고, 수급사업자가 계약 이전부터 보유하던 기술·도구를 활용한 경우에도 해당 결과물에 관한 권리는 원사업자의 소유로 한다.",
+          "score": 2.914527385655674e-06
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "TN",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v5-sw-06",
+      "contract_type": "SW_FREELANCE",
+      "gold_patterns": [],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-ip_total_free-01",
+          "pattern": "IP_TOTAL_FREE",
+          "category": "IP_OWNERSHIP",
+          "text": "본 계약에 따라 발생하는 모든 결과물, 산출물 및 그에 관한 저작권·지식재산권 일체는 별도의 대가 없이 전부 도급인에게 영구적으로 귀속되며, 수급인은 저작인격권을 포함한 어떠한 권리도 주장하지 아니한다.",
+          "rerank_text": "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 본 계약에 따라 발생하는 모든 결과물, 산출물 및 그에 관한 저작권·지식재산권 일체는 별도의 대가 없이 전부 도급인에게 영구적으로 귀속되며, 수급인은 저작인격권을 포함한 어떠한 권리도 주장하지 아니한다.",
+          "score": 0.044238973408937454
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-ip_total_free-sub-03",
+          "pattern": "IP_TOTAL_FREE",
+          "category": "IP_OWNERSHIP",
+          "text": "본 계약의 결과물에 대한 저작권 및 특허권 등 모든 지식재산권은 원사업자에게 귀속되고, 수급사업자가 계약 이전부터 보유하던 기술·도구를 활용한 경우에도 해당 결과물에 관한 권리는 원사업자의 소유로 한다.",
+          "rerank_text": "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 본 계약의 결과물에 대한 저작권 및 특허권 등 모든 지식재산권은 원사업자에게 귀속되고, 수급사업자가 계약 이전부터 보유하던 기술·도구를 활용한 경우에도 해당 결과물에 관한 권리는 원사업자의 소유로 한다.",
+          "score": 0.011473468504846096
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-ip_total_free-03",
+          "pattern": "IP_TOTAL_FREE",
+          "category": "IP_OWNERSHIP",
+          "text": "본 계약의 결과물에 대한 저작권 및 특허권 등 모든 지식재산권은 도급인에게 귀속되고, 수급인이 계약 이전부터 보유하던 기술·도구를 활용한 경우에도 해당 결과물에 관한 권리는 도급인의 소유로 한다.",
+          "rerank_text": "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 본 계약의 결과물에 대한 저작권 및 특허권 등 모든 지식재산권은 도급인에게 귀속되고, 수급인이 계약 이전부터 보유하던 기술·도구를 활용한 경우에도 해당 결과물에 관한 권리는 도급인의 소유로 한다.",
+          "score": 0.00868962425738573
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "TN",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v5-sw-07",
+      "contract_type": "SW_FREELANCE",
+      "gold_patterns": [
+        "PAYMENT_DELAY_UNFAIR"
+      ],
+      "predicted_patterns": [
+        "PAYMENT_DELAY_UNFAIR"
+      ],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-payment_delay_unfair-01",
+          "pattern": "PAYMENT_DELAY_UNFAIR",
+          "category": "PAYMENT",
+          "text": "도급인은 발주자로부터 대금을 수령한 이후에 수급인에게 보수를 지급하며, 지급 시기에 관하여 어떠한 지연이자나 지체상금도 부담하지 아니한다. 도급인의 사정에 따라 지급을 무기한 연기할 수 있다.",
+          "rerank_text": "검토 패턴: 부당한 대금 지급 지연·지체상금 면제\n예문: 도급인은 발주자로부터 대금을 수령한 이후에 수급인에게 보수를 지급하며, 지급 시기에 관하여 어떠한 지연이자나 지체상금도 부담하지 아니한다. 도급인의 사정에 따라 지급을 무기한 연기할 수 있다.",
+          "score": 0.9999594688415527
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-payment_delay_unfair-02",
+          "pattern": "PAYMENT_DELAY_UNFAIR",
+          "category": "PAYMENT",
+          "text": "수급인에 대한 보수 지급은 도급인이 발주자로부터 검수 완료 후 최종 대금을 수령한 날로부터 60일 이내에 하며, 발주자의 지급 지연을 이유로 수급인은 도급인에게 지연이자를 청구할 수 없다.",
+          "rerank_text": "검토 패턴: 부당한 대금 지급 지연·지체상금 면제\n예문: 수급인에 대한 보수 지급은 도급인이 발주자로부터 검수 완료 후 최종 대금을 수령한 날로부터 60일 이내에 하며, 발주자의 지급 지연을 이유로 수급인은 도급인에게 지연이자를 청구할 수 없다.",
+          "score": 0.9943834543228149
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-payment_delay_unfair-03",
+          "pattern": "PAYMENT_DELAY_UNFAIR",
+          "category": "PAYMENT",
+          "text": "도급인은 프로젝트 최종 완료 및 도급인의 내부 승인 절차 완료 후 보수를 지급하며, 내부 승인 기간은 도급인이 임의로 정할 수 있고 이로 인한 지급 지연에 대해 수급인은 이의를 제기하지 아니한다.",
+          "rerank_text": "검토 패턴: 부당한 대금 지급 지연·지체상금 면제\n예문: 도급인은 프로젝트 최종 완료 및 도급인의 내부 승인 절차 완료 후 보수를 지급하며, 내부 승인 기간은 도급인이 임의로 정할 수 있고 이로 인한 지급 지연에 대해 수급인은 이의를 제기하지 아니한다.",
+          "score": 0.7089532017707825
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [
+          "PAYMENT_DELAY_UNFAIR"
+        ],
+        "0.65": [
+          "PAYMENT_DELAY_UNFAIR"
+        ],
+        "0.70": [
+          "PAYMENT_DELAY_UNFAIR"
+        ],
+        "0.75": [
+          "PAYMENT_DELAY_UNFAIR"
+        ],
+        "0.80": [
+          "PAYMENT_DELAY_UNFAIR"
+        ],
+        "0.85": [
+          "PAYMENT_DELAY_UNFAIR"
+        ],
+        "0.90": [
+          "PAYMENT_DELAY_UNFAIR"
+        ]
+      },
+      "outcome": "TP",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v5-sw-08",
+      "contract_type": "SW_FREELANCE",
+      "gold_patterns": [],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-payment_delay_unfair-03",
+          "pattern": "PAYMENT_DELAY_UNFAIR",
+          "category": "PAYMENT",
+          "text": "도급인은 프로젝트 최종 완료 및 도급인의 내부 승인 절차 완료 후 보수를 지급하며, 내부 승인 기간은 도급인이 임의로 정할 수 있고 이로 인한 지급 지연에 대해 수급인은 이의를 제기하지 아니한다.",
+          "rerank_text": "검토 패턴: 부당한 대금 지급 지연·지체상금 면제\n예문: 도급인은 프로젝트 최종 완료 및 도급인의 내부 승인 절차 완료 후 보수를 지급하며, 내부 승인 기간은 도급인이 임의로 정할 수 있고 이로 인한 지급 지연에 대해 수급인은 이의를 제기하지 아니한다.",
+          "score": 3.444226604187861e-05
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unilateral_change-02",
+          "pattern": "UNILATERAL_CHANGE",
+          "category": "SCOPE_SOW",
+          "text": "도급인은 프로젝트 진행 중 업무 내용 및 범위를 변경하거나 추가할 수 있으며, 수급인은 변경 또는 추가된 업무가 계약 당초 범위를 초과하더라도 기존 보수 범위 내에서 이를 수행하여야 한다.",
+          "rerank_text": "검토 패턴: 일방적인 과업 범위 변경 권한\n예문: 도급인은 프로젝트 진행 중 업무 내용 및 범위를 변경하거나 추가할 수 있으며, 수급인은 변경 또는 추가된 업무가 계약 당초 범위를 초과하더라도 기존 보수 범위 내에서 이를 수행하여야 한다.",
+          "score": 3.58956640411634e-06
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-payment_delay_unfair-01",
+          "pattern": "PAYMENT_DELAY_UNFAIR",
+          "category": "PAYMENT",
+          "text": "도급인은 발주자로부터 대금을 수령한 이후에 수급인에게 보수를 지급하며, 지급 시기에 관하여 어떠한 지연이자나 지체상금도 부담하지 아니한다. 도급인의 사정에 따라 지급을 무기한 연기할 수 있다.",
+          "rerank_text": "검토 패턴: 부당한 대금 지급 지연·지체상금 면제\n예문: 도급인은 발주자로부터 대금을 수령한 이후에 수급인에게 보수를 지급하며, 지급 시기에 관하여 어떠한 지연이자나 지체상금도 부담하지 아니한다. 도급인의 사정에 따라 지급을 무기한 연기할 수 있다.",
+          "score": 9.954600272976677e-07
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "TN",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v5-sw-09",
+      "contract_type": "SW_FREELANCE",
+      "gold_patterns": [],
+      "predicted_patterns": [
+        "PAYMENT_DELAY_UNFAIR"
+      ],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-payment_delay_unfair-01",
+          "pattern": "PAYMENT_DELAY_UNFAIR",
+          "category": "PAYMENT",
+          "text": "도급인은 발주자로부터 대금을 수령한 이후에 수급인에게 보수를 지급하며, 지급 시기에 관하여 어떠한 지연이자나 지체상금도 부담하지 아니한다. 도급인의 사정에 따라 지급을 무기한 연기할 수 있다.",
+          "rerank_text": "검토 패턴: 부당한 대금 지급 지연·지체상금 면제\n예문: 도급인은 발주자로부터 대금을 수령한 이후에 수급인에게 보수를 지급하며, 지급 시기에 관하여 어떠한 지연이자나 지체상금도 부담하지 아니한다. 도급인의 사정에 따라 지급을 무기한 연기할 수 있다.",
+          "score": 0.925278902053833
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-noncompete_excess-01",
+          "pattern": "NONCOMPETE_EXCESS",
+          "category": "CONFIDENTIALITY",
+          "text": "수급인은 본 계약 종료 후 3년간 도급인과 동종·유사한 업종에 종사하거나 경쟁 업체에 용역을 제공할 수 없으며, 이를 위반할 경우 보수의 5배에 해당하는 위약금을 지급한다.",
+          "rerank_text": "검토 패턴: 과도한 경업금지·영업활동 제한\n예문: 수급인은 본 계약 종료 후 3년간 도급인과 동종·유사한 업종에 종사하거나 경쟁 업체에 용역을 제공할 수 없으며, 이를 위반할 경우 보수의 5배에 해당하는 위약금을 지급한다.",
+          "score": 0.07412397861480713
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-payment_delay_unfair-02",
+          "pattern": "PAYMENT_DELAY_UNFAIR",
+          "category": "PAYMENT",
+          "text": "수급인에 대한 보수 지급은 도급인이 발주자로부터 검수 완료 후 최종 대금을 수령한 날로부터 60일 이내에 하며, 발주자의 지급 지연을 이유로 수급인은 도급인에게 지연이자를 청구할 수 없다.",
+          "rerank_text": "검토 패턴: 부당한 대금 지급 지연·지체상금 면제\n예문: 수급인에 대한 보수 지급은 도급인이 발주자로부터 검수 완료 후 최종 대금을 수령한 날로부터 60일 이내에 하며, 발주자의 지급 지연을 이유로 수급인은 도급인에게 지연이자를 청구할 수 없다.",
+          "score": 0.014414099045097828
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [
+          "PAYMENT_DELAY_UNFAIR"
+        ],
+        "0.65": [
+          "PAYMENT_DELAY_UNFAIR"
+        ],
+        "0.70": [
+          "PAYMENT_DELAY_UNFAIR"
+        ],
+        "0.75": [
+          "PAYMENT_DELAY_UNFAIR"
+        ],
+        "0.80": [
+          "PAYMENT_DELAY_UNFAIR"
+        ],
+        "0.85": [
+          "PAYMENT_DELAY_UNFAIR"
+        ],
+        "0.90": [
+          "PAYMENT_DELAY_UNFAIR"
+        ]
+      },
+      "outcome": "FP",
+      "reason": "WRONG_PATTERN"
+    },
+    {
+      "case_id": "v5-sw-10",
+      "contract_type": "SW_FREELANCE",
+      "gold_patterns": [
+        "UNILATERAL_CANCELLATION"
+      ],
+      "predicted_patterns": [
+        "UNILATERAL_CANCELLATION"
+      ],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-unilateral_cancellation-02",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "category": "TERMINATION",
+          "text": "도급인은 프로젝트 방향 변경, 예산 삭감, 발주자 사정 등을 이유로 계약을 즉시 해지할 수 있으며, 이 경우 수급인에 대한 보상은 없고 수급인은 즉시 업무를 중단하여야 한다.",
+          "rerank_text": "검토 패턴: 발주자의 일방적 위탁 취소 및 무보상 계약 해지\n예문: 도급인은 프로젝트 방향 변경, 예산 삭감, 발주자 사정 등을 이유로 계약을 즉시 해지할 수 있으며, 이 경우 수급인에 대한 보상은 없고 수급인은 즉시 업무를 중단하여야 한다.",
+          "score": 0.9976314306259155
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unilateral_cancellation-04",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "category": "TERMINATION",
+          "text": "본 계약은 도급인의 사정에 의해 언제든지 해지될 수 있으며, 해지 시 수급인은 진행 중인 업무를 즉시 중단하고 관련 자료를 도급인에게 반환하여야 한다. 수급인은 해지로 인한 손실에 대해 도급인에게 청구권을 행사하지 아니한다.",
+          "rerank_text": "검토 패턴: 발주자의 일방적 위탁 취소 및 무보상 계약 해지\n예문: 본 계약은 도급인의 사정에 의해 언제든지 해지될 수 있으며, 해지 시 수급인은 진행 중인 업무를 즉시 중단하고 관련 자료를 도급인에게 반환하여야 한다. 수급인은 해지로 인한 손실에 대해 도급인에게 청구권을 행사하지 아니한다.",
+          "score": 0.9802236557006836
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-unilateral_cancellation-sub-04",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "category": "TERMINATION",
+          "text": "본 계약은 원사업자의 사정에 의해 언제든지 해지될 수 있으며, 해지 시 수급사업자는 진행 중인 업무를 즉시 중단하고 관련 자료를 원사업자에게 반환하여야 한다. 수급사업자는 해지로 인한 손실에 대해 원사업자에게 청구권을 행사하지 아니한다.",
+          "rerank_text": "검토 패턴: 발주자의 일방적 위탁 취소 및 무보상 계약 해지\n예문: 본 계약은 원사업자의 사정에 의해 언제든지 해지될 수 있으며, 해지 시 수급사업자는 진행 중인 업무를 즉시 중단하고 관련 자료를 원사업자에게 반환하여야 한다. 수급사업자는 해지로 인한 손실에 대해 원사업자에게 청구권을 행사하지 아니한다.",
+          "score": 0.2839919924736023
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [
+          "UNILATERAL_CANCELLATION"
+        ],
+        "0.65": [
+          "UNILATERAL_CANCELLATION"
+        ],
+        "0.70": [
+          "UNILATERAL_CANCELLATION"
+        ],
+        "0.75": [
+          "UNILATERAL_CANCELLATION"
+        ],
+        "0.80": [
+          "UNILATERAL_CANCELLATION"
+        ],
+        "0.85": [
+          "UNILATERAL_CANCELLATION"
+        ],
+        "0.90": [
+          "UNILATERAL_CANCELLATION"
+        ]
+      },
+      "outcome": "TP",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v5-sw-11",
+      "contract_type": "SW_FREELANCE",
+      "gold_patterns": [],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-unilateral_cancellation-04",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "category": "TERMINATION",
+          "text": "본 계약은 도급인의 사정에 의해 언제든지 해지될 수 있으며, 해지 시 수급인은 진행 중인 업무를 즉시 중단하고 관련 자료를 도급인에게 반환하여야 한다. 수급인은 해지로 인한 손실에 대해 도급인에게 청구권을 행사하지 아니한다.",
+          "rerank_text": "검토 패턴: 발주자의 일방적 위탁 취소 및 무보상 계약 해지\n예문: 본 계약은 도급인의 사정에 의해 언제든지 해지될 수 있으며, 해지 시 수급인은 진행 중인 업무를 즉시 중단하고 관련 자료를 도급인에게 반환하여야 한다. 수급인은 해지로 인한 손실에 대해 도급인에게 청구권을 행사하지 아니한다.",
+          "score": 2.1817910237587057e-05
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unilateral_cancellation-05",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "category": "TERMINATION",
+          "text": "발주자의 계약 취소 또는 도급인의 내부 결정에 따라 본 계약이 중도 해지되는 경우, 수급인은 해지 통보를 받은 즉시 업무를 종료하여야 하며 미완료 부분에 대한 보수는 지급되지 아니한다.",
+          "rerank_text": "검토 패턴: 발주자의 일방적 위탁 취소 및 무보상 계약 해지\n예문: 발주자의 계약 취소 또는 도급인의 내부 결정에 따라 본 계약이 중도 해지되는 경우, 수급인은 해지 통보를 받은 즉시 업무를 종료하여야 하며 미완료 부분에 대한 보수는 지급되지 아니한다.",
+          "score": 1.59503506438341e-05
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-unilateral_cancellation-sub-04",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "category": "TERMINATION",
+          "text": "본 계약은 원사업자의 사정에 의해 언제든지 해지될 수 있으며, 해지 시 수급사업자는 진행 중인 업무를 즉시 중단하고 관련 자료를 원사업자에게 반환하여야 한다. 수급사업자는 해지로 인한 손실에 대해 원사업자에게 청구권을 행사하지 아니한다.",
+          "rerank_text": "검토 패턴: 발주자의 일방적 위탁 취소 및 무보상 계약 해지\n예문: 본 계약은 원사업자의 사정에 의해 언제든지 해지될 수 있으며, 해지 시 수급사업자는 진행 중인 업무를 즉시 중단하고 관련 자료를 원사업자에게 반환하여야 한다. 수급사업자는 해지로 인한 손실에 대해 원사업자에게 청구권을 행사하지 아니한다.",
+          "score": 4.748545052279951e-06
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "TN",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v5-sw-12",
+      "contract_type": "SW_FREELANCE",
+      "gold_patterns": [],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-unilateral_cancellation-sub-04",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "category": "TERMINATION",
+          "text": "본 계약은 원사업자의 사정에 의해 언제든지 해지될 수 있으며, 해지 시 수급사업자는 진행 중인 업무를 즉시 중단하고 관련 자료를 원사업자에게 반환하여야 한다. 수급사업자는 해지로 인한 손실에 대해 원사업자에게 청구권을 행사하지 아니한다.",
+          "rerank_text": "검토 패턴: 발주자의 일방적 위탁 취소 및 무보상 계약 해지\n예문: 본 계약은 원사업자의 사정에 의해 언제든지 해지될 수 있으며, 해지 시 수급사업자는 진행 중인 업무를 즉시 중단하고 관련 자료를 원사업자에게 반환하여야 한다. 수급사업자는 해지로 인한 손실에 대해 원사업자에게 청구권을 행사하지 아니한다.",
+          "score": 0.04256740212440491
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unilateral_cancellation-04",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "category": "TERMINATION",
+          "text": "본 계약은 도급인의 사정에 의해 언제든지 해지될 수 있으며, 해지 시 수급인은 진행 중인 업무를 즉시 중단하고 관련 자료를 도급인에게 반환하여야 한다. 수급인은 해지로 인한 손실에 대해 도급인에게 청구권을 행사하지 아니한다.",
+          "rerank_text": "검토 패턴: 발주자의 일방적 위탁 취소 및 무보상 계약 해지\n예문: 본 계약은 도급인의 사정에 의해 언제든지 해지될 수 있으며, 해지 시 수급인은 진행 중인 업무를 즉시 중단하고 관련 자료를 도급인에게 반환하여야 한다. 수급인은 해지로 인한 손실에 대해 도급인에게 청구권을 행사하지 아니한다.",
+          "score": 0.03218777850270271
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-unfair_damage_claim-04",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "category": "LIABILITY",
+          "text": "수급인이 본 계약을 중도에 해지하거나 계약 이행을 거부하는 경우, 계약 잔여 기간에 해당하는 보수 전액 및 도급인이 대체 용역 수급에 소요한 비용의 합산액을 위약금으로 즉시 지급하여야 한다.",
+          "rerank_text": "검토 패턴: 부당하게 과도한 손해배상 청구액 설정\n예문: 수급인이 본 계약을 중도에 해지하거나 계약 이행을 거부하는 경우, 계약 잔여 기간에 해당하는 보수 전액 및 도급인이 대체 용역 수급에 소요한 비용의 합산액을 위약금으로 즉시 지급하여야 한다.",
+          "score": 0.0034777990076690912
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "TN",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v5-sw-13",
+      "contract_type": "SW_FREELANCE",
+      "gold_patterns": [
+        "INDEFINITE_CONFIDENTIALITY"
+      ],
+      "predicted_patterns": [
+        "INDEFINITE_CONFIDENTIALITY"
+      ],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-indefinite_confidentiality-01",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "category": "CONFIDENTIALITY",
+          "text": "수급인은 본 계약 종료 후에도 기간의 제한 없이 영구히 도급인의 업무상 비밀을 제3자에게 누설하거나 이용하여서는 아니 되며, 비밀유지의무의 종기는 별도로 정하지 아니한다.",
+          "rerank_text": "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 수급인은 본 계약 종료 후에도 기간의 제한 없이 영구히 도급인의 업무상 비밀을 제3자에게 누설하거나 이용하여서는 아니 되며, 비밀유지의무의 종기는 별도로 정하지 아니한다.",
+          "score": 0.9999512434005737
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-indefinite_confidentiality-sub-01",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "category": "CONFIDENTIALITY",
+          "text": "수급사업자는 본 계약 종료 후에도 기간의 제한 없이 영구히 원사업자의 업무상 비밀을 제3자에게 누설하거나 이용하여서는 아니 되며, 비밀유지의무의 종기는 별도로 정하지 아니한다.",
+          "rerank_text": "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 수급사업자는 본 계약 종료 후에도 기간의 제한 없이 영구히 원사업자의 업무상 비밀을 제3자에게 누설하거나 이용하여서는 아니 되며, 비밀유지의무의 종기는 별도로 정하지 아니한다.",
+          "score": 0.997280478477478
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-indefinite_confidentiality-02",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "category": "CONFIDENTIALITY",
+          "text": "본 계약 수행 과정에서 알게 된 도급인의 모든 정보는 수급인이 향후 어떠한 시점에도 공개하거나 활용할 수 없으며, 계약 종료 및 시간의 경과와 무관하게 비밀유지의무는 영구히 존속한다.",
+          "rerank_text": "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 본 계약 수행 과정에서 알게 된 도급인의 모든 정보는 수급인이 향후 어떠한 시점에도 공개하거나 활용할 수 없으며, 계약 종료 및 시간의 경과와 무관하게 비밀유지의무는 영구히 존속한다.",
+          "score": 0.9942771792411804
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [
+          "INDEFINITE_CONFIDENTIALITY"
+        ],
+        "0.65": [
+          "INDEFINITE_CONFIDENTIALITY"
+        ],
+        "0.70": [
+          "INDEFINITE_CONFIDENTIALITY"
+        ],
+        "0.75": [
+          "INDEFINITE_CONFIDENTIALITY"
+        ],
+        "0.80": [
+          "INDEFINITE_CONFIDENTIALITY"
+        ],
+        "0.85": [
+          "INDEFINITE_CONFIDENTIALITY"
+        ],
+        "0.90": [
+          "INDEFINITE_CONFIDENTIALITY"
+        ]
+      },
+      "outcome": "TP",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v5-sw-14",
+      "contract_type": "SW_FREELANCE",
+      "gold_patterns": [],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-unilateral_interpretation-04",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "category": "DISPUTE",
+          "text": "계약 내용의 모호성이나 누락으로 인한 분쟁 발생 시 도급인의 원래 의도를 기준으로 해석하며, 수급인은 도급인이 제시한 해석을 서면으로 이의 없이 수용한다.",
+          "rerank_text": "검토 패턴: 발주자의 일방적 계약 해석 권한\n예문: 계약 내용의 모호성이나 누락으로 인한 분쟁 발생 시 도급인의 원래 의도를 기준으로 해석하며, 수급인은 도급인이 제시한 해석을 서면으로 이의 없이 수용한다.",
+          "score": 2.5166123123199213e-06
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-indefinite_confidentiality-05",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "category": "CONFIDENTIALITY",
+          "text": "수급인은 본 계약과 관련하여 알게 된 일체의 정보(경미한 업무 연락 사항을 포함한다)에 대하여 영구히 비밀을 유지하여야 하며, 위반 시 기간 경과와 관계없이 손해배상 책임을 진다.",
+          "rerank_text": "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 수급인은 본 계약과 관련하여 알게 된 일체의 정보(경미한 업무 연락 사항을 포함한다)에 대하여 영구히 비밀을 유지하여야 하며, 위반 시 기간 경과와 관계없이 손해배상 책임을 진다.",
+          "score": 2.0589109226420987e-06
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-indefinite_confidentiality-sub-05",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "category": "CONFIDENTIALITY",
+          "text": "수급사업자는 본 계약과 관련하여 알게 된 일체의 정보(경미한 업무 연락 사항을 포함한다)에 대하여 영구히 비밀을 유지하여야 하며, 위반 시 기간 경과와 관계없이 손해배상 책임을 진다.",
+          "rerank_text": "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 수급사업자는 본 계약과 관련하여 알게 된 일체의 정보(경미한 업무 연락 사항을 포함한다)에 대하여 영구히 비밀을 유지하여야 하며, 위반 시 기간 경과와 관계없이 손해배상 책임을 진다.",
+          "score": 1.1440215530456044e-06
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "TN",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v5-sw-15",
+      "contract_type": "SW_FREELANCE",
+      "gold_patterns": [],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-indefinite_confidentiality-03",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "category": "CONFIDENTIALITY",
+          "text": "수급인은 도급인으로부터 제공받았거나 업무 중 알게 된 정보에 대해 기간의 정함이 없이 비밀을 유지하여야 하며, 해당 정보가 수급인의 귀책 없이 공지의 사실이 된 경우에도 비밀유지의무는 소멸하지 아니한다.",
+          "rerank_text": "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 수급인은 도급인으로부터 제공받았거나 업무 중 알게 된 정보에 대해 기간의 정함이 없이 비밀을 유지하여야 하며, 해당 정보가 수급인의 귀책 없이 공지의 사실이 된 경우에도 비밀유지의무는 소멸하지 아니한다.",
+          "score": 0.19067901372909546
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-indefinite_confidentiality-05",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "category": "CONFIDENTIALITY",
+          "text": "수급인은 본 계약과 관련하여 알게 된 일체의 정보(경미한 업무 연락 사항을 포함한다)에 대하여 영구히 비밀을 유지하여야 하며, 위반 시 기간 경과와 관계없이 손해배상 책임을 진다.",
+          "rerank_text": "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 수급인은 본 계약과 관련하여 알게 된 일체의 정보(경미한 업무 연락 사항을 포함한다)에 대하여 영구히 비밀을 유지하여야 하며, 위반 시 기간 경과와 관계없이 손해배상 책임을 진다.",
+          "score": 0.00040425657061859965
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-indefinite_confidentiality-sub-05",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "category": "CONFIDENTIALITY",
+          "text": "수급사업자는 본 계약과 관련하여 알게 된 일체의 정보(경미한 업무 연락 사항을 포함한다)에 대하여 영구히 비밀을 유지하여야 하며, 위반 시 기간 경과와 관계없이 손해배상 책임을 진다.",
+          "rerank_text": "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 수급사업자는 본 계약과 관련하여 알게 된 일체의 정보(경미한 업무 연락 사항을 포함한다)에 대하여 영구히 비밀을 유지하여야 하며, 위반 시 기간 경과와 관계없이 손해배상 책임을 진다.",
+          "score": 4.066094697918743e-05
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "TN",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v5-sw-16",
+      "contract_type": "SW_FREELANCE",
+      "gold_patterns": [
+        "UNFAIR_DAMAGE_CLAIM"
+      ],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-unfair_damage_claim-02",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "category": "LIABILITY",
+          "text": "납기 지연 시 수급인은 지체 1일당 계약 금액의 1%를 위약금으로 도급인에게 지급하며, 도급인의 입증 없이도 해당 금액을 미지급 보수에서 일방적으로 공제할 수 있다.",
+          "rerank_text": "검토 패턴: 부당하게 과도한 손해배상 청구액 설정\n예문: 납기 지연 시 수급인은 지체 1일당 계약 금액의 1%를 위약금으로 도급인에게 지급하며, 도급인의 입증 없이도 해당 금액을 미지급 보수에서 일방적으로 공제할 수 있다.",
+          "score": 0.0019380528246983886
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unfair_damage_claim-01",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "category": "LIABILITY",
+          "text": "수급인이 납기를 지키지 못하거나 도급인이 요구한 품질 기준을 충족하지 못할 경우, 수급인은 계약 금액 상당액에 해당하는 금액을 손해배상액으로 지급하여야 한다.",
+          "rerank_text": "검토 패턴: 부당하게 과도한 손해배상 청구액 설정\n예문: 수급인이 납기를 지키지 못하거나 도급인이 요구한 품질 기준을 충족하지 못할 경우, 수급인은 계약 금액 상당액에 해당하는 금액을 손해배상액으로 지급하여야 한다.",
+          "score": 4.45118967036251e-05
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-unfair_damage_claim-sub-03",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "category": "LIABILITY",
+          "text": "수급사업자의 귀책사유로 인한 하자 발생 시 수급사업자는 하자 복구 비용 외에 원사업자가 입은 간접 손해, 기회손실, 영업상 손해 일체를 배상하여야 하며, 그 금액은 원사업자가 산정한 바에 따른다.",
+          "rerank_text": "검토 패턴: 부당하게 과도한 손해배상 청구액 설정\n예문: 수급사업자의 귀책사유로 인한 하자 발생 시 수급사업자는 하자 복구 비용 외에 원사업자가 입은 간접 손해, 기회손실, 영업상 손해 일체를 배상하여야 하며, 그 금액은 원사업자가 산정한 바에 따른다.",
+          "score": 2.767069418041501e-06
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "FN",
+      "reason": "BELOW_THRESHOLD"
+    },
+    {
+      "case_id": "v5-sw-17",
+      "contract_type": "SW_FREELANCE",
+      "gold_patterns": [],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-unfair_damage_claim-03",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "category": "LIABILITY",
+          "text": "수급인의 귀책사유로 인한 하자 발생 시 수급인은 하자 복구 비용 외에 도급인이 입은 간접 손해, 기회손실, 영업상 손해 일체를 배상하여야 하며, 그 금액은 도급인이 산정한 바에 따른다.",
+          "rerank_text": "검토 패턴: 부당하게 과도한 손해배상 청구액 설정\n예문: 수급인의 귀책사유로 인한 하자 발생 시 수급인은 하자 복구 비용 외에 도급인이 입은 간접 손해, 기회손실, 영업상 손해 일체를 배상하여야 하며, 그 금액은 도급인이 산정한 바에 따른다.",
+          "score": 9.64860591921024e-05
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unfair_damage_claim-sub-03",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "category": "LIABILITY",
+          "text": "수급사업자의 귀책사유로 인한 하자 발생 시 수급사업자는 하자 복구 비용 외에 원사업자가 입은 간접 손해, 기회손실, 영업상 손해 일체를 배상하여야 하며, 그 금액은 원사업자가 산정한 바에 따른다.",
+          "rerank_text": "검토 패턴: 부당하게 과도한 손해배상 청구액 설정\n예문: 수급사업자의 귀책사유로 인한 하자 발생 시 수급사업자는 하자 복구 비용 외에 원사업자가 입은 간접 손해, 기회손실, 영업상 손해 일체를 배상하여야 하며, 그 금액은 원사업자가 산정한 바에 따른다.",
+          "score": 2.7428734028944746e-05
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-indefinite_confidentiality-05",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "category": "CONFIDENTIALITY",
+          "text": "수급인은 본 계약과 관련하여 알게 된 일체의 정보(경미한 업무 연락 사항을 포함한다)에 대하여 영구히 비밀을 유지하여야 하며, 위반 시 기간 경과와 관계없이 손해배상 책임을 진다.",
+          "rerank_text": "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 수급인은 본 계약과 관련하여 알게 된 일체의 정보(경미한 업무 연락 사항을 포함한다)에 대하여 영구히 비밀을 유지하여야 하며, 위반 시 기간 경과와 관계없이 손해배상 책임을 진다.",
+          "score": 2.685995241336059e-06
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "TN",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v5-sw-18",
+      "contract_type": "SW_FREELANCE",
+      "gold_patterns": [],
+      "predicted_patterns": [
+        "UNFAIR_DAMAGE_CLAIM"
+      ],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-unfair_damage_claim-03",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "category": "LIABILITY",
+          "text": "수급인의 귀책사유로 인한 하자 발생 시 수급인은 하자 복구 비용 외에 도급인이 입은 간접 손해, 기회손실, 영업상 손해 일체를 배상하여야 하며, 그 금액은 도급인이 산정한 바에 따른다.",
+          "rerank_text": "검토 패턴: 부당하게 과도한 손해배상 청구액 설정\n예문: 수급인의 귀책사유로 인한 하자 발생 시 수급인은 하자 복구 비용 외에 도급인이 입은 간접 손해, 기회손실, 영업상 손해 일체를 배상하여야 하며, 그 금액은 도급인이 산정한 바에 따른다.",
+          "score": 0.9020563364028931
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unfair_damage_claim-sub-03",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "category": "LIABILITY",
+          "text": "수급사업자의 귀책사유로 인한 하자 발생 시 수급사업자는 하자 복구 비용 외에 원사업자가 입은 간접 손해, 기회손실, 영업상 손해 일체를 배상하여야 하며, 그 금액은 원사업자가 산정한 바에 따른다.",
+          "rerank_text": "검토 패턴: 부당하게 과도한 손해배상 청구액 설정\n예문: 수급사업자의 귀책사유로 인한 하자 발생 시 수급사업자는 하자 복구 비용 외에 원사업자가 입은 간접 손해, 기회손실, 영업상 손해 일체를 배상하여야 하며, 그 금액은 원사업자가 산정한 바에 따른다.",
+          "score": 0.28707394003868103
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-unfair_damage_claim-01",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "category": "LIABILITY",
+          "text": "수급인이 납기를 지키지 못하거나 도급인이 요구한 품질 기준을 충족하지 못할 경우, 수급인은 계약 금액 상당액에 해당하는 금액을 손해배상액으로 지급하여야 한다.",
+          "rerank_text": "검토 패턴: 부당하게 과도한 손해배상 청구액 설정\n예문: 수급인이 납기를 지키지 못하거나 도급인이 요구한 품질 기준을 충족하지 못할 경우, 수급인은 계약 금액 상당액에 해당하는 금액을 손해배상액으로 지급하여야 한다.",
+          "score": 4.5834558477508835e-06
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [
+          "UNFAIR_DAMAGE_CLAIM"
+        ],
+        "0.65": [
+          "UNFAIR_DAMAGE_CLAIM"
+        ],
+        "0.70": [
+          "UNFAIR_DAMAGE_CLAIM"
+        ],
+        "0.75": [
+          "UNFAIR_DAMAGE_CLAIM"
+        ],
+        "0.80": [
+          "UNFAIR_DAMAGE_CLAIM"
+        ],
+        "0.85": [
+          "UNFAIR_DAMAGE_CLAIM"
+        ],
+        "0.90": [
+          "UNFAIR_DAMAGE_CLAIM"
+        ]
+      },
+      "outcome": "FP",
+      "reason": "WRONG_PATTERN"
+    },
+    {
+      "case_id": "v5-sw-19",
+      "contract_type": "SW_FREELANCE",
+      "gold_patterns": [
+        "UNILATERAL_INTERPRETATION"
+      ],
+      "predicted_patterns": [
+        "UNILATERAL_INTERPRETATION"
+      ],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-unilateral_interpretation-01",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "category": "DISPUTE",
+          "text": "본 계약 내용에 관하여 당사자 간 이견이 발생할 경우 도급인의 해석 및 판단에 따르며, 수급인은 이에 이의를 제기하지 아니한다.",
+          "rerank_text": "검토 패턴: 발주자의 일방적 계약 해석 권한\n예문: 본 계약 내용에 관하여 당사자 간 이견이 발생할 경우 도급인의 해석 및 판단에 따르며, 수급인은 이에 이의를 제기하지 아니한다.",
+          "score": 0.9935644268989563
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unilateral_interpretation-04",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "category": "DISPUTE",
+          "text": "계약 내용의 모호성이나 누락으로 인한 분쟁 발생 시 도급인의 원래 의도를 기준으로 해석하며, 수급인은 도급인이 제시한 해석을 서면으로 이의 없이 수용한다.",
+          "rerank_text": "검토 패턴: 발주자의 일방적 계약 해석 권한\n예문: 계약 내용의 모호성이나 누락으로 인한 분쟁 발생 시 도급인의 원래 의도를 기준으로 해석하며, 수급인은 도급인이 제시한 해석을 서면으로 이의 없이 수용한다.",
+          "score": 0.7697497606277466
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-unilateral_interpretation-02",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "category": "DISPUTE",
+          "text": "계약서 조항의 해석에 대한 분쟁이 발생하는 경우 도급인이 최종 해석 권한을 가지며, 수급인은 도급인의 해석에 따라 업무를 이행하여야 한다.",
+          "rerank_text": "검토 패턴: 발주자의 일방적 계약 해석 권한\n예문: 계약서 조항의 해석에 대한 분쟁이 발생하는 경우 도급인이 최종 해석 권한을 가지며, 수급인은 도급인의 해석에 따라 업무를 이행하여야 한다.",
+          "score": 0.32208216190338135
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [
+          "UNILATERAL_INTERPRETATION"
+        ],
+        "0.65": [
+          "UNILATERAL_INTERPRETATION"
+        ],
+        "0.70": [
+          "UNILATERAL_INTERPRETATION"
+        ],
+        "0.75": [
+          "UNILATERAL_INTERPRETATION"
+        ],
+        "0.80": [
+          "UNILATERAL_INTERPRETATION"
+        ],
+        "0.85": [
+          "UNILATERAL_INTERPRETATION"
+        ],
+        "0.90": [
+          "UNILATERAL_INTERPRETATION"
+        ]
+      },
+      "outcome": "TP",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v5-sw-20",
+      "contract_type": "SW_FREELANCE",
+      "gold_patterns": [],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-unilateral_interpretation-04",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "category": "DISPUTE",
+          "text": "계약 내용의 모호성이나 누락으로 인한 분쟁 발생 시 도급인의 원래 의도를 기준으로 해석하며, 수급인은 도급인이 제시한 해석을 서면으로 이의 없이 수용한다.",
+          "rerank_text": "검토 패턴: 발주자의 일방적 계약 해석 권한\n예문: 계약 내용의 모호성이나 누락으로 인한 분쟁 발생 시 도급인의 원래 의도를 기준으로 해석하며, 수급인은 도급인이 제시한 해석을 서면으로 이의 없이 수용한다.",
+          "score": 6.549298063873721e-07
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unilateral_interpretation-sub-04",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "category": "DISPUTE",
+          "text": "계약 내용의 모호성이나 누락으로 인한 분쟁 발생 시 원사업자의 원래 의도를 기준으로 해석하며, 수급사업자는 원사업자가 제시한 해석을 서면으로 이의 없이 수용한다.",
+          "rerank_text": "검토 패턴: 발주자의 일방적 계약 해석 권한\n예문: 계약 내용의 모호성이나 누락으로 인한 분쟁 발생 시 원사업자의 원래 의도를 기준으로 해석하며, 수급사업자는 원사업자가 제시한 해석을 서면으로 이의 없이 수용한다.",
+          "score": 6.508421392936725e-07
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-unilateral_interpretation-02",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "category": "DISPUTE",
+          "text": "계약서 조항의 해석에 대한 분쟁이 발생하는 경우 도급인이 최종 해석 권한을 가지며, 수급인은 도급인의 해석에 따라 업무를 이행하여야 한다.",
+          "rerank_text": "검토 패턴: 발주자의 일방적 계약 해석 권한\n예문: 계약서 조항의 해석에 대한 분쟁이 발생하는 경우 도급인이 최종 해석 권한을 가지며, 수급인은 도급인의 해석에 따라 업무를 이행하여야 한다.",
+          "score": 6.328285735435202e-07
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "TN",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v5-sw-21",
+      "contract_type": "SW_FREELANCE",
+      "gold_patterns": [],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-unilateral_interpretation-01",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "category": "DISPUTE",
+          "text": "본 계약 내용에 관하여 당사자 간 이견이 발생할 경우 도급인의 해석 및 판단에 따르며, 수급인은 이에 이의를 제기하지 아니한다.",
+          "rerank_text": "검토 패턴: 발주자의 일방적 계약 해석 권한\n예문: 본 계약 내용에 관하여 당사자 간 이견이 발생할 경우 도급인의 해석 및 판단에 따르며, 수급인은 이에 이의를 제기하지 아니한다.",
+          "score": 1.2033700841129757e-05
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unilateral_interpretation-sub-01",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "category": "DISPUTE",
+          "text": "본 계약 내용에 관하여 당사자 간 이견이 발생할 경우 원사업자의 해석 및 판단에 따르며, 수급사업자는 이에 이의를 제기하지 아니한다.",
+          "rerank_text": "검토 패턴: 발주자의 일방적 계약 해석 권한\n예문: 본 계약 내용에 관하여 당사자 간 이견이 발생할 경우 원사업자의 해석 및 판단에 따르며, 수급사업자는 이에 이의를 제기하지 아니한다.",
+          "score": 8.878988410288002e-06
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-unilateral_interpretation-04",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "category": "DISPUTE",
+          "text": "계약 내용의 모호성이나 누락으로 인한 분쟁 발생 시 도급인의 원래 의도를 기준으로 해석하며, 수급인은 도급인이 제시한 해석을 서면으로 이의 없이 수용한다.",
+          "rerank_text": "검토 패턴: 발주자의 일방적 계약 해석 권한\n예문: 계약 내용의 모호성이나 누락으로 인한 분쟁 발생 시 도급인의 원래 의도를 기준으로 해석하며, 수급인은 도급인이 제시한 해석을 서면으로 이의 없이 수용한다.",
+          "score": 1.8263416450281511e-06
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "TN",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v5-sw-22",
+      "contract_type": "SW_FREELANCE",
+      "gold_patterns": [],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-unpaid_additional_work-02",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "category": "SCOPE_SOW",
+          "text": "수급인은 도급인의 서면 또는 구두 지시에 따른 추가 작업을 계약에 명시되지 않은 경우에도 수행할 의무가 있으며, 추가 작업에 대한 별도의 대가를 청구할 권리를 포기한다.",
+          "rerank_text": "검토 패턴: 추가 업무 지시 시 무상 수행 강요\n예문: 수급인은 도급인의 서면 또는 구두 지시에 따른 추가 작업을 계약에 명시되지 않은 경우에도 수행할 의무가 있으며, 추가 작업에 대한 별도의 대가를 청구할 권리를 포기한다.",
+          "score": 0.04560243710875511
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-ip_total_free-04",
+          "pattern": "IP_TOTAL_FREE",
+          "category": "IP_OWNERSHIP",
+          "text": "수급인은 본 계약 업무 수행과 관련하여 창작한 2차적저작물, 편집저작물을 포함한 모든 저작물에 대해 도급인에게 저작재산권 전부를 양도하며, 도급인의 동의 없이 해당 저작물을 어떠한 방법으로도 이용할 수 없다.",
+          "rerank_text": "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 수급인은 본 계약 업무 수행과 관련하여 창작한 2차적저작물, 편집저작물을 포함한 모든 저작물에 대해 도급인에게 저작재산권 전부를 양도하며, 도급인의 동의 없이 해당 저작물을 어떠한 방법으로도 이용할 수 없다.",
+          "score": 0.017136529088020325
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-payment_delay_unfair-sub-03",
+          "pattern": "PAYMENT_DELAY_UNFAIR",
+          "category": "PAYMENT",
+          "text": "원사업자는 프로젝트 최종 완료 및 원사업자의 내부 승인 절차 완료 후 하도급대금을 지급하며, 내부 승인 기간은 원사업자가 임의로 정할 수 있고 이로 인한 지급 지연에 대해 수급사업자는 이의를 제기하지 아니한다.",
+          "rerank_text": "검토 패턴: 부당한 대금 지급 지연·지체상금 면제\n예문: 원사업자는 프로젝트 최종 완료 및 원사업자의 내부 승인 절차 완료 후 하도급대금을 지급하며, 내부 승인 기간은 원사업자가 임의로 정할 수 있고 이로 인한 지급 지연에 대해 수급사업자는 이의를 제기하지 아니한다.",
+          "score": 3.2467040000483394e-05
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "TN",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v5-sw-23",
+      "contract_type": "SW_FREELANCE",
+      "gold_patterns": [],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-ip_total_free-04",
+          "pattern": "IP_TOTAL_FREE",
+          "category": "IP_OWNERSHIP",
+          "text": "수급인은 본 계약 업무 수행과 관련하여 창작한 2차적저작물, 편집저작물을 포함한 모든 저작물에 대해 도급인에게 저작재산권 전부를 양도하며, 도급인의 동의 없이 해당 저작물을 어떠한 방법으로도 이용할 수 없다.",
+          "rerank_text": "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 수급인은 본 계약 업무 수행과 관련하여 창작한 2차적저작물, 편집저작물을 포함한 모든 저작물에 대해 도급인에게 저작재산권 전부를 양도하며, 도급인의 동의 없이 해당 저작물을 어떠한 방법으로도 이용할 수 없다.",
+          "score": 1.4698976883664727e-05
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unpaid_additional_work-02",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "category": "SCOPE_SOW",
+          "text": "수급인은 도급인의 서면 또는 구두 지시에 따른 추가 작업을 계약에 명시되지 않은 경우에도 수행할 의무가 있으며, 추가 작업에 대한 별도의 대가를 청구할 권리를 포기한다.",
+          "rerank_text": "검토 패턴: 추가 업무 지시 시 무상 수행 강요\n예문: 수급인은 도급인의 서면 또는 구두 지시에 따른 추가 작업을 계약에 명시되지 않은 경우에도 수행할 의무가 있으며, 추가 작업에 대한 별도의 대가를 청구할 권리를 포기한다.",
+          "score": 1.385174982715398e-05
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-unpaid_additional_work-05",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "category": "SCOPE_SOW",
+          "text": "발주자 또는 도급인의 요구 사항 변경에 따라 수급인이 수행하는 추가 작업 및 재작업에 대해 도급인은 별도의 대가를 지급하지 아니하며, 수급인은 이를 납품 의무의 일환으로 수행한다.",
+          "rerank_text": "검토 패턴: 추가 업무 지시 시 무상 수행 강요\n예문: 발주자 또는 도급인의 요구 사항 변경에 따라 수급인이 수행하는 추가 작업 및 재작업에 대해 도급인은 별도의 대가를 지급하지 아니하며, 수급인은 이를 납품 의무의 일환으로 수행한다.",
+          "score": 1.2537574548332486e-05
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "TN",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v5-sw-24",
+      "contract_type": "SW_FREELANCE",
+      "gold_patterns": [],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-ip_total_free-04",
+          "pattern": "IP_TOTAL_FREE",
+          "category": "IP_OWNERSHIP",
+          "text": "수급인은 본 계약 업무 수행과 관련하여 창작한 2차적저작물, 편집저작물을 포함한 모든 저작물에 대해 도급인에게 저작재산권 전부를 양도하며, 도급인의 동의 없이 해당 저작물을 어떠한 방법으로도 이용할 수 없다.",
+          "rerank_text": "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 수급인은 본 계약 업무 수행과 관련하여 창작한 2차적저작물, 편집저작물을 포함한 모든 저작물에 대해 도급인에게 저작재산권 전부를 양도하며, 도급인의 동의 없이 해당 저작물을 어떠한 방법으로도 이용할 수 없다.",
+          "score": 0.0005155577673576772
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unpaid_additional_work-02",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "category": "SCOPE_SOW",
+          "text": "수급인은 도급인의 서면 또는 구두 지시에 따른 추가 작업을 계약에 명시되지 않은 경우에도 수행할 의무가 있으며, 추가 작업에 대한 별도의 대가를 청구할 권리를 포기한다.",
+          "rerank_text": "검토 패턴: 추가 업무 지시 시 무상 수행 강요\n예문: 수급인은 도급인의 서면 또는 구두 지시에 따른 추가 작업을 계약에 명시되지 않은 경우에도 수행할 의무가 있으며, 추가 작업에 대한 별도의 대가를 청구할 권리를 포기한다.",
+          "score": 0.00013881392078474164
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-unpaid_additional_work-05",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "category": "SCOPE_SOW",
+          "text": "발주자 또는 도급인의 요구 사항 변경에 따라 수급인이 수행하는 추가 작업 및 재작업에 대해 도급인은 별도의 대가를 지급하지 아니하며, 수급인은 이를 납품 의무의 일환으로 수행한다.",
+          "rerank_text": "검토 패턴: 추가 업무 지시 시 무상 수행 강요\n예문: 발주자 또는 도급인의 요구 사항 변경에 따라 수급인이 수행하는 추가 작업 및 재작업에 대해 도급인은 별도의 대가를 지급하지 아니하며, 수급인은 이를 납품 의무의 일환으로 수행한다.",
+          "score": 0.00011050132889067754
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "TN",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v5-sw-25",
+      "contract_type": "SW_FREELANCE",
+      "gold_patterns": [],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-unilateral_change-01",
+          "pattern": "UNILATERAL_CHANGE",
+          "category": "SCOPE_SOW",
+          "text": "도급인은 필요에 따라 수급인과의 사전 협의 없이 업무 범위, 납기일, 산출물 규격을 변경할 수 있으며, 수급인은 추가 보수 청구 없이 이에 응하여야 한다.",
+          "rerank_text": "검토 패턴: 일방적인 과업 범위 변경 권한\n예문: 도급인은 필요에 따라 수급인과의 사전 협의 없이 업무 범위, 납기일, 산출물 규격을 변경할 수 있으며, 수급인은 추가 보수 청구 없이 이에 응하여야 한다.",
+          "score": 7.81863127485849e-06
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-payment_delay_unfair-04",
+          "pattern": "PAYMENT_DELAY_UNFAIR",
+          "category": "PAYMENT",
+          "text": "수급인의 업무 완료 후 도급인은 품질 검토를 이유로 보수 지급을 유보할 수 있으며, 검토 기간 및 최종 지급 여부는 도급인이 단독으로 결정한다. 이 기간 중 발생하는 지연에 대한 이자는 부담하지 아니한다.",
+          "rerank_text": "검토 패턴: 부당한 대금 지급 지연·지체상금 면제\n예문: 수급인의 업무 완료 후 도급인은 품질 검토를 이유로 보수 지급을 유보할 수 있으며, 검토 기간 및 최종 지급 여부는 도급인이 단독으로 결정한다. 이 기간 중 발생하는 지연에 대한 이자는 부담하지 아니한다.",
+          "score": 6.8320500759000424e-06
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-payment_delay_unfair-02",
+          "pattern": "PAYMENT_DELAY_UNFAIR",
+          "category": "PAYMENT",
+          "text": "수급인에 대한 보수 지급은 도급인이 발주자로부터 검수 완료 후 최종 대금을 수령한 날로부터 60일 이내에 하며, 발주자의 지급 지연을 이유로 수급인은 도급인에게 지연이자를 청구할 수 없다.",
+          "rerank_text": "검토 패턴: 부당한 대금 지급 지연·지체상금 면제\n예문: 수급인에 대한 보수 지급은 도급인이 발주자로부터 검수 완료 후 최종 대금을 수령한 날로부터 60일 이내에 하며, 발주자의 지급 지연을 이유로 수급인은 도급인에게 지연이자를 청구할 수 없다.",
+          "score": 5.8055065892403945e-06
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "TN",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v5-sw-26",
+      "contract_type": "SW_FREELANCE",
+      "gold_patterns": [],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-payment_delay_unfair-03",
+          "pattern": "PAYMENT_DELAY_UNFAIR",
+          "category": "PAYMENT",
+          "text": "도급인은 프로젝트 최종 완료 및 도급인의 내부 승인 절차 완료 후 보수를 지급하며, 내부 승인 기간은 도급인이 임의로 정할 수 있고 이로 인한 지급 지연에 대해 수급인은 이의를 제기하지 아니한다.",
+          "rerank_text": "검토 패턴: 부당한 대금 지급 지연·지체상금 면제\n예문: 도급인은 프로젝트 최종 완료 및 도급인의 내부 승인 절차 완료 후 보수를 지급하며, 내부 승인 기간은 도급인이 임의로 정할 수 있고 이로 인한 지급 지연에 대해 수급인은 이의를 제기하지 아니한다.",
+          "score": 1.6626843262201874e-06
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-payment_delay_unfair-02",
+          "pattern": "PAYMENT_DELAY_UNFAIR",
+          "category": "PAYMENT",
+          "text": "수급인에 대한 보수 지급은 도급인이 발주자로부터 검수 완료 후 최종 대금을 수령한 날로부터 60일 이내에 하며, 발주자의 지급 지연을 이유로 수급인은 도급인에게 지연이자를 청구할 수 없다.",
+          "rerank_text": "검토 패턴: 부당한 대금 지급 지연·지체상금 면제\n예문: 수급인에 대한 보수 지급은 도급인이 발주자로부터 검수 완료 후 최종 대금을 수령한 날로부터 60일 이내에 하며, 발주자의 지급 지연을 이유로 수급인은 도급인에게 지연이자를 청구할 수 없다.",
+          "score": 7.94708171270031e-07
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-unilateral_change-04",
+          "pattern": "UNILATERAL_CHANGE",
+          "category": "SCOPE_SOW",
+          "text": "도급인은 발주자의 요청 또는 내부 사정에 따라 계약 목적물의 기능, 성능, 규격을 계약 후에도 변경할 수 있으며, 수급인은 변경 사항을 통보받은 날로부터 3영업일 이내에 이행 계획을 제출하고 추가 비용 없이 수행한다.",
+          "rerank_text": "검토 패턴: 일방적인 과업 범위 변경 권한\n예문: 도급인은 발주자의 요청 또는 내부 사정에 따라 계약 목적물의 기능, 성능, 규격을 계약 후에도 변경할 수 있으며, 수급인은 변경 사항을 통보받은 날로부터 3영업일 이내에 이행 계획을 제출하고 추가 비용 없이 수행한다.",
+          "score": 7.520724807363877e-07
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "TN",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v5-sw-27",
+      "contract_type": "SW_FREELANCE",
+      "gold_patterns": [],
+      "predicted_patterns": [
+        "PAYMENT_DELAY_UNFAIR",
+        "UNFAIR_DAMAGE_CLAIM",
+        "UNILATERAL_INTERPRETATION"
+      ],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-unilateral_interpretation-03",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "category": "DISPUTE",
+          "text": "본 계약의 해석상 이견이 발생하는 경우 도급인의 해석을 우선 기준으로 하여 처리하며, 수급인은 이에 따라 업무를 수행하여야 한다.",
+          "rerank_text": "검토 패턴: 발주자의 일방적 계약 해석 권한\n예문: 본 계약의 해석상 이견이 발생하는 경우 도급인의 해석을 우선 기준으로 하여 처리하며, 수급인은 이에 따라 업무를 수행하여야 한다.",
+          "score": 0.9316396117210388
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unfair_damage_claim-01",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "category": "LIABILITY",
+          "text": "수급인이 납기를 지키지 못하거나 도급인이 요구한 품질 기준을 충족하지 못할 경우, 수급인은 계약 금액 상당액에 해당하는 금액을 손해배상액으로 지급하여야 한다.",
+          "rerank_text": "검토 패턴: 부당하게 과도한 손해배상 청구액 설정\n예문: 수급인이 납기를 지키지 못하거나 도급인이 요구한 품질 기준을 충족하지 못할 경우, 수급인은 계약 금액 상당액에 해당하는 금액을 손해배상액으로 지급하여야 한다.",
+          "score": 0.8457979559898376
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-payment_delay_unfair-01",
+          "pattern": "PAYMENT_DELAY_UNFAIR",
+          "category": "PAYMENT",
+          "text": "도급인은 발주자로부터 대금을 수령한 이후에 수급인에게 보수를 지급하며, 지급 시기에 관하여 어떠한 지연이자나 지체상금도 부담하지 아니한다. 도급인의 사정에 따라 지급을 무기한 연기할 수 있다.",
+          "rerank_text": "검토 패턴: 부당한 대금 지급 지연·지체상금 면제\n예문: 도급인은 발주자로부터 대금을 수령한 이후에 수급인에게 보수를 지급하며, 지급 시기에 관하여 어떠한 지연이자나 지체상금도 부담하지 아니한다. 도급인의 사정에 따라 지급을 무기한 연기할 수 있다.",
+          "score": 0.7371237277984619
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [
+          "PAYMENT_DELAY_UNFAIR",
+          "UNFAIR_DAMAGE_CLAIM",
+          "UNILATERAL_INTERPRETATION"
+        ],
+        "0.65": [
+          "PAYMENT_DELAY_UNFAIR",
+          "UNFAIR_DAMAGE_CLAIM",
+          "UNILATERAL_INTERPRETATION"
+        ],
+        "0.70": [
+          "PAYMENT_DELAY_UNFAIR",
+          "UNFAIR_DAMAGE_CLAIM",
+          "UNILATERAL_INTERPRETATION"
+        ],
+        "0.75": [
+          "UNFAIR_DAMAGE_CLAIM",
+          "UNILATERAL_INTERPRETATION"
+        ],
+        "0.80": [
+          "UNFAIR_DAMAGE_CLAIM",
+          "UNILATERAL_INTERPRETATION"
+        ],
+        "0.85": [
+          "UNILATERAL_INTERPRETATION"
+        ],
+        "0.90": [
+          "UNILATERAL_INTERPRETATION"
+        ]
+      },
+      "outcome": "FP",
+      "reason": "WRONG_PATTERN"
+    },
+    {
+      "case_id": "v5-sw-28",
+      "contract_type": "SW_FREELANCE",
+      "gold_patterns": [],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-unpaid_additional_work-05",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "category": "SCOPE_SOW",
+          "text": "발주자 또는 도급인의 요구 사항 변경에 따라 수급인이 수행하는 추가 작업 및 재작업에 대해 도급인은 별도의 대가를 지급하지 아니하며, 수급인은 이를 납품 의무의 일환으로 수행한다.",
+          "rerank_text": "검토 패턴: 추가 업무 지시 시 무상 수행 강요\n예문: 발주자 또는 도급인의 요구 사항 변경에 따라 수급인이 수행하는 추가 작업 및 재작업에 대해 도급인은 별도의 대가를 지급하지 아니하며, 수급인은 이를 납품 의무의 일환으로 수행한다.",
+          "score": 0.022472646087408066
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unilateral_change-01",
+          "pattern": "UNILATERAL_CHANGE",
+          "category": "SCOPE_SOW",
+          "text": "도급인은 필요에 따라 수급인과의 사전 협의 없이 업무 범위, 납기일, 산출물 규격을 변경할 수 있으며, 수급인은 추가 보수 청구 없이 이에 응하여야 한다.",
+          "rerank_text": "검토 패턴: 일방적인 과업 범위 변경 권한\n예문: 도급인은 필요에 따라 수급인과의 사전 협의 없이 업무 범위, 납기일, 산출물 규격을 변경할 수 있으며, 수급인은 추가 보수 청구 없이 이에 응하여야 한다.",
+          "score": 0.0003061995666939765
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-ip_total_free-05",
+          "pattern": "IP_TOTAL_FREE",
+          "category": "IP_OWNERSHIP",
+          "text": "수급인은 계약 종료 후에도 도급인이 요청하는 경우 언제든지 본 계약 결과물과 관련된 지식재산권의 이전·등록 절차에 협력하여야 하며, 이에 소요되는 비용은 수급인이 부담한다.",
+          "rerank_text": "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 수급인은 계약 종료 후에도 도급인이 요청하는 경우 언제든지 본 계약 결과물과 관련된 지식재산권의 이전·등록 절차에 협력하여야 하며, 이에 소요되는 비용은 수급인이 부담한다.",
+          "score": 0.00010521786316530779
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "TN",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v5-sw-29",
+      "contract_type": "SW_FREELANCE",
+      "gold_patterns": [],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-unpaid_additional_work-05",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "category": "SCOPE_SOW",
+          "text": "발주자 또는 도급인의 요구 사항 변경에 따라 수급인이 수행하는 추가 작업 및 재작업에 대해 도급인은 별도의 대가를 지급하지 아니하며, 수급인은 이를 납품 의무의 일환으로 수행한다.",
+          "rerank_text": "검토 패턴: 추가 업무 지시 시 무상 수행 강요\n예문: 발주자 또는 도급인의 요구 사항 변경에 따라 수급인이 수행하는 추가 작업 및 재작업에 대해 도급인은 별도의 대가를 지급하지 아니하며, 수급인은 이를 납품 의무의 일환으로 수행한다.",
+          "score": 5.323845107341185e-05
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unfair_damage_claim-01",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "category": "LIABILITY",
+          "text": "수급인이 납기를 지키지 못하거나 도급인이 요구한 품질 기준을 충족하지 못할 경우, 수급인은 계약 금액 상당액에 해당하는 금액을 손해배상액으로 지급하여야 한다.",
+          "rerank_text": "검토 패턴: 부당하게 과도한 손해배상 청구액 설정\n예문: 수급인이 납기를 지키지 못하거나 도급인이 요구한 품질 기준을 충족하지 못할 경우, 수급인은 계약 금액 상당액에 해당하는 금액을 손해배상액으로 지급하여야 한다.",
+          "score": 3.981399459007662e-06
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-unfair_damage_claim-sub-01",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "category": "LIABILITY",
+          "text": "수급사업자가 납기를 지키지 못하거나 원사업자가 요구한 품질 기준을 충족하지 못할 경우, 수급사업자는 하도급대금 상당액에 해당하는 금액을 손해배상액으로 지급하여야 한다.",
+          "rerank_text": "검토 패턴: 부당하게 과도한 손해배상 청구액 설정\n예문: 수급사업자가 납기를 지키지 못하거나 원사업자가 요구한 품질 기준을 충족하지 못할 경우, 수급사업자는 하도급대금 상당액에 해당하는 금액을 손해배상액으로 지급하여야 한다.",
+          "score": 2.8671042855421547e-06
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "TN",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v5-sw-30",
+      "contract_type": "SW_FREELANCE",
+      "gold_patterns": [],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-unilateral_change-04",
+          "pattern": "UNILATERAL_CHANGE",
+          "category": "SCOPE_SOW",
+          "text": "도급인은 발주자의 요청 또는 내부 사정에 따라 계약 목적물의 기능, 성능, 규격을 계약 후에도 변경할 수 있으며, 수급인은 변경 사항을 통보받은 날로부터 3영업일 이내에 이행 계획을 제출하고 추가 비용 없이 수행한다.",
+          "rerank_text": "검토 패턴: 일방적인 과업 범위 변경 권한\n예문: 도급인은 발주자의 요청 또는 내부 사정에 따라 계약 목적물의 기능, 성능, 규격을 계약 후에도 변경할 수 있으며, 수급인은 변경 사항을 통보받은 날로부터 3영업일 이내에 이행 계획을 제출하고 추가 비용 없이 수행한다.",
+          "score": 0.10141043365001678
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-ip_total_free-04",
+          "pattern": "IP_TOTAL_FREE",
+          "category": "IP_OWNERSHIP",
+          "text": "수급인은 본 계약 업무 수행과 관련하여 창작한 2차적저작물, 편집저작물을 포함한 모든 저작물에 대해 도급인에게 저작재산권 전부를 양도하며, 도급인의 동의 없이 해당 저작물을 어떠한 방법으로도 이용할 수 없다.",
+          "rerank_text": "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 수급인은 본 계약 업무 수행과 관련하여 창작한 2차적저작물, 편집저작물을 포함한 모든 저작물에 대해 도급인에게 저작재산권 전부를 양도하며, 도급인의 동의 없이 해당 저작물을 어떠한 방법으로도 이용할 수 없다.",
+          "score": 0.002779509173706174
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-unfair_damage_claim-01",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "category": "LIABILITY",
+          "text": "수급인이 납기를 지키지 못하거나 도급인이 요구한 품질 기준을 충족하지 못할 경우, 수급인은 계약 금액 상당액에 해당하는 금액을 손해배상액으로 지급하여야 한다.",
+          "rerank_text": "검토 패턴: 부당하게 과도한 손해배상 청구액 설정\n예문: 수급인이 납기를 지키지 못하거나 도급인이 요구한 품질 기준을 충족하지 못할 경우, 수급인은 계약 금액 상당액에 해당하는 금액을 손해배상액으로 지급하여야 한다.",
+          "score": 0.0001202939820359461
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "TN",
+      "reason": "CORRECT"
+    }
+  ]
+}

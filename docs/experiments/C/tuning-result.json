@@ -1,0 +1,409 @@
+{
+  "after": {
+    "f1": 0.625,
+    "fn": 10,
+    "fp": 2,
+    "precision": 0.8333333333333334,
+    "recall": 0.5,
+    "tn": 8,
+    "tp": 10
+  },
+  "before": {
+    "f1": 0.625,
+    "fn": 10,
+    "fp": 2,
+    "precision": 0.8333333333333334,
+    "recall": 0.5,
+    "tn": 8,
+    "tp": 10
+  },
+  "candidate_diff": [
+    {
+      "after_top3": [
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art14",
+          "rank": 1,
+          "score": 0.3678493797779083,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art14-sub01",
+          "version": null
+        },
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art2",
+          "rank": 2,
+          "score": 0.3210533857345581,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art2-sub02",
+          "version": null
+        },
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art4",
+          "rank": 3,
+          "score": 0.14207938313484192,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art4-sub01",
+          "version": null
+        }
+      ],
+      "before_top3": [
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art14",
+          "rank": 1,
+          "score": 0.3678493797779083,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art14-sub01",
+          "version": null
+        },
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art2",
+          "rank": 2,
+          "score": 0.3210519850254059,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art2-sub02",
+          "version": null
+        },
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art4",
+          "rank": 3,
+          "score": 0.14207938313484192,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art4-sub01",
+          "version": null
+        }
+      ],
+      "case_id": "v5-sw-03",
+      "rerank_text_changed": [],
+      "score_diff": [
+        {
+          "after": 0.3678493797779083,
+          "before": 0.3678493797779083,
+          "delta": 0.0
+        },
+        {
+          "after": 0.3210533857345581,
+          "before": 0.3210519850254059,
+          "delta": 1.4007091522216797e-06
+        },
+        {
+          "after": 0.14207938313484192,
+          "before": 0.14207938313484192,
+          "delta": 0.0
+        }
+      ]
+    },
+    {
+      "after_top3": [
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art17",
+          "rank": 1,
+          "score": 0.24467630684375763,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art17-sub00",
+          "version": null
+        },
+        {
+          "category": "CONFIDENTIALITY",
+          "parent_clause_id": null,
+          "rank": 2,
+          "score": 0.24266846477985382,
+          "source": "standard_clauses",
+          "standard_id": "sw_freelance-2020-art17",
+          "version": "2020"
+        },
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art17",
+          "rank": 3,
+          "score": 0.03278573974967003,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art17-sub03",
+          "version": null
+        }
+      ],
+      "before_top3": [
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art17",
+          "rank": 1,
+          "score": 0.24467630684375763,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art17-sub00",
+          "version": null
+        },
+        {
+          "category": "CONFIDENTIALITY",
+          "parent_clause_id": null,
+          "rank": 2,
+          "score": 0.24266818165779114,
+          "source": "standard_clauses",
+          "standard_id": "sw_freelance-2020-art17",
+          "version": "2020"
+        },
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art17",
+          "rank": 3,
+          "score": 0.03278573974967003,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art17-sub03",
+          "version": null
+        }
+      ],
+      "case_id": "v5-sw-15",
+      "rerank_text_changed": [],
+      "score_diff": [
+        {
+          "after": 0.24467630684375763,
+          "before": 0.24467630684375763,
+          "delta": 0.0
+        },
+        {
+          "after": 0.24266846477985382,
+          "before": 0.24266818165779114,
+          "delta": 2.8312206268310547e-07
+        },
+        {
+          "after": 0.03278573974967003,
+          "before": 0.03278573974967003,
+          "delta": 0.0
+        }
+      ]
+    },
+    {
+      "after_top3": [
+        {
+          "category": "LIABILITY",
+          "parent_clause_id": null,
+          "rank": 1,
+          "score": 0.933207631111145,
+          "source": "standard_clauses",
+          "standard_id": "sw_freelance-2020-art18",
+          "version": "2020"
+        },
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art18",
+          "rank": 2,
+          "score": 0.9332073330879211,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art18-sub00",
+          "version": null
+        },
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art19",
+          "rank": 3,
+          "score": 0.11585845053195953,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art19-sub07",
+          "version": null
+        }
+      ],
+      "before_top3": [
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art18",
+          "rank": 1,
+          "score": 0.9332073330879211,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art18-sub00",
+          "version": null
+        },
+        {
+          "category": "LIABILITY",
+          "parent_clause_id": null,
+          "rank": 2,
+          "score": 0.9332069754600525,
+          "source": "standard_clauses",
+          "standard_id": "sw_freelance-2020-art18",
+          "version": "2020"
+        },
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art19",
+          "rank": 3,
+          "score": 0.11585845053195953,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art19-sub07",
+          "version": null
+        }
+      ],
+      "case_id": "v5-sw-18",
+      "rerank_text_changed": [],
+      "score_diff": [
+        {
+          "after": 0.933207631111145,
+          "before": 0.9332073330879211,
+          "delta": 2.980232238769531e-07
+        },
+        {
+          "after": 0.9332073330879211,
+          "before": 0.9332069754600525,
+          "delta": 3.5762786865234375e-07
+        },
+        {
+          "after": 0.11585845053195953,
+          "before": 0.11585845053195953,
+          "delta": 0.0
+        }
+      ]
+    }
+  ],
+  "case_count": 30,
+  "case_matrix_sha256": "f7110c2a52a55bb74098308cadb1a2e53a4d4db11adf171cdc77593b42b56aef",
+  "decision": "폐기",
+  "experiment_id": "C",
+  "manifest_sha256": "776ee651b64d3595d0f5f1038a4483a325c846ccdf120814cfd7537e957a9aed",
+  "overmatch_taxonomy": [
+    {
+      "candidate_parent_clause_id": "sw_freelance-2020-art4",
+      "candidate_source": "standard_sub_chunks",
+      "case_id": "v5-sw-01",
+      "confidence": 0.9763206839561462,
+      "contract_type": "SW_FREELANCE",
+      "contrast_clause_id": "sw_freelance-2020-art4",
+      "matched_standard_id": "sw_freelance-2020-art4",
+      "top1_score": 0.9763206839561462,
+      "top1_top2_gap": 0.8585720881819725,
+      "top2_score": 0.11774859577417374,
+      "topic_group": "v5-sw-t01",
+      "trap": "paraphrase"
+    },
+    {
+      "candidate_parent_clause_id": "sw_freelance-2020-art20",
+      "candidate_source": "standard_sub_chunks",
+      "case_id": "v5-sw-04",
+      "confidence": 0.9990907907485962,
+      "contract_type": "SW_FREELANCE",
+      "contrast_clause_id": "sw_freelance-2020-art20",
+      "matched_standard_id": "sw_freelance-2020-art20",
+      "top1_score": 0.9990907907485962,
+      "top1_top2_gap": 0.8896050155162811,
+      "top2_score": 0.10948577523231506,
+      "topic_group": "v5-sw-t02",
+      "trap": "number"
+    },
+    {
+      "candidate_parent_clause_id": "sw_freelance-2020-art20",
+      "candidate_source": "standard_sub_chunks",
+      "case_id": "v5-sw-05",
+      "confidence": 0.8539405465126038,
+      "contract_type": "SW_FREELANCE",
+      "contrast_clause_id": "sw_freelance-2020-art20",
+      "matched_standard_id": "sw_freelance-2020-art20",
+      "top1_score": 0.8539405465126038,
+      "top1_top2_gap": 0.8537882530508796,
+      "top2_score": 0.00015229346172418445,
+      "topic_group": "v5-sw-t02",
+      "trap": "negation"
+    },
+    {
+      "candidate_parent_clause_id": null,
+      "candidate_source": "standard_clauses",
+      "case_id": "v5-sw-07",
+      "confidence": 0.8912804126739502,
+      "contract_type": "SW_FREELANCE",
+      "contrast_clause_id": "sw_freelance-2020-art6",
+      "matched_standard_id": "sw_freelance-2020-art6",
+      "top1_score": 0.8912804126739502,
+      "top1_top2_gap": 0.7154606878757477,
+      "top2_score": 0.17581972479820251,
+      "topic_group": "v5-sw-t03",
+      "trap": "contradiction"
+    },
+    {
+      "candidate_parent_clause_id": null,
+      "candidate_source": "standard_clauses",
+      "case_id": "v5-sw-10",
+      "confidence": 0.9960030913352966,
+      "contract_type": "SW_FREELANCE",
+      "contrast_clause_id": "sw_freelance-2020-art16",
+      "matched_standard_id": "sw_freelance-2020-art16",
+      "top1_score": 0.9960030913352966,
+      "top1_top2_gap": 0.0011934638023376465,
+      "top2_score": 0.994809627532959,
+      "topic_group": "v5-sw-t04",
+      "trap": "reorder"
+    },
+    {
+      "candidate_parent_clause_id": "sw_freelance-2020-art16",
+      "candidate_source": "standard_sub_chunks",
+      "case_id": "v5-sw-11",
+      "confidence": 0.995991051197052,
+      "contract_type": "SW_FREELANCE",
+      "contrast_clause_id": "sw_freelance-2020-art16",
+      "matched_standard_id": "sw_freelance-2020-art16",
+      "top1_score": 0.995991051197052,
+      "top1_top2_gap": 0.9959543403783755,
+      "top2_score": 3.6710818676510826e-05,
+      "topic_group": "v5-sw-t04",
+      "trap": "number"
+    },
+    {
+      "candidate_parent_clause_id": null,
+      "candidate_source": "standard_clauses",
+      "case_id": "v5-sw-13",
+      "confidence": 0.9507372975349426,
+      "contract_type": "SW_FREELANCE",
+      "contrast_clause_id": "sw_freelance-2020-art17",
+      "matched_standard_id": "sw_freelance-2020-art17",
+      "top1_score": 0.9507372975349426,
+      "top1_top2_gap": 0.9364802399650216,
+      "top2_score": 0.014257057569921017,
+      "topic_group": "v5-sw-t05",
+      "trap": "party"
+    },
+    {
+      "candidate_parent_clause_id": "sw_freelance-2020-art21",
+      "candidate_source": "standard_sub_chunks",
+      "case_id": "v5-sw-19",
+      "confidence": 0.679970383644104,
+      "contract_type": "SW_FREELANCE",
+      "contrast_clause_id": "sw_freelance-2020-art21",
+      "matched_standard_id": "sw_freelance-2020-art21",
+      "top1_score": 0.679970383644104,
+      "top1_top2_gap": 1.8477439880371094e-06,
+      "top2_score": 0.679968535900116,
+      "topic_group": "v5-sw-t07",
+      "trap": "negation"
+    },
+    {
+      "candidate_parent_clause_id": null,
+      "candidate_source": "standard_clauses",
+      "case_id": "v5-sw-22",
+      "confidence": 0.9999973773956299,
+      "contract_type": "SW_FREELANCE",
+      "contrast_clause_id": "sw_freelance-2020-art15",
+      "matched_standard_id": "sw_freelance-2020-art15",
+      "top1_score": 0.9999973773956299,
+      "top1_top2_gap": 0.0,
+      "top2_score": 0.9999973773956299,
+      "topic_group": "v5-sw-t08",
+      "trap": "paraphrase"
+    },
+    {
+      "candidate_parent_clause_id": "sw_freelance-2020-art10",
+      "candidate_source": "standard_sub_chunks",
+      "case_id": "v5-sw-28",
+      "confidence": 0.5460959076881409,
+      "contract_type": "SW_FREELANCE",
+      "contrast_clause_id": "sw_freelance-2020-art11",
+      "matched_standard_id": "sw_freelance-2020-art10",
+      "top1_score": 0.5460959076881409,
+      "top1_top2_gap": 0.5180572923272848,
+      "top2_score": 0.028038615360856056,
+      "topic_group": "v5-sw-t10",
+      "trap": "contradiction"
+    }
+  ],
+  "passed": false,
+  "split": "tuning",
+  "version": "v5"
+}
