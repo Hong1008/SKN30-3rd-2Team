@@ -7,6 +7,19 @@
 - `heldout-result.json` / `.md`: 승인된 18건 결과
 - `heldout-run.json`: 성공한 held-out 실행의 단회 불변 기록
 
+## 2026-07-13 tuning 판정
+
+실험 S의 제목 접두 후보는 tuning 36건에서 기준을 충족하지 못해 **폐기**했다.
+
+| 구분 | TP | FP | FN | TN | F1 |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 기준선 | 9 | 5 | 9 | 13 | 0.563 |
+| 후보 | 6 | 2 | 12 | 16 | 0.462 |
+
+- FN 통과 기준(7 이하)과 F1 통과 기준(0.563 초과)을 모두 충족하지 못했다.
+- `heldout-result.*`, `heldout-run.json`, `approval.json`은 만들지 않는다. 동결 held-out은 소비하지 않는다.
+- `tuning-result.*` 및 같은 실행에서 생성된 `v4_result.*`·`v4_diagnostics.*`는 폐기 근거로 보존한다.
+
 재현 명령:
 
 ```bash
@@ -18,7 +31,7 @@ just eval-s held-out prod docs/experiments/S/approval.json
 
 1. 거버넌스 구현 변경을 먼저 커밋한다.
 2. clean 상태에서 `just eval-s tuning prod`를 실행한다.
-3. 생성된 `tuning-result.*`와 사람이 작성한 `approval.json`을 함께 커밋한다.
+3. tuning이 통과한 경우에만 생성된 `tuning-result.*`와 사람이 작성한 `approval.json`을 함께 커밋한다.
 4. clean 상태를 확인한 뒤 held-out 명령을 실행한다.
 
 `tuning` 실행은 결과 파일을 생성해 작업 트리를 변경한다. 따라서 tuning 직후 승인 파일만
