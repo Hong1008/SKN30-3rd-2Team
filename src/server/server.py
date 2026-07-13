@@ -337,15 +337,36 @@ async def review_contract(
     ctx: Context = None,
 ) -> ReviewContractResponse:
     """
-    계약서 파일 전체를 검토합니다. 파싱 → 표준조항 매칭 → 이탈 분류 → 법령 근거 부착 순으로 실행합니다.
+    계약서 파일 전체를 파싱하고 표준 대비 결과와 독소 신호를 함께 반환합니다.
     조항이 많은 계약서는 처리에 시간이 걸릴 수 있습니다(전체 조항을 배치로 검색·재정렬).
 
-    결과의 각 항목은 "이탈 검토 후보"입니다 — MISSING/EXTRA/NONE 판정 자체가 "위법/불리함"을
-    단정하는 것은 아니며, 표준조항과의 기계적 차이를 표시할 뿐입니다. 사용자에게 전달할 때도
-    이 프레이밍(검토 후보)을 유지하세요.
+    각 사용자 조항은 두 독립 축으로 검토합니다.
+
+    1. deviation: 표준조항 대비 대응·이탈·누락 신호(NO_MATCH/EXTRA/NONE/MISSING)
+    2. toxic_patterns: 매칭 성패와 무관하게 독소 패턴 코퍼스를 역방향 검색한 신호
+
+    두 축은 다음처럼 함께 해석합니다.
+
+    | 표준 대비 결과 | 독소 신호 | 의미 |
+    | --- | --- | --- |
+    | EXTRA | 있음 | 표준 대응이 약하고 독소 패턴과도 유사 |
+    | EXTRA | 없음 | 비표준 추가·변형이지만 알려진 독소 패턴 신호는 없음 |
+    | NONE | 있음 | 표준 주제에는 대응하지만 내부 문구 일부가 독소 패턴과 유사 |
+    | NONE | 없음 | 표준 주제 대응, 독소 신호도 없음 |
+
+    빈 목록은 다음처럼 해석합니다.
+
+    - toxic_patterns=[]: 임계값 이상의 알려진 패턴을 찾지 못했다는 뜻이며 안전·합법 판정이 아닙니다.
+    - grounding=[]: 관련 법령이 없다는 뜻이 아닙니다. 1차는 주로 MISSING에만 정적 근거를 부착합니다.
+    - results=[]: "문제 없음"이 아니라 status가 EMPTY_DOCUMENT, CORPUS_UNAVAILABLE,
+      INVALID_CONFIG, PIPELINE_ERROR인지 먼저 확인해야 합니다.
+
+    MISSING은 계약서 전체에서 표준조항이 누락된 후보이며 user_clause가 빈 문자열입니다.
+    모든 결과는 검토 후보이며 위법·합법, 유불리, 승소 가능성을 단정하지 않습니다.
 
     특정 조항 한두 개만 빠르게 보고 싶다면 이 도구 대신 parse_contract 로 조항을 나눈 뒤
-    classify_clause 를 개별 호출하는 편이 더 빠릅니다.
+    classify_clause 를 개별 호출하면 빠릅니다. 단, classify_clause는 독소 패턴을 검색하지
+    않으므로 독소 신호까지 필요하면 review_contract를 사용하세요.
 
     Args:
         contract_type: 계약 종류. 가능한 값은 list_contract_types 로 조회하세요.
@@ -465,8 +486,10 @@ def classify_clause(
 
     MISSING은 이 도구로 나오지 않습니다. MISSING은 "표준조항이 계약서 전체에 없다"는 뜻이라
     조항 하나만으로는 판정할 수 없고, review_contract 로 전체를 봐야 발견됩니다.
+    또한 이 도구는 독소 패턴 검색을 수행하지 않습니다. toxic_patterns가 필요하면
+    review_contract를 사용하세요. 법령 조회도 수행하지 않아 grounding은 항상 빈 목록입니다.
     반환되는 deviation은 표준 대비 기계적 차이를 나타내는 "검토 후보" 표식이며, 위법 여부나
-    유불리를 단정하지 않습니다.
+    유불리를 단정하지 않습니다. grounding=[]도 관련 법령이 없다는 뜻이 아닙니다.
 
     Args:
         clause_text: 판정할 사용자 조항 본문 텍스트
