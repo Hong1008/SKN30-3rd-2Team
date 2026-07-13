@@ -1,0 +1,10 @@
+{
+  "experiment_id": "C",
+  "baseline_commit": "6c3c8602d0a9d78188a9c5f33ffaba627df99af4",
+  "runtime_tree_sha": "570e93b02d2d518ceeeff5ca3108172c2878c179",
+  "manifest_sha256": "776ee651b64d3595d0f5f1038a4483a325c846ccdf120814cfd7537e957a9aed",
+  "tuning_report_sha256": "e63a8a993be8fed9e2da3a7707cacc2c2a1a31420ecbbdc7c1f68bb6365f4711",
+  "approved_by": "hong",
+  "approved_at": "2026-07-13T11:59:28+09:00",
+  "allowed_split": "held-out"
+}
