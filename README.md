@@ -8,7 +8,7 @@ WorkShield는 사용자가 받은 계약서를 정부·공공기관 표준계약
 
 | 한눈에 보기 | 내용 |
 | --- | --- |
-| 입력 | HWP/HWPX/PDF/DOCX 등 계약서 |
+| 입력 | HWP 3.x/5.x, HWPX, HWPML, PDF, XLS, XLSX, DOCX 계약서 |
 | 비교 단위 | 계약서의 `제N조` 조항 ↔ 계약 유형별 표준조항 |
 | 1차 결과 | `NONE` · `EXTRA` · `MISSING` · `NO_MATCH` |
 | 1차 실행 | LLM 없이 hybrid 검색 · rerank · 결정론 규칙 |

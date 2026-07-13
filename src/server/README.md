@@ -90,6 +90,8 @@ just run-mcp-ui                      # MCP Inspector
 
 - 로컬 stdio 환경에서는 `file_path`를, 네트워크 환경에서는 base64 `file_content`와 `file_name`을
   함께 전달합니다. 두 입력 방식은 동시에 사용할 수 없습니다.
+- 원본 파일은 `HWP`(3.x/5.x), `HWPX`, `HWPML`, `PDF`, `XLS`, `XLSX`, `DOCX`만 지원합니다.
+  확장자는 대소문자를 구분하지 않으며, 다른 형식 또는 확장자 없는 파일은 파싱 전에 명시적으로 거절됩니다.
 - 지원 유형은 하드코딩하지 말고 `list_contract_types`로 조회합니다.
 - `review_contract`의 `results`는 표준 대비 검토 후보입니다. `NONE`, `EXTRA`, `MISSING`,
   `NO_MATCH` 및 `toxic_patterns`는 위법·합법이나 유불리를 단정하지 않습니다.

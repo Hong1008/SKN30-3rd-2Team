@@ -40,6 +40,30 @@ logger = logging.getLogger(__name__)
 # (data/README.md, .gitignore: 사용자 업로드 임시 파일 전용 디렉터리)
 _UPLOAD_DIR = BASE_DIR / "data" / "99_uploads"
 
+# kordoc 파서에 전달할 수 있는 계약서 원본 형식이다. 확장자 비교는 대소문자를 구분하지 않는다.
+_SUPPORTED_CONTRACT_FILE_SUFFIXES = frozenset({
+    ".hwp",
+    ".hwpx",
+    ".hwpml",
+    ".pdf",
+    ".xls",
+    ".xlsx",
+    ".docx",
+})
+
+
+def _validate_contract_file_suffix(file_name: str) -> None:
+    """계약서 파일명이 kordoc 지원 확장자를 사용하는지 확인한다."""
+    suffix = Path(file_name).suffix.lower()
+    if suffix in _SUPPORTED_CONTRACT_FILE_SUFFIXES:
+        return
+
+    received = suffix or "확장자 없음"
+    supported = ", ".join(item.removeprefix(".").upper() for item in sorted(_SUPPORTED_CONTRACT_FILE_SUFFIXES))
+    raise ValueError(
+        f"지원하지 않는 파일 형식: '{received}'. 지원 형식: {supported}."
+    )
+
 
 def _resolve_contract_file(
     file_path: Optional[str], file_content: Optional[str], file_name: Optional[str]
@@ -52,12 +76,15 @@ def _resolve_contract_file(
     if file_path and (file_content or file_name):
         raise ValueError("file_path와 file_content/file_name은 동시에 지정할 수 없습니다.")
     if file_path:
+        _validate_contract_file_suffix(file_path)
         return file_path, None
     if not file_content or not file_name:
         raise ValueError(
             "file_path 또는 (file_content, file_name) 조합 중 하나를 입력해야 합니다. "
             "file_content는 base64 인코딩된 파일 바이트, file_name은 확장자 판별용 원본 파일명입니다."
         )
+
+    _validate_contract_file_suffix(file_name)
 
     try:
         raw = base64.b64decode(file_content, validate=True)
@@ -76,16 +103,16 @@ def parse_contract(
     contract_type: Optional[str] = None,
 ) -> ParseContractResponse:
     """
-    계약서 파일(HWP/PDF)을 조항 단위로 분해하여 반환합니다. 검토 파이프라인의 1단계이며,
+    계약서 파일(HWP/HWPX/HWPML/PDF/XLS/XLSX/DOCX)을 조항 단위로 분해하여 반환합니다. 검토 파이프라인의 1단계이며,
     이 결과를 사람이 조항을 골라 match_clause/classify_clause 로 부분 검토하는 데도 쓸 수 있습니다.
 
     이탈 판정은 하지 않습니다 — 조항 분해만 수행합니다. 판정이 필요하면 review_contract 또는
     classify_clause 를 이어서 호출하세요.
 
     Args:
-        file_path: 분석할 계약서 파일의 절대 경로 (서버와 파일시스템을 공유할 때만 사용 가능. 로컬 stdio 배포용)
+        file_path: 지원 형식의 분석할 계약서 절대 경로 (서버와 파일시스템을 공유할 때만 사용 가능. 로컬 stdio 배포용)
         file_content: base64 인코딩된 계약서 파일 바이트 (네트워크 배포용). file_name과 함께 지정해야 함.
-        file_name: 원본 파일명 (확장자 판별용). file_content와 함께 지정해야 함.
+        file_name: 원본 파일명 (HWP/HWPX/HWPML/PDF/XLS/XLSX/DOCX 확장자 판별용). file_content와 함께 지정해야 함.
         contract_type: 계약 종류 컨텍스트. 생략 가능. 가능한 값은 list_contract_types 로 조회하세요
             (하드코딩 금지 — 값 집합이 바뀔 수 있음).
     """
@@ -135,9 +162,9 @@ def assess_contract_scope(
     review_contract를 계속 호출할 수 있습니다.
 
     Args:
-        file_path: 분석할 계약서 절대 경로(로컬 stdio 환경용).
+        file_path: 지원 형식의 분석할 계약서 절대 경로(로컬 stdio 환경용).
         file_content: base64 인코딩 계약서 바이트(네트워크 환경용).
-        file_name: file_content와 함께 쓰는 원본 파일명.
+        file_name: file_content와 함께 쓰는 HWP/HWPX/HWPML/PDF/XLS/XLSX/DOCX 원본 파일명.
     """
     resolved_path, temp_path = _resolve_contract_file(file_path, file_content, file_name)
     try:
@@ -379,9 +406,9 @@ async def review_contract(
         contract_type: 비교 기준으로 쓸 계약 종류. 가능한 값은 list_contract_types 로 조회하세요.
             첨부 문서와의 일치는 자동 검증하지 않으므로, 유형이 불명확하면 먼저
             assess_contract_scope를 호출하세요.
-        file_path: 검토할 계약서 파일의 절대 경로 (서버와 파일시스템을 공유할 때만 사용 가능. 로컬 stdio 배포용)
+        file_path: 지원 형식의 검토할 계약서 절대 경로 (서버와 파일시스템을 공유할 때만 사용 가능. 로컬 stdio 배포용)
         file_content: base64 인코딩된 계약서 파일 바이트 (네트워크 배포용). file_name과 함께 지정해야 함.
-        file_name: 원본 파일명 (확장자 판별용). file_content와 함께 지정해야 함.
+        file_name: 원본 파일명 (HWP/HWPX/HWPML/PDF/XLS/XLSX/DOCX 확장자 판별용). file_content와 함께 지정해야 함.
         ctx: MCP 실행 컨텍스트 (실시간 progress 보고용)
     """
     try:
