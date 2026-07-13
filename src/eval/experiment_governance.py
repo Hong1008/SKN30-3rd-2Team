@@ -102,10 +102,14 @@ def passed(scores: dict[str, float | int], config: ExperimentConfig, split: str)
 
 def validate_approval(
     approval: dict[str, Any], *, config: ExperimentConfig, manifest_sha256: str,
-    tuning_report_sha256: str, code_commit: str, allowed_split: str = "held-out",
+    tuning_report_sha256: str, runtime_tree_sha: str, allowed_split: str = "held-out",
 ) -> None:
-    """승인 파일이 실험 설정·입력 해시·코드 커밋과 일치하는지 검증합니다."""
-    required = {"experiment_id", "baseline_commit", "code_commit", "manifest_sha256", "tuning_report_sha256", "approved_by", "approved_at", "allowed_split"}
+    """승인 파일이 실험 설정·입력 해시·런타임 코드 트리와 일치하는지 검증합니다.
+
+    approval 파일을 커밋하면 HEAD 자체는 바뀌므로, 전체 커밋 해시 대신 ``HEAD:src`` Git tree
+    해시를 비교한다. 문서·승인 파일만 커밋한 경우는 허용하고 런타임 코드를 바꾼 경우는 막는다.
+    """
+    required = {"experiment_id", "baseline_commit", "runtime_tree_sha", "manifest_sha256", "tuning_report_sha256", "approved_by", "approved_at", "allowed_split"}
     missing = required - approval.keys()
     if missing:
         raise ValueError(f"승인 파일 필드 누락: {sorted(missing)}")
@@ -119,8 +123,8 @@ def validate_approval(
         raise ValueError("승인 파일의 기준선 커밋이 동결 설정과 다릅니다.")
     if approval["manifest_sha256"] != manifest_sha256 or approval["tuning_report_sha256"] != tuning_report_sha256:
         raise ValueError("승인 파일과 입력 산출물 해시가 다릅니다.")
-    if approval["code_commit"] != code_commit:
-        raise ValueError("승인 파일과 현재 코드 커밋 식별자가 다릅니다.")
+    if approval["runtime_tree_sha"] != runtime_tree_sha:
+        raise ValueError("승인 파일과 현재 런타임 코드 트리 해시가 다릅니다.")
 
 
 def validate_approval_repository_state(approval_path: str | Path, *, repo_root: str | Path, baseline_commit: str) -> None:

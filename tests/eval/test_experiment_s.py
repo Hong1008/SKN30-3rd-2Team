@@ -31,14 +31,14 @@ def test_승인_파일은_입력_해시와_코드_식별자를_검증한다():
     from eval.experiment_s import validate_approval
 
     approval = {
-        "experiment_id": "S", "baseline_commit": "base", "code_commit": "code",
+        "experiment_id": "S", "baseline_commit": "base", "runtime_tree_sha": "tree",
         "manifest_sha256": "manifest", "tuning_report_sha256": "tuning",
         "approved_by": "reviewer", "approved_at": "2026-07-13T00:00:00+09:00",
         "allowed_split": "held-out",
     }
-    validate_approval(approval, manifest_sha256="manifest", tuning_report_sha256="tuning", code_commit="code")
+    validate_approval(approval, manifest_sha256="manifest", tuning_report_sha256="tuning", runtime_tree_sha="tree")
     with pytest.raises(ValueError, match="해시"):
-        validate_approval(approval, manifest_sha256="other", tuning_report_sha256="tuning", code_commit="code")
+        validate_approval(approval, manifest_sha256="other", tuning_report_sha256="tuning", runtime_tree_sha="tree")
 
 
 def test_tuning_heldout_통과_조건은_엄격한_초과를_사용한다():
@@ -93,7 +93,7 @@ def test_heldout_평가_전에_예약하고_실패_상태를_남긴다(monkeypat
     approval.write_text("{}", encoding="utf-8")
     monkeypatch.setattr(run_eval, "validate_approval_repository_state", lambda *_args, **_kwargs: None)
     monkeypatch.setattr(run_eval, "validate_approval", lambda *_args, **_kwargs: None)
-    monkeypatch.setattr(run_eval, "_git_commit", lambda: "code")
+    monkeypatch.setattr(run_eval, "_git_runtime_tree", lambda: "tree")
     monkeypatch.setattr(run_eval, "_run_track_a", lambda *args, **kwargs: (_ for _ in ()).throw(RuntimeError("boom")))
 
     with pytest.raises(RuntimeError, match="boom"):

@@ -230,9 +230,15 @@ def write_taxonomy(path: str | Path, rows: list[dict[str, Any]]) -> str:
     return str(destination)
 
 
-def validate_c_approval(approval: dict[str, Any], *, manifest_sha256: str, tuning_report_sha256: str, code_commit: str) -> None:
+def validate_c_approval(
+    approval: dict[str, Any], *, manifest_sha256: str, tuning_report_sha256: str,
+    runtime_tree_sha: str,
+) -> None:
     """C 전용 설정으로 공통 승인 게이트를 적용합니다."""
-    validate_approval(approval, config=EXPERIMENT_C, manifest_sha256=manifest_sha256, tuning_report_sha256=tuning_report_sha256, code_commit=code_commit)
+    validate_approval(
+        approval, config=EXPERIMENT_C, manifest_sha256=manifest_sha256,
+        tuning_report_sha256=tuning_report_sha256, runtime_tree_sha=runtime_tree_sha,
+    )
 
 
 __all__ = ["EXPERIMENT_C", "MANIFEST_PATH", "CASE_MATRIX_PATH", "BASELINE_DIAGNOSTICS_PATH", "BASELINE_PATH", "split_sw_cases", "is_overmatch", "classify_overmatch", "build_candidate_comparison", "write_candidate_comparison", "prepare_candidate_diagnostics", "taxonomy_summary", "write_taxonomy", "validate_baseline_inputs", "validate_c_approval"]

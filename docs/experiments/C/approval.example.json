@@ -1,7 +1,7 @@
 {
   "experiment_id": "C",
   "baseline_commit": "<v5 C 기준선 커밋>",
-  "code_commit": "<tuning 통과 후 held-out 실행 코드 커밋>",
+  "runtime_tree_sha": "<git rev-parse HEAD:src 결과>",
   "manifest_sha256": "<src/eval/golden/threshold_heldout.v5.json SHA-256>",
   "tuning_report_sha256": "<docs/experiments/C/tuning-result.json SHA-256>",
   "approved_by": "<승인자>",

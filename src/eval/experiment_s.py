@@ -80,7 +80,7 @@ def heldout_passed(scores: dict[str, float | int]) -> bool:
 
 def validate_approval(
     approval: dict[str, Any], *, manifest_sha256: str, tuning_report_sha256: str,
-    code_commit: str, allowed_split: str = "held-out",
+    runtime_tree_sha: str, allowed_split: str = "held-out",
     expected_baseline_commit: str | None = None,
 ) -> None:
     """사전 승인 파일이 현재 실행 입력과 정확히 일치하는지 검증합니다."""
@@ -89,7 +89,7 @@ def validate_approval(
     )
     _generic_validate_approval(
         approval, config=config, manifest_sha256=manifest_sha256,
-        tuning_report_sha256=tuning_report_sha256, code_commit=code_commit,
+        tuning_report_sha256=tuning_report_sha256, runtime_tree_sha=runtime_tree_sha,
         allowed_split=allowed_split,
     )
 

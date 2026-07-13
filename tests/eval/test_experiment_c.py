@@ -80,14 +80,14 @@ def test_c_승인_파일은_실험_ID와_기준선_커밋을_검증한다():
 
     approval = {
         "experiment_id": "C", "baseline_commit": EXPERIMENT_C.baseline_commit,
-        "code_commit": "code", "manifest_sha256": "manifest",
+        "runtime_tree_sha": "tree", "manifest_sha256": "manifest",
         "tuning_report_sha256": "tuning", "approved_by": "reviewer",
         "approved_at": "2026-07-13T00:00:00+09:00", "allowed_split": "held-out",
     }
-    validate_c_approval(approval, manifest_sha256="manifest", tuning_report_sha256="tuning", code_commit="code")
+    validate_c_approval(approval, manifest_sha256="manifest", tuning_report_sha256="tuning", runtime_tree_sha="tree")
     approval["experiment_id"] = "S"
     with pytest.raises(ValueError, match="experiment_id"):
-        validate_c_approval(approval, manifest_sha256="manifest", tuning_report_sha256="tuning", code_commit="code")
+        validate_c_approval(approval, manifest_sha256="manifest", tuning_report_sha256="tuning", runtime_tree_sha="tree")
 
 
 def test_c_tuning_실행_경로는_판정하고_결과와_taxonomy를_쓴다(monkeypatch, tmp_path):
@@ -137,7 +137,7 @@ def test_c_heldout_실패는_예약을_남기고_재실행을_막는다(monkeypa
     monkeypatch.setattr(run_eval, "_load_golden", lambda _version: cases)
     monkeypatch.setattr(run_eval, "validate_generic_approval_repository_state", lambda *_args, **_kwargs: None)
     monkeypatch.setattr(run_eval, "validate_c_approval", lambda *_args, **_kwargs: None)
-    monkeypatch.setattr(run_eval, "_git_commit", lambda: "code")
+    monkeypatch.setattr(run_eval, "_git_runtime_tree", lambda: "tree")
     monkeypatch.setattr(run_eval, "_run_track_a", lambda **_kwargs: (_ for _ in ()).throw(RuntimeError("boom")))
 
     with pytest.raises(RuntimeError, match="boom"):

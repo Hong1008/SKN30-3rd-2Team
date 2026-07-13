@@ -815,9 +815,9 @@ def _run_track_a(
     }
 
 
-def _git_commit() -> str:
-    """현재 코드 식별자를 반환합니다."""
-    return subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
+def _git_runtime_tree() -> str:
+    """현재 런타임 소스 트리(``HEAD:src``) 식별자를 반환합니다."""
+    return subprocess.check_output(["git", "rev-parse", "HEAD:src"], text=True).strip()
 
 
 def _toxic_summary(report: Dict[str, Any]) -> Dict[str, float]:
@@ -890,7 +890,7 @@ def _run_experiment_s(
         validate_approval_repository_state(approval_file)
         validate_approval(
             approval, manifest_sha256=sha256_file(EXPERIMENT_S_MANIFEST),
-            tuning_report_sha256=sha256_file(tuning_path), code_commit=_git_commit(),
+            tuning_report_sha256=sha256_file(tuning_path), runtime_tree_sha=_git_runtime_tree(),
             expected_baseline_commit=BASELINE_COMMIT,
         )
         tuning_payload = json.loads(tuning_path.read_text(encoding="utf-8"))
@@ -987,7 +987,7 @@ def _run_experiment_c(
         validate_generic_approval_repository_state(approval_file, repo_root=".", baseline_commit=EXPERIMENT_C.baseline_commit)
         validate_c_approval(
             approval, manifest_sha256=sha256_file(EXPERIMENT_C_MANIFEST),
-            tuning_report_sha256=sha256_file(tuning_path), code_commit=_git_commit(),
+            tuning_report_sha256=sha256_file(tuning_path), runtime_tree_sha=_git_runtime_tree(),
         )
         if not json.loads(tuning_path.read_text(encoding="utf-8")).get("passed"):
             raise ValueError("C tuning 통과 결과가 없어 held-out을 실행할 수 없습니다.")
