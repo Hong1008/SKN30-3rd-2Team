@@ -28,22 +28,6 @@ def select_best_match(
     return max(candidates, key=lambda c: c[1])
 
 
-def has_conflicting_parent_candidates(
-    standard_candidate: Optional[StandardClause],
-    sub_chunk_parent_candidate: Optional[StandardClause],
-) -> bool:
-    """표준 조항 후보와 서브청크 부모 후보가 다른 조항인지 확인합니다.
-
-    두 검색 경로가 모두 후보를 냈는데 부모 조항이 다르면, 어느 하나를 1차의 잠정 NONE으로
-    확정하기보다 EXTRA 검토 후보로 보수 처리합니다. 이 함수는 후보 ID만 비교하며 점수·I/O·
-    법적 해석을 포함하지 않습니다.
-    """
-    return (
-        standard_candidate is not None
-        and sub_chunk_parent_candidate is not None
-        and standard_candidate.clause_id != sub_chunk_parent_candidate.clause_id
-    )
-
 def roll_up_sub_chunks(
     sub_chunk_results: List[Tuple[str, float]]
 ) -> Tuple[Optional[str], float]:
@@ -78,4 +62,3 @@ def roll_up_sub_chunks(
     # 가장 높은 점수를 가진 부모 조항 선정
     best_parent_id = max(parent_max_scores, key=parent_max_scores.get)
     return best_parent_id, parent_max_scores[best_parent_id]
-

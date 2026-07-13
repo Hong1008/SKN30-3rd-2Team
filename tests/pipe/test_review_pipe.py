@@ -232,14 +232,14 @@ def test_서브청크_rollup으로_부모조항_매칭():
     assert matched and matched[0].deviation != Deviation.NO_MATCH
 
 
-def test_표준조항과_서브청크부모가_충돌하면_EXTRA_검토후보():
+def test_표준조항과_서브청크부모가_충돌해도_기준선_판정을_유지한다():
+    """보류된 C1 실험 규칙은 기본 런타임의 판정을 바꾸지 않는다."""
     clause = Clause(idx=1, num="제20조", title="지식재산권", text=ART20.text)
 
     results = _review([clause], retriever=FakeConflictingParentRetriever())
 
     target = next(result for result in results if result.user_clause == clause.text)
-    assert target.deviation == Deviation.EXTRA
-    # 최고 표준 후보는 유지해 2차가 비교 근거로 사용할 수 있게 한다.
+    assert target.deviation == Deviation.NONE
     assert target.matched_standard is not None
     assert target.matched_standard.clause_id == "sw_freelance-art20"
 

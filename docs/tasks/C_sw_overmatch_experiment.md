@@ -1,5 +1,9 @@
 # 실험 C — v5 SW OVER_MATCH 단일 가설 검증
 
+> **상태: 종료된 실험 이력.** C1은 held-out 채택 기준의 FP 조건을 충족하지 못해 보류됐고,
+> 기본 런타임에서 제거됐다. 이 문서는 새 실행 계획이 아니며, 후속 개선은 새 가설·새 실험 카드·
+> 새 독립 held-out으로 분리한다. 최종 결정은 [07-13 결정 로그](../dicision/07-13.md)를 따른다.
+
 ## 범위와 동결 기준선
 
 이 실험은 `SW_FREELANCE` 45건만 대상으로 한다. 기준선은 `match_threshold=0.50`,
@@ -24,16 +28,19 @@ SI/SM 동작, `matched_standard`의 최고 후보 의미, `confidence`의 정규
 사전 통과 기준은 tuning에서 FN 8 이하(기준선 대비 2건 이상 감소), FP 2 이하, F1 0.653 초과다.
 held-out 채택 기준은 FN 3 이하, FP 1 이하, F1 0.653 초과다. 실행 후 기준을 바꾸지 않는다.
 
-## 실행 게이트
+## 과거 실행 게이트 (재현 기록 — 실행 금지)
 
 ```bash
 PYTHONPATH=src python -m eval.run_eval --experiment=C --split=tuning
 PYTHONPATH=src python -m eval.run_eval --experiment=C --split=held-out --approval-file=docs/experiments/C/approval.json
 ```
 
-held-out은 `--case-ids`를 허용하지 않는다. tuning 통과 JSON, 승인 파일 해시, 코드 커밋,
-manifest와 matrix 해시, git 추적·clean worktree, 원자적 `heldout-run.json` 선점이 모두 필요하다.
-실패 기록도 보존되어 재실행을 막는다. 결과에는 before/after 혼동행렬, top-3 후보 및 점수 diff를 남긴다.
+위 명령은 C1 검증 당시의 실행 기록이다. 완료된 `heldout-run.json`이 있으면 tuning과 held-out
+모두 재실행하지 않는다.
 
-최종 결정은 `채택`(held-out 기준 충족), `보류`(개선이나 기준 미달/해석 모호), `폐기`(FN 개선 실패,
-FP 악화, 또는 held-out 후 가설 변경 요구) 중 하나다. 실제 결과가 없으므로 현재 상태는 `평가 전`이다.
+당시 held-out은 `--case-ids`를 허용하지 않았다. tuning 통과 JSON, 승인 파일 해시, 코드 커밋,
+manifest와 matrix 해시, git 추적·clean worktree, 원자적 `heldout-run.json` 선점이 모두 필요하다.
+결과에는 before/after 혼동행렬, top-3 후보 및 점수 diff를 남겼다.
+
+최종 결정은 `보류`다. C1은 held-out에서 FN과 F1 기준은 충족했지만 FP가 2건으로 기준(1 이하)을
+초과했다.

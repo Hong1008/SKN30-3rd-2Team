@@ -122,6 +122,43 @@ def test_c_tuning_실행_경로는_판정하고_결과와_taxonomy를_쓴다(mon
     assert (output_dir / "C_source_agreement.md").exists()
 
 
+def test_c_heldout_완료_후에는_tuning_재실행을_차단한다(monkeypatch, tmp_path):
+    import eval.run_eval as run_eval
+
+    output_dir = tmp_path / "C"
+    output_dir.mkdir()
+    (output_dir / "heldout-run.json").write_text(
+        '{"status": "SUCCEEDED"}', encoding="utf-8"
+    )
+    monkeypatch.setattr(run_eval, "EXPERIMENT_C_DIR", output_dir)
+    monkeypatch.setattr(run_eval, "EXPERIMENT_C_BASELINE", tmp_path / "baseline.json")
+
+    with pytest.raises(ValueError, match="폐쇄 실험"):
+        run_eval._run_experiment_c("tuning")
+
+
+def test_c_완료_후에는_main의_공통초기화_전에_tuning을_차단한다(monkeypatch, tmp_path):
+    import eval.run_eval as run_eval
+
+    output_dir = tmp_path / "C"
+    output_dir.mkdir()
+    (output_dir / "heldout-run.json").write_text(
+        '{"status": "SUCCEEDED"}', encoding="utf-8"
+    )
+    monkeypatch.setattr(run_eval, "EXPERIMENT_C_DIR", output_dir)
+    monkeypatch.setattr(
+        run_eval, "_install_eval_embedding_cache",
+        lambda: pytest.fail("폐쇄 실험에서 공통 초기화를 실행하면 안 됩니다"),
+    )
+    monkeypatch.setattr(
+        run_eval, "load_manifest",
+        lambda *_args: pytest.fail("폐쇄 실험에서 manifest를 읽으면 안 됩니다"),
+    )
+
+    with pytest.raises(ValueError, match="폐쇄 실험"):
+        run_eval.main(experiment="C", split="tuning")
+
+
 def test_c_heldout_실패는_예약을_남기고_재실행을_막는다(monkeypatch, tmp_path):
     import eval.run_eval as run_eval
 

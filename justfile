@@ -171,23 +171,6 @@ eval-s split env="local" approval_file="":
         APP_ENV={{env}} PYTHONPATH=src uv run python -m eval.run_eval --experiment=S --split=tuning
     fi
 
-# 실험 C tuning/held-out 전용 진입점. held-out은 승인 파일을 명시해야 한다.
-[unix]
-eval-c split env="local" approval_file="":
-    #!/usr/bin/env bash
-    set -euo pipefail
-    if [ "{{split}}" = "held-out" ]; then
-        test -n "{{approval_file}}"
-        APP_ENV={{env}} PYTHONPATH=src uv run python -m eval.run_eval --experiment=C --split=held-out --approval-file="{{approval_file}}"
-    else
-        APP_ENV={{env}} PYTHONPATH=src uv run python -m eval.run_eval --experiment=C --split=tuning
-    fi
-
-# 실험 C 후보 선택용 동결 tuning 진단. 모델 호출·held-out 접근 없이 비교표만 생성한다.
-[unix]
-prepare-c:
-    PYTHONPATH=src uv run python -m eval.experiment_c
-
 # Windows 환경용
 [windows]
 eval track="a" version="" env="local":
@@ -196,14 +179,6 @@ eval track="a" version="" env="local":
 [windows]
 eval-s split env="local" approval_file="":
     if ("{{split}}" -eq "held-out") { if (-not "{{approval_file}}") { throw "approval_file is required" }; $env:APP_ENV = '{{env}}'; $env:PYTHONPATH = 'src'; uv run python -m eval.run_eval --experiment=S --split=held-out --approval-file="{{approval_file}}" } else { $env:APP_ENV = '{{env}}'; $env:PYTHONPATH = 'src'; uv run python -m eval.run_eval --experiment=S --split=tuning }
-
-[windows]
-eval-c split env="local" approval_file="":
-    if ("{{split}}" -eq "held-out") { if (-not "{{approval_file}}") { throw "approval_file is required" }; $env:APP_ENV = '{{env}}'; $env:PYTHONPATH = 'src'; uv run python -m eval.run_eval --experiment=C --split=held-out --approval-file="{{approval_file}}" } else { $env:APP_ENV = '{{env}}'; $env:PYTHONPATH = 'src'; uv run python -m eval.run_eval --experiment=C --split=tuning }
-
-[windows]
-prepare-c:
-    $env:PYTHONPATH = 'src'; uv run python -m eval.experiment_c
 
 # 테스트 실행 (type: unit (기본), integration, all)
 [windows]

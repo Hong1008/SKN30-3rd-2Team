@@ -958,6 +958,21 @@ def _run_experiment_s(
 EXPERIMENT_C_DIR = Path("docs/experiments/C")
 
 
+def _ensure_c_experiment_open(split: str | None) -> None:
+    """완료된 C 실험의 tuning 재실행을 공통 초기화보다 먼저 차단합니다."""
+    if split != "tuning":
+        return
+    record_path = EXPERIMENT_C_DIR / "heldout-run.json"
+    if not record_path.exists():
+        return
+    record = json.loads(record_path.read_text(encoding="utf-8"))
+    if record.get("status") == "SUCCEEDED":
+        raise ValueError(
+            "C held-out 실행이 완료된 폐쇄 실험이므로 tuning을 재실행할 수 없습니다. "
+            "기존 증빙을 보존하고, 후속 가설은 새 실험 카드로 분리하세요."
+        )
+
+
 def _deviation_summary(rows: list[dict[str, Any]]) -> dict[str, float]:
     """case-level 이탈 진단 행을 실험용 혼동행렬로 집계합니다."""
     return build_confusion_summary(rows)
@@ -970,6 +985,7 @@ def _run_experiment_c(
     """v5 SW OVER_MATCH 실험 C를 tuning 또는 승인된 held-out으로 실행합니다."""
     if split not in {"tuning", "held-out"}:
         raise ValueError("실험 C split은 tuning 또는 held-out이어야 합니다.")
+    _ensure_c_experiment_open(split)
     validate_baseline_inputs(EXPERIMENT_C_BASELINE)
     manifest = load_manifest(EXPERIMENT_C_MANIFEST)
     golden = [case for case in _load_golden("v5") if case.get("contract_type") == EXPERIMENT_C.contract_type]
@@ -1394,6 +1410,8 @@ def main(
     - track='b': 실계약 문서 단위(M:N 커버리지·강건성). `{version}_b_result.md` 생성.
       coverage_types 로 대조할 표준 유형 집합을 지정한다(None → 전체 3종 SW·SI·SM).
     """
+    if experiment == "C":
+        _ensure_c_experiment_open(split)
     logging.basicConfig(level=logging.INFO, format="[%(asctime)s] [%(levelname)s] %(message)s")
     _install_eval_embedding_cache()  # 실험 S도 실제 review 경로와 동일한 드라이버 준비를 사용
     if experiment is not None:

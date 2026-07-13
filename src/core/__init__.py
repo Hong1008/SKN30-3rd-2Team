@@ -1,4 +1,4 @@
-from .matching import has_conflicting_parent_candidates, select_best_match, roll_up_sub_chunks
+from .matching import select_best_match, roll_up_sub_chunks
 from .deviation import (
     classify_clause_deviation,
     detect_missing_clauses,
@@ -10,7 +10,6 @@ from .contract_scope import ContractScopeAssessment, ScopeStatus, assess_contrac
 
 __all__ = [
     "select_best_match",
-    "has_conflicting_parent_candidates",
     "roll_up_sub_chunks",
     "classify_clause_deviation",
     "detect_missing_clauses",
