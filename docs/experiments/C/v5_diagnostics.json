@@ -311,7 +311,7 @@
       "contract_type": "SW_FREELANCE",
       "trap": "contradiction",
       "gold_deviation": "EXTRA",
-      "predicted_deviation": "NONE",
+      "predicted_deviation": "EXTRA",
       "confidence": 0.8912804126739502,
       "matched_standard": {
         "id": "sw_freelance-2020-art6",
@@ -347,7 +347,7 @@
           "source": "standard_sub_chunks"
         }
       ],
-      "outcome": "FN",
+      "outcome": "TP",
       "predicted_by_threshold": {
         "0.40": false,
         "0.45": false,
@@ -355,7 +355,7 @@
         "0.55": false,
         "0.60": false
       },
-      "reason": "OVER_MATCH"
+      "reason": "CORRECT"
     },
     {
       "case_id": "v5-sw-08",
@@ -1382,7 +1382,7 @@
       "contract_type": "SW_FREELANCE",
       "trap": "contradiction",
       "gold_deviation": "EXTRA",
-      "predicted_deviation": "NONE",
+      "predicted_deviation": "EXTRA",
       "confidence": 0.5460959076881409,
       "matched_standard": {
         "id": "sw_freelance-2020-art10",
@@ -1418,7 +1418,7 @@
           "source": "standard_clauses"
         }
       ],
-      "outcome": "FN",
+      "outcome": "TP",
       "predicted_by_threshold": {
         "0.40": false,
         "0.45": false,
@@ -1426,7 +1426,7 @@
         "0.55": true,
         "0.60": true
       },
-      "reason": "OVER_MATCH"
+      "reason": "CORRECT"
     },
     {
       "case_id": "v5-sw-29",
