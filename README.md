@@ -251,6 +251,9 @@ Docker 배포는 MCP 서버 단일 컨테이너만 지원하며, streamable HTTP
 | SW 프리랜서 | 0.842 | 0.533 | 0.653 |
 | 전체 | 0.742 | 0.767 | 0.754 |
 
+수치의 산출 근거, v1~v5 평가 체계의 변화, 실패·보류 실험, 적용 범위와 한계는
+[신뢰도 평가 개선 보고서](docs/quality/report.md)에서 확인할 수 있습니다.
+
 동결 수치와 평가 범위는 [v5 품질 기준선](docs/quality/baseline-v5.md), 현재 상태는
 [START_HERE](docs/START_HERE.md)에서 확인할 수 있습니다.
 
