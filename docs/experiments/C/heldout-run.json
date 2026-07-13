@@ -1,0 +1,28 @@
+{
+  "case_matrix_sha256": "f7110c2a52a55bb74098308cadb1a2e53a4d4db11adf171cdc77593b42b56aef",
+  "command": [
+    "/home/hong/project/ai-camp-project-note/projects/SKN30-3rd-2Team/src/eval/run_eval.py",
+    "--experiment=C",
+    "--split=held-out",
+    "--approval-file=docs/experiments/C/approval.json"
+  ],
+  "confusion_matrix": {
+    "f1": 0.8000000000000002,
+    "fn": 2,
+    "fp": 2,
+    "precision": 0.8,
+    "recall": 0.8,
+    "tn": 3,
+    "tp": 8
+  },
+  "decision": "보류",
+  "environment": {
+    "APP_ENV": "prod"
+  },
+  "experiment_id": "C",
+  "input_manifest_sha256": "776ee651b64d3595d0f5f1038a4483a325c846ccdf120814cfd7537e957a9aed",
+  "result_sha256": "a8d0ed92dac195e46909d0b2025dce0fb05d012767e9442d0971229cf4ab209d",
+  "split": "held-out",
+  "status": "SUCCEEDED",
+  "version": "v5"
+}

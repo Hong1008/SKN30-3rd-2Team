@@ -1,0 +1,744 @@
+{
+  "after": {
+    "f1": 0.8000000000000002,
+    "fn": 2,
+    "fp": 2,
+    "precision": 0.8,
+    "recall": 0.8,
+    "tn": 3,
+    "tp": 8
+  },
+  "before": {
+    "f1": 0.7058823529411764,
+    "fn": 4,
+    "fp": 1,
+    "precision": 0.8571428571428571,
+    "recall": 0.6,
+    "tn": 4,
+    "tp": 6
+  },
+  "candidate_comparison": [],
+  "candidate_diff": [
+    {
+      "after_top3": [
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art6",
+          "rank": 1,
+          "score": 0.9802479147911072,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art6-sub10",
+          "version": null
+        },
+        {
+          "category": "WARRANTY",
+          "parent_clause_id": null,
+          "rank": 2,
+          "score": 0.9420193433761597,
+          "source": "standard_clauses",
+          "standard_id": "sw_freelance-2020-art9",
+          "version": "2020"
+        },
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art9",
+          "rank": 3,
+          "score": 0.9420192837715149,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art9-sub00",
+          "version": null
+        }
+      ],
+      "before_top3": [
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art6",
+          "rank": 1,
+          "score": 0.9802479147911072,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art6-sub10",
+          "version": null
+        },
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art9",
+          "rank": 2,
+          "score": 0.9420193433761597,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art9-sub00",
+          "version": null
+        },
+        {
+          "category": "WARRANTY",
+          "parent_clause_id": null,
+          "rank": 3,
+          "score": 0.9420192837715149,
+          "source": "standard_clauses",
+          "standard_id": "sw_freelance-2020-art9",
+          "version": "2020"
+        }
+      ],
+      "case_id": "v5-sw-31",
+      "rerank_text_changed": [],
+      "score_diff": [
+        {
+          "after": 0.9802479147911072,
+          "before": 0.9802479147911072,
+          "delta": 0.0
+        },
+        {
+          "after": 0.9420193433761597,
+          "before": 0.9420193433761597,
+          "delta": 0.0
+        },
+        {
+          "after": 0.9420192837715149,
+          "before": 0.9420192837715149,
+          "delta": 0.0
+        }
+      ]
+    },
+    {
+      "after_top3": [
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art4",
+          "rank": 1,
+          "score": 0.505646824836731,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art4-sub01",
+          "version": null
+        },
+        {
+          "category": "WARRANTY",
+          "parent_clause_id": null,
+          "rank": 2,
+          "score": 0.03046089969575405,
+          "source": "standard_clauses",
+          "standard_id": "sw_freelance-2020-art9",
+          "version": "2020"
+        },
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art9",
+          "rank": 3,
+          "score": 0.030460892245173454,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art9-sub00",
+          "version": null
+        }
+      ],
+      "before_top3": [
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art4",
+          "rank": 1,
+          "score": 0.505646824836731,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art4-sub01",
+          "version": null
+        },
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art9",
+          "rank": 2,
+          "score": 0.03046089969575405,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art9-sub00",
+          "version": null
+        },
+        {
+          "category": "WARRANTY",
+          "parent_clause_id": null,
+          "rank": 3,
+          "score": 0.030460892245173454,
+          "source": "standard_clauses",
+          "standard_id": "sw_freelance-2020-art9",
+          "version": "2020"
+        }
+      ],
+      "case_id": "v5-sw-32",
+      "rerank_text_changed": [],
+      "score_diff": [
+        {
+          "after": 0.505646824836731,
+          "before": 0.505646824836731,
+          "delta": 0.0
+        },
+        {
+          "after": 0.03046089969575405,
+          "before": 0.03046089969575405,
+          "delta": 0.0
+        },
+        {
+          "after": 0.030460892245173454,
+          "before": 0.030460892245173454,
+          "delta": 0.0
+        }
+      ]
+    },
+    {
+      "after_top3": [
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art19",
+          "rank": 1,
+          "score": 0.04462302103638649,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art19-sub02",
+          "version": null
+        },
+        {
+          "category": "WARRANTY",
+          "parent_clause_id": null,
+          "rank": 2,
+          "score": 0.03548778221011162,
+          "source": "standard_clauses",
+          "standard_id": "sw_freelance-2020-art19",
+          "version": "2020"
+        },
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art19",
+          "rank": 3,
+          "score": 0.0039511751383543015,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art19-sub07",
+          "version": null
+        }
+      ],
+      "before_top3": [
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art19",
+          "rank": 1,
+          "score": 0.04462302103638649,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art19-sub02",
+          "version": null
+        },
+        {
+          "category": "WARRANTY",
+          "parent_clause_id": null,
+          "rank": 2,
+          "score": 0.03548811003565788,
+          "source": "standard_clauses",
+          "standard_id": "sw_freelance-2020-art19",
+          "version": "2020"
+        },
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art19",
+          "rank": 3,
+          "score": 0.0039511751383543015,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art19-sub07",
+          "version": null
+        }
+      ],
+      "case_id": "v5-sw-37",
+      "rerank_text_changed": [],
+      "score_diff": [
+        {
+          "after": 0.04462302103638649,
+          "before": 0.04462302103638649,
+          "delta": 0.0
+        },
+        {
+          "after": 0.03548778221011162,
+          "before": 0.03548811003565788,
+          "delta": -3.2782554626464844e-07
+        },
+        {
+          "after": 0.0039511751383543015,
+          "before": 0.0039511751383543015,
+          "delta": 0.0
+        }
+      ]
+    },
+    {
+      "after_top3": [
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art19",
+          "rank": 1,
+          "score": 0.3578629493713379,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art19-sub00",
+          "version": null
+        },
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art19",
+          "rank": 2,
+          "score": 2.0060762835782953e-05,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art19-sub03",
+          "version": null
+        },
+        {
+          "category": "WARRANTY",
+          "parent_clause_id": null,
+          "rank": 3,
+          "score": 1.7284353816648945e-05,
+          "source": "standard_clauses",
+          "standard_id": "sw_freelance-2020-art19",
+          "version": "2020"
+        }
+      ],
+      "before_top3": [
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art19",
+          "rank": 1,
+          "score": 0.35786309838294983,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art19-sub00",
+          "version": null
+        },
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art19",
+          "rank": 2,
+          "score": 2.0060762835782953e-05,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art19-sub03",
+          "version": null
+        },
+        {
+          "category": "WARRANTY",
+          "parent_clause_id": null,
+          "rank": 3,
+          "score": 1.7284404748352244e-05,
+          "source": "standard_clauses",
+          "standard_id": "sw_freelance-2020-art19",
+          "version": "2020"
+        }
+      ],
+      "case_id": "v5-sw-38",
+      "rerank_text_changed": [],
+      "score_diff": [
+        {
+          "after": 0.3578629493713379,
+          "before": 0.35786309838294983,
+          "delta": -1.4901161193847656e-07
+        },
+        {
+          "after": 2.0060762835782953e-05,
+          "before": 2.0060762835782953e-05,
+          "delta": 0.0
+        },
+        {
+          "after": 1.7284353816648945e-05,
+          "before": 1.7284404748352244e-05,
+          "delta": -5.093170329928398e-11
+        }
+      ]
+    },
+    {
+      "after_top3": [
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art19",
+          "rank": 1,
+          "score": 0.9877311587333679,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art19-sub00",
+          "version": null
+        },
+        {
+          "category": "WARRANTY",
+          "parent_clause_id": null,
+          "rank": 2,
+          "score": 0.756693422794342,
+          "source": "standard_clauses",
+          "standard_id": "sw_freelance-2020-art19",
+          "version": "2020"
+        },
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art19",
+          "rank": 3,
+          "score": 0.08529702574014664,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art19-sub03",
+          "version": null
+        }
+      ],
+      "before_top3": [
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art19",
+          "rank": 1,
+          "score": 0.9877311587333679,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art19-sub00",
+          "version": null
+        },
+        {
+          "category": "WARRANTY",
+          "parent_clause_id": null,
+          "rank": 2,
+          "score": 0.7566929459571838,
+          "source": "standard_clauses",
+          "standard_id": "sw_freelance-2020-art19",
+          "version": "2020"
+        },
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art19",
+          "rank": 3,
+          "score": 0.08529702574014664,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art19-sub03",
+          "version": null
+        }
+      ],
+      "case_id": "v5-sw-39",
+      "rerank_text_changed": [],
+      "score_diff": [
+        {
+          "after": 0.9877311587333679,
+          "before": 0.9877311587333679,
+          "delta": 0.0
+        },
+        {
+          "after": 0.756693422794342,
+          "before": 0.7566929459571838,
+          "delta": 4.76837158203125e-07
+        },
+        {
+          "after": 0.08529702574014664,
+          "before": 0.08529702574014664,
+          "delta": 0.0
+        }
+      ]
+    },
+    {
+      "after_top3": [
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art22",
+          "rank": 1,
+          "score": 0.17188532650470734,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art22-sub00",
+          "version": null
+        },
+        {
+          "category": "DISPUTE",
+          "parent_clause_id": null,
+          "rank": 2,
+          "score": 0.17188456654548645,
+          "source": "standard_clauses",
+          "standard_id": "sw_freelance-2020-art22",
+          "version": "2020"
+        },
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art20",
+          "rank": 3,
+          "score": 0.0008876771898940206,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art20-sub03",
+          "version": null
+        }
+      ],
+      "before_top3": [
+        {
+          "category": "DISPUTE",
+          "parent_clause_id": null,
+          "rank": 1,
+          "score": 0.17188532650470734,
+          "source": "standard_clauses",
+          "standard_id": "sw_freelance-2020-art22",
+          "version": "2020"
+        },
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art22",
+          "rank": 2,
+          "score": 0.17188532650470734,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art22-sub00",
+          "version": null
+        },
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art20",
+          "rank": 3,
+          "score": 0.0008876771898940206,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art20-sub03",
+          "version": null
+        }
+      ],
+      "case_id": "v5-sw-40",
+      "rerank_text_changed": [],
+      "score_diff": [
+        {
+          "after": 0.17188532650470734,
+          "before": 0.17188532650470734,
+          "delta": 0.0
+        },
+        {
+          "after": 0.17188456654548645,
+          "before": 0.17188532650470734,
+          "delta": -7.599592208862305e-07
+        },
+        {
+          "after": 0.0008876771898940206,
+          "before": 0.0008876771898940206,
+          "delta": 0.0
+        }
+      ]
+    },
+    {
+      "after_top3": [
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art5",
+          "rank": 1,
+          "score": 0.20937401056289673,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art5-sub00",
+          "version": null
+        },
+        {
+          "category": "DISPUTE",
+          "parent_clause_id": null,
+          "rank": 2,
+          "score": 0.03549772500991821,
+          "source": "standard_clauses",
+          "standard_id": "sw_freelance-2020-art22",
+          "version": "2020"
+        },
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art22",
+          "rank": 3,
+          "score": 0.03549765795469284,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art22-sub00",
+          "version": null
+        }
+      ],
+      "before_top3": [
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art5",
+          "rank": 1,
+          "score": 0.20937372744083405,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art5-sub00",
+          "version": null
+        },
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art22",
+          "rank": 2,
+          "score": 0.03549772500991821,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art22-sub00",
+          "version": null
+        },
+        {
+          "category": "DISPUTE",
+          "parent_clause_id": null,
+          "rank": 3,
+          "score": 0.03549754247069359,
+          "source": "standard_clauses",
+          "standard_id": "sw_freelance-2020-art22",
+          "version": "2020"
+        }
+      ],
+      "case_id": "v5-sw-42",
+      "rerank_text_changed": [],
+      "score_diff": [
+        {
+          "after": 0.20937401056289673,
+          "before": 0.20937372744083405,
+          "delta": 2.8312206268310547e-07
+        },
+        {
+          "after": 0.03549772500991821,
+          "before": 0.03549772500991821,
+          "delta": 0.0
+        },
+        {
+          "after": 0.03549765795469284,
+          "before": 0.03549754247069359,
+          "delta": 1.1548399925231934e-07
+        }
+      ]
+    },
+    {
+      "after_top3": [
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art14",
+          "rank": 1,
+          "score": 0.06000003591179848,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art14-sub02",
+          "version": null
+        },
+        {
+          "category": "DELIVERY_INSPECTION",
+          "parent_clause_id": null,
+          "rank": 2,
+          "score": 0.017346559092402458,
+          "source": "standard_clauses",
+          "standard_id": "sw_freelance-2020-art14",
+          "version": "2020"
+        },
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art14",
+          "rank": 3,
+          "score": 0.004178323782980442,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art14-sub03",
+          "version": null
+        }
+      ],
+      "before_top3": [
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art14",
+          "rank": 1,
+          "score": 0.06000003591179848,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art14-sub02",
+          "version": null
+        },
+        {
+          "category": "DELIVERY_INSPECTION",
+          "parent_clause_id": null,
+          "rank": 2,
+          "score": 0.017346542328596115,
+          "source": "standard_clauses",
+          "standard_id": "sw_freelance-2020-art14",
+          "version": "2020"
+        },
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art14",
+          "rank": 3,
+          "score": 0.004178323782980442,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art14-sub03",
+          "version": null
+        }
+      ],
+      "case_id": "v5-sw-43",
+      "rerank_text_changed": [],
+      "score_diff": [
+        {
+          "after": 0.06000003591179848,
+          "before": 0.06000003591179848,
+          "delta": 0.0
+        },
+        {
+          "after": 0.017346559092402458,
+          "before": 0.017346542328596115,
+          "delta": 1.6763806343078613e-08
+        },
+        {
+          "after": 0.004178323782980442,
+          "before": 0.004178323782980442,
+          "delta": 0.0
+        }
+      ]
+    },
+    {
+      "after_top3": [
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art14",
+          "rank": 1,
+          "score": 0.39644184708595276,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art14-sub00",
+          "version": null
+        },
+        {
+          "category": "DELIVERY_INSPECTION",
+          "parent_clause_id": null,
+          "rank": 2,
+          "score": 1.567967774462886e-05,
+          "source": "standard_clauses",
+          "standard_id": "sw_freelance-2020-art14",
+          "version": "2020"
+        },
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art14",
+          "rank": 3,
+          "score": 7.4245085670554545e-06,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art14-sub03",
+          "version": null
+        }
+      ],
+      "before_top3": [
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art14",
+          "rank": 1,
+          "score": 0.3964401185512543,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art14-sub00",
+          "version": null
+        },
+        {
+          "category": "DELIVERY_INSPECTION",
+          "parent_clause_id": null,
+          "rank": 2,
+          "score": 1.567967774462886e-05,
+          "source": "standard_clauses",
+          "standard_id": "sw_freelance-2020-art14",
+          "version": "2020"
+        },
+        {
+          "category": null,
+          "parent_clause_id": "sw_freelance-2020-art14",
+          "rank": 3,
+          "score": 7.4245085670554545e-06,
+          "source": "standard_sub_chunks",
+          "standard_id": "sw_freelance-2020-art14-sub03",
+          "version": null
+        }
+      ],
+      "case_id": "v5-sw-44",
+      "rerank_text_changed": [],
+      "score_diff": [
+        {
+          "after": 0.39644184708595276,
+          "before": 0.3964401185512543,
+          "delta": 1.7285346984863281e-06
+        },
+        {
+          "after": 1.567967774462886e-05,
+          "before": 1.567967774462886e-05,
+          "delta": 0.0
+        },
+        {
+          "after": 7.4245085670554545e-06,
+          "before": 7.4245085670554545e-06,
+          "delta": 0.0
+        }
+      ]
+    }
+  ],
+  "case_count": 15,
+  "case_matrix_sha256": "f7110c2a52a55bb74098308cadb1a2e53a4d4db11adf171cdc77593b42b56aef",
+  "decision": "보류",
+  "experiment_id": "C",
+  "manifest_sha256": "776ee651b64d3595d0f5f1038a4483a325c846ccdf120814cfd7537e957a9aed",
+  "overmatch_taxonomy": [],
+  "passed": false,
+  "source_agreement_diagnostic": [],
+  "split": "held-out",
+  "version": "v5"
+}
