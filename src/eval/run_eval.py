@@ -42,6 +42,19 @@ from eval.experiment_s import (
     reserve_run_record,
     update_run_record,
 )
+from eval.experiment_c import (
+    BASELINE_DIAGNOSTICS_PATH as EXPERIMENT_C_BASELINE_DIAGNOSTICS,
+    BASELINE_PATH as EXPERIMENT_C_BASELINE,
+    CASE_MATRIX_PATH as EXPERIMENT_C_CASE_MATRIX,
+    EXPERIMENT_C,
+    MANIFEST_PATH as EXPERIMENT_C_MANIFEST,
+    classify_overmatch,
+    split_sw_cases,
+    validate_baseline_inputs,
+    validate_c_approval,
+    write_taxonomy,
+)
+from eval.experiment_governance import passed, validate_approval_repository_state as validate_generic_approval_repository_state
 
 
 def evaluate(cases: List[Dict], k: int = 5) -> Dict:
@@ -829,19 +842,21 @@ def _write_experiment_json(path: Path, payload: Dict[str, Any]) -> str:
 
 
 def _write_experiment_report(path: Path, payload: Dict[str, Any]) -> str:
-    """before/after 혼동행렬과 사례 diff를 포함한 실험 보고서를 저장합니다."""
+    """before/after 혼동행렬과 사례 후보 diff를 포함한 실험 보고서를 저장합니다."""
     after = payload["after"]
+    experiment_id = payload.get("experiment_id", EXPERIMENT_ID)
+    candidate_diff = payload.get("candidate_diff", payload.get("toxic_top3_diff", []))
     lines = [
-        f"# 실험 S — {payload['split']}", "",
+        f"# 실험 {experiment_id} — {payload['split']}", "",
         f"- 판정: **{payload['decision']}**", "- 입력 케이스: " + str(payload["case_count"]), "",
         "| 구분 | TP | FP | FN | TN | F1 |", "| --- | ---: | ---: | ---: | ---: | ---: |",
         f"| 기준선 | {payload['before']['tp']} | {payload['before']['fp']} | {payload['before']['fn']} | {payload['before']['tn']} | {payload['before']['f1']:.3f} |",
         f"| 후보 | {after['tp']} | {after['fp']} | {after['fn']} | {after['tn']} | {after['f1']:.3f} |", "",
-        "## 독소 top-3 / rerank_text diff", "",
-        f"변경 사례 수: {len(payload.get('toxic_top3_diff', []))}", "",
+        "## 후보 top-3 / 점수 diff", "",
+        f"변경 사례 수: {len(candidate_diff)}", "",
     ]
-    for row in payload.get("toxic_top3_diff", []):
-        lines.append(f"- `{row['case_id']}`: 후보 top-3 변경, rerank_text 변경={bool(row['rerank_text_changed'])}")
+    for row in candidate_diff:
+        lines.append(f"- `{row['case_id']}`: 후보 top-3 변경")
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
     return str(path)
@@ -935,6 +950,79 @@ def _run_experiment_s(
             "confusion_matrix": after, "decision": payload["decision"],
             "executed_at": datetime.now(timezone.utc).isoformat(),
         })
+    return payload
+
+
+EXPERIMENT_C_DIR = Path("docs/experiments/C")
+
+
+def _deviation_summary(rows: list[dict[str, Any]]) -> dict[str, float]:
+    """case-level 이탈 진단 행을 실험용 혼동행렬로 집계합니다."""
+    return build_confusion_summary(rows)
+
+
+def _run_experiment_c(
+    split: str, *, approval_file: str | None = None, write_output: bool = True,
+    command: list[str] | None = None,
+) -> Dict[str, Any]:
+    """v5 SW OVER_MATCH 실험 C를 tuning 또는 승인된 held-out으로 실행합니다."""
+    if split not in {"tuning", "held-out"}:
+        raise ValueError("실험 C split은 tuning 또는 held-out이어야 합니다.")
+    validate_baseline_inputs(EXPERIMENT_C_BASELINE)
+    manifest = load_manifest(EXPERIMENT_C_MANIFEST)
+    golden = [case for case in _load_golden("v5") if case.get("contract_type") == EXPERIMENT_C.contract_type]
+    partitions = split_sw_cases(golden, manifest)
+    selected = partitions[split]
+    output_dir = EXPERIMENT_C_DIR
+    tuning_path, record_path = output_dir / "tuning-result.json", output_dir / "heldout-run.json"
+    if split == "held-out":
+        if not write_output or not approval_file:
+            raise ValueError("C held-out에는 쓰기 모드와 --approval-file이 필요합니다.")
+        if not tuning_path.exists():
+            raise ValueError("C tuning 결과 파일이 없습니다.")
+        approval = json.loads(Path(approval_file).read_text(encoding="utf-8"))
+        validate_run_record_absent(record_path)
+        validate_generic_approval_repository_state(approval_file, repo_root=".", baseline_commit=EXPERIMENT_C.baseline_commit)
+        validate_c_approval(
+            approval, manifest_sha256=sha256_file(EXPERIMENT_C_MANIFEST),
+            tuning_report_sha256=sha256_file(tuning_path), code_commit=_git_commit(),
+        )
+        if not json.loads(tuning_path.read_text(encoding="utf-8")).get("passed"):
+            raise ValueError("C tuning 통과 결과가 없어 held-out을 실행할 수 없습니다.")
+    reservation = {
+        "experiment_id": "C", "version": "v5", "split": split, "status": "STARTED",
+        "input_manifest_sha256": sha256_file(EXPERIMENT_C_MANIFEST), "case_matrix_sha256": sha256_file(EXPERIMENT_C_CASE_MATRIX),
+        "command": command or sys.argv, "environment": {"APP_ENV": os.getenv("APP_ENV", "local")},
+    }
+    if split == "held-out":
+        reserve_run_record(record_path, reservation)
+    try:
+        result = _run_track_a(k=5, version="v5", case_ids={case["case_id"] for case in selected}, write_output=write_output, output_dir=str(output_dir))
+    except Exception as exc:
+        if split == "held-out":
+            update_run_record(record_path, {"status": "FAILED", "error": f"{type(exc).__name__}: {exc}"})
+        raise
+    after_rows = [row for row in result["diagnostics"].get("deviation", []) if row.get("contract_type") == "SW_FREELANCE"]
+    before_payload = json.loads(EXPERIMENT_C_BASELINE_DIAGNOSTICS.read_text(encoding="utf-8"))
+    selected_ids = {case["case_id"] for case in selected}
+    before_rows = [row for row in before_payload["deviation"] if row.get("case_id") in selected_ids]
+    before, after = _deviation_summary(before_rows), _deviation_summary(after_rows)
+    passed_result = passed(after, EXPERIMENT_C, split)
+    payload: Dict[str, Any] = {
+        "experiment_id": "C", "version": "v5", "split": split, "case_count": len(selected),
+        "manifest_sha256": sha256_file(EXPERIMENT_C_MANIFEST), "case_matrix_sha256": sha256_file(EXPERIMENT_C_CASE_MATRIX),
+        "before": before, "after": after, "passed": passed_result,
+        "decision": "통과" if passed_result else ("폐기" if split == "tuning" else "보류"),
+        "overmatch_taxonomy": classify_overmatch(before_rows, json.loads(EXPERIMENT_C_CASE_MATRIX.read_text(encoding="utf-8"))) if split == "tuning" else [],
+        "candidate_diff": build_top3_diff(before_rows, after_rows),
+    }
+    result_path = output_dir / ("tuning-result.json" if split == "tuning" else "heldout-result.json")
+    _write_experiment_json(result_path, payload)
+    _write_experiment_report(output_dir / ("tuning-result.md" if split == "tuning" else "heldout-result.md"), payload)
+    if split == "tuning":
+        write_taxonomy(output_dir / "C_overmatch_taxonomy.md", payload["overmatch_taxonomy"])
+    else:
+        update_run_record(record_path, {"status": "SUCCEEDED", "result_sha256": sha256_file(result_path), "confusion_matrix": after, "decision": payload["decision"]})
     return payload
 
 
@@ -1296,13 +1384,15 @@ def main(
     logging.basicConfig(level=logging.INFO, format="[%(asctime)s] [%(levelname)s] %(message)s")
     _install_eval_embedding_cache()  # 실험 S도 실제 review 경로와 동일한 드라이버 준비를 사용
     if experiment is not None:
-        if experiment != EXPERIMENT_ID or split is None:
-            raise ValueError("지원되는 실험은 --experiment=S와 --split=tuning|held-out 조합입니다.")
+        if split is None or experiment not in {EXPERIMENT_ID, "C"}:
+            raise ValueError("지원되는 실험은 --experiment=S|C와 --split=tuning|held-out 조합입니다.")
+        if experiment == "C":
+            manifest = load_manifest(EXPERIMENT_C_MANIFEST)
+            ensure_case_ids_allowed(case_ids, heldout_ids=set(manifest["heldout_case_ids"]), split=split)
+            return _run_experiment_c(split, approval_file=approval_file, write_output=write_output, command=sys.argv)
         manifest = load_manifest(EXPERIMENT_S_MANIFEST)
         ensure_case_ids_allowed(case_ids, heldout_ids=set(manifest["heldout_case_ids"]), split=split)
-        return _run_experiment_s(
-            split, approval_file=approval_file, write_output=write_output, command=sys.argv,
-        )
+        return _run_experiment_s(split, approval_file=approval_file, write_output=write_output, command=sys.argv)
     if split is not None or approval_file is not None:
         raise ValueError("--split/--approval-file은 실험 S에서만 사용할 수 있습니다.")
     if track == "a" and (version or "").lower() == EXPERIMENT_VERSION and case_ids is not None:
