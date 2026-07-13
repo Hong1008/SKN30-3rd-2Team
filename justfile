@@ -147,22 +147,54 @@ convert:
 [windows]
 parse_eval file:
     @echo
-    npx.cmd kordoc "{{file}}" -o 'src/eval/golden_b/converted/{{file_stem(file)}}.md'
+    npx.cmd kordoc "{{file}}" -o 'quality/fixtures/track_b/golden_b/converted/{{file_stem(file)}}.md'
 
 [unix]
 parse_eval file:
     @echo
-    npx kordoc "{{file}}" -o 'src/eval/golden_b/converted/{{file_stem(file)}}.md'
+    npx kordoc "{{file}}" -o 'quality/fixtures/track_b/golden_b/converted/{{file_stem(file)}}.md'
 
 # 평가 드라이버 실행 (예: just eval, just eval b, just eval a v2, 환경 분기는 env="prod" 등으로 지정)
 [unix]
 eval track="a" version="" env="local":
-    APP_ENV={{env}} PYTHONPATH=src uv run python -m eval.run_eval {{track}} {{version}}
+    APP_ENV={{env}} PYTHONPATH=src:quality uv run python -m eval.run_eval {{track}} {{version}}
+
+# 실험 S tuning/held-out 전용 진입점. held-out은 승인 파일을 명시해야 한다.
+[unix]
+eval-s split env="local" approval_file="":
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if [ "{{split}}" = "held-out" ]; then
+        test -n "{{approval_file}}"
+        APP_ENV={{env}} PYTHONPATH=src:quality uv run python -m eval.run_eval --experiment=S --split=held-out --approval-file="{{approval_file}}"
+    else
+        APP_ENV={{env}} PYTHONPATH=src:quality uv run python -m eval.run_eval --experiment=S --split=tuning
+    fi
+
+# 종료된 C 실험의 기록 검증용 진입점. 새 튜닝에는 사용하지 않는다.
+[unix]
+eval-c split env="local" approval_file="":
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if [ "{{split}}" = "held-out" ]; then
+        test -n "{{approval_file}}"
+        APP_ENV={{env}} PYTHONPATH=src:quality uv run python -m eval.run_eval --experiment=C --split=held-out --approval-file="{{approval_file}}"
+    else
+        APP_ENV={{env}} PYTHONPATH=src:quality uv run python -m eval.run_eval --experiment=C --split=tuning
+    fi
+
+[unix]
+prepare-c:
+    PYTHONPATH=src:quality uv run python -m eval.experiment_c
 
 # Windows 환경용
 [windows]
 eval track="a" version="" env="local":
-    $env:APP_ENV = '{{env}}'; $env:PYTHONPATH = 'src'; uv run python -m eval.run_eval {{track}} {{version}}
+    $env:APP_ENV = '{{env}}'; $env:PYTHONPATH = 'src;quality'; uv run python -m eval.run_eval {{track}} {{version}}
+
+[windows]
+eval-s split env="local" approval_file="":
+    if ("{{split}}" -eq "held-out") { if (-not "{{approval_file}}") { throw "approval_file is required" }; $env:APP_ENV = '{{env}}'; $env:PYTHONPATH = 'src;quality'; uv run python -m eval.run_eval --experiment=S --split=held-out --approval-file="{{approval_file}}" } else { $env:APP_ENV = '{{env}}'; $env:PYTHONPATH = 'src;quality'; uv run python -m eval.run_eval --experiment=S --split=tuning }
 
 # 테스트 실행 (type: unit (기본), integration, all)
 [windows]
@@ -394,11 +426,3 @@ docker-up: docker-build
 # 백그라운드 컨테이너 중지 및 제거
 docker-down:
     docker rm -f {{docker_image}}
-
-# 절충안 번들: 서버+데모 2개 컨테이너 한 번에 기동 (http://localhost:8501)
-demo-bundle-up:
-    docker compose up --build -d
-
-# 번들 종료
-demo-bundle-down:
-    docker compose down

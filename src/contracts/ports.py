@@ -1,4 +1,4 @@
-from typing import Protocol, List
+from typing import Protocol, List, Optional
 from .models import Clause, StandardClause, GroundingLaw, DeviationResult
 from .enums import ContractType, Category
 
@@ -19,12 +19,17 @@ class Parser(Protocol):
 
 class Grounder(Protocol):
     """카테고리 분류나 본문 텍스트에 기반하여 관련 근거 법조문을 수집하는 포트 인터페이스"""
-    def get_grounding(self, category: Category) -> List[GroundingLaw]:
+    def get_grounding(
+        self, category: Category, contract_type: Optional[ContractType] = None
+    ) -> List[GroundingLaw]:
         """주어진 조항 분류 카테고리에 대한 표준적인 대한민국 관련 법령 근거를 수집합니다.
-        
+
         Args:
             category: 분석 중인 이탈 조항의 성격 대분류 카테고리
-            
+            contract_type: 계약 유형. SI/SM 하도급 계약처럼 카테고리는 같아도 적용 법령이
+                다른 경우를 구분하기 위함(예: PAYMENT — SW는 민법, SI/SM은 하도급법).
+                생략 시 유형 무관 공용 매핑을 사용합니다(하위호환).
+
         Returns:
             매칭되는 구체적인 근거 법조문(GroundingLaw) 목록
         """

@@ -43,7 +43,7 @@ class ClassifyClauseResponse(BaseModel):
     status: Literal["OK", "CORPUS_UNAVAILABLE"]
     contract_type: str
     deviation: Optional[str] = None
-    """이탈 판정 결과 (NO_MATCH / EXTRA / CHANGED / NONE). MISSING은 이 도구로 판정 불가(단일조항 입력이라
+    """이탈 판정 결과 (NO_MATCH / EXTRA / NONE). MISSING은 이 도구로 판정 불가(단일조항 입력이라
     "누락 자체"를 발견할 수 없음 — MISSING은 review_contract 에서만 나옴)."""
     confidence: float = 0.0
     matched_standard: Optional[StandardClause] = None
@@ -78,3 +78,21 @@ class ToxicPatternDetail(BaseModel):
 
 class ListToxicPatternDetailsResponse(BaseModel):
     patterns: list[ToxicPatternDetail]
+
+
+class ContractTypeScopeScore(BaseModel):
+    """범위 판별에서 계약유형별로 계산된 결정론적 근거 점수."""
+
+    contract_type: str
+    score: int
+
+
+class AssessContractScopeResponse(BaseModel):
+    """지원 표준 코퍼스 범위 판별 결과."""
+
+    status: Literal["IN_SCOPE", "CONTRACT_TYPE_UNCERTAIN", "OUT_OF_SCOPE", "EMPTY_DOCUMENT"]
+    suggested_contract_type: Optional[str] = None
+    candidates: list[ContractTypeScopeScore] = Field(default_factory=list)
+    matched_clause_count: int = 0
+    exclusion_markers: list[str] = Field(default_factory=list)
+    message: Optional[str] = None

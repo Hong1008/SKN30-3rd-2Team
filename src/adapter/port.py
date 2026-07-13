@@ -93,6 +93,8 @@ class Retriever(Protocol):
         query: str,
         metadata_filter: Optional[Dict[str, Any]] = None,
         top_k: int = 5,
+        dense_weight: float = 1.0,
+        bm25_weight: float = 1.0,
     ) -> List[Dict[str, Any]]:
         """이미 계산된 밀도 벡터와 질의 텍스트를 함께 사용해 dense·BM25 결과를 RRF 로 융합합니다.
 
@@ -102,6 +104,8 @@ class Retriever(Protocol):
             query: BM25 어휘 검색에 사용할 질의(쿼리) 텍스트 (vector 와 동일 원문이어야 함)
             metadata_filter: 특정 계약 유형이나 버전을 필터링할 메타데이터 조건 (옵션)
             top_k: 검색해서 가져올 최상위 후보군의 갯수
+            dense_weight: RRF 융합 시 dense 결과에 곱하는 배율 (기본 1.0 = 동일가중 표준 RRF)
+            bm25_weight: RRF 융합 시 BM25 결과에 곱하는 배율 (기본 1.0 = 동일가중 표준 RRF)
 
         Returns:
             유사도 점수와 식별 메타데이터를 포함한 검색 결과 사전(Dict) 목록
@@ -155,6 +159,8 @@ class Retriever(Protocol):
         queries: List[str],
         metadata_filter: Optional[Dict[str, Any]] = None,
         top_k: int = 5,
+        dense_weight: float = 1.0,
+        bm25_weight: float = 1.0,
     ) -> List[List[Dict[str, Any]]]:
         """여러 질의를 하이브리드(dense+BM25) 방식으로 한 번에 검색합니다.
 
@@ -168,6 +174,8 @@ class Retriever(Protocol):
             queries: 검색할 질의 텍스트 목록 (BM25 어휘 검색용)
             metadata_filter: 메타데이터 필터 조건 (옵션)
             top_k: 각 질의당 반환할 최상위 후보 갯수
+            dense_weight: RRF 융합 시 dense 결과에 곱하는 배율 (기본 1.0 = 동일가중 표준 RRF)
+            bm25_weight: RRF 융합 시 BM25 결과에 곱하는 배율 (기본 1.0 = 동일가중 표준 RRF)
 
         Returns:
             queries 와 같은 순서로 정렬된, 질의별 검색 결과 목록의 목록

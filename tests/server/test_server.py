@@ -19,10 +19,9 @@ def anyio_backend():
 @pytest.mark.anyio
 @patch("server.server.get_parser")
 @patch("server.server._load_standards")
-@patch("server.server._load_sub_chunks")
 @patch("server.server.review_contract_pipe")
 async def test_review_contract_async_progress(
-    mock_pipe, mock_load_sub_chunks, mock_load_standards, mock_get_parser
+    mock_pipe, mock_load_standards, mock_get_parser
 ):
     # 1. Mock 설정
     mock_parser = MagicMock()
@@ -30,7 +29,6 @@ async def test_review_contract_async_progress(
     mock_get_parser.return_value = mock_parser
 
     mock_load_standards.return_value = ["fake_standard"]
-    mock_load_sub_chunks.return_value = {}
 
     fake_result = DeviationResult(
         user_clause="fake_clause_1",
@@ -40,10 +38,9 @@ async def test_review_contract_async_progress(
         grounding=[],
         toxic_patterns=[],
         related_risk_clauses=[],
-        uncovered_sub_chunk_ids=[]
     )
 
-    def fake_pipe(clauses, contract_type, retriever, embedder, reranker, grounder, all_standard_clauses, all_standard_sub_chunks, progress_callback=None):
+    def fake_pipe(clauses, contract_type, retriever, embedder, reranker, grounder, all_standard_clauses, progress_callback=None):
         if progress_callback:
             progress_callback(0, 2, ProgressPhase.PREPARE)
             progress_callback(0, 2, ProgressPhase.BATCH_SEARCH)

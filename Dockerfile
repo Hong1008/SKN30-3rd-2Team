@@ -1,7 +1,7 @@
 # =================================================================
 # WorkShield MCP 서버 이미지
 # - Python(uv) + Node.js(kordoc, korean-law-mcp CLI) 런타임
-# - data/03_normalized(정답) · data/migration(SQLite+Chroma 스냅샷) 포함
+# - data/03_normalized(정답) · data/migration(SQLite 스냅샷) · data/chroma(Chroma 스냅샷) 포함
 # - 임베딩/리랭커 로컬 모델은 제외 (APP_ENV=prod → RunPod API 사용, adapter/__init__.py 참고)
 # =================================================================
 FROM python:3.13-slim
@@ -27,6 +27,7 @@ RUN uv sync --frozen --no-dev --no-install-project
 COPY src/ ./src/
 COPY data/03_normalized/ ./data/03_normalized/
 COPY data/migration/ ./data/migration/
+COPY data/chroma/ ./data/chroma/
 
 RUN uv sync --frozen --no-dev
 

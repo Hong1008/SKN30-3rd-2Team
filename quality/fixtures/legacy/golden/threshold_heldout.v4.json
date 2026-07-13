@@ -1,0 +1,9 @@
+{
+  "purpose": "threshold_calibration_v4",
+  "selection": "계약유형별 6건씩 총 18건을 고정 held-out으로 분리하고, 각 유형에 양성 및 음성 hard-negative를 동일 split에 쌍으로 묶어 배치하여 구조 유출을 완벽하게 방지한다.",
+  "heldout_case_ids": [
+    "v4-si-13", "v4-si-14", "v4-si-15", "v4-si-16", "v4-si-17", "v4-si-18",
+    "v4-sm-13", "v4-sm-14", "v4-sm-15", "v4-sm-16", "v4-sm-17", "v4-sm-18",
+    "v4-sw-13", "v4-sw-14", "v4-sw-15", "v4-sw-16", "v4-sw-17", "v4-sw-18"
+  ]
+}

@@ -1,196 +1,132 @@
-# src/server/ — MCP 서버
+# server — MCP 도구·리소스 등록 계층
 
-헥사고날 아키텍처의 **최외곽 표면**. `pipe/review_pipe`가 조립한 결과를 외부(AI 클라이언트·2차 웹앱)에 MCP 도구로 노출합니다.
+이 디렉터리는 WorkShield의 MCP 기능을 구현하고, **주입받은 `FastMCP` 인스턴스에 등록하는 클래스**를
+제공합니다. 자체적으로 서버를 생성하거나 실행하지 않습니다. 최종 조립과 실행 진입점은
+[`src/app.py`](../app.py)입니다.
 
-- `server.py` — FastMCP 앱 초기화 + 도구 등록
-- `app.py` (예정) — 실행 진입점 (`uv run python src/server/app.py`)
-
-> 작업 전 [AGENTS.md](../../AGENTS.md) · [기획서 4장](../../docs/01.mvp_기획.md) · [pipe/README.md](../pipe/README.md) 를 읽으세요.
-> **MCP 시그니처(도구 이름·입출력)는 동결 계약입니다 — 변경 시 PM/리드와 먼저 합의하세요.**
-
----
-
-## 1. 노출 도구 (기획서 4장 동결)
-
-| 도구 | 목적 | 입력 | 출력 |
-|---|---|---|---|
-| `parse_contract` | 계약서 파일 → 조항 목록 | `file_path`, `contract_type` | `List[Clause]` |
-| `match_clause` | 단일 조항 → 표준조항 후보 검색 | `clause_text`, `contract_type` | `List[{clause_id, score, standard_text}]` |
-| `review_contract` | 전체 검토(파싱→매칭→이탈→근거) | `file_path`, `contract_type` | `List[DeviationResult]` |
-| `get_grounding` | 카테고리 → 관련 법령 조문 | `category` | `List[GroundingLaw]` |
-
-모든 도구는 **stateless** — 한 번의 호출이 그 자체로 완결, 서버가 이전 상태를 기억하지 않음.
-
-### 1.1 확장 도구 (동결 4장 밖 — 자유 추가, MCP 조합력 강화용)
-
-동결 4장 표 자체는 바꾸지 않고, 별도 도구로 추가한 것들. 기존 4개 도구의 시그니처는 그대로다.
-
-| 도구 | 목적 | 입력 | 출력 |
-|---|---|---|---|
-| `classify_clause` | 단일 조항 → 이탈 판정(재정렬+매칭+분류까지 완결) | `clause_text`, `contract_type` | `{deviation, confidence, matched_standard, grounding}` |
-| `list_contract_types` | 지원 계약 종류 조회 (Discovery) | 없음 | `[str]` |
-| `list_categories` | 카테고리 + 설명 + 앵커 키워드 조회 (Discovery) | 없음 | `[{value, description, anchors}]` |
-| `list_toxic_patterns` | 독소 패턴 종류 조회 (Discovery) | 없음 | `[str]` |
-
-- `match_clause`(검색 후보만 나열)와 `classify_clause`(최종 이탈 판정까지 완결)는 역할이 다르다.
-  프론트가 "이 조항 하나만 빠르게 이탈 판정"하려면 `parse_contract` → `classify_clause` 체이닝을 쓰면
-  된다 (전체 `review_contract` 없이도 부분 워크플로우가 성립).
-- Discovery 도구는 `contract_type`/`category`/`toxic_pattern` enum 값을 **하드코딩하지 않고 런타임에
-  조회**하게 하기 위함. 도구 docstring에도 값 목록을 박아넣지 말고 이 도구들을 참조하도록 안내할 것.
-
-### 1.2 Resource (읽기 전용 표준조항 브라우징)
-
-| Resource URI | 목적 |
-|---|---|
-| `standard://{contract_type}` | 해당 계약 유형의 표준조항 요약 목록(`clause_id`, `title`, `category`) |
-| `standard://{contract_type}/{clause_id}` | 표준조항 원문 전체 |
-
-Tool이 아닌 Resource로 노출한 이유: "SW 프리랜서 표준계약서 12조 원문 보여줘" 같은 요청은 액션(도구
-호출)이 아니라 데이터 열람이므로, MCP 클라이언트가 도구를 고르지 않고도 바로 읽을 수 있게 한다.
-
----
-
-## 2. 구현 구조
-
-```python
-# server.py
-from fastmcp import FastMCP
-mcp = FastMCP("WorkShield")
-
-# 도구는 각 함수에 @mcp.tool() 데코레이터로 등록
-# 의존성(parser·retriever·grounder·db)은 싱글턴으로 주입
+```text
+src/server/server.py
+  └─ WorkShieldTools ─────────────┐
+                                  │
+src/server/korean_law_wrapper.py  │
+  └─ KoreanLawWrapper ────────────┼─→ src/app.py:create_app()
+                                  │       ├─ FastMCP("WorkShield") 생성
+adapter.korean_law_mcp.koreanLaw ─┘       ├─ 두 등록기 조립
+                                          ├─ 공용 법령 세션 lifespan
+                                          └─ transport 실행
 ```
 
-```
-server.py
-  ├── _load_standards(contract_type)  — DB에서 표준조항 로드 (공통 헬퍼)
-  ├── @mcp.tool() parse_contract(...)
-  ├── @mcp.tool() match_clause(...)
-  ├── @mcp.tool() review_contract(...)   ← 핵심, 아래 예외처리 참고
-  └── @mcp.tool() get_grounding(...)
-```
+## 조립과 실행
 
----
+[`src/app.py`](../app.py)의 `create_app()`은 다음 순서로 MCP 앱을 만듭니다.
 
-## 3. 비즈니스 예외 처리 설계
+1. lifespan이 설정된 `FastMCP("WorkShield")` 인스턴스를 생성합니다.
+2. `WorkShieldTools(mcp)`로 1차 계약 검토 도구와 표준조항 리소스를 등록합니다.
+3. `KoreanLawWrapper(mcp, client=koreanLaw)`로 외부 법령 MCP 프록시 도구를 등록합니다.
+4. 앱 lifespan에서 공용 `koreanLaw` 클라이언트 세션을 열고 종료 시 닫습니다.
+5. `main()`이 `MCP_TRANSPORT`, `MCP_HOST`, `MCP_PORT` 설정에 맞춰 앱을 실행합니다.
 
-### 3.1 원칙: infra 예외 vs 비즈니스 예외 분리
-
-```
-infra 예외   (파일 없음·DB 연결 실패 등)  → raise → FastMCP가 error 응답으로 변환
-비즈니스 예외 (명제 불성립·규칙 위반 등)  → server에서 catch → 구조화된 경고 메시지 반환
-```
-
-MCP는 JSON 소비자이므로 비즈니스 예외를 throw로 처리하면 2차 LLM이 오해 없이 읽기 어렵습니다.
-`review_contract` 내부는 도메인 예외를 raise하고, **server 레이어가 catch해서 응답을 구성**합니다 (Option A).
-
-### 3.2 예외별 처리 위치 및 방법
-
-| # | 상황 | 발생 위치 | server 처리 |
-|---|---|---|---|
-| 1 | 파싱 결과 0건 | `KordocParser.parse()` → `[]` 반환 | `EmptyDocumentError` raise → 빈 리스트 + 경고 메시지 반환 |
-| 2 | 해당 `contract_type` 표준 코퍼스 없음 | `_load_standards()` → `[]` 반환 | `CorpusUnavailableError` raise → 경고 메시지 반환 |
-| 3 | Retriever `contract_type` 필터 누락 | `vector.search()` 결과 오염 | `metadata_filter` 필수 인자화 — 타입 레벨에서 방지 |
-| 4 | 조항 결과 소실 (NO_MATCH 누락) | `review_pipe` 내부 | `PipelineIntegrityError` raise → server에서 catch 후 500 수준 에러 로깅 |
-| 5 | `match_threshold > change_threshold` | `review_contract` 진입 시 | `InvalidConfigError` raise → 설정 오류 메시지 반환 |
-| 6 | `clause_id` 중복 | SQLite 적재 시점 | `UNIQUE` 제약으로 적재 실패 — 런타임 도달 불가 |
-| 7 | 조항 본문 실질적 빈 값 | `review_pipe` 내부 | 해당 `DeviationResult`의 `confidence=0.0` + 경고 문자열 |
-| 8 | `deviation=NONE` + `toxic_patterns` 공존 | `review_pipe` 내부 | 정상 응답 — 두 축은 직교. 경고 없이 둘 다 보고 |
-
-### 3.3 `review_contract` 도구 예외 처리 흐름
-
-```python
-@mcp.tool()
-def review_contract(file_path: str, contract_type: str) -> dict:
-    try:
-        ct = ContractType(contract_type)      # 잘못된 enum 값 → ValueError → FastMCP error
-    except ValueError:
-        return {"error": f"지원하지 않는 계약 종류: {contract_type}"}
-
-    try:
-        clauses = parser.parse(file_path)     # FileNotFoundError·RuntimeError → infra
-    except FileNotFoundError as e:
-        return {"error": str(e)}
-
-    if not clauses:                           # 1번: 빈 문서
-        return {
-            "status": "EMPTY_DOCUMENT",
-            "message": "조항 추출 0건 — 스캔 PDF이거나 파싱 실패 가능성",
-            "results": []
-        }
-
-    standards = _load_standards(ct)
-    if not standards:                         # 2번: 코퍼스 없음
-        return {
-            "status": "CORPUS_UNAVAILABLE",
-            "message": f"{contract_type} 표준 코퍼스 없음 — 비교 불가",
-            "results": []
-        }
-
-    try:
-        results = review_contract_pipe(       # 5번 InvalidConfig, 4번 PipelineIntegrity
-            clauses=clauses,
-            contract_type=ct,
-            retriever=vector,
-            grounder=koreanLaw,
-            all_standard_clauses=standards,
-        )
-    except InvalidConfigError as e:           # 5번: 임계값 설정 모순
-        return {"status": "INVALID_CONFIG", "message": str(e), "results": []}
-    except PipelineIntegrityError as e:       # 4번: 조항 소실 — 심각한 버그
-        logging.error(f"[CRITICAL] 파이프라인 무결성 오류: {e}")
-        return {"status": "PIPELINE_ERROR", "message": "내부 오류 — 관리자에게 문의", "results": []}
-
-    return {"status": "OK", "results": [r.model_dump() for r in results]}
-```
-
-> `status` 필드를 포함한 응답 래퍼 구조는 **server 레이어 전용**입니다.
-> `contracts/` 동결 스키마를 건드리지 않고 `server/` 안에서만 정의·사용합니다.
-
----
-
-## 4. 도메인 예외 클래스 위치
-
-`src/pipe/exceptions.py` 에서 정의하고 server에서 import합니다.
-
-```python
-# src/pipe/exceptions.py
-class EmptyDocumentError(ValueError): ...       # 1번: 파싱 0건
-class CorpusUnavailableError(ValueError): ...   # 2번: 표준 코퍼스 없음
-class InvalidConfigError(ValueError): ...       # 5번: 임계값 설정 모순
-class PipelineIntegrityError(RuntimeError): ... # 4번: 조항 소실
-```
-
-`review_pipe.py` 에서 raise하고, `server.py` 에서 catch합니다.
-`core/` 는 이 예외를 알 필요 없습니다 — pipe 레이어에서만 사용.
-
----
-
-## 5. 실행
+1차 `get_grounding`과 2차 법령 프록시는 같은 `KoreanLawMCPClient`의 자식 프로세스·세션·TTL 캐시를
+재사용합니다. 실행은 `server.py`가 아니라 항상 최상위 앱을 기준으로 합니다.
 
 ```bash
-# 개발 실행
-uv run python src/server/app.py
-
-# MCP 클라이언트에서 연결
-# stdio 방식: command = "uv run python src/server/app.py"
+just run-mcp                         # stdio
+just run-mcp streamable-http 8000   # streamable HTTP
+just run-mcp-ui                      # MCP Inspector
 ```
 
----
+## `server.py` — WorkShieldTools
 
-## 6. 구현 순서 (의존성 기준)
+[`server.py`](server.py)는 계약 검토 함수와 `WorkShieldTools` 등록 클래스를 정의합니다. 모듈 함수는
+직접 단위 테스트와 하위호환을 위해 유지하지만, MCP에는 `WorkShieldTools`의 인스턴스 메서드만
+`mcp.add_tool()`로 등록됩니다.
 
-```
-1. pipe/review_pipe.py 완성 (담당: 팀원 C)  ← 선행 블로커
-2. 도메인 예외 클래스 정의
-3. server.py — parse_contract, get_grounding 먼저 (의존성 낮음)
-4. server.py — review_contract (review_pipe 완성 후)
-5. server.py — match_clause
-6. 통합 테스트 — MCP 클라이언트로 실제 호출 검증
-```
+| 도구 | 역할 |
+| --- | --- |
+| `parse_contract` | 계약서 파일을 조항 목록으로 분해 |
+| `assess_contract_scope` | 지원 범위와 계약 유형 후보를 사전 점검 |
+| `match_clause` | 단일 조항과 가까운 표준조항 후보 검색 |
+| `classify_clause` | 단일 조항 검색·rerank·1차 판정 |
+| `review_contract` | 계약서 전체 파싱·매칭·누락·독소·근거 조회 |
+| `get_grounding` | 카테고리 또는 조항에 관련된 법령 원문 조회 |
+| `list_contract_types` | 지원 계약 유형 조회 |
+| `list_categories` | 표준조항 카테고리와 검색 앵커 조회 |
+| `list_toxic_patterns` | 독소 패턴 종류 조회 |
+| `list_toxic_pattern_details` | 독소 패턴 상세 기준 조회 |
 
-## 7. 절대 규칙 재확인
+`WorkShieldTools`는 다음 읽기 전용 resource도 등록합니다.
 
-- **LLM 호출 없음**: 서버 레이어에서도 생성 AI 호출 금지. 결과 해석·판단 문장 생성 금지.
-- **빈 응답 금지**: 모든 도구는 실패 시에도 `status` + `message` 를 포함한 구조화된 응답 반환.
-- **단정 표현 금지**: "위법", "소송에서 이긴다" 같은 표현을 응답에 포함하지 않음.
+- `standard://{contract_type}` — 계약 유형별 표준조항 목록
+- `standard://{contract_type}/{clause_id}` — 특정 표준조항 원문
+
+## MCP 클라이언트 통합 가이드
+
+### 계약서 전체 검토 흐름
+
+`contract_type`은 파일에서 자동 추정되는 값이 아니라, `review_contract`가 비교에 사용할 표준
+코퍼스를 지정하는 입력입니다. `review_contract`는 지원 enum인지 확인한 뒤 그 유형으로만 표준조항
+검색·누락 탐지를 수행하며, 첨부 문서 본문과의 유형 일치를 검증하거나 값을 자동 변경하지 않습니다.
+
+유형이 불명확하거나 사용자가 선택한 유형과 문서 내용이 다를 가능성이 있으면 아래 흐름을 사용하세요.
+
+1. `assess_contract_scope`에 `file_path` 또는 `file_content`와 `file_name`을 전달합니다.
+2. 응답의 `status`, `suggested_contract_type`, `candidates`를 사용자에게 보여 주고 최종
+   `contract_type`을 선택받습니다.
+3. 선택된 `contract_type`으로 같은 파일을 `review_contract`에 전달합니다.
+
+| `assess_contract_scope.status` | 클라이언트 처리 |
+| --- | --- |
+| `IN_SCOPE` | `suggested_contract_type`을 기본값으로 제시하고, 사용자가 확인하거나 변경한 유형으로 검토합니다. |
+| `CONTRACT_TYPE_UNCERTAIN` | 유형 근거가 부족하다는 경고를 표시합니다. 자동 선택·차단하지 말고, 사용자가 명시한 유형으로 검토를 계속할 수 있습니다. |
+| `OUT_OF_SCOPE` | 현재 지원 표준 코퍼스와의 공통 근거가 부족하다고 안내하고, 기본적으로 검토 대상에서 제외합니다. 계속 진행하는 정책이라면 사용자의 명시적 재확인을 받습니다. |
+| `EMPTY_DOCUMENT` | 조항을 찾지 못한 상태입니다. `review_contract`를 호출하지 말고 파일 형식·스캔 상태를 확인하도록 안내합니다. |
+
+`assess_contract_scope`와 `review_contract`는 각각 파일을 파싱합니다. 사전 점검 뒤 전체 검토를
+호출하면 파일 전송·파싱이 두 번 발생하므로, 이미 계약 유형이 확실한 워크플로우에서는
+`review_contract`를 직접 호출할 수 있습니다. 반대로 유형 불일치 방지가 필요한 워크플로우에서는
+사전 점검을 기본 단계로 둡니다.
+
+### 입력과 결과 해석
+
+- 로컬 stdio 환경에서는 `file_path`를, 네트워크 환경에서는 base64 `file_content`와 `file_name`을
+  함께 전달합니다. 두 입력 방식은 동시에 사용할 수 없습니다.
+- 원본 파일은 `HWP`(3.x/5.x), `HWPX`, `HWPML`, `PDF`, `XLS`, `XLSX`, `DOCX`만 지원합니다.
+  확장자는 대소문자를 구분하지 않으며, 다른 형식 또는 확장자 없는 파일은 파싱 전에 명시적으로 거절됩니다.
+- 지원 유형은 하드코딩하지 말고 `list_contract_types`로 조회합니다.
+- `review_contract`의 `results`는 표준 대비 검토 후보입니다. `NONE`, `EXTRA`, `MISSING`,
+  `NO_MATCH` 및 `toxic_patterns`는 위법·합법이나 유불리를 단정하지 않습니다.
+- `results=[]`는 문제 없음이 아닙니다. `EMPTY_DOCUMENT`, `CORPUS_UNAVAILABLE`,
+  `INVALID_CONFIG`, `PIPELINE_ERROR` 중 어떤 `status`인지 먼저 확인합니다.
+
+## `korean_law_wrapper.py` — KoreanLawWrapper
+
+[`korean_law_wrapper.py`](korean_law_wrapper.py)의 `KoreanLawWrapper`는 2차 LLM 클라이언트가 법령·판례
+원문과 검증 기능을 조합할 수 있도록 외부 `korean-law-mcp` 기능 9개를 동일한 FastMCP 앱에 명시적으로
+등록합니다.
+
+| 프록시 도구 | 역할 |
+| --- | --- |
+| `search_law` | 법령명 키워드로 법령 식별자 검색 |
+| `get_law_text` | 법령 식별자와 선택 조문 코드로 본문 조회 |
+| `get_annexes` | 법령의 별표·서식 조회 |
+| `legal_research` | 외부 법률 MCP의 다단계 리서치 실행 |
+| `legal_analysis` | 외부 법률 MCP의 인용 검증·행위시법 분석 실행 |
+| `discover_tools` | 외부 법률 MCP의 추가 도구 탐색 |
+| `execute_tool` | 탐색한 외부 도구를 지정 인자로 실행 |
+| `search_decisions` | 판례·해석례 등 결정 검색 |
+| `get_decision_text` | 결정 식별자로 전문 조회 |
+
+이 클래스는 법률 해석을 자체 생성하거나 LLM을 호출하지 않습니다. 주입받은
+`KoreanLawMCPClient`에 요청을 전달하는 MCP 어댑터이며, 사용자 표면의 해석과 structured output은
+서버 밖 2차 클라이언트의 책임입니다.
+
+## 계층 경계
+
+- `src/server/`는 MCP 입출력 변환과 도구·리소스 등록을 담당합니다.
+- `src/app.py`는 FastMCP 인스턴스, 등록기, 외부 세션, transport를 조립합니다.
+- 검색·판정 규칙은 `core`, 런타임 흐름은 `pipe`, 외부 통신은 `adapter`에 둡니다.
+- 1차 WorkShield 도구에는 LLM 호출이나 생성형 법률 해석을 넣지 않습니다.
+- 실패와 미매칭은 빈 응답으로 숨기지 않고 구조화된 status 또는 `NO_MATCH`로 반환합니다.
+
+현재 제품 경계는 [START_HERE](../../docs/START_HERE.md), 전체 구조는
+[architecture.md](../../docs/architecture.md)를 참고하세요.

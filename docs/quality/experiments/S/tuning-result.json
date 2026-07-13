@@ -1,0 +1,3125 @@
+{
+  "after": {
+    "f1": 0.46153846153846156,
+    "fn": 12,
+    "fp": 2,
+    "precision": 0.75,
+    "recall": 0.3333333333333333,
+    "tn": 16,
+    "tp": 6
+  },
+  "before": {
+    "f1": 0.563,
+    "fn": 9,
+    "fp": 5,
+    "precision": 0.643,
+    "recall": 0.5,
+    "tn": 13,
+    "tp": 9
+  },
+  "case_count": 36,
+  "decision": "보류",
+  "experiment_id": "S",
+  "manifest_sha256": "66ea1591d30ed813e7128262179fd72d2a47574cafd263bcefaf975e97424ccb",
+  "passed": false,
+  "split": "tuning",
+  "toxic_top3_diff": [
+    {
+      "after_top3": [
+        {
+          "category": "SCOPE_SOW",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "pattern_id": "toxic-unpaid_additional_work-sub-02",
+          "rank": 1,
+          "rerank_text": "검토 패턴: 추가 업무 지시 시 무상 수행 강요\n예문: 수급사업자는 원사업자의 서면 또는 구두 지시에 따른 추가 작업을 계약에 명시되지 않은 경우에도 수행할 의무가 있으며, 추가 작업에 대한 별도의 대가를 청구할 권리를 포기한다.",
+          "score": 0.6618036031723022,
+          "text": "수급사업자는 원사업자의 서면 또는 구두 지시에 따른 추가 작업을 계약에 명시되지 않은 경우에도 수행할 의무가 있으며, 추가 작업에 대한 별도의 대가를 청구할 권리를 포기한다."
+        },
+        {
+          "category": "SCOPE_SOW",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "pattern_id": "toxic-unpaid_additional_work-sub-01",
+          "rank": 2,
+          "rerank_text": "검토 패턴: 추가 업무 지시 시 무상 수행 강요\n예문: 원사업자의 요청에 따라 당초 계약 범위를 초과하는 추가 업무가 발생하더라도 수급사업자는 이를 별도의 하도급대금 청구 없이 수행하여야 하며, 추가 작업에 소요되는 비용은 수급사업자가 부담한다.",
+          "score": 0.06998676806688309,
+          "text": "원사업자의 요청에 따라 당초 계약 범위를 초과하는 추가 업무가 발생하더라도 수급사업자는 이를 별도의 하도급대금 청구 없이 수행하여야 하며, 추가 작업에 소요되는 비용은 수급사업자가 부담한다."
+        },
+        {
+          "category": "SCOPE_SOW",
+          "pattern": "UNILATERAL_CHANGE",
+          "pattern_id": "toxic-unilateral_change-sub-05",
+          "rank": 3,
+          "rerank_text": "검토 패턴: 일방적인 과업 범위 변경 권한\n예문: 계약서에 명시되지 않은 사항이라도 원사업자가 업무 범위에 포함되는 것으로 판단하는 경우 수급사업자는 이를 수행할 의무가 있으며, 이에 대한 별도의 하도급대금은 지급되지 아니한다.",
+          "score": 0.0017157201655209064,
+          "text": "계약서에 명시되지 않은 사항이라도 원사업자가 업무 범위에 포함되는 것으로 판단하는 경우 수급사업자는 이를 수행할 의무가 있으며, 이에 대한 별도의 하도급대금은 지급되지 아니한다."
+        }
+      ],
+      "before_top3": [
+        {
+          "category": "SCOPE_SOW",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "pattern_id": "toxic-unpaid_additional_work-sub-02",
+          "rank": 1,
+          "score": 0.8590092658996582
+        },
+        {
+          "category": "SCOPE_SOW",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "pattern_id": "toxic-unpaid_additional_work-sub-01",
+          "rank": 2,
+          "score": 0.037392593920230865
+        },
+        {
+          "category": "SCOPE_SOW",
+          "pattern": "UNILATERAL_CHANGE",
+          "pattern_id": "toxic-unilateral_change-sub-05",
+          "rank": 3,
+          "score": 0.000881619518622756
+        }
+      ],
+      "case_id": "v4-si-01",
+      "rerank_text_changed": [
+        [
+          "toxic-unpaid_additional_work-sub-02",
+          "검토 패턴: 추가 업무 지시 시 무상 수행 강요\n예문: 수급사업자는 원사업자의 서면 또는 구두 지시에 따른 추가 작업을 계약에 명시되지 않은 경우에도 수행할 의무가 있으며, 추가 작업에 대한 별도의 대가를 청구할 권리를 포기한다."
+        ],
+        [
+          "toxic-unpaid_additional_work-sub-01",
+          "검토 패턴: 추가 업무 지시 시 무상 수행 강요\n예문: 원사업자의 요청에 따라 당초 계약 범위를 초과하는 추가 업무가 발생하더라도 수급사업자는 이를 별도의 하도급대금 청구 없이 수행하여야 하며, 추가 작업에 소요되는 비용은 수급사업자가 부담한다."
+        ],
+        [
+          "toxic-unilateral_change-sub-05",
+          "검토 패턴: 일방적인 과업 범위 변경 권한\n예문: 계약서에 명시되지 않은 사항이라도 원사업자가 업무 범위에 포함되는 것으로 판단하는 경우 수급사업자는 이를 수행할 의무가 있으며, 이에 대한 별도의 하도급대금은 지급되지 아니한다."
+        ]
+      ],
+      "score_diff": [
+        {
+          "after": 0.6618036031723022,
+          "before": 0.8590092658996582,
+          "delta": -0.19720566272735596
+        },
+        {
+          "after": 0.06998676806688309,
+          "before": 0.037392593920230865,
+          "delta": 0.03259417414665222
+        },
+        {
+          "after": 0.0017157201655209064,
+          "before": 0.000881619518622756,
+          "delta": 0.0008341006468981504
+        }
+      ]
+    },
+    {
+      "after_top3": [
+        {
+          "category": "SCOPE_SOW",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "pattern_id": "toxic-unpaid_additional_work-sub-01",
+          "rank": 1,
+          "rerank_text": "검토 패턴: 추가 업무 지시 시 무상 수행 강요\n예문: 원사업자의 요청에 따라 당초 계약 범위를 초과하는 추가 업무가 발생하더라도 수급사업자는 이를 별도의 하도급대금 청구 없이 수행하여야 하며, 추가 작업에 소요되는 비용은 수급사업자가 부담한다.",
+          "score": 1.3877812307327986e-05,
+          "text": "원사업자의 요청에 따라 당초 계약 범위를 초과하는 추가 업무가 발생하더라도 수급사업자는 이를 별도의 하도급대금 청구 없이 수행하여야 하며, 추가 작업에 소요되는 비용은 수급사업자가 부담한다."
+        },
+        {
+          "category": "SCOPE_SOW",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "pattern_id": "toxic-unpaid_additional_work-sub-05",
+          "rank": 2,
+          "rerank_text": "검토 패턴: 추가 업무 지시 시 무상 수행 강요\n예문: 발주자 또는 원사업자의 요구 사항 변경에 따라 수급사업자가 수행하는 추가 작업 및 재작업에 대해 원사업자는 별도의 대가를 지급하지 아니하며, 수급사업자는 이를 납품 의무의 일환으로 수행한다.",
+          "score": 7.04805370332906e-06,
+          "text": "발주자 또는 원사업자의 요구 사항 변경에 따라 수급사업자가 수행하는 추가 작업 및 재작업에 대해 원사업자는 별도의 대가를 지급하지 아니하며, 수급사업자는 이를 납품 의무의 일환으로 수행한다."
+        },
+        {
+          "category": "SCOPE_SOW",
+          "pattern": "UNILATERAL_CHANGE",
+          "pattern_id": "toxic-unilateral_change-sub-01",
+          "rank": 3,
+          "rerank_text": "검토 패턴: 일방적인 과업 범위 변경 권한\n예문: 원사업자는 필요에 따라 수급사업자와의 사전 협의 없이 업무 범위, 납기일, 산출물 규격을 변경할 수 있으며, 수급사업자는 추가 하도급대금 청구 없이 이에 응하여야 한다.",
+          "score": 1.3598577197626582e-06,
+          "text": "원사업자는 필요에 따라 수급사업자와의 사전 협의 없이 업무 범위, 납기일, 산출물 규격을 변경할 수 있으며, 수급사업자는 추가 하도급대금 청구 없이 이에 응하여야 한다."
+        }
+      ],
+      "before_top3": [
+        {
+          "category": "SCOPE_SOW",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "pattern_id": "toxic-unpaid_additional_work-sub-01",
+          "rank": 1,
+          "score": 4.8620921006659046e-05
+        },
+        {
+          "category": "SCOPE_SOW",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "pattern_id": "toxic-unpaid_additional_work-sub-05",
+          "rank": 2,
+          "score": 9.113406122196466e-06
+        },
+        {
+          "category": "SCOPE_SOW",
+          "pattern": "UNILATERAL_CHANGE",
+          "pattern_id": "toxic-unilateral_change-sub-01",
+          "rank": 3,
+          "score": 1.10905523342808e-06
+        }
+      ],
+      "case_id": "v4-si-02",
+      "rerank_text_changed": [
+        [
+          "toxic-unpaid_additional_work-sub-01",
+          "검토 패턴: 추가 업무 지시 시 무상 수행 강요\n예문: 원사업자의 요청에 따라 당초 계약 범위를 초과하는 추가 업무가 발생하더라도 수급사업자는 이를 별도의 하도급대금 청구 없이 수행하여야 하며, 추가 작업에 소요되는 비용은 수급사업자가 부담한다."
+        ],
+        [
+          "toxic-unpaid_additional_work-sub-05",
+          "검토 패턴: 추가 업무 지시 시 무상 수행 강요\n예문: 발주자 또는 원사업자의 요구 사항 변경에 따라 수급사업자가 수행하는 추가 작업 및 재작업에 대해 원사업자는 별도의 대가를 지급하지 아니하며, 수급사업자는 이를 납품 의무의 일환으로 수행한다."
+        ],
+        [
+          "toxic-unilateral_change-sub-01",
+          "검토 패턴: 일방적인 과업 범위 변경 권한\n예문: 원사업자는 필요에 따라 수급사업자와의 사전 협의 없이 업무 범위, 납기일, 산출물 규격을 변경할 수 있으며, 수급사업자는 추가 하도급대금 청구 없이 이에 응하여야 한다."
+        ]
+      ],
+      "score_diff": [
+        {
+          "after": 1.3877812307327986e-05,
+          "before": 4.8620921006659046e-05,
+          "delta": -3.474310869933106e-05
+        },
+        {
+          "after": 7.04805370332906e-06,
+          "before": 9.113406122196466e-06,
+          "delta": -2.0653524188674055e-06
+        },
+        {
+          "after": 1.3598577197626582e-06,
+          "before": 1.10905523342808e-06,
+          "delta": 2.5080248633457813e-07
+        }
+      ]
+    },
+    {
+      "after_top3": [
+        {
+          "category": "IP_OWNERSHIP",
+          "pattern": "IP_TOTAL_FREE",
+          "pattern_id": "toxic-ip_total_free-sub-03",
+          "rank": 1,
+          "rerank_text": "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 본 계약의 결과물에 대한 저작권 및 특허권 등 모든 지식재산권은 원사업자에게 귀속되고, 수급사업자가 계약 이전부터 보유하던 기술·도구를 활용한 경우에도 해당 결과물에 관한 권리는 원사업자의 소유로 한다.",
+          "score": 0.018158771097660065,
+          "text": "본 계약의 결과물에 대한 저작권 및 특허권 등 모든 지식재산권은 원사업자에게 귀속되고, 수급사업자가 계약 이전부터 보유하던 기술·도구를 활용한 경우에도 해당 결과물에 관한 권리는 원사업자의 소유로 한다."
+        },
+        {
+          "category": "IP_OWNERSHIP",
+          "pattern": "IP_TOTAL_FREE",
+          "pattern_id": "toxic-ip_total_free-sub-01",
+          "rank": 2,
+          "rerank_text": "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 본 계약에 따라 발생하는 모든 결과물, 산출물 및 그에 관한 저작권·지식재산권 일체는 별도의 하도급대금 없이 전부 원사업자에게 영구적으로 귀속되며, 수급사업자는 저작인격권을 포함한 어떠한 권리도 주장하지 아니한다.",
+          "score": 0.009184007532894611,
+          "text": "본 계약에 따라 발생하는 모든 결과물, 산출물 및 그에 관한 저작권·지식재산권 일체는 별도의 하도급대금 없이 전부 원사업자에게 영구적으로 귀속되며, 수급사업자는 저작인격권을 포함한 어떠한 권리도 주장하지 아니한다."
+        },
+        {
+          "category": "IP_OWNERSHIP",
+          "pattern": "IP_TOTAL_FREE",
+          "pattern_id": "toxic-ip_total_free-01",
+          "rank": 3,
+          "rerank_text": "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 본 계약에 따라 발생하는 모든 결과물, 산출물 및 그에 관한 저작권·지식재산권 일체는 별도의 대가 없이 전부 도급인에게 영구적으로 귀속되며, 수급인은 저작인격권을 포함한 어떠한 권리도 주장하지 아니한다.",
+          "score": 0.0007754283724352717,
+          "text": "본 계약에 따라 발생하는 모든 결과물, 산출물 및 그에 관한 저작권·지식재산권 일체는 별도의 대가 없이 전부 도급인에게 영구적으로 귀속되며, 수급인은 저작인격권을 포함한 어떠한 권리도 주장하지 아니한다."
+        }
+      ],
+      "before_top3": [
+        {
+          "category": "IP_OWNERSHIP",
+          "pattern": "IP_TOTAL_FREE",
+          "pattern_id": "toxic-ip_total_free-sub-03",
+          "rank": 1,
+          "score": 0.042421888560056686
+        },
+        {
+          "category": "IP_OWNERSHIP",
+          "pattern": "IP_TOTAL_FREE",
+          "pattern_id": "toxic-ip_total_free-sub-01",
+          "rank": 2,
+          "score": 0.03059527650475502
+        },
+        {
+          "category": "IP_OWNERSHIP",
+          "pattern": "IP_TOTAL_FREE",
+          "pattern_id": "toxic-ip_total_free-01",
+          "rank": 3,
+          "score": 0.001181863248348236
+        }
+      ],
+      "case_id": "v4-si-03",
+      "rerank_text_changed": [
+        [
+          "toxic-ip_total_free-sub-03",
+          "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 본 계약의 결과물에 대한 저작권 및 특허권 등 모든 지식재산권은 원사업자에게 귀속되고, 수급사업자가 계약 이전부터 보유하던 기술·도구를 활용한 경우에도 해당 결과물에 관한 권리는 원사업자의 소유로 한다."
+        ],
+        [
+          "toxic-ip_total_free-sub-01",
+          "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 본 계약에 따라 발생하는 모든 결과물, 산출물 및 그에 관한 저작권·지식재산권 일체는 별도의 하도급대금 없이 전부 원사업자에게 영구적으로 귀속되며, 수급사업자는 저작인격권을 포함한 어떠한 권리도 주장하지 아니한다."
+        ],
+        [
+          "toxic-ip_total_free-01",
+          "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 본 계약에 따라 발생하는 모든 결과물, 산출물 및 그에 관한 저작권·지식재산권 일체는 별도의 대가 없이 전부 도급인에게 영구적으로 귀속되며, 수급인은 저작인격권을 포함한 어떠한 권리도 주장하지 아니한다."
+        ]
+      ],
+      "score_diff": [
+        {
+          "after": 0.018158771097660065,
+          "before": 0.042421888560056686,
+          "delta": -0.02426311746239662
+        },
+        {
+          "after": 0.009184007532894611,
+          "before": 0.03059527650475502,
+          "delta": -0.02141126897186041
+        },
+        {
+          "after": 0.0007754283724352717,
+          "before": 0.001181863248348236,
+          "delta": -0.00040643487591296434
+        }
+      ]
+    },
+    {
+      "after_top3": [
+        {
+          "category": "IP_OWNERSHIP",
+          "pattern": "IP_TOTAL_FREE",
+          "pattern_id": "toxic-ip_total_free-sub-03",
+          "rank": 1,
+          "rerank_text": "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 본 계약의 결과물에 대한 저작권 및 특허권 등 모든 지식재산권은 원사업자에게 귀속되고, 수급사업자가 계약 이전부터 보유하던 기술·도구를 활용한 경우에도 해당 결과물에 관한 권리는 원사업자의 소유로 한다.",
+          "score": 1.5049269677547272e-05,
+          "text": "본 계약의 결과물에 대한 저작권 및 특허권 등 모든 지식재산권은 원사업자에게 귀속되고, 수급사업자가 계약 이전부터 보유하던 기술·도구를 활용한 경우에도 해당 결과물에 관한 권리는 원사업자의 소유로 한다."
+        },
+        {
+          "category": "IP_OWNERSHIP",
+          "pattern": "IP_TOTAL_FREE",
+          "pattern_id": "toxic-ip_total_free-03",
+          "rank": 2,
+          "rerank_text": "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 본 계약의 결과물에 대한 저작권 및 특허권 등 모든 지식재산권은 도급인에게 귀속되고, 수급인이 계약 이전부터 보유하던 기술·도구를 활용한 경우에도 해당 결과물에 관한 권리는 도급인의 소유로 한다.",
+          "score": 1.4419791114050895e-05,
+          "text": "본 계약의 결과물에 대한 저작권 및 특허권 등 모든 지식재산권은 도급인에게 귀속되고, 수급인이 계약 이전부터 보유하던 기술·도구를 활용한 경우에도 해당 결과물에 관한 권리는 도급인의 소유로 한다."
+        },
+        {
+          "category": "IP_OWNERSHIP",
+          "pattern": "IP_TOTAL_FREE",
+          "pattern_id": "toxic-ip_total_free-sub-01",
+          "rank": 3,
+          "rerank_text": "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 본 계약에 따라 발생하는 모든 결과물, 산출물 및 그에 관한 저작권·지식재산권 일체는 별도의 하도급대금 없이 전부 원사업자에게 영구적으로 귀속되며, 수급사업자는 저작인격권을 포함한 어떠한 권리도 주장하지 아니한다.",
+          "score": 1.3680481060873717e-05,
+          "text": "본 계약에 따라 발생하는 모든 결과물, 산출물 및 그에 관한 저작권·지식재산권 일체는 별도의 하도급대금 없이 전부 원사업자에게 영구적으로 귀속되며, 수급사업자는 저작인격권을 포함한 어떠한 권리도 주장하지 아니한다."
+        }
+      ],
+      "before_top3": [
+        {
+          "category": "IP_OWNERSHIP",
+          "pattern": "IP_TOTAL_FREE",
+          "pattern_id": "toxic-ip_total_free-sub-01",
+          "rank": 1,
+          "score": 4.460831405594945e-05
+        },
+        {
+          "category": "IP_OWNERSHIP",
+          "pattern": "IP_TOTAL_FREE",
+          "pattern_id": "toxic-ip_total_free-sub-03",
+          "rank": 2,
+          "score": 3.402650690986775e-05
+        },
+        {
+          "category": "IP_OWNERSHIP",
+          "pattern": "IP_TOTAL_FREE",
+          "pattern_id": "toxic-ip_total_free-03",
+          "rank": 3,
+          "score": 2.3981574486242607e-05
+        }
+      ],
+      "case_id": "v4-si-04",
+      "rerank_text_changed": [
+        [
+          "toxic-ip_total_free-sub-03",
+          "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 본 계약의 결과물에 대한 저작권 및 특허권 등 모든 지식재산권은 원사업자에게 귀속되고, 수급사업자가 계약 이전부터 보유하던 기술·도구를 활용한 경우에도 해당 결과물에 관한 권리는 원사업자의 소유로 한다."
+        ],
+        [
+          "toxic-ip_total_free-03",
+          "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 본 계약의 결과물에 대한 저작권 및 특허권 등 모든 지식재산권은 도급인에게 귀속되고, 수급인이 계약 이전부터 보유하던 기술·도구를 활용한 경우에도 해당 결과물에 관한 권리는 도급인의 소유로 한다."
+        ],
+        [
+          "toxic-ip_total_free-sub-01",
+          "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 본 계약에 따라 발생하는 모든 결과물, 산출물 및 그에 관한 저작권·지식재산권 일체는 별도의 하도급대금 없이 전부 원사업자에게 영구적으로 귀속되며, 수급사업자는 저작인격권을 포함한 어떠한 권리도 주장하지 아니한다."
+        ]
+      ],
+      "score_diff": [
+        {
+          "after": 1.5049269677547272e-05,
+          "before": 4.460831405594945e-05,
+          "delta": -2.9559044378402177e-05
+        },
+        {
+          "after": 1.4419791114050895e-05,
+          "before": 3.402650690986775e-05,
+          "delta": -1.9606715795816854e-05
+        },
+        {
+          "after": 1.3680481060873717e-05,
+          "before": 2.3981574486242607e-05,
+          "delta": -1.030109342536889e-05
+        }
+      ]
+    },
+    {
+      "after_top3": [
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "pattern_id": "toxic-indefinite_confidentiality-sub-01",
+          "rank": 1,
+          "rerank_text": "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 수급사업자는 본 계약 종료 후에도 기간의 제한 없이 영구히 원사업자의 업무상 비밀을 제3자에게 누설하거나 이용하여서는 아니 되며, 비밀유지의무의 종기는 별도로 정하지 아니한다.",
+          "score": 0.9882386922836304,
+          "text": "수급사업자는 본 계약 종료 후에도 기간의 제한 없이 영구히 원사업자의 업무상 비밀을 제3자에게 누설하거나 이용하여서는 아니 되며, 비밀유지의무의 종기는 별도로 정하지 아니한다."
+        },
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "pattern_id": "toxic-indefinite_confidentiality-01",
+          "rank": 2,
+          "rerank_text": "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 수급인은 본 계약 종료 후에도 기간의 제한 없이 영구히 도급인의 업무상 비밀을 제3자에게 누설하거나 이용하여서는 아니 되며, 비밀유지의무의 종기는 별도로 정하지 아니한다.",
+          "score": 0.9303861260414124,
+          "text": "수급인은 본 계약 종료 후에도 기간의 제한 없이 영구히 도급인의 업무상 비밀을 제3자에게 누설하거나 이용하여서는 아니 되며, 비밀유지의무의 종기는 별도로 정하지 아니한다."
+        },
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "pattern_id": "toxic-indefinite_confidentiality-sub-03",
+          "rank": 3,
+          "rerank_text": "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 수급사업자는 원사업자로부터 제공받았거나 업무 중 알게 된 정보에 대해 기간의 정함이 없이 비밀을 유지하여야 하며, 해당 정보가 수급사업자의 귀책 없이 공지의 사실이 된 경우에도 비밀유지의무는 소멸하지 아니한다.",
+          "score": 0.000559546344447881,
+          "text": "수급사업자는 원사업자로부터 제공받았거나 업무 중 알게 된 정보에 대해 기간의 정함이 없이 비밀을 유지하여야 하며, 해당 정보가 수급사업자의 귀책 없이 공지의 사실이 된 경우에도 비밀유지의무는 소멸하지 아니한다."
+        }
+      ],
+      "before_top3": [
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "pattern_id": "toxic-indefinite_confidentiality-sub-01",
+          "rank": 1,
+          "score": 0.9997593760490417
+        },
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "pattern_id": "toxic-indefinite_confidentiality-01",
+          "rank": 2,
+          "score": 0.9987553358078003
+        },
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "pattern_id": "toxic-indefinite_confidentiality-sub-03",
+          "rank": 3,
+          "score": 0.15314897894859314
+        }
+      ],
+      "case_id": "v4-si-05",
+      "rerank_text_changed": [
+        [
+          "toxic-indefinite_confidentiality-sub-01",
+          "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 수급사업자는 본 계약 종료 후에도 기간의 제한 없이 영구히 원사업자의 업무상 비밀을 제3자에게 누설하거나 이용하여서는 아니 되며, 비밀유지의무의 종기는 별도로 정하지 아니한다."
+        ],
+        [
+          "toxic-indefinite_confidentiality-01",
+          "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 수급인은 본 계약 종료 후에도 기간의 제한 없이 영구히 도급인의 업무상 비밀을 제3자에게 누설하거나 이용하여서는 아니 되며, 비밀유지의무의 종기는 별도로 정하지 아니한다."
+        ],
+        [
+          "toxic-indefinite_confidentiality-sub-03",
+          "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 수급사업자는 원사업자로부터 제공받았거나 업무 중 알게 된 정보에 대해 기간의 정함이 없이 비밀을 유지하여야 하며, 해당 정보가 수급사업자의 귀책 없이 공지의 사실이 된 경우에도 비밀유지의무는 소멸하지 아니한다."
+        ]
+      ],
+      "score_diff": [
+        {
+          "after": 0.9882386922836304,
+          "before": 0.9997593760490417,
+          "delta": -0.011520683765411377
+        },
+        {
+          "after": 0.9303861260414124,
+          "before": 0.9987553358078003,
+          "delta": -0.06836920976638794
+        },
+        {
+          "after": 0.000559546344447881,
+          "before": 0.15314897894859314,
+          "delta": -0.15258943260414526
+        }
+      ]
+    },
+    {
+      "after_top3": [
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "pattern_id": "toxic-indefinite_confidentiality-sub-04",
+          "rank": 1,
+          "rerank_text": "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 본 조에 따른 수급사업자의 비밀유지의무는 계약 종료 후에도 종기를 두지 아니하고 무기한 존속하며, 원사업자는 동일한 정보에 대하여 어떠한 비밀유지의무도 부담하지 아니한다.",
+          "score": 2.2101824015408056e-06,
+          "text": "본 조에 따른 수급사업자의 비밀유지의무는 계약 종료 후에도 종기를 두지 아니하고 무기한 존속하며, 원사업자는 동일한 정보에 대하여 어떠한 비밀유지의무도 부담하지 아니한다."
+        },
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "pattern_id": "toxic-indefinite_confidentiality-01",
+          "rank": 2,
+          "rerank_text": "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 수급인은 본 계약 종료 후에도 기간의 제한 없이 영구히 도급인의 업무상 비밀을 제3자에게 누설하거나 이용하여서는 아니 되며, 비밀유지의무의 종기는 별도로 정하지 아니한다.",
+          "score": 2.1481212115759263e-06,
+          "text": "수급인은 본 계약 종료 후에도 기간의 제한 없이 영구히 도급인의 업무상 비밀을 제3자에게 누설하거나 이용하여서는 아니 되며, 비밀유지의무의 종기는 별도로 정하지 아니한다."
+        },
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "pattern_id": "toxic-indefinite_confidentiality-sub-01",
+          "rank": 3,
+          "rerank_text": "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 수급사업자는 본 계약 종료 후에도 기간의 제한 없이 영구히 원사업자의 업무상 비밀을 제3자에게 누설하거나 이용하여서는 아니 되며, 비밀유지의무의 종기는 별도로 정하지 아니한다.",
+          "score": 2.0333156953711296e-06,
+          "text": "수급사업자는 본 계약 종료 후에도 기간의 제한 없이 영구히 원사업자의 업무상 비밀을 제3자에게 누설하거나 이용하여서는 아니 되며, 비밀유지의무의 종기는 별도로 정하지 아니한다."
+        }
+      ],
+      "before_top3": [
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "pattern_id": "toxic-indefinite_confidentiality-01",
+          "rank": 1,
+          "score": 9.445924661122262e-06
+        },
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "pattern_id": "toxic-indefinite_confidentiality-sub-01",
+          "rank": 2,
+          "score": 6.424978437280515e-06
+        },
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "pattern_id": "toxic-indefinite_confidentiality-sub-04",
+          "rank": 3,
+          "score": 3.990317054558545e-06
+        }
+      ],
+      "case_id": "v4-si-06",
+      "rerank_text_changed": [
+        [
+          "toxic-indefinite_confidentiality-sub-04",
+          "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 본 조에 따른 수급사업자의 비밀유지의무는 계약 종료 후에도 종기를 두지 아니하고 무기한 존속하며, 원사업자는 동일한 정보에 대하여 어떠한 비밀유지의무도 부담하지 아니한다."
+        ],
+        [
+          "toxic-indefinite_confidentiality-01",
+          "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 수급인은 본 계약 종료 후에도 기간의 제한 없이 영구히 도급인의 업무상 비밀을 제3자에게 누설하거나 이용하여서는 아니 되며, 비밀유지의무의 종기는 별도로 정하지 아니한다."
+        ],
+        [
+          "toxic-indefinite_confidentiality-sub-01",
+          "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 수급사업자는 본 계약 종료 후에도 기간의 제한 없이 영구히 원사업자의 업무상 비밀을 제3자에게 누설하거나 이용하여서는 아니 되며, 비밀유지의무의 종기는 별도로 정하지 아니한다."
+        ]
+      ],
+      "score_diff": [
+        {
+          "after": 2.2101824015408056e-06,
+          "before": 9.445924661122262e-06,
+          "delta": -7.235742259581457e-06
+        },
+        {
+          "after": 2.1481212115759263e-06,
+          "before": 6.424978437280515e-06,
+          "delta": -4.276857225704589e-06
+        },
+        {
+          "after": 2.0333156953711296e-06,
+          "before": 3.990317054558545e-06,
+          "delta": -1.957001359187416e-06
+        }
+      ]
+    },
+    {
+      "after_top3": [
+        {
+          "category": "DISPUTE",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "pattern_id": "toxic-unilateral_interpretation-sub-01",
+          "rank": 1,
+          "rerank_text": "검토 패턴: 발주자의 일방적 계약 해석 권한\n예문: 본 계약 내용에 관하여 당사자 간 이견이 발생할 경우 원사업자의 해석 및 판단에 따르며, 수급사업자는 이에 이의를 제기하지 아니한다.",
+          "score": 0.9589645862579346,
+          "text": "본 계약 내용에 관하여 당사자 간 이견이 발생할 경우 원사업자의 해석 및 판단에 따르며, 수급사업자는 이에 이의를 제기하지 아니한다."
+        },
+        {
+          "category": "DISPUTE",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "pattern_id": "toxic-unilateral_interpretation-01",
+          "rank": 2,
+          "rerank_text": "검토 패턴: 발주자의 일방적 계약 해석 권한\n예문: 본 계약 내용에 관하여 당사자 간 이견이 발생할 경우 도급인의 해석 및 판단에 따르며, 수급인은 이에 이의를 제기하지 아니한다.",
+          "score": 0.7548773288726807,
+          "text": "본 계약 내용에 관하여 당사자 간 이견이 발생할 경우 도급인의 해석 및 판단에 따르며, 수급인은 이에 이의를 제기하지 아니한다."
+        },
+        {
+          "category": "DISPUTE",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "pattern_id": "toxic-unilateral_interpretation-sub-03",
+          "rank": 3,
+          "rerank_text": "검토 패턴: 발주자의 일방적 계약 해석 권한\n예문: 본 계약의 해석상 이견이 발생하는 경우 원사업자의 해석을 우선 기준으로 하여 처리하며, 수급사업자는 이에 따라 업무를 수행하여야 한다.",
+          "score": 0.7412483096122742,
+          "text": "본 계약의 해석상 이견이 발생하는 경우 원사업자의 해석을 우선 기준으로 하여 처리하며, 수급사업자는 이에 따라 업무를 수행하여야 한다."
+        }
+      ],
+      "before_top3": [
+        {
+          "category": "DISPUTE",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "pattern_id": "toxic-unilateral_interpretation-sub-01",
+          "rank": 1,
+          "score": 0.9986226558685303
+        },
+        {
+          "category": "DISPUTE",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "pattern_id": "toxic-unilateral_interpretation-01",
+          "rank": 2,
+          "score": 0.9932952523231506
+        },
+        {
+          "category": "DISPUTE",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "pattern_id": "toxic-unilateral_interpretation-sub-03",
+          "rank": 3,
+          "score": 0.99184650182724
+        }
+      ],
+      "case_id": "v4-si-07",
+      "rerank_text_changed": [
+        [
+          "toxic-unilateral_interpretation-sub-01",
+          "검토 패턴: 발주자의 일방적 계약 해석 권한\n예문: 본 계약 내용에 관하여 당사자 간 이견이 발생할 경우 원사업자의 해석 및 판단에 따르며, 수급사업자는 이에 이의를 제기하지 아니한다."
+        ],
+        [
+          "toxic-unilateral_interpretation-01",
+          "검토 패턴: 발주자의 일방적 계약 해석 권한\n예문: 본 계약 내용에 관하여 당사자 간 이견이 발생할 경우 도급인의 해석 및 판단에 따르며, 수급인은 이에 이의를 제기하지 아니한다."
+        ],
+        [
+          "toxic-unilateral_interpretation-sub-03",
+          "검토 패턴: 발주자의 일방적 계약 해석 권한\n예문: 본 계약의 해석상 이견이 발생하는 경우 원사업자의 해석을 우선 기준으로 하여 처리하며, 수급사업자는 이에 따라 업무를 수행하여야 한다."
+        ]
+      ],
+      "score_diff": [
+        {
+          "after": 0.9589645862579346,
+          "before": 0.9986226558685303,
+          "delta": -0.0396580696105957
+        },
+        {
+          "after": 0.7548773288726807,
+          "before": 0.9932952523231506,
+          "delta": -0.23841792345046997
+        },
+        {
+          "after": 0.7412483096122742,
+          "before": 0.99184650182724,
+          "delta": -0.2505981922149658
+        }
+      ]
+    },
+    {
+      "after_top3": [
+        {
+          "category": "DISPUTE",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "pattern_id": "toxic-unilateral_interpretation-02",
+          "rank": 1,
+          "rerank_text": "검토 패턴: 발주자의 일방적 계약 해석 권한\n예문: 계약서 조항의 해석에 대한 분쟁이 발생하는 경우 도급인이 최종 해석 권한을 가지며, 수급인은 도급인의 해석에 따라 업무를 이행하여야 한다.",
+          "score": 0.006983564700931311,
+          "text": "계약서 조항의 해석에 대한 분쟁이 발생하는 경우 도급인이 최종 해석 권한을 가지며, 수급인은 도급인의 해석에 따라 업무를 이행하여야 한다."
+        },
+        {
+          "category": "DISPUTE",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "pattern_id": "toxic-unilateral_interpretation-04",
+          "rank": 2,
+          "rerank_text": "검토 패턴: 발주자의 일방적 계약 해석 권한\n예문: 계약 내용의 모호성이나 누락으로 인한 분쟁 발생 시 도급인의 원래 의도를 기준으로 해석하며, 수급인은 도급인이 제시한 해석을 서면으로 이의 없이 수용한다.",
+          "score": 0.0001282777520827949,
+          "text": "계약 내용의 모호성이나 누락으로 인한 분쟁 발생 시 도급인의 원래 의도를 기준으로 해석하며, 수급인은 도급인이 제시한 해석을 서면으로 이의 없이 수용한다."
+        },
+        {
+          "category": "DISPUTE",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "pattern_id": "toxic-unilateral_interpretation-sub-04",
+          "rank": 3,
+          "rerank_text": "검토 패턴: 발주자의 일방적 계약 해석 권한\n예문: 계약 내용의 모호성이나 누락으로 인한 분쟁 발생 시 원사업자의 원래 의도를 기준으로 해석하며, 수급사업자는 원사업자가 제시한 해석을 서면으로 이의 없이 수용한다.",
+          "score": 9.585145744495094e-05,
+          "text": "계약 내용의 모호성이나 누락으로 인한 분쟁 발생 시 원사업자의 원래 의도를 기준으로 해석하며, 수급사업자는 원사업자가 제시한 해석을 서면으로 이의 없이 수용한다."
+        }
+      ],
+      "before_top3": [
+        {
+          "category": "DISPUTE",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "pattern_id": "toxic-unilateral_interpretation-02",
+          "rank": 1,
+          "score": 0.8743363618850708
+        },
+        {
+          "category": "DISPUTE",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "pattern_id": "toxic-unilateral_interpretation-04",
+          "rank": 2,
+          "score": 0.43954503536224365
+        },
+        {
+          "category": "DISPUTE",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "pattern_id": "toxic-unilateral_interpretation-sub-04",
+          "rank": 3,
+          "score": 0.2058579921722412
+        }
+      ],
+      "case_id": "v4-si-08",
+      "rerank_text_changed": [
+        [
+          "toxic-unilateral_interpretation-02",
+          "검토 패턴: 발주자의 일방적 계약 해석 권한\n예문: 계약서 조항의 해석에 대한 분쟁이 발생하는 경우 도급인이 최종 해석 권한을 가지며, 수급인은 도급인의 해석에 따라 업무를 이행하여야 한다."
+        ],
+        [
+          "toxic-unilateral_interpretation-04",
+          "검토 패턴: 발주자의 일방적 계약 해석 권한\n예문: 계약 내용의 모호성이나 누락으로 인한 분쟁 발생 시 도급인의 원래 의도를 기준으로 해석하며, 수급인은 도급인이 제시한 해석을 서면으로 이의 없이 수용한다."
+        ],
+        [
+          "toxic-unilateral_interpretation-sub-04",
+          "검토 패턴: 발주자의 일방적 계약 해석 권한\n예문: 계약 내용의 모호성이나 누락으로 인한 분쟁 발생 시 원사업자의 원래 의도를 기준으로 해석하며, 수급사업자는 원사업자가 제시한 해석을 서면으로 이의 없이 수용한다."
+        ]
+      ],
+      "score_diff": [
+        {
+          "after": 0.006983564700931311,
+          "before": 0.8743363618850708,
+          "delta": -0.8673527971841395
+        },
+        {
+          "after": 0.0001282777520827949,
+          "before": 0.43954503536224365,
+          "delta": -0.43941675761016086
+        },
+        {
+          "after": 9.585145744495094e-05,
+          "before": 0.2058579921722412,
+          "delta": -0.20576214071479626
+        }
+      ]
+    },
+    {
+      "after_top3": [
+        {
+          "category": "SCOPE_SOW",
+          "pattern": "UNILATERAL_CHANGE",
+          "pattern_id": "toxic-unilateral_change-sub-05",
+          "rank": 1,
+          "rerank_text": "검토 패턴: 일방적인 과업 범위 변경 권한\n예문: 계약서에 명시되지 않은 사항이라도 원사업자가 업무 범위에 포함되는 것으로 판단하는 경우 수급사업자는 이를 수행할 의무가 있으며, 이에 대한 별도의 하도급대금은 지급되지 아니한다.",
+          "score": 0.18024595081806183,
+          "text": "계약서에 명시되지 않은 사항이라도 원사업자가 업무 범위에 포함되는 것으로 판단하는 경우 수급사업자는 이를 수행할 의무가 있으며, 이에 대한 별도의 하도급대금은 지급되지 아니한다."
+        },
+        {
+          "category": "LIABILITY",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "pattern_id": "toxic-unfair_damage_claim-sub-04",
+          "rank": 2,
+          "rerank_text": "검토 패턴: 부당하게 과도한 손해배상 청구액 설정\n예문: 수급사업자가 본 계약을 중도에 해지하거나 계약 이행을 거부하는 경우, 계약 잔여 기간에 해당하는 하도급대금 전액 및 원사업자가 대체 용역 수급에 소요한 비용의 합산액을 위약금으로 즉시 지급하여야 한다.",
+          "score": 0.07025773823261261,
+          "text": "수급사업자가 본 계약을 중도에 해지하거나 계약 이행을 거부하는 경우, 계약 잔여 기간에 해당하는 하도급대금 전액 및 원사업자가 대체 용역 수급에 소요한 비용의 합산액을 위약금으로 즉시 지급하여야 한다."
+        },
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "NONCOMPETE_EXCESS",
+          "pattern_id": "toxic-noncompete_excess-sub-01",
+          "rank": 3,
+          "rerank_text": "검토 패턴: 과도한 경업금지·영업활동 제한\n예문: 수급사업자는 본 계약 종료 후 3년간 원사업자와 동종·유사한 업종에 종사하거나 경쟁 업체에 용역을 제공할 수 없으며, 이를 위반할 경우 하도급대금의 5배에 해당하는 위약금을 지급한다.",
+          "score": 0.003354918211698532,
+          "text": "수급사업자는 본 계약 종료 후 3년간 원사업자와 동종·유사한 업종에 종사하거나 경쟁 업체에 용역을 제공할 수 없으며, 이를 위반할 경우 하도급대금의 5배에 해당하는 위약금을 지급한다."
+        }
+      ],
+      "before_top3": [
+        {
+          "category": "SCOPE_SOW",
+          "pattern": "UNILATERAL_CHANGE",
+          "pattern_id": "toxic-unilateral_change-sub-05",
+          "rank": 1,
+          "score": 0.07468840479850769
+        },
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "NONCOMPETE_EXCESS",
+          "pattern_id": "toxic-noncompete_excess-sub-01",
+          "rank": 2,
+          "score": 0.02215946838259697
+        },
+        {
+          "category": "LIABILITY",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "pattern_id": "toxic-unfair_damage_claim-sub-04",
+          "rank": 3,
+          "score": 0.01160830445587635
+        }
+      ],
+      "case_id": "v4-si-09",
+      "rerank_text_changed": [
+        [
+          "toxic-unilateral_change-sub-05",
+          "검토 패턴: 일방적인 과업 범위 변경 권한\n예문: 계약서에 명시되지 않은 사항이라도 원사업자가 업무 범위에 포함되는 것으로 판단하는 경우 수급사업자는 이를 수행할 의무가 있으며, 이에 대한 별도의 하도급대금은 지급되지 아니한다."
+        ],
+        [
+          "toxic-unfair_damage_claim-sub-04",
+          "검토 패턴: 부당하게 과도한 손해배상 청구액 설정\n예문: 수급사업자가 본 계약을 중도에 해지하거나 계약 이행을 거부하는 경우, 계약 잔여 기간에 해당하는 하도급대금 전액 및 원사업자가 대체 용역 수급에 소요한 비용의 합산액을 위약금으로 즉시 지급하여야 한다."
+        ],
+        [
+          "toxic-noncompete_excess-sub-01",
+          "검토 패턴: 과도한 경업금지·영업활동 제한\n예문: 수급사업자는 본 계약 종료 후 3년간 원사업자와 동종·유사한 업종에 종사하거나 경쟁 업체에 용역을 제공할 수 없으며, 이를 위반할 경우 하도급대금의 5배에 해당하는 위약금을 지급한다."
+        ]
+      ],
+      "score_diff": [
+        {
+          "after": 0.18024595081806183,
+          "before": 0.07468840479850769,
+          "delta": 0.10555754601955414
+        },
+        {
+          "after": 0.07025773823261261,
+          "before": 0.02215946838259697,
+          "delta": 0.04809826985001564
+        },
+        {
+          "after": 0.003354918211698532,
+          "before": 0.01160830445587635,
+          "delta": -0.008253386244177818
+        }
+      ]
+    },
+    {
+      "after_top3": [
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "pattern_id": "toxic-indefinite_confidentiality-05",
+          "rank": 1,
+          "rerank_text": "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 수급인은 본 계약과 관련하여 알게 된 일체의 정보(경미한 업무 연락 사항을 포함한다)에 대하여 영구히 비밀을 유지하여야 하며, 위반 시 기간 경과와 관계없이 손해배상 책임을 진다.",
+          "score": 0.01804749108850956,
+          "text": "수급인은 본 계약과 관련하여 알게 된 일체의 정보(경미한 업무 연락 사항을 포함한다)에 대하여 영구히 비밀을 유지하여야 하며, 위반 시 기간 경과와 관계없이 손해배상 책임을 진다."
+        },
+        {
+          "category": "LIABILITY",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "pattern_id": "toxic-unfair_damage_claim-03",
+          "rank": 2,
+          "rerank_text": "검토 패턴: 부당하게 과도한 손해배상 청구액 설정\n예문: 수급인의 귀책사유로 인한 하자 발생 시 수급인은 하자 복구 비용 외에 도급인이 입은 간접 손해, 기회손실, 영업상 손해 일체를 배상하여야 하며, 그 금액은 도급인이 산정한 바에 따른다.",
+          "score": 3.152571662212722e-05,
+          "text": "수급인의 귀책사유로 인한 하자 발생 시 수급인은 하자 복구 비용 외에 도급인이 입은 간접 손해, 기회손실, 영업상 손해 일체를 배상하여야 하며, 그 금액은 도급인이 산정한 바에 따른다."
+        },
+        {
+          "category": "LIABILITY",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "pattern_id": "toxic-unfair_damage_claim-sub-03",
+          "rank": 3,
+          "rerank_text": "검토 패턴: 부당하게 과도한 손해배상 청구액 설정\n예문: 수급사업자의 귀책사유로 인한 하자 발생 시 수급사업자는 하자 복구 비용 외에 원사업자가 입은 간접 손해, 기회손실, 영업상 손해 일체를 배상하여야 하며, 그 금액은 원사업자가 산정한 바에 따른다.",
+          "score": 2.9766701118205674e-05,
+          "text": "수급사업자의 귀책사유로 인한 하자 발생 시 수급사업자는 하자 복구 비용 외에 원사업자가 입은 간접 손해, 기회손실, 영업상 손해 일체를 배상하여야 하며, 그 금액은 원사업자가 산정한 바에 따른다."
+        }
+      ],
+      "before_top3": [
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "pattern_id": "toxic-indefinite_confidentiality-05",
+          "rank": 1,
+          "score": 0.37115979194641113
+        },
+        {
+          "category": "LIABILITY",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "pattern_id": "toxic-unfair_damage_claim-03",
+          "rank": 2,
+          "score": 9.450405923416838e-05
+        },
+        {
+          "category": "LIABILITY",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "pattern_id": "toxic-unfair_damage_claim-sub-03",
+          "rank": 3,
+          "score": 7.028925028862432e-05
+        }
+      ],
+      "case_id": "v4-si-10",
+      "rerank_text_changed": [
+        [
+          "toxic-indefinite_confidentiality-05",
+          "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 수급인은 본 계약과 관련하여 알게 된 일체의 정보(경미한 업무 연락 사항을 포함한다)에 대하여 영구히 비밀을 유지하여야 하며, 위반 시 기간 경과와 관계없이 손해배상 책임을 진다."
+        ],
+        [
+          "toxic-unfair_damage_claim-03",
+          "검토 패턴: 부당하게 과도한 손해배상 청구액 설정\n예문: 수급인의 귀책사유로 인한 하자 발생 시 수급인은 하자 복구 비용 외에 도급인이 입은 간접 손해, 기회손실, 영업상 손해 일체를 배상하여야 하며, 그 금액은 도급인이 산정한 바에 따른다."
+        ],
+        [
+          "toxic-unfair_damage_claim-sub-03",
+          "검토 패턴: 부당하게 과도한 손해배상 청구액 설정\n예문: 수급사업자의 귀책사유로 인한 하자 발생 시 수급사업자는 하자 복구 비용 외에 원사업자가 입은 간접 손해, 기회손실, 영업상 손해 일체를 배상하여야 하며, 그 금액은 원사업자가 산정한 바에 따른다."
+        ]
+      ],
+      "score_diff": [
+        {
+          "after": 0.01804749108850956,
+          "before": 0.37115979194641113,
+          "delta": -0.3531123008579016
+        },
+        {
+          "after": 3.152571662212722e-05,
+          "before": 9.450405923416838e-05,
+          "delta": -6.297834261204116e-05
+        },
+        {
+          "after": 2.9766701118205674e-05,
+          "before": 7.028925028862432e-05,
+          "delta": -4.052254917041864e-05
+        }
+      ]
+    },
+    {
+      "after_top3": [
+        {
+          "category": "TERMINATION",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "pattern_id": "toxic-unilateral_cancellation-sub-02",
+          "rank": 1,
+          "rerank_text": "검토 패턴: 발주자의 일방적 위탁 취소 및 무보상 계약 해지\n예문: 원사업자는 프로젝트 방향 변경, 예산 삭감, 발주자 사정 등을 이유로 계약을 즉시 해지할 수 있으며, 이 경우 수급사업자에 대한 보상은 없고 수급사업자는 즉시 업무를 중단하여야 한다.",
+          "score": 0.003530929796397686,
+          "text": "원사업자는 프로젝트 방향 변경, 예산 삭감, 발주자 사정 등을 이유로 계약을 즉시 해지할 수 있으며, 이 경우 수급사업자에 대한 보상은 없고 수급사업자는 즉시 업무를 중단하여야 한다."
+        },
+        {
+          "category": "TERMINATION",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "pattern_id": "toxic-unilateral_cancellation-sub-04",
+          "rank": 2,
+          "rerank_text": "검토 패턴: 발주자의 일방적 위탁 취소 및 무보상 계약 해지\n예문: 본 계약은 원사업자의 사정에 의해 언제든지 해지될 수 있으며, 해지 시 수급사업자는 진행 중인 업무를 즉시 중단하고 관련 자료를 원사업자에게 반환하여야 한다. 수급사업자는 해지로 인한 손실에 대해 원사업자에게 청구권을 행사하지 아니한다.",
+          "score": 0.0010313547682017088,
+          "text": "본 계약은 원사업자의 사정에 의해 언제든지 해지될 수 있으며, 해지 시 수급사업자는 진행 중인 업무를 즉시 중단하고 관련 자료를 원사업자에게 반환하여야 한다. 수급사업자는 해지로 인한 손실에 대해 원사업자에게 청구권을 행사하지 아니한다."
+        },
+        {
+          "category": "SCOPE_SOW",
+          "pattern": "UNILATERAL_CHANGE",
+          "pattern_id": "toxic-unilateral_change-sub-04",
+          "rank": 3,
+          "rerank_text": "검토 패턴: 일방적인 과업 범위 변경 권한\n예문: 원사업자는 발주자의 요청 또는 내부 사정에 따라 계약 목적물의 기능, 성능, 규격을 계약 후에도 변경할 수 있으며, 수급사업자는 변경 사항을 통보받은 날로부터 3영업일 이내에 이행 계획을 제출하고 추가 비용 없이 수행한다.",
+          "score": 0.0003326638543512672,
+          "text": "원사업자는 발주자의 요청 또는 내부 사정에 따라 계약 목적물의 기능, 성능, 규격을 계약 후에도 변경할 수 있으며, 수급사업자는 변경 사항을 통보받은 날로부터 3영업일 이내에 이행 계획을 제출하고 추가 비용 없이 수행한다."
+        }
+      ],
+      "before_top3": [
+        {
+          "category": "TERMINATION",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "pattern_id": "toxic-unilateral_cancellation-sub-02",
+          "rank": 1,
+          "score": 0.0024477923288941383
+        },
+        {
+          "category": "SCOPE_SOW",
+          "pattern": "UNILATERAL_CHANGE",
+          "pattern_id": "toxic-unilateral_change-sub-04",
+          "rank": 2,
+          "score": 0.0017980404663830996
+        },
+        {
+          "category": "TERMINATION",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "pattern_id": "toxic-unilateral_cancellation-sub-04",
+          "rank": 3,
+          "score": 0.001000896212644875
+        }
+      ],
+      "case_id": "v4-si-11",
+      "rerank_text_changed": [
+        [
+          "toxic-unilateral_cancellation-sub-02",
+          "검토 패턴: 발주자의 일방적 위탁 취소 및 무보상 계약 해지\n예문: 원사업자는 프로젝트 방향 변경, 예산 삭감, 발주자 사정 등을 이유로 계약을 즉시 해지할 수 있으며, 이 경우 수급사업자에 대한 보상은 없고 수급사업자는 즉시 업무를 중단하여야 한다."
+        ],
+        [
+          "toxic-unilateral_cancellation-sub-04",
+          "검토 패턴: 발주자의 일방적 위탁 취소 및 무보상 계약 해지\n예문: 본 계약은 원사업자의 사정에 의해 언제든지 해지될 수 있으며, 해지 시 수급사업자는 진행 중인 업무를 즉시 중단하고 관련 자료를 원사업자에게 반환하여야 한다. 수급사업자는 해지로 인한 손실에 대해 원사업자에게 청구권을 행사하지 아니한다."
+        ],
+        [
+          "toxic-unilateral_change-sub-04",
+          "검토 패턴: 일방적인 과업 범위 변경 권한\n예문: 원사업자는 발주자의 요청 또는 내부 사정에 따라 계약 목적물의 기능, 성능, 규격을 계약 후에도 변경할 수 있으며, 수급사업자는 변경 사항을 통보받은 날로부터 3영업일 이내에 이행 계획을 제출하고 추가 비용 없이 수행한다."
+        ]
+      ],
+      "score_diff": [
+        {
+          "after": 0.003530929796397686,
+          "before": 0.0024477923288941383,
+          "delta": 0.0010831374675035477
+        },
+        {
+          "after": 0.0010313547682017088,
+          "before": 0.0017980404663830996,
+          "delta": -0.0007666856981813908
+        },
+        {
+          "after": 0.0003326638543512672,
+          "before": 0.001000896212644875,
+          "delta": -0.0006682323582936078
+        }
+      ]
+    },
+    {
+      "after_top3": [
+        {
+          "category": "LIABILITY",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "pattern_id": "toxic-unfair_damage_claim-sub-04",
+          "rank": 1,
+          "rerank_text": "검토 패턴: 부당하게 과도한 손해배상 청구액 설정\n예문: 수급사업자가 본 계약을 중도에 해지하거나 계약 이행을 거부하는 경우, 계약 잔여 기간에 해당하는 하도급대금 전액 및 원사업자가 대체 용역 수급에 소요한 비용의 합산액을 위약금으로 즉시 지급하여야 한다.",
+          "score": 0.45009762048721313,
+          "text": "수급사업자가 본 계약을 중도에 해지하거나 계약 이행을 거부하는 경우, 계약 잔여 기간에 해당하는 하도급대금 전액 및 원사업자가 대체 용역 수급에 소요한 비용의 합산액을 위약금으로 즉시 지급하여야 한다."
+        },
+        {
+          "category": "TERMINATION",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "pattern_id": "toxic-unilateral_cancellation-sub-02",
+          "rank": 2,
+          "rerank_text": "검토 패턴: 발주자의 일방적 위탁 취소 및 무보상 계약 해지\n예문: 원사업자는 프로젝트 방향 변경, 예산 삭감, 발주자 사정 등을 이유로 계약을 즉시 해지할 수 있으며, 이 경우 수급사업자에 대한 보상은 없고 수급사업자는 즉시 업무를 중단하여야 한다.",
+          "score": 0.36006200313568115,
+          "text": "원사업자는 프로젝트 방향 변경, 예산 삭감, 발주자 사정 등을 이유로 계약을 즉시 해지할 수 있으며, 이 경우 수급사업자에 대한 보상은 없고 수급사업자는 즉시 업무를 중단하여야 한다."
+        },
+        {
+          "category": "TERMINATION",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "pattern_id": "toxic-unilateral_cancellation-sub-04",
+          "rank": 3,
+          "rerank_text": "검토 패턴: 발주자의 일방적 위탁 취소 및 무보상 계약 해지\n예문: 본 계약은 원사업자의 사정에 의해 언제든지 해지될 수 있으며, 해지 시 수급사업자는 진행 중인 업무를 즉시 중단하고 관련 자료를 원사업자에게 반환하여야 한다. 수급사업자는 해지로 인한 손실에 대해 원사업자에게 청구권을 행사하지 아니한다.",
+          "score": 0.2810477614402771,
+          "text": "본 계약은 원사업자의 사정에 의해 언제든지 해지될 수 있으며, 해지 시 수급사업자는 진행 중인 업무를 즉시 중단하고 관련 자료를 원사업자에게 반환하여야 한다. 수급사업자는 해지로 인한 손실에 대해 원사업자에게 청구권을 행사하지 아니한다."
+        }
+      ],
+      "before_top3": [
+        {
+          "category": "TERMINATION",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "pattern_id": "toxic-unilateral_cancellation-sub-04",
+          "rank": 1,
+          "score": 0.6385211944580078
+        },
+        {
+          "category": "LIABILITY",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "pattern_id": "toxic-unfair_damage_claim-sub-04",
+          "rank": 2,
+          "score": 0.5729299187660217
+        },
+        {
+          "category": "TERMINATION",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "pattern_id": "toxic-unilateral_cancellation-sub-02",
+          "rank": 3,
+          "score": 0.42316263914108276
+        }
+      ],
+      "case_id": "v4-si-12",
+      "rerank_text_changed": [
+        [
+          "toxic-unfair_damage_claim-sub-04",
+          "검토 패턴: 부당하게 과도한 손해배상 청구액 설정\n예문: 수급사업자가 본 계약을 중도에 해지하거나 계약 이행을 거부하는 경우, 계약 잔여 기간에 해당하는 하도급대금 전액 및 원사업자가 대체 용역 수급에 소요한 비용의 합산액을 위약금으로 즉시 지급하여야 한다."
+        ],
+        [
+          "toxic-unilateral_cancellation-sub-02",
+          "검토 패턴: 발주자의 일방적 위탁 취소 및 무보상 계약 해지\n예문: 원사업자는 프로젝트 방향 변경, 예산 삭감, 발주자 사정 등을 이유로 계약을 즉시 해지할 수 있으며, 이 경우 수급사업자에 대한 보상은 없고 수급사업자는 즉시 업무를 중단하여야 한다."
+        ],
+        [
+          "toxic-unilateral_cancellation-sub-04",
+          "검토 패턴: 발주자의 일방적 위탁 취소 및 무보상 계약 해지\n예문: 본 계약은 원사업자의 사정에 의해 언제든지 해지될 수 있으며, 해지 시 수급사업자는 진행 중인 업무를 즉시 중단하고 관련 자료를 원사업자에게 반환하여야 한다. 수급사업자는 해지로 인한 손실에 대해 원사업자에게 청구권을 행사하지 아니한다."
+        ]
+      ],
+      "score_diff": [
+        {
+          "after": 0.45009762048721313,
+          "before": 0.6385211944580078,
+          "delta": -0.18842357397079468
+        },
+        {
+          "after": 0.36006200313568115,
+          "before": 0.5729299187660217,
+          "delta": -0.21286791563034058
+        },
+        {
+          "after": 0.2810477614402771,
+          "before": 0.42316263914108276,
+          "delta": -0.14211487770080566
+        }
+      ]
+    },
+    {
+      "after_top3": [
+        {
+          "category": "SCOPE_SOW",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "pattern_id": "toxic-unpaid_additional_work-sub-02",
+          "rank": 1,
+          "rerank_text": "검토 패턴: 추가 업무 지시 시 무상 수행 강요\n예문: 수급사업자는 원사업자의 서면 또는 구두 지시에 따른 추가 작업을 계약에 명시되지 않은 경우에도 수행할 의무가 있으며, 추가 작업에 대한 별도의 대가를 청구할 권리를 포기한다.",
+          "score": 3.898443537764251e-06,
+          "text": "수급사업자는 원사업자의 서면 또는 구두 지시에 따른 추가 작업을 계약에 명시되지 않은 경우에도 수행할 의무가 있으며, 추가 작업에 대한 별도의 대가를 청구할 권리를 포기한다."
+        },
+        {
+          "category": "SCOPE_SOW",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "pattern_id": "toxic-unpaid_additional_work-sub-04",
+          "rank": 2,
+          "rerank_text": "검토 패턴: 추가 업무 지시 시 무상 수행 강요\n예문: 프로젝트 완성을 위해 원사업자가 요청하는 수정, 보완, 추가 기능 구현 등의 작업은 검수 완료 전까지 수급사업자의 의무 범위에 포함되며, 추가 비용이 발생하더라도 원사업자에게 청구할 수 없다.",
+          "score": 2.652966486493824e-06,
+          "text": "프로젝트 완성을 위해 원사업자가 요청하는 수정, 보완, 추가 기능 구현 등의 작업은 검수 완료 전까지 수급사업자의 의무 범위에 포함되며, 추가 비용이 발생하더라도 원사업자에게 청구할 수 없다."
+        },
+        {
+          "category": "SCOPE_SOW",
+          "pattern": "UNILATERAL_CHANGE",
+          "pattern_id": "toxic-unilateral_change-sub-01",
+          "rank": 3,
+          "rerank_text": "검토 패턴: 일방적인 과업 범위 변경 권한\n예문: 원사업자는 필요에 따라 수급사업자와의 사전 협의 없이 업무 범위, 납기일, 산출물 규격을 변경할 수 있으며, 수급사업자는 추가 하도급대금 청구 없이 이에 응하여야 한다.",
+          "score": 8.845357797326869e-07,
+          "text": "원사업자는 필요에 따라 수급사업자와의 사전 협의 없이 업무 범위, 납기일, 산출물 규격을 변경할 수 있으며, 수급사업자는 추가 하도급대금 청구 없이 이에 응하여야 한다."
+        }
+      ],
+      "before_top3": [
+        {
+          "category": "SCOPE_SOW",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "pattern_id": "toxic-unpaid_additional_work-sub-02",
+          "rank": 1,
+          "score": 1.1867469766002614e-05
+        },
+        {
+          "category": "SCOPE_SOW",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "pattern_id": "toxic-unpaid_additional_work-sub-04",
+          "rank": 2,
+          "score": 2.208482101195841e-06
+        },
+        {
+          "category": "SCOPE_SOW",
+          "pattern": "UNILATERAL_CHANGE",
+          "pattern_id": "toxic-unilateral_change-sub-01",
+          "rank": 3,
+          "score": 1.184845586976735e-06
+        }
+      ],
+      "case_id": "v4-sm-01",
+      "rerank_text_changed": [
+        [
+          "toxic-unpaid_additional_work-sub-02",
+          "검토 패턴: 추가 업무 지시 시 무상 수행 강요\n예문: 수급사업자는 원사업자의 서면 또는 구두 지시에 따른 추가 작업을 계약에 명시되지 않은 경우에도 수행할 의무가 있으며, 추가 작업에 대한 별도의 대가를 청구할 권리를 포기한다."
+        ],
+        [
+          "toxic-unpaid_additional_work-sub-04",
+          "검토 패턴: 추가 업무 지시 시 무상 수행 강요\n예문: 프로젝트 완성을 위해 원사업자가 요청하는 수정, 보완, 추가 기능 구현 등의 작업은 검수 완료 전까지 수급사업자의 의무 범위에 포함되며, 추가 비용이 발생하더라도 원사업자에게 청구할 수 없다."
+        ],
+        [
+          "toxic-unilateral_change-sub-01",
+          "검토 패턴: 일방적인 과업 범위 변경 권한\n예문: 원사업자는 필요에 따라 수급사업자와의 사전 협의 없이 업무 범위, 납기일, 산출물 규격을 변경할 수 있으며, 수급사업자는 추가 하도급대금 청구 없이 이에 응하여야 한다."
+        ]
+      ],
+      "score_diff": [
+        {
+          "after": 3.898443537764251e-06,
+          "before": 1.1867469766002614e-05,
+          "delta": -7.969026228238363e-06
+        },
+        {
+          "after": 2.652966486493824e-06,
+          "before": 2.208482101195841e-06,
+          "delta": 4.4448438529798295e-07
+        },
+        {
+          "after": 8.845357797326869e-07,
+          "before": 1.184845586976735e-06,
+          "delta": -3.00309807244048e-07
+        }
+      ]
+    },
+    {
+      "after_top3": [
+        {
+          "category": "SCOPE_SOW",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "pattern_id": "toxic-unpaid_additional_work-sub-02",
+          "rank": 1,
+          "rerank_text": "검토 패턴: 추가 업무 지시 시 무상 수행 강요\n예문: 수급사업자는 원사업자의 서면 또는 구두 지시에 따른 추가 작업을 계약에 명시되지 않은 경우에도 수행할 의무가 있으며, 추가 작업에 대한 별도의 대가를 청구할 권리를 포기한다.",
+          "score": 4.272708338248776e-06,
+          "text": "수급사업자는 원사업자의 서면 또는 구두 지시에 따른 추가 작업을 계약에 명시되지 않은 경우에도 수행할 의무가 있으며, 추가 작업에 대한 별도의 대가를 청구할 권리를 포기한다."
+        },
+        {
+          "category": "SCOPE_SOW",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "pattern_id": "toxic-unpaid_additional_work-sub-01",
+          "rank": 2,
+          "rerank_text": "검토 패턴: 추가 업무 지시 시 무상 수행 강요\n예문: 원사업자의 요청에 따라 당초 계약 범위를 초과하는 추가 업무가 발생하더라도 수급사업자는 이를 별도의 하도급대금 청구 없이 수행하여야 하며, 추가 작업에 소요되는 비용은 수급사업자가 부담한다.",
+          "score": 1.4312721532405703e-06,
+          "text": "원사업자의 요청에 따라 당초 계약 범위를 초과하는 추가 업무가 발생하더라도 수급사업자는 이를 별도의 하도급대금 청구 없이 수행하여야 하며, 추가 작업에 소요되는 비용은 수급사업자가 부담한다."
+        },
+        {
+          "category": "SCOPE_SOW",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "pattern_id": "toxic-unpaid_additional_work-01",
+          "rank": 3,
+          "rerank_text": "검토 패턴: 추가 업무 지시 시 무상 수행 강요\n예문: 도급인의 요청에 따라 당초 계약 범위를 초과하는 추가 업무가 발생하더라도 수급인은 이를 별도의 보수 청구 없이 수행하여야 하며, 추가 작업에 소요되는 비용은 수급인이 부담한다.",
+          "score": 1.130920850300754e-06,
+          "text": "도급인의 요청에 따라 당초 계약 범위를 초과하는 추가 업무가 발생하더라도 수급인은 이를 별도의 보수 청구 없이 수행하여야 하며, 추가 작업에 소요되는 비용은 수급인이 부담한다."
+        }
+      ],
+      "before_top3": [
+        {
+          "category": "SCOPE_SOW",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "pattern_id": "toxic-unpaid_additional_work-sub-02",
+          "rank": 1,
+          "score": 1.3523447705665603e-05
+        },
+        {
+          "category": "SCOPE_SOW",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "pattern_id": "toxic-unpaid_additional_work-01",
+          "rank": 2,
+          "score": 2.3410593712469563e-06
+        },
+        {
+          "category": "SCOPE_SOW",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "pattern_id": "toxic-unpaid_additional_work-sub-01",
+          "rank": 3,
+          "score": 2.31582475862524e-06
+        }
+      ],
+      "case_id": "v4-sm-02",
+      "rerank_text_changed": [
+        [
+          "toxic-unpaid_additional_work-sub-02",
+          "검토 패턴: 추가 업무 지시 시 무상 수행 강요\n예문: 수급사업자는 원사업자의 서면 또는 구두 지시에 따른 추가 작업을 계약에 명시되지 않은 경우에도 수행할 의무가 있으며, 추가 작업에 대한 별도의 대가를 청구할 권리를 포기한다."
+        ],
+        [
+          "toxic-unpaid_additional_work-sub-01",
+          "검토 패턴: 추가 업무 지시 시 무상 수행 강요\n예문: 원사업자의 요청에 따라 당초 계약 범위를 초과하는 추가 업무가 발생하더라도 수급사업자는 이를 별도의 하도급대금 청구 없이 수행하여야 하며, 추가 작업에 소요되는 비용은 수급사업자가 부담한다."
+        ],
+        [
+          "toxic-unpaid_additional_work-01",
+          "검토 패턴: 추가 업무 지시 시 무상 수행 강요\n예문: 도급인의 요청에 따라 당초 계약 범위를 초과하는 추가 업무가 발생하더라도 수급인은 이를 별도의 보수 청구 없이 수행하여야 하며, 추가 작업에 소요되는 비용은 수급인이 부담한다."
+        ]
+      ],
+      "score_diff": [
+        {
+          "after": 4.272708338248776e-06,
+          "before": 1.3523447705665603e-05,
+          "delta": -9.250739367416827e-06
+        },
+        {
+          "after": 1.4312721532405703e-06,
+          "before": 2.3410593712469563e-06,
+          "delta": -9.09787218006386e-07
+        },
+        {
+          "after": 1.130920850300754e-06,
+          "before": 2.31582475862524e-06,
+          "delta": -1.1849039083244861e-06
+        }
+      ]
+    },
+    {
+      "after_top3": [
+        {
+          "category": "IP_OWNERSHIP",
+          "pattern": "IP_TOTAL_FREE",
+          "pattern_id": "toxic-ip_total_free-sub-02",
+          "rank": 1,
+          "rerank_text": "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 수급사업자가 본 계약 수행 중 개발하거나 개선한 소프트웨어, 알고리즘, 기술 노하우 및 이와 관련된 일체의 지식재산권은 계약 체결과 동시에 원사업자에게 이전된 것으로 보며, 수급사업자는 추가적인 하도급대금을 청구할 수 없다.",
+          "score": 0.0012127298396080732,
+          "text": "수급사업자가 본 계약 수행 중 개발하거나 개선한 소프트웨어, 알고리즘, 기술 노하우 및 이와 관련된 일체의 지식재산권은 계약 체결과 동시에 원사업자에게 이전된 것으로 보며, 수급사업자는 추가적인 하도급대금을 청구할 수 없다."
+        },
+        {
+          "category": "IP_OWNERSHIP",
+          "pattern": "IP_TOTAL_FREE",
+          "pattern_id": "toxic-ip_total_free-sub-01",
+          "rank": 2,
+          "rerank_text": "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 본 계약에 따라 발생하는 모든 결과물, 산출물 및 그에 관한 저작권·지식재산권 일체는 별도의 하도급대금 없이 전부 원사업자에게 영구적으로 귀속되며, 수급사업자는 저작인격권을 포함한 어떠한 권리도 주장하지 아니한다.",
+          "score": 0.0005160356522537768,
+          "text": "본 계약에 따라 발생하는 모든 결과물, 산출물 및 그에 관한 저작권·지식재산권 일체는 별도의 하도급대금 없이 전부 원사업자에게 영구적으로 귀속되며, 수급사업자는 저작인격권을 포함한 어떠한 권리도 주장하지 아니한다."
+        },
+        {
+          "category": "IP_OWNERSHIP",
+          "pattern": "IP_TOTAL_FREE",
+          "pattern_id": "toxic-ip_total_free-sub-03",
+          "rank": 3,
+          "rerank_text": "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 본 계약의 결과물에 대한 저작권 및 특허권 등 모든 지식재산권은 원사업자에게 귀속되고, 수급사업자가 계약 이전부터 보유하던 기술·도구를 활용한 경우에도 해당 결과물에 관한 권리는 원사업자의 소유로 한다.",
+          "score": 0.00037713980418629944,
+          "text": "본 계약의 결과물에 대한 저작권 및 특허권 등 모든 지식재산권은 원사업자에게 귀속되고, 수급사업자가 계약 이전부터 보유하던 기술·도구를 활용한 경우에도 해당 결과물에 관한 권리는 원사업자의 소유로 한다."
+        }
+      ],
+      "before_top3": [
+        {
+          "category": "IP_OWNERSHIP",
+          "pattern": "IP_TOTAL_FREE",
+          "pattern_id": "toxic-ip_total_free-sub-02",
+          "rank": 1,
+          "score": 0.0021661785431206226
+        },
+        {
+          "category": "IP_OWNERSHIP",
+          "pattern": "IP_TOTAL_FREE",
+          "pattern_id": "toxic-ip_total_free-sub-01",
+          "rank": 2,
+          "score": 0.0005832142778672278
+        },
+        {
+          "category": "IP_OWNERSHIP",
+          "pattern": "IP_TOTAL_FREE",
+          "pattern_id": "toxic-ip_total_free-sub-03",
+          "rank": 3,
+          "score": 0.00016589761071372777
+        }
+      ],
+      "case_id": "v4-sm-03",
+      "rerank_text_changed": [
+        [
+          "toxic-ip_total_free-sub-02",
+          "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 수급사업자가 본 계약 수행 중 개발하거나 개선한 소프트웨어, 알고리즘, 기술 노하우 및 이와 관련된 일체의 지식재산권은 계약 체결과 동시에 원사업자에게 이전된 것으로 보며, 수급사업자는 추가적인 하도급대금을 청구할 수 없다."
+        ],
+        [
+          "toxic-ip_total_free-sub-01",
+          "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 본 계약에 따라 발생하는 모든 결과물, 산출물 및 그에 관한 저작권·지식재산권 일체는 별도의 하도급대금 없이 전부 원사업자에게 영구적으로 귀속되며, 수급사업자는 저작인격권을 포함한 어떠한 권리도 주장하지 아니한다."
+        ],
+        [
+          "toxic-ip_total_free-sub-03",
+          "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 본 계약의 결과물에 대한 저작권 및 특허권 등 모든 지식재산권은 원사업자에게 귀속되고, 수급사업자가 계약 이전부터 보유하던 기술·도구를 활용한 경우에도 해당 결과물에 관한 권리는 원사업자의 소유로 한다."
+        ]
+      ],
+      "score_diff": [
+        {
+          "after": 0.0012127298396080732,
+          "before": 0.0021661785431206226,
+          "delta": -0.0009534487035125494
+        },
+        {
+          "after": 0.0005160356522537768,
+          "before": 0.0005832142778672278,
+          "delta": -6.7178625613451e-05
+        },
+        {
+          "after": 0.00037713980418629944,
+          "before": 0.00016589761071372777,
+          "delta": 0.00021124219347257167
+        }
+      ]
+    },
+    {
+      "after_top3": [
+        {
+          "category": "IP_OWNERSHIP",
+          "pattern": "IP_TOTAL_FREE",
+          "pattern_id": "toxic-ip_total_free-sub-03",
+          "rank": 1,
+          "rerank_text": "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 본 계약의 결과물에 대한 저작권 및 특허권 등 모든 지식재산권은 원사업자에게 귀속되고, 수급사업자가 계약 이전부터 보유하던 기술·도구를 활용한 경우에도 해당 결과물에 관한 권리는 원사업자의 소유로 한다.",
+          "score": 5.860640885657631e-05,
+          "text": "본 계약의 결과물에 대한 저작권 및 특허권 등 모든 지식재산권은 원사업자에게 귀속되고, 수급사업자가 계약 이전부터 보유하던 기술·도구를 활용한 경우에도 해당 결과물에 관한 권리는 원사업자의 소유로 한다."
+        },
+        {
+          "category": "IP_OWNERSHIP",
+          "pattern": "IP_TOTAL_FREE",
+          "pattern_id": "toxic-ip_total_free-sub-01",
+          "rank": 2,
+          "rerank_text": "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 본 계약에 따라 발생하는 모든 결과물, 산출물 및 그에 관한 저작권·지식재산권 일체는 별도의 하도급대금 없이 전부 원사업자에게 영구적으로 귀속되며, 수급사업자는 저작인격권을 포함한 어떠한 권리도 주장하지 아니한다.",
+          "score": 3.2093419576995075e-05,
+          "text": "본 계약에 따라 발생하는 모든 결과물, 산출물 및 그에 관한 저작권·지식재산권 일체는 별도의 하도급대금 없이 전부 원사업자에게 영구적으로 귀속되며, 수급사업자는 저작인격권을 포함한 어떠한 권리도 주장하지 아니한다."
+        },
+        {
+          "category": "IP_OWNERSHIP",
+          "pattern": "IP_TOTAL_FREE",
+          "pattern_id": "toxic-ip_total_free-03",
+          "rank": 3,
+          "rerank_text": "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 본 계약의 결과물에 대한 저작권 및 특허권 등 모든 지식재산권은 도급인에게 귀속되고, 수급인이 계약 이전부터 보유하던 기술·도구를 활용한 경우에도 해당 결과물에 관한 권리는 도급인의 소유로 한다.",
+          "score": 1.905877434182912e-05,
+          "text": "본 계약의 결과물에 대한 저작권 및 특허권 등 모든 지식재산권은 도급인에게 귀속되고, 수급인이 계약 이전부터 보유하던 기술·도구를 활용한 경우에도 해당 결과물에 관한 권리는 도급인의 소유로 한다."
+        }
+      ],
+      "before_top3": [
+        {
+          "category": "IP_OWNERSHIP",
+          "pattern": "IP_TOTAL_FREE",
+          "pattern_id": "toxic-ip_total_free-sub-03",
+          "rank": 1,
+          "score": 0.0001060456270352006
+        },
+        {
+          "category": "IP_OWNERSHIP",
+          "pattern": "IP_TOTAL_FREE",
+          "pattern_id": "toxic-ip_total_free-sub-01",
+          "rank": 2,
+          "score": 9.208649134961888e-05
+        },
+        {
+          "category": "IP_OWNERSHIP",
+          "pattern": "IP_TOTAL_FREE",
+          "pattern_id": "toxic-ip_total_free-03",
+          "rank": 3,
+          "score": 1.9576449631131254e-05
+        }
+      ],
+      "case_id": "v4-sm-04",
+      "rerank_text_changed": [
+        [
+          "toxic-ip_total_free-sub-03",
+          "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 본 계약의 결과물에 대한 저작권 및 특허권 등 모든 지식재산권은 원사업자에게 귀속되고, 수급사업자가 계약 이전부터 보유하던 기술·도구를 활용한 경우에도 해당 결과물에 관한 권리는 원사업자의 소유로 한다."
+        ],
+        [
+          "toxic-ip_total_free-sub-01",
+          "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 본 계약에 따라 발생하는 모든 결과물, 산출물 및 그에 관한 저작권·지식재산권 일체는 별도의 하도급대금 없이 전부 원사업자에게 영구적으로 귀속되며, 수급사업자는 저작인격권을 포함한 어떠한 권리도 주장하지 아니한다."
+        ],
+        [
+          "toxic-ip_total_free-03",
+          "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 본 계약의 결과물에 대한 저작권 및 특허권 등 모든 지식재산권은 도급인에게 귀속되고, 수급인이 계약 이전부터 보유하던 기술·도구를 활용한 경우에도 해당 결과물에 관한 권리는 도급인의 소유로 한다."
+        ]
+      ],
+      "score_diff": [
+        {
+          "after": 5.860640885657631e-05,
+          "before": 0.0001060456270352006,
+          "delta": -4.743921817862429e-05
+        },
+        {
+          "after": 3.2093419576995075e-05,
+          "before": 9.208649134961888e-05,
+          "delta": -5.999307177262381e-05
+        },
+        {
+          "after": 1.905877434182912e-05,
+          "before": 1.9576449631131254e-05,
+          "delta": -5.17675289302133e-07
+        }
+      ]
+    },
+    {
+      "after_top3": [
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "pattern_id": "toxic-indefinite_confidentiality-sub-01",
+          "rank": 1,
+          "rerank_text": "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 수급사업자는 본 계약 종료 후에도 기간의 제한 없이 영구히 원사업자의 업무상 비밀을 제3자에게 누설하거나 이용하여서는 아니 되며, 비밀유지의무의 종기는 별도로 정하지 아니한다.",
+          "score": 0.016207417473196983,
+          "text": "수급사업자는 본 계약 종료 후에도 기간의 제한 없이 영구히 원사업자의 업무상 비밀을 제3자에게 누설하거나 이용하여서는 아니 되며, 비밀유지의무의 종기는 별도로 정하지 아니한다."
+        },
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "pattern_id": "toxic-indefinite_confidentiality-sub-03",
+          "rank": 2,
+          "rerank_text": "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 수급사업자는 원사업자로부터 제공받았거나 업무 중 알게 된 정보에 대해 기간의 정함이 없이 비밀을 유지하여야 하며, 해당 정보가 수급사업자의 귀책 없이 공지의 사실이 된 경우에도 비밀유지의무는 소멸하지 아니한다.",
+          "score": 0.0026360168121755123,
+          "text": "수급사업자는 원사업자로부터 제공받았거나 업무 중 알게 된 정보에 대해 기간의 정함이 없이 비밀을 유지하여야 하며, 해당 정보가 수급사업자의 귀책 없이 공지의 사실이 된 경우에도 비밀유지의무는 소멸하지 아니한다."
+        },
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "pattern_id": "toxic-indefinite_confidentiality-sub-04",
+          "rank": 3,
+          "rerank_text": "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 본 조에 따른 수급사업자의 비밀유지의무는 계약 종료 후에도 종기를 두지 아니하고 무기한 존속하며, 원사업자는 동일한 정보에 대하여 어떠한 비밀유지의무도 부담하지 아니한다.",
+          "score": 0.0016291762003675103,
+          "text": "본 조에 따른 수급사업자의 비밀유지의무는 계약 종료 후에도 종기를 두지 아니하고 무기한 존속하며, 원사업자는 동일한 정보에 대하여 어떠한 비밀유지의무도 부담하지 아니한다."
+        }
+      ],
+      "before_top3": [
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "pattern_id": "toxic-indefinite_confidentiality-sub-01",
+          "rank": 1,
+          "score": 0.191267728805542
+        },
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "pattern_id": "toxic-indefinite_confidentiality-sub-04",
+          "rank": 2,
+          "score": 0.04342377558350563
+        },
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "pattern_id": "toxic-indefinite_confidentiality-sub-03",
+          "rank": 3,
+          "score": 0.01929342932999134
+        }
+      ],
+      "case_id": "v4-sm-05",
+      "rerank_text_changed": [
+        [
+          "toxic-indefinite_confidentiality-sub-01",
+          "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 수급사업자는 본 계약 종료 후에도 기간의 제한 없이 영구히 원사업자의 업무상 비밀을 제3자에게 누설하거나 이용하여서는 아니 되며, 비밀유지의무의 종기는 별도로 정하지 아니한다."
+        ],
+        [
+          "toxic-indefinite_confidentiality-sub-03",
+          "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 수급사업자는 원사업자로부터 제공받았거나 업무 중 알게 된 정보에 대해 기간의 정함이 없이 비밀을 유지하여야 하며, 해당 정보가 수급사업자의 귀책 없이 공지의 사실이 된 경우에도 비밀유지의무는 소멸하지 아니한다."
+        ],
+        [
+          "toxic-indefinite_confidentiality-sub-04",
+          "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 본 조에 따른 수급사업자의 비밀유지의무는 계약 종료 후에도 종기를 두지 아니하고 무기한 존속하며, 원사업자는 동일한 정보에 대하여 어떠한 비밀유지의무도 부담하지 아니한다."
+        ]
+      ],
+      "score_diff": [
+        {
+          "after": 0.016207417473196983,
+          "before": 0.191267728805542,
+          "delta": -0.175060311332345
+        },
+        {
+          "after": 0.0026360168121755123,
+          "before": 0.04342377558350563,
+          "delta": -0.04078775877133012
+        },
+        {
+          "after": 0.0016291762003675103,
+          "before": 0.01929342932999134,
+          "delta": -0.01766425312962383
+        }
+      ]
+    },
+    {
+      "after_top3": [
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "pattern_id": "toxic-indefinite_confidentiality-sub-02",
+          "rank": 1,
+          "rerank_text": "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 본 계약 수행 과정에서 알게 된 원사업자의 모든 정보는 수급사업자가 향후 어떠한 시점에도 공개하거나 활용할 수 없으며, 계약 종료 및 시간의 경과와 무관하게 비밀유지의무는 영구히 존속한다.",
+          "score": 0.9560545682907104,
+          "text": "본 계약 수행 과정에서 알게 된 원사업자의 모든 정보는 수급사업자가 향후 어떠한 시점에도 공개하거나 활용할 수 없으며, 계약 종료 및 시간의 경과와 무관하게 비밀유지의무는 영구히 존속한다."
+        },
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "pattern_id": "toxic-indefinite_confidentiality-sub-03",
+          "rank": 2,
+          "rerank_text": "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 수급사업자는 원사업자로부터 제공받았거나 업무 중 알게 된 정보에 대해 기간의 정함이 없이 비밀을 유지하여야 하며, 해당 정보가 수급사업자의 귀책 없이 공지의 사실이 된 경우에도 비밀유지의무는 소멸하지 아니한다.",
+          "score": 0.7325196266174316,
+          "text": "수급사업자는 원사업자로부터 제공받았거나 업무 중 알게 된 정보에 대해 기간의 정함이 없이 비밀을 유지하여야 하며, 해당 정보가 수급사업자의 귀책 없이 공지의 사실이 된 경우에도 비밀유지의무는 소멸하지 아니한다."
+        },
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "pattern_id": "toxic-indefinite_confidentiality-02",
+          "rank": 3,
+          "rerank_text": "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 본 계약 수행 과정에서 알게 된 도급인의 모든 정보는 수급인이 향후 어떠한 시점에도 공개하거나 활용할 수 없으며, 계약 종료 및 시간의 경과와 무관하게 비밀유지의무는 영구히 존속한다.",
+          "score": 0.007487615570425987,
+          "text": "본 계약 수행 과정에서 알게 된 도급인의 모든 정보는 수급인이 향후 어떠한 시점에도 공개하거나 활용할 수 없으며, 계약 종료 및 시간의 경과와 무관하게 비밀유지의무는 영구히 존속한다."
+        }
+      ],
+      "before_top3": [
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "pattern_id": "toxic-indefinite_confidentiality-sub-02",
+          "rank": 1,
+          "score": 0.991302490234375
+        },
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "pattern_id": "toxic-indefinite_confidentiality-sub-03",
+          "rank": 2,
+          "score": 0.9670391082763672
+        },
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "pattern_id": "toxic-indefinite_confidentiality-02",
+          "rank": 3,
+          "score": 0.06582391262054443
+        }
+      ],
+      "case_id": "v4-sm-06",
+      "rerank_text_changed": [
+        [
+          "toxic-indefinite_confidentiality-sub-02",
+          "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 본 계약 수행 과정에서 알게 된 원사업자의 모든 정보는 수급사업자가 향후 어떠한 시점에도 공개하거나 활용할 수 없으며, 계약 종료 및 시간의 경과와 무관하게 비밀유지의무는 영구히 존속한다."
+        ],
+        [
+          "toxic-indefinite_confidentiality-sub-03",
+          "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 수급사업자는 원사업자로부터 제공받았거나 업무 중 알게 된 정보에 대해 기간의 정함이 없이 비밀을 유지하여야 하며, 해당 정보가 수급사업자의 귀책 없이 공지의 사실이 된 경우에도 비밀유지의무는 소멸하지 아니한다."
+        ],
+        [
+          "toxic-indefinite_confidentiality-02",
+          "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 본 계약 수행 과정에서 알게 된 도급인의 모든 정보는 수급인이 향후 어떠한 시점에도 공개하거나 활용할 수 없으며, 계약 종료 및 시간의 경과와 무관하게 비밀유지의무는 영구히 존속한다."
+        ]
+      ],
+      "score_diff": [
+        {
+          "after": 0.9560545682907104,
+          "before": 0.991302490234375,
+          "delta": -0.03524792194366455
+        },
+        {
+          "after": 0.7325196266174316,
+          "before": 0.9670391082763672,
+          "delta": -0.23451948165893555
+        },
+        {
+          "after": 0.007487615570425987,
+          "before": 0.06582391262054443,
+          "delta": -0.058336297050118446
+        }
+      ]
+    },
+    {
+      "after_top3": [
+        {
+          "category": "DISPUTE",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "pattern_id": "toxic-unilateral_interpretation-sub-01",
+          "rank": 1,
+          "rerank_text": "검토 패턴: 발주자의 일방적 계약 해석 권한\n예문: 본 계약 내용에 관하여 당사자 간 이견이 발생할 경우 원사업자의 해석 및 판단에 따르며, 수급사업자는 이에 이의를 제기하지 아니한다.",
+          "score": 5.980956120765768e-05,
+          "text": "본 계약 내용에 관하여 당사자 간 이견이 발생할 경우 원사업자의 해석 및 판단에 따르며, 수급사업자는 이에 이의를 제기하지 아니한다."
+        },
+        {
+          "category": "DISPUTE",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "pattern_id": "toxic-unilateral_interpretation-sub-03",
+          "rank": 2,
+          "rerank_text": "검토 패턴: 발주자의 일방적 계약 해석 권한\n예문: 본 계약의 해석상 이견이 발생하는 경우 원사업자의 해석을 우선 기준으로 하여 처리하며, 수급사업자는 이에 따라 업무를 수행하여야 한다.",
+          "score": 2.5739466309460113e-06,
+          "text": "본 계약의 해석상 이견이 발생하는 경우 원사업자의 해석을 우선 기준으로 하여 처리하며, 수급사업자는 이에 따라 업무를 수행하여야 한다."
+        },
+        {
+          "category": "DISPUTE",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "pattern_id": "toxic-unilateral_interpretation-04",
+          "rank": 3,
+          "rerank_text": "검토 패턴: 발주자의 일방적 계약 해석 권한\n예문: 계약 내용의 모호성이나 누락으로 인한 분쟁 발생 시 도급인의 원래 의도를 기준으로 해석하며, 수급인은 도급인이 제시한 해석을 서면으로 이의 없이 수용한다.",
+          "score": 2.2885369617142715e-06,
+          "text": "계약 내용의 모호성이나 누락으로 인한 분쟁 발생 시 도급인의 원래 의도를 기준으로 해석하며, 수급인은 도급인이 제시한 해석을 서면으로 이의 없이 수용한다."
+        }
+      ],
+      "before_top3": [
+        {
+          "category": "DISPUTE",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "pattern_id": "toxic-unilateral_interpretation-sub-01",
+          "rank": 1,
+          "score": 0.0027819261886179447
+        },
+        {
+          "category": "DISPUTE",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "pattern_id": "toxic-unilateral_interpretation-sub-03",
+          "rank": 2,
+          "score": 3.1221916287904605e-05
+        },
+        {
+          "category": "DISPUTE",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "pattern_id": "toxic-unilateral_interpretation-04",
+          "rank": 3,
+          "score": 6.746011877112323e-06
+        }
+      ],
+      "case_id": "v4-sm-07",
+      "rerank_text_changed": [
+        [
+          "toxic-unilateral_interpretation-sub-01",
+          "검토 패턴: 발주자의 일방적 계약 해석 권한\n예문: 본 계약 내용에 관하여 당사자 간 이견이 발생할 경우 원사업자의 해석 및 판단에 따르며, 수급사업자는 이에 이의를 제기하지 아니한다."
+        ],
+        [
+          "toxic-unilateral_interpretation-sub-03",
+          "검토 패턴: 발주자의 일방적 계약 해석 권한\n예문: 본 계약의 해석상 이견이 발생하는 경우 원사업자의 해석을 우선 기준으로 하여 처리하며, 수급사업자는 이에 따라 업무를 수행하여야 한다."
+        ],
+        [
+          "toxic-unilateral_interpretation-04",
+          "검토 패턴: 발주자의 일방적 계약 해석 권한\n예문: 계약 내용의 모호성이나 누락으로 인한 분쟁 발생 시 도급인의 원래 의도를 기준으로 해석하며, 수급인은 도급인이 제시한 해석을 서면으로 이의 없이 수용한다."
+        ]
+      ],
+      "score_diff": [
+        {
+          "after": 5.980956120765768e-05,
+          "before": 0.0027819261886179447,
+          "delta": -0.002722116627410287
+        },
+        {
+          "after": 2.5739466309460113e-06,
+          "before": 3.1221916287904605e-05,
+          "delta": -2.8647969656958594e-05
+        },
+        {
+          "after": 2.2885369617142715e-06,
+          "before": 6.746011877112323e-06,
+          "delta": -4.457474915398052e-06
+        }
+      ]
+    },
+    {
+      "after_top3": [
+        {
+          "category": "PAYMENT",
+          "pattern": "PAYMENT_DELAY_UNFAIR",
+          "pattern_id": "toxic-payment_delay_unfair-04",
+          "rank": 1,
+          "rerank_text": "검토 패턴: 부당한 대금 지급 지연·지체상금 면제\n예문: 수급인의 업무 완료 후 도급인은 품질 검토를 이유로 보수 지급을 유보할 수 있으며, 검토 기간 및 최종 지급 여부는 도급인이 단독으로 결정한다. 이 기간 중 발생하는 지연에 대한 이자는 부담하지 아니한다.",
+          "score": 8.143102263602486e-07,
+          "text": "수급인의 업무 완료 후 도급인은 품질 검토를 이유로 보수 지급을 유보할 수 있으며, 검토 기간 및 최종 지급 여부는 도급인이 단독으로 결정한다. 이 기간 중 발생하는 지연에 대한 이자는 부담하지 아니한다."
+        },
+        {
+          "category": "IP_OWNERSHIP",
+          "pattern": "IP_TOTAL_FREE",
+          "pattern_id": "toxic-ip_total_free-02",
+          "rank": 2,
+          "rerank_text": "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 수급인이 본 계약 수행 중 개발하거나 개선한 소프트웨어, 알고리즘, 기술 노하우 및 이와 관련된 일체의 지식재산권은 계약 체결과 동시에 도급인에게 이전된 것으로 보며, 수급인은 추가적인 보상을 청구할 수 없다.",
+          "score": 7.880704515628167e-07,
+          "text": "수급인이 본 계약 수행 중 개발하거나 개선한 소프트웨어, 알고리즘, 기술 노하우 및 이와 관련된 일체의 지식재산권은 계약 체결과 동시에 도급인에게 이전된 것으로 보며, 수급인은 추가적인 보상을 청구할 수 없다."
+        },
+        {
+          "category": "LIABILITY",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "pattern_id": "toxic-unfair_damage_claim-01",
+          "rank": 3,
+          "rerank_text": "검토 패턴: 부당하게 과도한 손해배상 청구액 설정\n예문: 수급인이 납기를 지키지 못하거나 도급인이 요구한 품질 기준을 충족하지 못할 경우, 수급인은 계약 금액 상당액에 해당하는 금액을 손해배상액으로 지급하여야 한다.",
+          "score": 7.870909826124262e-07,
+          "text": "수급인이 납기를 지키지 못하거나 도급인이 요구한 품질 기준을 충족하지 못할 경우, 수급인은 계약 금액 상당액에 해당하는 금액을 손해배상액으로 지급하여야 한다."
+        }
+      ],
+      "before_top3": [
+        {
+          "category": "IP_OWNERSHIP",
+          "pattern": "IP_TOTAL_FREE",
+          "pattern_id": "toxic-ip_total_free-02",
+          "rank": 1,
+          "score": 9.04712635474425e-07
+        },
+        {
+          "category": "LIABILITY",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "pattern_id": "toxic-unfair_damage_claim-01",
+          "rank": 2,
+          "score": 9.0449782419455e-07
+        },
+        {
+          "category": "PAYMENT",
+          "pattern": "PAYMENT_DELAY_UNFAIR",
+          "pattern_id": "toxic-payment_delay_unfair-04",
+          "rank": 3,
+          "score": 8.672826652400545e-07
+        }
+      ],
+      "case_id": "v4-sm-08",
+      "rerank_text_changed": [
+        [
+          "toxic-payment_delay_unfair-04",
+          "검토 패턴: 부당한 대금 지급 지연·지체상금 면제\n예문: 수급인의 업무 완료 후 도급인은 품질 검토를 이유로 보수 지급을 유보할 수 있으며, 검토 기간 및 최종 지급 여부는 도급인이 단독으로 결정한다. 이 기간 중 발생하는 지연에 대한 이자는 부담하지 아니한다."
+        ],
+        [
+          "toxic-ip_total_free-02",
+          "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 수급인이 본 계약 수행 중 개발하거나 개선한 소프트웨어, 알고리즘, 기술 노하우 및 이와 관련된 일체의 지식재산권은 계약 체결과 동시에 도급인에게 이전된 것으로 보며, 수급인은 추가적인 보상을 청구할 수 없다."
+        ],
+        [
+          "toxic-unfair_damage_claim-01",
+          "검토 패턴: 부당하게 과도한 손해배상 청구액 설정\n예문: 수급인이 납기를 지키지 못하거나 도급인이 요구한 품질 기준을 충족하지 못할 경우, 수급인은 계약 금액 상당액에 해당하는 금액을 손해배상액으로 지급하여야 한다."
+        ]
+      ],
+      "score_diff": [
+        {
+          "after": 8.143102263602486e-07,
+          "before": 9.04712635474425e-07,
+          "delta": -9.040240911417641e-08
+        },
+        {
+          "after": 7.880704515628167e-07,
+          "before": 9.0449782419455e-07,
+          "delta": -1.164273726317333e-07
+        },
+        {
+          "after": 7.870909826124262e-07,
+          "before": 8.672826652400545e-07,
+          "delta": -8.019168262762832e-08
+        }
+      ]
+    },
+    {
+      "after_top3": [
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "NONCOMPETE_EXCESS",
+          "pattern_id": "toxic-noncompete_excess-sub-01",
+          "rank": 1,
+          "rerank_text": "검토 패턴: 과도한 경업금지·영업활동 제한\n예문: 수급사업자는 본 계약 종료 후 3년간 원사업자와 동종·유사한 업종에 종사하거나 경쟁 업체에 용역을 제공할 수 없으며, 이를 위반할 경우 하도급대금의 5배에 해당하는 위약금을 지급한다.",
+          "score": 0.15346325933933258,
+          "text": "수급사업자는 본 계약 종료 후 3년간 원사업자와 동종·유사한 업종에 종사하거나 경쟁 업체에 용역을 제공할 수 없으며, 이를 위반할 경우 하도급대금의 5배에 해당하는 위약금을 지급한다."
+        },
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "NONCOMPETE_EXCESS",
+          "pattern_id": "toxic-noncompete_excess-sub-02",
+          "rank": 2,
+          "rerank_text": "검토 패턴: 과도한 경업금지·영업활동 제한\n예문: 수급사업자는 계약 기간 중 및 계약 종료 후 2년간 원사업자의 현재 또는 잠재 고객사에 직접 또는 간접으로 동종 용역을 제공하는 일체의 영업 활동을 하지 못한다.",
+          "score": 0.10880931466817856,
+          "text": "수급사업자는 계약 기간 중 및 계약 종료 후 2년간 원사업자의 현재 또는 잠재 고객사에 직접 또는 간접으로 동종 용역을 제공하는 일체의 영업 활동을 하지 못한다."
+        },
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "NONCOMPETE_EXCESS",
+          "pattern_id": "toxic-noncompete_excess-02",
+          "rank": 3,
+          "rerank_text": "검토 패턴: 과도한 경업금지·영업활동 제한\n예문: 수급인은 계약 기간 중 및 계약 종료 후 2년간 도급인의 현재 또는 잠재 고객사에 직접 또는 간접으로 동종 용역을 제공하는 일체의 영업 활동을 하지 못한다.",
+          "score": 0.013118880800902843,
+          "text": "수급인은 계약 기간 중 및 계약 종료 후 2년간 도급인의 현재 또는 잠재 고객사에 직접 또는 간접으로 동종 용역을 제공하는 일체의 영업 활동을 하지 못한다."
+        }
+      ],
+      "before_top3": [
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "NONCOMPETE_EXCESS",
+          "pattern_id": "toxic-noncompete_excess-sub-02",
+          "rank": 1,
+          "score": 0.8099712133407593
+        },
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "NONCOMPETE_EXCESS",
+          "pattern_id": "toxic-noncompete_excess-sub-01",
+          "rank": 2,
+          "score": 0.5768664479255676
+        },
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "NONCOMPETE_EXCESS",
+          "pattern_id": "toxic-noncompete_excess-02",
+          "rank": 3,
+          "score": 0.37958914041519165
+        }
+      ],
+      "case_id": "v4-sm-09",
+      "rerank_text_changed": [
+        [
+          "toxic-noncompete_excess-sub-01",
+          "검토 패턴: 과도한 경업금지·영업활동 제한\n예문: 수급사업자는 본 계약 종료 후 3년간 원사업자와 동종·유사한 업종에 종사하거나 경쟁 업체에 용역을 제공할 수 없으며, 이를 위반할 경우 하도급대금의 5배에 해당하는 위약금을 지급한다."
+        ],
+        [
+          "toxic-noncompete_excess-sub-02",
+          "검토 패턴: 과도한 경업금지·영업활동 제한\n예문: 수급사업자는 계약 기간 중 및 계약 종료 후 2년간 원사업자의 현재 또는 잠재 고객사에 직접 또는 간접으로 동종 용역을 제공하는 일체의 영업 활동을 하지 못한다."
+        ],
+        [
+          "toxic-noncompete_excess-02",
+          "검토 패턴: 과도한 경업금지·영업활동 제한\n예문: 수급인은 계약 기간 중 및 계약 종료 후 2년간 도급인의 현재 또는 잠재 고객사에 직접 또는 간접으로 동종 용역을 제공하는 일체의 영업 활동을 하지 못한다."
+        ]
+      ],
+      "score_diff": [
+        {
+          "after": 0.15346325933933258,
+          "before": 0.8099712133407593,
+          "delta": -0.6565079540014267
+        },
+        {
+          "after": 0.10880931466817856,
+          "before": 0.5768664479255676,
+          "delta": -0.46805713325738907
+        },
+        {
+          "after": 0.013118880800902843,
+          "before": 0.37958914041519165,
+          "delta": -0.3664702596142888
+        }
+      ]
+    },
+    {
+      "after_top3": [
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "pattern_id": "toxic-indefinite_confidentiality-sub-04",
+          "rank": 1,
+          "rerank_text": "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 본 조에 따른 수급사업자의 비밀유지의무는 계약 종료 후에도 종기를 두지 아니하고 무기한 존속하며, 원사업자는 동일한 정보에 대하여 어떠한 비밀유지의무도 부담하지 아니한다.",
+          "score": 1.4550042806149577e-06,
+          "text": "본 조에 따른 수급사업자의 비밀유지의무는 계약 종료 후에도 종기를 두지 아니하고 무기한 존속하며, 원사업자는 동일한 정보에 대하여 어떠한 비밀유지의무도 부담하지 아니한다."
+        },
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "pattern_id": "toxic-indefinite_confidentiality-04",
+          "rank": 2,
+          "rerank_text": "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 본 조에 따른 수급인의 비밀유지의무는 계약 종료 후에도 종기를 두지 아니하고 무기한 존속하며, 도급인은 동일한 정보에 대하여 어떠한 비밀유지의무도 부담하지 아니한다.",
+          "score": 1.4116756119619822e-06,
+          "text": "본 조에 따른 수급인의 비밀유지의무는 계약 종료 후에도 종기를 두지 아니하고 무기한 존속하며, 도급인은 동일한 정보에 대하여 어떠한 비밀유지의무도 부담하지 아니한다."
+        },
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "pattern_id": "toxic-indefinite_confidentiality-sub-01",
+          "rank": 3,
+          "rerank_text": "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 수급사업자는 본 계약 종료 후에도 기간의 제한 없이 영구히 원사업자의 업무상 비밀을 제3자에게 누설하거나 이용하여서는 아니 되며, 비밀유지의무의 종기는 별도로 정하지 아니한다.",
+          "score": 1.1449897101556417e-06,
+          "text": "수급사업자는 본 계약 종료 후에도 기간의 제한 없이 영구히 원사업자의 업무상 비밀을 제3자에게 누설하거나 이용하여서는 아니 되며, 비밀유지의무의 종기는 별도로 정하지 아니한다."
+        }
+      ],
+      "before_top3": [
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "pattern_id": "toxic-indefinite_confidentiality-04",
+          "rank": 1,
+          "score": 2.846662255251431e-06
+        },
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "pattern_id": "toxic-indefinite_confidentiality-sub-04",
+          "rank": 2,
+          "score": 2.6093939595739357e-06
+        },
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "pattern_id": "toxic-indefinite_confidentiality-sub-01",
+          "rank": 3,
+          "score": 1.8617593013914302e-06
+        }
+      ],
+      "case_id": "v4-sm-10",
+      "rerank_text_changed": [
+        [
+          "toxic-indefinite_confidentiality-sub-04",
+          "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 본 조에 따른 수급사업자의 비밀유지의무는 계약 종료 후에도 종기를 두지 아니하고 무기한 존속하며, 원사업자는 동일한 정보에 대하여 어떠한 비밀유지의무도 부담하지 아니한다."
+        ],
+        [
+          "toxic-indefinite_confidentiality-04",
+          "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 본 조에 따른 수급인의 비밀유지의무는 계약 종료 후에도 종기를 두지 아니하고 무기한 존속하며, 도급인은 동일한 정보에 대하여 어떠한 비밀유지의무도 부담하지 아니한다."
+        ],
+        [
+          "toxic-indefinite_confidentiality-sub-01",
+          "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 수급사업자는 본 계약 종료 후에도 기간의 제한 없이 영구히 원사업자의 업무상 비밀을 제3자에게 누설하거나 이용하여서는 아니 되며, 비밀유지의무의 종기는 별도로 정하지 아니한다."
+        ]
+      ],
+      "score_diff": [
+        {
+          "after": 1.4550042806149577e-06,
+          "before": 2.846662255251431e-06,
+          "delta": -1.3916579746364732e-06
+        },
+        {
+          "after": 1.4116756119619822e-06,
+          "before": 2.6093939595739357e-06,
+          "delta": -1.1977183476119535e-06
+        },
+        {
+          "after": 1.1449897101556417e-06,
+          "before": 1.8617593013914302e-06,
+          "delta": -7.167695912357885e-07
+        }
+      ]
+    },
+    {
+      "after_top3": [
+        {
+          "category": "TERMINATION",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "pattern_id": "toxic-unilateral_cancellation-sub-05",
+          "rank": 1,
+          "rerank_text": "검토 패턴: 발주자의 일방적 위탁 취소 및 무보상 계약 해지\n예문: 발주자의 계약 취소 또는 원사업자의 내부 결정에 따라 본 계약이 중도 해지되는 경우, 수급사업자는 해지 통보를 받은 즉시 업무를 종료하여야 하며 미완료 부분에 대한 하도급대금은 지급되지 아니한다.",
+          "score": 0.05740450695157051,
+          "text": "발주자의 계약 취소 또는 원사업자의 내부 결정에 따라 본 계약이 중도 해지되는 경우, 수급사업자는 해지 통보를 받은 즉시 업무를 종료하여야 하며 미완료 부분에 대한 하도급대금은 지급되지 아니한다."
+        },
+        {
+          "category": "TERMINATION",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "pattern_id": "toxic-unilateral_cancellation-sub-02",
+          "rank": 2,
+          "rerank_text": "검토 패턴: 발주자의 일방적 위탁 취소 및 무보상 계약 해지\n예문: 원사업자는 프로젝트 방향 변경, 예산 삭감, 발주자 사정 등을 이유로 계약을 즉시 해지할 수 있으며, 이 경우 수급사업자에 대한 보상은 없고 수급사업자는 즉시 업무를 중단하여야 한다.",
+          "score": 0.006326047237962484,
+          "text": "원사업자는 프로젝트 방향 변경, 예산 삭감, 발주자 사정 등을 이유로 계약을 즉시 해지할 수 있으며, 이 경우 수급사업자에 대한 보상은 없고 수급사업자는 즉시 업무를 중단하여야 한다."
+        },
+        {
+          "category": "TERMINATION",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "pattern_id": "toxic-unilateral_cancellation-sub-04",
+          "rank": 3,
+          "rerank_text": "검토 패턴: 발주자의 일방적 위탁 취소 및 무보상 계약 해지\n예문: 본 계약은 원사업자의 사정에 의해 언제든지 해지될 수 있으며, 해지 시 수급사업자는 진행 중인 업무를 즉시 중단하고 관련 자료를 원사업자에게 반환하여야 한다. 수급사업자는 해지로 인한 손실에 대해 원사업자에게 청구권을 행사하지 아니한다.",
+          "score": 0.000678708020132035,
+          "text": "본 계약은 원사업자의 사정에 의해 언제든지 해지될 수 있으며, 해지 시 수급사업자는 진행 중인 업무를 즉시 중단하고 관련 자료를 원사업자에게 반환하여야 한다. 수급사업자는 해지로 인한 손실에 대해 원사업자에게 청구권을 행사하지 아니한다."
+        }
+      ],
+      "before_top3": [
+        {
+          "category": "TERMINATION",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "pattern_id": "toxic-unilateral_cancellation-sub-05",
+          "rank": 1,
+          "score": 0.22638291120529175
+        },
+        {
+          "category": "TERMINATION",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "pattern_id": "toxic-unilateral_cancellation-sub-02",
+          "rank": 2,
+          "score": 0.034057896584272385
+        },
+        {
+          "category": "TERMINATION",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "pattern_id": "toxic-unilateral_cancellation-sub-04",
+          "rank": 3,
+          "score": 0.0017425697296857834
+        }
+      ],
+      "case_id": "v4-sm-11",
+      "rerank_text_changed": [
+        [
+          "toxic-unilateral_cancellation-sub-05",
+          "검토 패턴: 발주자의 일방적 위탁 취소 및 무보상 계약 해지\n예문: 발주자의 계약 취소 또는 원사업자의 내부 결정에 따라 본 계약이 중도 해지되는 경우, 수급사업자는 해지 통보를 받은 즉시 업무를 종료하여야 하며 미완료 부분에 대한 하도급대금은 지급되지 아니한다."
+        ],
+        [
+          "toxic-unilateral_cancellation-sub-02",
+          "검토 패턴: 발주자의 일방적 위탁 취소 및 무보상 계약 해지\n예문: 원사업자는 프로젝트 방향 변경, 예산 삭감, 발주자 사정 등을 이유로 계약을 즉시 해지할 수 있으며, 이 경우 수급사업자에 대한 보상은 없고 수급사업자는 즉시 업무를 중단하여야 한다."
+        ],
+        [
+          "toxic-unilateral_cancellation-sub-04",
+          "검토 패턴: 발주자의 일방적 위탁 취소 및 무보상 계약 해지\n예문: 본 계약은 원사업자의 사정에 의해 언제든지 해지될 수 있으며, 해지 시 수급사업자는 진행 중인 업무를 즉시 중단하고 관련 자료를 원사업자에게 반환하여야 한다. 수급사업자는 해지로 인한 손실에 대해 원사업자에게 청구권을 행사하지 아니한다."
+        ]
+      ],
+      "score_diff": [
+        {
+          "after": 0.05740450695157051,
+          "before": 0.22638291120529175,
+          "delta": -0.16897840425372124
+        },
+        {
+          "after": 0.006326047237962484,
+          "before": 0.034057896584272385,
+          "delta": -0.0277318493463099
+        },
+        {
+          "after": 0.000678708020132035,
+          "before": 0.0017425697296857834,
+          "delta": -0.0010638617095537484
+        }
+      ]
+    },
+    {
+      "after_top3": [
+        {
+          "category": "TERMINATION",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "pattern_id": "toxic-unilateral_cancellation-sub-05",
+          "rank": 1,
+          "rerank_text": "검토 패턴: 발주자의 일방적 위탁 취소 및 무보상 계약 해지\n예문: 발주자의 계약 취소 또는 원사업자의 내부 결정에 따라 본 계약이 중도 해지되는 경우, 수급사업자는 해지 통보를 받은 즉시 업무를 종료하여야 하며 미완료 부분에 대한 하도급대금은 지급되지 아니한다.",
+          "score": 0.9880560636520386,
+          "text": "발주자의 계약 취소 또는 원사업자의 내부 결정에 따라 본 계약이 중도 해지되는 경우, 수급사업자는 해지 통보를 받은 즉시 업무를 종료하여야 하며 미완료 부분에 대한 하도급대금은 지급되지 아니한다."
+        },
+        {
+          "category": "LIABILITY",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "pattern_id": "toxic-unfair_damage_claim-sub-04",
+          "rank": 2,
+          "rerank_text": "검토 패턴: 부당하게 과도한 손해배상 청구액 설정\n예문: 수급사업자가 본 계약을 중도에 해지하거나 계약 이행을 거부하는 경우, 계약 잔여 기간에 해당하는 하도급대금 전액 및 원사업자가 대체 용역 수급에 소요한 비용의 합산액을 위약금으로 즉시 지급하여야 한다.",
+          "score": 0.9361432194709778,
+          "text": "수급사업자가 본 계약을 중도에 해지하거나 계약 이행을 거부하는 경우, 계약 잔여 기간에 해당하는 하도급대금 전액 및 원사업자가 대체 용역 수급에 소요한 비용의 합산액을 위약금으로 즉시 지급하여야 한다."
+        },
+        {
+          "category": "TERMINATION",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "pattern_id": "toxic-unilateral_cancellation-05",
+          "rank": 3,
+          "rerank_text": "검토 패턴: 발주자의 일방적 위탁 취소 및 무보상 계약 해지\n예문: 발주자의 계약 취소 또는 도급인의 내부 결정에 따라 본 계약이 중도 해지되는 경우, 수급인은 해지 통보를 받은 즉시 업무를 종료하여야 하며 미완료 부분에 대한 보수는 지급되지 아니한다.",
+          "score": 0.5018124580383301,
+          "text": "발주자의 계약 취소 또는 도급인의 내부 결정에 따라 본 계약이 중도 해지되는 경우, 수급인은 해지 통보를 받은 즉시 업무를 종료하여야 하며 미완료 부분에 대한 보수는 지급되지 아니한다."
+        }
+      ],
+      "before_top3": [
+        {
+          "category": "TERMINATION",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "pattern_id": "toxic-unilateral_cancellation-sub-05",
+          "rank": 1,
+          "score": 0.9933463335037231
+        },
+        {
+          "category": "LIABILITY",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "pattern_id": "toxic-unfair_damage_claim-sub-04",
+          "rank": 2,
+          "score": 0.9844194054603577
+        },
+        {
+          "category": "TERMINATION",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "pattern_id": "toxic-unilateral_cancellation-05",
+          "rank": 3,
+          "score": 0.6836409568786621
+        }
+      ],
+      "case_id": "v4-sm-12",
+      "rerank_text_changed": [
+        [
+          "toxic-unilateral_cancellation-sub-05",
+          "검토 패턴: 발주자의 일방적 위탁 취소 및 무보상 계약 해지\n예문: 발주자의 계약 취소 또는 원사업자의 내부 결정에 따라 본 계약이 중도 해지되는 경우, 수급사업자는 해지 통보를 받은 즉시 업무를 종료하여야 하며 미완료 부분에 대한 하도급대금은 지급되지 아니한다."
+        ],
+        [
+          "toxic-unfair_damage_claim-sub-04",
+          "검토 패턴: 부당하게 과도한 손해배상 청구액 설정\n예문: 수급사업자가 본 계약을 중도에 해지하거나 계약 이행을 거부하는 경우, 계약 잔여 기간에 해당하는 하도급대금 전액 및 원사업자가 대체 용역 수급에 소요한 비용의 합산액을 위약금으로 즉시 지급하여야 한다."
+        ],
+        [
+          "toxic-unilateral_cancellation-05",
+          "검토 패턴: 발주자의 일방적 위탁 취소 및 무보상 계약 해지\n예문: 발주자의 계약 취소 또는 도급인의 내부 결정에 따라 본 계약이 중도 해지되는 경우, 수급인은 해지 통보를 받은 즉시 업무를 종료하여야 하며 미완료 부분에 대한 보수는 지급되지 아니한다."
+        ]
+      ],
+      "score_diff": [
+        {
+          "after": 0.9880560636520386,
+          "before": 0.9933463335037231,
+          "delta": -0.00529026985168457
+        },
+        {
+          "after": 0.9361432194709778,
+          "before": 0.9844194054603577,
+          "delta": -0.04827618598937988
+        },
+        {
+          "after": 0.5018124580383301,
+          "before": 0.6836409568786621,
+          "delta": -0.18182849884033203
+        }
+      ]
+    },
+    {
+      "after_top3": [
+        {
+          "category": "SCOPE_SOW",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "pattern_id": "toxic-unpaid_additional_work-04",
+          "rank": 1,
+          "rerank_text": "검토 패턴: 추가 업무 지시 시 무상 수행 강요\n예문: 프로젝트 완성을 위해 도급인이 요청하는 수정, 보완, 추가 기능 구현 등의 작업은 검수 완료 전까지 수급인의 의무 범위에 포함되며, 추가 비용이 발생하더라도 도급인에게 청구할 수 없다.",
+          "score": 0.011113300919532776,
+          "text": "프로젝트 완성을 위해 도급인이 요청하는 수정, 보완, 추가 기능 구현 등의 작업은 검수 완료 전까지 수급인의 의무 범위에 포함되며, 추가 비용이 발생하더라도 도급인에게 청구할 수 없다."
+        },
+        {
+          "category": "SCOPE_SOW",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "pattern_id": "toxic-unpaid_additional_work-02",
+          "rank": 2,
+          "rerank_text": "검토 패턴: 추가 업무 지시 시 무상 수행 강요\n예문: 수급인은 도급인의 서면 또는 구두 지시에 따른 추가 작업을 계약에 명시되지 않은 경우에도 수행할 의무가 있으며, 추가 작업에 대한 별도의 대가를 청구할 권리를 포기한다.",
+          "score": 0.000599913124460727,
+          "text": "수급인은 도급인의 서면 또는 구두 지시에 따른 추가 작업을 계약에 명시되지 않은 경우에도 수행할 의무가 있으며, 추가 작업에 대한 별도의 대가를 청구할 권리를 포기한다."
+        },
+        {
+          "category": "SCOPE_SOW",
+          "pattern": "UNILATERAL_CHANGE",
+          "pattern_id": "toxic-unilateral_change-01",
+          "rank": 3,
+          "rerank_text": "검토 패턴: 일방적인 과업 범위 변경 권한\n예문: 도급인은 필요에 따라 수급인과의 사전 협의 없이 업무 범위, 납기일, 산출물 규격을 변경할 수 있으며, 수급인은 추가 보수 청구 없이 이에 응하여야 한다.",
+          "score": 0.0004838451277464628,
+          "text": "도급인은 필요에 따라 수급인과의 사전 협의 없이 업무 범위, 납기일, 산출물 규격을 변경할 수 있으며, 수급인은 추가 보수 청구 없이 이에 응하여야 한다."
+        }
+      ],
+      "before_top3": [
+        {
+          "category": "SCOPE_SOW",
+          "pattern": "UNILATERAL_CHANGE",
+          "pattern_id": "toxic-unilateral_change-01",
+          "rank": 1,
+          "score": 0.43389642238616943
+        },
+        {
+          "category": "SCOPE_SOW",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "pattern_id": "toxic-unpaid_additional_work-04",
+          "rank": 2,
+          "score": 0.031901225447654724
+        },
+        {
+          "category": "SCOPE_SOW",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "pattern_id": "toxic-unpaid_additional_work-02",
+          "rank": 3,
+          "score": 0.012556544505059719
+        }
+      ],
+      "case_id": "v4-sw-01",
+      "rerank_text_changed": [
+        [
+          "toxic-unpaid_additional_work-04",
+          "검토 패턴: 추가 업무 지시 시 무상 수행 강요\n예문: 프로젝트 완성을 위해 도급인이 요청하는 수정, 보완, 추가 기능 구현 등의 작업은 검수 완료 전까지 수급인의 의무 범위에 포함되며, 추가 비용이 발생하더라도 도급인에게 청구할 수 없다."
+        ],
+        [
+          "toxic-unpaid_additional_work-02",
+          "검토 패턴: 추가 업무 지시 시 무상 수행 강요\n예문: 수급인은 도급인의 서면 또는 구두 지시에 따른 추가 작업을 계약에 명시되지 않은 경우에도 수행할 의무가 있으며, 추가 작업에 대한 별도의 대가를 청구할 권리를 포기한다."
+        ],
+        [
+          "toxic-unilateral_change-01",
+          "검토 패턴: 일방적인 과업 범위 변경 권한\n예문: 도급인은 필요에 따라 수급인과의 사전 협의 없이 업무 범위, 납기일, 산출물 규격을 변경할 수 있으며, 수급인은 추가 보수 청구 없이 이에 응하여야 한다."
+        ]
+      ],
+      "score_diff": [
+        {
+          "after": 0.011113300919532776,
+          "before": 0.43389642238616943,
+          "delta": -0.42278312146663666
+        },
+        {
+          "after": 0.000599913124460727,
+          "before": 0.031901225447654724,
+          "delta": -0.031301312323194
+        },
+        {
+          "after": 0.0004838451277464628,
+          "before": 0.012556544505059719,
+          "delta": -0.012072699377313256
+        }
+      ]
+    },
+    {
+      "after_top3": [
+        {
+          "category": "SCOPE_SOW",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "pattern_id": "toxic-unpaid_additional_work-01",
+          "rank": 1,
+          "rerank_text": "검토 패턴: 추가 업무 지시 시 무상 수행 강요\n예문: 도급인의 요청에 따라 당초 계약 범위를 초과하는 추가 업무가 발생하더라도 수급인은 이를 별도의 보수 청구 없이 수행하여야 하며, 추가 작업에 소요되는 비용은 수급인이 부담한다.",
+          "score": 0.0014518613461405039,
+          "text": "도급인의 요청에 따라 당초 계약 범위를 초과하는 추가 업무가 발생하더라도 수급인은 이를 별도의 보수 청구 없이 수행하여야 하며, 추가 작업에 소요되는 비용은 수급인이 부담한다."
+        },
+        {
+          "category": "SCOPE_SOW",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "pattern_id": "toxic-unpaid_additional_work-sub-01",
+          "rank": 2,
+          "rerank_text": "검토 패턴: 추가 업무 지시 시 무상 수행 강요\n예문: 원사업자의 요청에 따라 당초 계약 범위를 초과하는 추가 업무가 발생하더라도 수급사업자는 이를 별도의 하도급대금 청구 없이 수행하여야 하며, 추가 작업에 소요되는 비용은 수급사업자가 부담한다.",
+          "score": 0.0004668714536819607,
+          "text": "원사업자의 요청에 따라 당초 계약 범위를 초과하는 추가 업무가 발생하더라도 수급사업자는 이를 별도의 하도급대금 청구 없이 수행하여야 하며, 추가 작업에 소요되는 비용은 수급사업자가 부담한다."
+        },
+        {
+          "category": "SCOPE_SOW",
+          "pattern": "UNILATERAL_CHANGE",
+          "pattern_id": "toxic-unilateral_change-02",
+          "rank": 3,
+          "rerank_text": "검토 패턴: 일방적인 과업 범위 변경 권한\n예문: 도급인은 프로젝트 진행 중 업무 내용 및 범위를 변경하거나 추가할 수 있으며, 수급인은 변경 또는 추가된 업무가 계약 당초 범위를 초과하더라도 기존 보수 범위 내에서 이를 수행하여야 한다.",
+          "score": 0.00046207557898014784,
+          "text": "도급인은 프로젝트 진행 중 업무 내용 및 범위를 변경하거나 추가할 수 있으며, 수급인은 변경 또는 추가된 업무가 계약 당초 범위를 초과하더라도 기존 보수 범위 내에서 이를 수행하여야 한다."
+        }
+      ],
+      "before_top3": [
+        {
+          "category": "SCOPE_SOW",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "pattern_id": "toxic-unpaid_additional_work-01",
+          "rank": 1,
+          "score": 0.0501839853823185
+        },
+        {
+          "category": "SCOPE_SOW",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "pattern_id": "toxic-unpaid_additional_work-sub-01",
+          "rank": 2,
+          "score": 0.009714383631944656
+        },
+        {
+          "category": "SCOPE_SOW",
+          "pattern": "UNILATERAL_CHANGE",
+          "pattern_id": "toxic-unilateral_change-02",
+          "rank": 3,
+          "score": 0.00615081749856472
+        }
+      ],
+      "case_id": "v4-sw-02",
+      "rerank_text_changed": [
+        [
+          "toxic-unpaid_additional_work-01",
+          "검토 패턴: 추가 업무 지시 시 무상 수행 강요\n예문: 도급인의 요청에 따라 당초 계약 범위를 초과하는 추가 업무가 발생하더라도 수급인은 이를 별도의 보수 청구 없이 수행하여야 하며, 추가 작업에 소요되는 비용은 수급인이 부담한다."
+        ],
+        [
+          "toxic-unpaid_additional_work-sub-01",
+          "검토 패턴: 추가 업무 지시 시 무상 수행 강요\n예문: 원사업자의 요청에 따라 당초 계약 범위를 초과하는 추가 업무가 발생하더라도 수급사업자는 이를 별도의 하도급대금 청구 없이 수행하여야 하며, 추가 작업에 소요되는 비용은 수급사업자가 부담한다."
+        ],
+        [
+          "toxic-unilateral_change-02",
+          "검토 패턴: 일방적인 과업 범위 변경 권한\n예문: 도급인은 프로젝트 진행 중 업무 내용 및 범위를 변경하거나 추가할 수 있으며, 수급인은 변경 또는 추가된 업무가 계약 당초 범위를 초과하더라도 기존 보수 범위 내에서 이를 수행하여야 한다."
+        ]
+      ],
+      "score_diff": [
+        {
+          "after": 0.0014518613461405039,
+          "before": 0.0501839853823185,
+          "delta": -0.04873212403617799
+        },
+        {
+          "after": 0.0004668714536819607,
+          "before": 0.009714383631944656,
+          "delta": -0.009247512178262696
+        },
+        {
+          "after": 0.00046207557898014784,
+          "before": 0.00615081749856472,
+          "delta": -0.005688741919584572
+        }
+      ]
+    },
+    {
+      "after_top3": [
+        {
+          "category": "IP_OWNERSHIP",
+          "pattern": "IP_TOTAL_FREE",
+          "pattern_id": "toxic-ip_total_free-01",
+          "rank": 1,
+          "rerank_text": "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 본 계약에 따라 발생하는 모든 결과물, 산출물 및 그에 관한 저작권·지식재산권 일체는 별도의 대가 없이 전부 도급인에게 영구적으로 귀속되며, 수급인은 저작인격권을 포함한 어떠한 권리도 주장하지 아니한다.",
+          "score": 0.857794463634491,
+          "text": "본 계약에 따라 발생하는 모든 결과물, 산출물 및 그에 관한 저작권·지식재산권 일체는 별도의 대가 없이 전부 도급인에게 영구적으로 귀속되며, 수급인은 저작인격권을 포함한 어떠한 권리도 주장하지 아니한다."
+        },
+        {
+          "category": "IP_OWNERSHIP",
+          "pattern": "IP_TOTAL_FREE",
+          "pattern_id": "toxic-ip_total_free-03",
+          "rank": 2,
+          "rerank_text": "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 본 계약의 결과물에 대한 저작권 및 특허권 등 모든 지식재산권은 도급인에게 귀속되고, 수급인이 계약 이전부터 보유하던 기술·도구를 활용한 경우에도 해당 결과물에 관한 권리는 도급인의 소유로 한다.",
+          "score": 0.21803806722164154,
+          "text": "본 계약의 결과물에 대한 저작권 및 특허권 등 모든 지식재산권은 도급인에게 귀속되고, 수급인이 계약 이전부터 보유하던 기술·도구를 활용한 경우에도 해당 결과물에 관한 권리는 도급인의 소유로 한다."
+        },
+        {
+          "category": "IP_OWNERSHIP",
+          "pattern": "IP_TOTAL_FREE",
+          "pattern_id": "toxic-ip_total_free-sub-01",
+          "rank": 3,
+          "rerank_text": "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 본 계약에 따라 발생하는 모든 결과물, 산출물 및 그에 관한 저작권·지식재산권 일체는 별도의 하도급대금 없이 전부 원사업자에게 영구적으로 귀속되며, 수급사업자는 저작인격권을 포함한 어떠한 권리도 주장하지 아니한다.",
+          "score": 0.027660774067044258,
+          "text": "본 계약에 따라 발생하는 모든 결과물, 산출물 및 그에 관한 저작권·지식재산권 일체는 별도의 하도급대금 없이 전부 원사업자에게 영구적으로 귀속되며, 수급사업자는 저작인격권을 포함한 어떠한 권리도 주장하지 아니한다."
+        }
+      ],
+      "before_top3": [
+        {
+          "category": "IP_OWNERSHIP",
+          "pattern": "IP_TOTAL_FREE",
+          "pattern_id": "toxic-ip_total_free-01",
+          "rank": 1,
+          "score": 0.8063378930091858
+        },
+        {
+          "category": "IP_OWNERSHIP",
+          "pattern": "IP_TOTAL_FREE",
+          "pattern_id": "toxic-ip_total_free-03",
+          "rank": 2,
+          "score": 0.3593638241291046
+        },
+        {
+          "category": "IP_OWNERSHIP",
+          "pattern": "IP_TOTAL_FREE",
+          "pattern_id": "toxic-ip_total_free-sub-01",
+          "rank": 3,
+          "score": 0.030513573437929153
+        }
+      ],
+      "case_id": "v4-sw-03",
+      "rerank_text_changed": [
+        [
+          "toxic-ip_total_free-01",
+          "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 본 계약에 따라 발생하는 모든 결과물, 산출물 및 그에 관한 저작권·지식재산권 일체는 별도의 대가 없이 전부 도급인에게 영구적으로 귀속되며, 수급인은 저작인격권을 포함한 어떠한 권리도 주장하지 아니한다."
+        ],
+        [
+          "toxic-ip_total_free-03",
+          "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 본 계약의 결과물에 대한 저작권 및 특허권 등 모든 지식재산권은 도급인에게 귀속되고, 수급인이 계약 이전부터 보유하던 기술·도구를 활용한 경우에도 해당 결과물에 관한 권리는 도급인의 소유로 한다."
+        ],
+        [
+          "toxic-ip_total_free-sub-01",
+          "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 본 계약에 따라 발생하는 모든 결과물, 산출물 및 그에 관한 저작권·지식재산권 일체는 별도의 하도급대금 없이 전부 원사업자에게 영구적으로 귀속되며, 수급사업자는 저작인격권을 포함한 어떠한 권리도 주장하지 아니한다."
+        ]
+      ],
+      "score_diff": [
+        {
+          "after": 0.857794463634491,
+          "before": 0.8063378930091858,
+          "delta": 0.051456570625305176
+        },
+        {
+          "after": 0.21803806722164154,
+          "before": 0.3593638241291046,
+          "delta": -0.14132575690746307
+        },
+        {
+          "after": 0.027660774067044258,
+          "before": 0.030513573437929153,
+          "delta": -0.0028527993708848953
+        }
+      ]
+    },
+    {
+      "after_top3": [
+        {
+          "category": "IP_OWNERSHIP",
+          "pattern": "IP_TOTAL_FREE",
+          "pattern_id": "toxic-ip_total_free-01",
+          "rank": 1,
+          "rerank_text": "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 본 계약에 따라 발생하는 모든 결과물, 산출물 및 그에 관한 저작권·지식재산권 일체는 별도의 대가 없이 전부 도급인에게 영구적으로 귀속되며, 수급인은 저작인격권을 포함한 어떠한 권리도 주장하지 아니한다.",
+          "score": 0.4306657016277313,
+          "text": "본 계약에 따라 발생하는 모든 결과물, 산출물 및 그에 관한 저작권·지식재산권 일체는 별도의 대가 없이 전부 도급인에게 영구적으로 귀속되며, 수급인은 저작인격권을 포함한 어떠한 권리도 주장하지 아니한다."
+        },
+        {
+          "category": "IP_OWNERSHIP",
+          "pattern": "IP_TOTAL_FREE",
+          "pattern_id": "toxic-ip_total_free-03",
+          "rank": 2,
+          "rerank_text": "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 본 계약의 결과물에 대한 저작권 및 특허권 등 모든 지식재산권은 도급인에게 귀속되고, 수급인이 계약 이전부터 보유하던 기술·도구를 활용한 경우에도 해당 결과물에 관한 권리는 도급인의 소유로 한다.",
+          "score": 0.3728101849555969,
+          "text": "본 계약의 결과물에 대한 저작권 및 특허권 등 모든 지식재산권은 도급인에게 귀속되고, 수급인이 계약 이전부터 보유하던 기술·도구를 활용한 경우에도 해당 결과물에 관한 권리는 도급인의 소유로 한다."
+        },
+        {
+          "category": "IP_OWNERSHIP",
+          "pattern": "IP_TOTAL_FREE",
+          "pattern_id": "toxic-ip_total_free-sub-03",
+          "rank": 3,
+          "rerank_text": "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 본 계약의 결과물에 대한 저작권 및 특허권 등 모든 지식재산권은 원사업자에게 귀속되고, 수급사업자가 계약 이전부터 보유하던 기술·도구를 활용한 경우에도 해당 결과물에 관한 권리는 원사업자의 소유로 한다.",
+          "score": 0.05579330399632454,
+          "text": "본 계약의 결과물에 대한 저작권 및 특허권 등 모든 지식재산권은 원사업자에게 귀속되고, 수급사업자가 계약 이전부터 보유하던 기술·도구를 활용한 경우에도 해당 결과물에 관한 권리는 원사업자의 소유로 한다."
+        }
+      ],
+      "before_top3": [
+        {
+          "category": "IP_OWNERSHIP",
+          "pattern": "IP_TOTAL_FREE",
+          "pattern_id": "toxic-ip_total_free-03",
+          "rank": 1,
+          "score": 0.9056432843208313
+        },
+        {
+          "category": "IP_OWNERSHIP",
+          "pattern": "IP_TOTAL_FREE",
+          "pattern_id": "toxic-ip_total_free-01",
+          "rank": 2,
+          "score": 0.7845200896263123
+        },
+        {
+          "category": "IP_OWNERSHIP",
+          "pattern": "IP_TOTAL_FREE",
+          "pattern_id": "toxic-ip_total_free-sub-03",
+          "rank": 3,
+          "score": 0.47627344727516174
+        }
+      ],
+      "case_id": "v4-sw-04",
+      "rerank_text_changed": [
+        [
+          "toxic-ip_total_free-01",
+          "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 본 계약에 따라 발생하는 모든 결과물, 산출물 및 그에 관한 저작권·지식재산권 일체는 별도의 대가 없이 전부 도급인에게 영구적으로 귀속되며, 수급인은 저작인격권을 포함한 어떠한 권리도 주장하지 아니한다."
+        ],
+        [
+          "toxic-ip_total_free-03",
+          "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 본 계약의 결과물에 대한 저작권 및 특허권 등 모든 지식재산권은 도급인에게 귀속되고, 수급인이 계약 이전부터 보유하던 기술·도구를 활용한 경우에도 해당 결과물에 관한 권리는 도급인의 소유로 한다."
+        ],
+        [
+          "toxic-ip_total_free-sub-03",
+          "검토 패턴: 저작권·지식재산권 전부 무상 귀속\n예문: 본 계약의 결과물에 대한 저작권 및 특허권 등 모든 지식재산권은 원사업자에게 귀속되고, 수급사업자가 계약 이전부터 보유하던 기술·도구를 활용한 경우에도 해당 결과물에 관한 권리는 원사업자의 소유로 한다."
+        ]
+      ],
+      "score_diff": [
+        {
+          "after": 0.4306657016277313,
+          "before": 0.9056432843208313,
+          "delta": -0.4749775826931
+        },
+        {
+          "after": 0.3728101849555969,
+          "before": 0.7845200896263123,
+          "delta": -0.41170990467071533
+        },
+        {
+          "after": 0.05579330399632454,
+          "before": 0.47627344727516174,
+          "delta": -0.4204801432788372
+        }
+      ]
+    },
+    {
+      "after_top3": [
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "pattern_id": "toxic-indefinite_confidentiality-01",
+          "rank": 1,
+          "rerank_text": "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 수급인은 본 계약 종료 후에도 기간의 제한 없이 영구히 도급인의 업무상 비밀을 제3자에게 누설하거나 이용하여서는 아니 되며, 비밀유지의무의 종기는 별도로 정하지 아니한다.",
+          "score": 0.9993849992752075,
+          "text": "수급인은 본 계약 종료 후에도 기간의 제한 없이 영구히 도급인의 업무상 비밀을 제3자에게 누설하거나 이용하여서는 아니 되며, 비밀유지의무의 종기는 별도로 정하지 아니한다."
+        },
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "pattern_id": "toxic-indefinite_confidentiality-04",
+          "rank": 2,
+          "rerank_text": "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 본 조에 따른 수급인의 비밀유지의무는 계약 종료 후에도 종기를 두지 아니하고 무기한 존속하며, 도급인은 동일한 정보에 대하여 어떠한 비밀유지의무도 부담하지 아니한다.",
+          "score": 0.9777808785438538,
+          "text": "본 조에 따른 수급인의 비밀유지의무는 계약 종료 후에도 종기를 두지 아니하고 무기한 존속하며, 도급인은 동일한 정보에 대하여 어떠한 비밀유지의무도 부담하지 아니한다."
+        },
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "pattern_id": "toxic-indefinite_confidentiality-03",
+          "rank": 3,
+          "rerank_text": "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 수급인은 도급인으로부터 제공받았거나 업무 중 알게 된 정보에 대해 기간의 정함이 없이 비밀을 유지하여야 하며, 해당 정보가 수급인의 귀책 없이 공지의 사실이 된 경우에도 비밀유지의무는 소멸하지 아니한다.",
+          "score": 0.7621505856513977,
+          "text": "수급인은 도급인으로부터 제공받았거나 업무 중 알게 된 정보에 대해 기간의 정함이 없이 비밀을 유지하여야 하며, 해당 정보가 수급인의 귀책 없이 공지의 사실이 된 경우에도 비밀유지의무는 소멸하지 아니한다."
+        }
+      ],
+      "before_top3": [
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "pattern_id": "toxic-indefinite_confidentiality-01",
+          "rank": 1,
+          "score": 0.999896764755249
+        },
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "pattern_id": "toxic-indefinite_confidentiality-03",
+          "rank": 2,
+          "score": 0.9972333312034607
+        },
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "pattern_id": "toxic-indefinite_confidentiality-04",
+          "rank": 3,
+          "score": 0.9864791035652161
+        }
+      ],
+      "case_id": "v4-sw-05",
+      "rerank_text_changed": [
+        [
+          "toxic-indefinite_confidentiality-01",
+          "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 수급인은 본 계약 종료 후에도 기간의 제한 없이 영구히 도급인의 업무상 비밀을 제3자에게 누설하거나 이용하여서는 아니 되며, 비밀유지의무의 종기는 별도로 정하지 아니한다."
+        ],
+        [
+          "toxic-indefinite_confidentiality-04",
+          "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 본 조에 따른 수급인의 비밀유지의무는 계약 종료 후에도 종기를 두지 아니하고 무기한 존속하며, 도급인은 동일한 정보에 대하여 어떠한 비밀유지의무도 부담하지 아니한다."
+        ],
+        [
+          "toxic-indefinite_confidentiality-03",
+          "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 수급인은 도급인으로부터 제공받았거나 업무 중 알게 된 정보에 대해 기간의 정함이 없이 비밀을 유지하여야 하며, 해당 정보가 수급인의 귀책 없이 공지의 사실이 된 경우에도 비밀유지의무는 소멸하지 아니한다."
+        ]
+      ],
+      "score_diff": [
+        {
+          "after": 0.9993849992752075,
+          "before": 0.999896764755249,
+          "delta": -0.0005117654800415039
+        },
+        {
+          "after": 0.9777808785438538,
+          "before": 0.9972333312034607,
+          "delta": -0.019452452659606934
+        },
+        {
+          "after": 0.7621505856513977,
+          "before": 0.9864791035652161,
+          "delta": -0.22432851791381836
+        }
+      ]
+    },
+    {
+      "after_top3": [
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "pattern_id": "toxic-indefinite_confidentiality-05",
+          "rank": 1,
+          "rerank_text": "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 수급인은 본 계약과 관련하여 알게 된 일체의 정보(경미한 업무 연락 사항을 포함한다)에 대하여 영구히 비밀을 유지하여야 하며, 위반 시 기간 경과와 관계없이 손해배상 책임을 진다.",
+          "score": 6.473625398939475e-05,
+          "text": "수급인은 본 계약과 관련하여 알게 된 일체의 정보(경미한 업무 연락 사항을 포함한다)에 대하여 영구히 비밀을 유지하여야 하며, 위반 시 기간 경과와 관계없이 손해배상 책임을 진다."
+        },
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "pattern_id": "toxic-indefinite_confidentiality-sub-05",
+          "rank": 2,
+          "rerank_text": "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 수급사업자는 본 계약과 관련하여 알게 된 일체의 정보(경미한 업무 연락 사항을 포함한다)에 대하여 영구히 비밀을 유지하여야 하며, 위반 시 기간 경과와 관계없이 손해배상 책임을 진다.",
+          "score": 4.5162018068367615e-05,
+          "text": "수급사업자는 본 계약과 관련하여 알게 된 일체의 정보(경미한 업무 연락 사항을 포함한다)에 대하여 영구히 비밀을 유지하여야 하며, 위반 시 기간 경과와 관계없이 손해배상 책임을 진다."
+        },
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "pattern_id": "toxic-indefinite_confidentiality-03",
+          "rank": 3,
+          "rerank_text": "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 수급인은 도급인으로부터 제공받았거나 업무 중 알게 된 정보에 대해 기간의 정함이 없이 비밀을 유지하여야 하며, 해당 정보가 수급인의 귀책 없이 공지의 사실이 된 경우에도 비밀유지의무는 소멸하지 아니한다.",
+          "score": 2.0232948372722603e-05,
+          "text": "수급인은 도급인으로부터 제공받았거나 업무 중 알게 된 정보에 대해 기간의 정함이 없이 비밀을 유지하여야 하며, 해당 정보가 수급인의 귀책 없이 공지의 사실이 된 경우에도 비밀유지의무는 소멸하지 아니한다."
+        }
+      ],
+      "before_top3": [
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "pattern_id": "toxic-indefinite_confidentiality-05",
+          "rank": 1,
+          "score": 0.0010926900431513786
+        },
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "pattern_id": "toxic-indefinite_confidentiality-sub-05",
+          "rank": 2,
+          "score": 0.0006552281556650996
+        },
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "pattern_id": "toxic-indefinite_confidentiality-03",
+          "rank": 3,
+          "score": 0.00019479604088701308
+        }
+      ],
+      "case_id": "v4-sw-06",
+      "rerank_text_changed": [
+        [
+          "toxic-indefinite_confidentiality-05",
+          "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 수급인은 본 계약과 관련하여 알게 된 일체의 정보(경미한 업무 연락 사항을 포함한다)에 대하여 영구히 비밀을 유지하여야 하며, 위반 시 기간 경과와 관계없이 손해배상 책임을 진다."
+        ],
+        [
+          "toxic-indefinite_confidentiality-sub-05",
+          "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 수급사업자는 본 계약과 관련하여 알게 된 일체의 정보(경미한 업무 연락 사항을 포함한다)에 대하여 영구히 비밀을 유지하여야 하며, 위반 시 기간 경과와 관계없이 손해배상 책임을 진다."
+        ],
+        [
+          "toxic-indefinite_confidentiality-03",
+          "검토 패턴: 불특정 기간 동안의 비밀유지 의무\n예문: 수급인은 도급인으로부터 제공받았거나 업무 중 알게 된 정보에 대해 기간의 정함이 없이 비밀을 유지하여야 하며, 해당 정보가 수급인의 귀책 없이 공지의 사실이 된 경우에도 비밀유지의무는 소멸하지 아니한다."
+        ]
+      ],
+      "score_diff": [
+        {
+          "after": 6.473625398939475e-05,
+          "before": 0.0010926900431513786,
+          "delta": -0.0010279537891619839
+        },
+        {
+          "after": 4.5162018068367615e-05,
+          "before": 0.0006552281556650996,
+          "delta": -0.000610066137596732
+        },
+        {
+          "after": 2.0232948372722603e-05,
+          "before": 0.00019479604088701308,
+          "delta": -0.00017456309251429047
+        }
+      ]
+    },
+    {
+      "after_top3": [
+        {
+          "category": "DISPUTE",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "pattern_id": "toxic-unilateral_interpretation-01",
+          "rank": 1,
+          "rerank_text": "검토 패턴: 발주자의 일방적 계약 해석 권한\n예문: 본 계약 내용에 관하여 당사자 간 이견이 발생할 경우 도급인의 해석 및 판단에 따르며, 수급인은 이에 이의를 제기하지 아니한다.",
+          "score": 0.09097205847501755,
+          "text": "본 계약 내용에 관하여 당사자 간 이견이 발생할 경우 도급인의 해석 및 판단에 따르며, 수급인은 이에 이의를 제기하지 아니한다."
+        },
+        {
+          "category": "DISPUTE",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "pattern_id": "toxic-unilateral_interpretation-sub-01",
+          "rank": 2,
+          "rerank_text": "검토 패턴: 발주자의 일방적 계약 해석 권한\n예문: 본 계약 내용에 관하여 당사자 간 이견이 발생할 경우 원사업자의 해석 및 판단에 따르며, 수급사업자는 이에 이의를 제기하지 아니한다.",
+          "score": 0.003929915837943554,
+          "text": "본 계약 내용에 관하여 당사자 간 이견이 발생할 경우 원사업자의 해석 및 판단에 따르며, 수급사업자는 이에 이의를 제기하지 아니한다."
+        },
+        {
+          "category": "DISPUTE",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "pattern_id": "toxic-unilateral_interpretation-03",
+          "rank": 3,
+          "rerank_text": "검토 패턴: 발주자의 일방적 계약 해석 권한\n예문: 본 계약의 해석상 이견이 발생하는 경우 도급인의 해석을 우선 기준으로 하여 처리하며, 수급인은 이에 따라 업무를 수행하여야 한다.",
+          "score": 0.002174509922042489,
+          "text": "본 계약의 해석상 이견이 발생하는 경우 도급인의 해석을 우선 기준으로 하여 처리하며, 수급인은 이에 따라 업무를 수행하여야 한다."
+        }
+      ],
+      "before_top3": [
+        {
+          "category": "DISPUTE",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "pattern_id": "toxic-unilateral_interpretation-01",
+          "rank": 1,
+          "score": 0.9768170714378357
+        },
+        {
+          "category": "DISPUTE",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "pattern_id": "toxic-unilateral_interpretation-03",
+          "rank": 2,
+          "score": 0.48154592514038086
+        },
+        {
+          "category": "DISPUTE",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "pattern_id": "toxic-unilateral_interpretation-sub-01",
+          "rank": 3,
+          "score": 0.3649916350841522
+        }
+      ],
+      "case_id": "v4-sw-07",
+      "rerank_text_changed": [
+        [
+          "toxic-unilateral_interpretation-01",
+          "검토 패턴: 발주자의 일방적 계약 해석 권한\n예문: 본 계약 내용에 관하여 당사자 간 이견이 발생할 경우 도급인의 해석 및 판단에 따르며, 수급인은 이에 이의를 제기하지 아니한다."
+        ],
+        [
+          "toxic-unilateral_interpretation-sub-01",
+          "검토 패턴: 발주자의 일방적 계약 해석 권한\n예문: 본 계약 내용에 관하여 당사자 간 이견이 발생할 경우 원사업자의 해석 및 판단에 따르며, 수급사업자는 이에 이의를 제기하지 아니한다."
+        ],
+        [
+          "toxic-unilateral_interpretation-03",
+          "검토 패턴: 발주자의 일방적 계약 해석 권한\n예문: 본 계약의 해석상 이견이 발생하는 경우 도급인의 해석을 우선 기준으로 하여 처리하며, 수급인은 이에 따라 업무를 수행하여야 한다."
+        ]
+      ],
+      "score_diff": [
+        {
+          "after": 0.09097205847501755,
+          "before": 0.9768170714378357,
+          "delta": -0.8858450129628181
+        },
+        {
+          "after": 0.003929915837943554,
+          "before": 0.48154592514038086,
+          "delta": -0.4776160093024373
+        },
+        {
+          "after": 0.002174509922042489,
+          "before": 0.3649916350841522,
+          "delta": -0.36281712516210973
+        }
+      ]
+    },
+    {
+      "after_top3": [
+        {
+          "category": "DISPUTE",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "pattern_id": "toxic-unilateral_interpretation-01",
+          "rank": 1,
+          "rerank_text": "검토 패턴: 발주자의 일방적 계약 해석 권한\n예문: 본 계약 내용에 관하여 당사자 간 이견이 발생할 경우 도급인의 해석 및 판단에 따르며, 수급인은 이에 이의를 제기하지 아니한다.",
+          "score": 3.8482439776998945e-06,
+          "text": "본 계약 내용에 관하여 당사자 간 이견이 발생할 경우 도급인의 해석 및 판단에 따르며, 수급인은 이에 이의를 제기하지 아니한다."
+        },
+        {
+          "category": "DISPUTE",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "pattern_id": "toxic-unilateral_interpretation-sub-01",
+          "rank": 2,
+          "rerank_text": "검토 패턴: 발주자의 일방적 계약 해석 권한\n예문: 본 계약 내용에 관하여 당사자 간 이견이 발생할 경우 원사업자의 해석 및 판단에 따르며, 수급사업자는 이에 이의를 제기하지 아니한다.",
+          "score": 3.6050660128239542e-06,
+          "text": "본 계약 내용에 관하여 당사자 간 이견이 발생할 경우 원사업자의 해석 및 판단에 따르며, 수급사업자는 이에 이의를 제기하지 아니한다."
+        },
+        {
+          "category": "DISPUTE",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "pattern_id": "toxic-unilateral_interpretation-03",
+          "rank": 3,
+          "rerank_text": "검토 패턴: 발주자의 일방적 계약 해석 권한\n예문: 본 계약의 해석상 이견이 발생하는 경우 도급인의 해석을 우선 기준으로 하여 처리하며, 수급인은 이에 따라 업무를 수행하여야 한다.",
+          "score": 1.9129820429952815e-06,
+          "text": "본 계약의 해석상 이견이 발생하는 경우 도급인의 해석을 우선 기준으로 하여 처리하며, 수급인은 이에 따라 업무를 수행하여야 한다."
+        }
+      ],
+      "before_top3": [
+        {
+          "category": "DISPUTE",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "pattern_id": "toxic-unilateral_interpretation-01",
+          "rank": 1,
+          "score": 0.0001249909255420789
+        },
+        {
+          "category": "DISPUTE",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "pattern_id": "toxic-unilateral_interpretation-sub-01",
+          "rank": 2,
+          "score": 0.00010949376155622303
+        },
+        {
+          "category": "DISPUTE",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "pattern_id": "toxic-unilateral_interpretation-03",
+          "rank": 3,
+          "score": 2.639504600665532e-05
+        }
+      ],
+      "case_id": "v4-sw-08",
+      "rerank_text_changed": [
+        [
+          "toxic-unilateral_interpretation-01",
+          "검토 패턴: 발주자의 일방적 계약 해석 권한\n예문: 본 계약 내용에 관하여 당사자 간 이견이 발생할 경우 도급인의 해석 및 판단에 따르며, 수급인은 이에 이의를 제기하지 아니한다."
+        ],
+        [
+          "toxic-unilateral_interpretation-sub-01",
+          "검토 패턴: 발주자의 일방적 계약 해석 권한\n예문: 본 계약 내용에 관하여 당사자 간 이견이 발생할 경우 원사업자의 해석 및 판단에 따르며, 수급사업자는 이에 이의를 제기하지 아니한다."
+        ],
+        [
+          "toxic-unilateral_interpretation-03",
+          "검토 패턴: 발주자의 일방적 계약 해석 권한\n예문: 본 계약의 해석상 이견이 발생하는 경우 도급인의 해석을 우선 기준으로 하여 처리하며, 수급인은 이에 따라 업무를 수행하여야 한다."
+        ]
+      ],
+      "score_diff": [
+        {
+          "after": 3.8482439776998945e-06,
+          "before": 0.0001249909255420789,
+          "delta": -0.00012114268156437902
+        },
+        {
+          "after": 3.6050660128239542e-06,
+          "before": 0.00010949376155622303,
+          "delta": -0.00010588869554339908
+        },
+        {
+          "after": 1.9129820429952815e-06,
+          "before": 2.639504600665532e-05,
+          "delta": -2.448206396366004e-05
+        }
+      ]
+    },
+    {
+      "after_top3": [
+        {
+          "category": "LIABILITY",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "pattern_id": "toxic-unfair_damage_claim-01",
+          "rank": 1,
+          "rerank_text": "검토 패턴: 부당하게 과도한 손해배상 청구액 설정\n예문: 수급인이 납기를 지키지 못하거나 도급인이 요구한 품질 기준을 충족하지 못할 경우, 수급인은 계약 금액 상당액에 해당하는 금액을 손해배상액으로 지급하여야 한다.",
+          "score": 0.14275391399860382,
+          "text": "수급인이 납기를 지키지 못하거나 도급인이 요구한 품질 기준을 충족하지 못할 경우, 수급인은 계약 금액 상당액에 해당하는 금액을 손해배상액으로 지급하여야 한다."
+        },
+        {
+          "category": "LIABILITY",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "pattern_id": "toxic-unfair_damage_claim-sub-01",
+          "rank": 2,
+          "rerank_text": "검토 패턴: 부당하게 과도한 손해배상 청구액 설정\n예문: 수급사업자가 납기를 지키지 못하거나 원사업자가 요구한 품질 기준을 충족하지 못할 경우, 수급사업자는 하도급대금 상당액에 해당하는 금액을 손해배상액으로 지급하여야 한다.",
+          "score": 0.0010137660428881645,
+          "text": "수급사업자가 납기를 지키지 못하거나 원사업자가 요구한 품질 기준을 충족하지 못할 경우, 수급사업자는 하도급대금 상당액에 해당하는 금액을 손해배상액으로 지급하여야 한다."
+        },
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "NONCOMPETE_EXCESS",
+          "pattern_id": "toxic-noncompete_excess-01",
+          "rank": 3,
+          "rerank_text": "검토 패턴: 과도한 경업금지·영업활동 제한\n예문: 수급인은 본 계약 종료 후 3년간 도급인과 동종·유사한 업종에 종사하거나 경쟁 업체에 용역을 제공할 수 없으며, 이를 위반할 경우 보수의 5배에 해당하는 위약금을 지급한다.",
+          "score": 0.0007822202169336379,
+          "text": "수급인은 본 계약 종료 후 3년간 도급인과 동종·유사한 업종에 종사하거나 경쟁 업체에 용역을 제공할 수 없으며, 이를 위반할 경우 보수의 5배에 해당하는 위약금을 지급한다."
+        }
+      ],
+      "before_top3": [
+        {
+          "category": "LIABILITY",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "pattern_id": "toxic-unfair_damage_claim-01",
+          "rank": 1,
+          "score": 0.9312618970870972
+        },
+        {
+          "category": "LIABILITY",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "pattern_id": "toxic-unfair_damage_claim-sub-01",
+          "rank": 2,
+          "score": 0.026201920583844185
+        },
+        {
+          "category": "CONFIDENTIALITY",
+          "pattern": "NONCOMPETE_EXCESS",
+          "pattern_id": "toxic-noncompete_excess-01",
+          "rank": 3,
+          "score": 0.019282450899481773
+        }
+      ],
+      "case_id": "v4-sw-09",
+      "rerank_text_changed": [
+        [
+          "toxic-unfair_damage_claim-01",
+          "검토 패턴: 부당하게 과도한 손해배상 청구액 설정\n예문: 수급인이 납기를 지키지 못하거나 도급인이 요구한 품질 기준을 충족하지 못할 경우, 수급인은 계약 금액 상당액에 해당하는 금액을 손해배상액으로 지급하여야 한다."
+        ],
+        [
+          "toxic-unfair_damage_claim-sub-01",
+          "검토 패턴: 부당하게 과도한 손해배상 청구액 설정\n예문: 수급사업자가 납기를 지키지 못하거나 원사업자가 요구한 품질 기준을 충족하지 못할 경우, 수급사업자는 하도급대금 상당액에 해당하는 금액을 손해배상액으로 지급하여야 한다."
+        ],
+        [
+          "toxic-noncompete_excess-01",
+          "검토 패턴: 과도한 경업금지·영업활동 제한\n예문: 수급인은 본 계약 종료 후 3년간 도급인과 동종·유사한 업종에 종사하거나 경쟁 업체에 용역을 제공할 수 없으며, 이를 위반할 경우 보수의 5배에 해당하는 위약금을 지급한다."
+        ]
+      ],
+      "score_diff": [
+        {
+          "after": 0.14275391399860382,
+          "before": 0.9312618970870972,
+          "delta": -0.7885079830884933
+        },
+        {
+          "after": 0.0010137660428881645,
+          "before": 0.026201920583844185,
+          "delta": -0.02518815454095602
+        },
+        {
+          "after": 0.0007822202169336379,
+          "before": 0.019282450899481773,
+          "delta": -0.018500230682548136
+        }
+      ]
+    },
+    {
+      "after_top3": [
+        {
+          "category": "LIABILITY",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "pattern_id": "toxic-unfair_damage_claim-03",
+          "rank": 1,
+          "rerank_text": "검토 패턴: 부당하게 과도한 손해배상 청구액 설정\n예문: 수급인의 귀책사유로 인한 하자 발생 시 수급인은 하자 복구 비용 외에 도급인이 입은 간접 손해, 기회손실, 영업상 손해 일체를 배상하여야 하며, 그 금액은 도급인이 산정한 바에 따른다.",
+          "score": 0.008682475425302982,
+          "text": "수급인의 귀책사유로 인한 하자 발생 시 수급인은 하자 복구 비용 외에 도급인이 입은 간접 손해, 기회손실, 영업상 손해 일체를 배상하여야 하며, 그 금액은 도급인이 산정한 바에 따른다."
+        },
+        {
+          "category": "SCOPE_SOW",
+          "pattern": "UNILATERAL_CHANGE",
+          "pattern_id": "toxic-unilateral_change-02",
+          "rank": 2,
+          "rerank_text": "검토 패턴: 일방적인 과업 범위 변경 권한\n예문: 도급인은 프로젝트 진행 중 업무 내용 및 범위를 변경하거나 추가할 수 있으며, 수급인은 변경 또는 추가된 업무가 계약 당초 범위를 초과하더라도 기존 보수 범위 내에서 이를 수행하여야 한다.",
+          "score": 0.0016263686120510101,
+          "text": "도급인은 프로젝트 진행 중 업무 내용 및 범위를 변경하거나 추가할 수 있으며, 수급인은 변경 또는 추가된 업무가 계약 당초 범위를 초과하더라도 기존 보수 범위 내에서 이를 수행하여야 한다."
+        },
+        {
+          "category": "LIABILITY",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "pattern_id": "toxic-unfair_damage_claim-sub-03",
+          "rank": 3,
+          "rerank_text": "검토 패턴: 부당하게 과도한 손해배상 청구액 설정\n예문: 수급사업자의 귀책사유로 인한 하자 발생 시 수급사업자는 하자 복구 비용 외에 원사업자가 입은 간접 손해, 기회손실, 영업상 손해 일체를 배상하여야 하며, 그 금액은 원사업자가 산정한 바에 따른다.",
+          "score": 3.1945230148267e-05,
+          "text": "수급사업자의 귀책사유로 인한 하자 발생 시 수급사업자는 하자 복구 비용 외에 원사업자가 입은 간접 손해, 기회손실, 영업상 손해 일체를 배상하여야 하며, 그 금액은 원사업자가 산정한 바에 따른다."
+        }
+      ],
+      "before_top3": [
+        {
+          "category": "LIABILITY",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "pattern_id": "toxic-unfair_damage_claim-03",
+          "rank": 1,
+          "score": 0.029909977689385414
+        },
+        {
+          "category": "SCOPE_SOW",
+          "pattern": "UNILATERAL_CHANGE",
+          "pattern_id": "toxic-unilateral_change-02",
+          "rank": 2,
+          "score": 0.009550883434712887
+        },
+        {
+          "category": "LIABILITY",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "pattern_id": "toxic-unfair_damage_claim-sub-03",
+          "rank": 3,
+          "score": 4.6676308556925505e-05
+        }
+      ],
+      "case_id": "v4-sw-10",
+      "rerank_text_changed": [
+        [
+          "toxic-unfair_damage_claim-03",
+          "검토 패턴: 부당하게 과도한 손해배상 청구액 설정\n예문: 수급인의 귀책사유로 인한 하자 발생 시 수급인은 하자 복구 비용 외에 도급인이 입은 간접 손해, 기회손실, 영업상 손해 일체를 배상하여야 하며, 그 금액은 도급인이 산정한 바에 따른다."
+        ],
+        [
+          "toxic-unilateral_change-02",
+          "검토 패턴: 일방적인 과업 범위 변경 권한\n예문: 도급인은 프로젝트 진행 중 업무 내용 및 범위를 변경하거나 추가할 수 있으며, 수급인은 변경 또는 추가된 업무가 계약 당초 범위를 초과하더라도 기존 보수 범위 내에서 이를 수행하여야 한다."
+        ],
+        [
+          "toxic-unfair_damage_claim-sub-03",
+          "검토 패턴: 부당하게 과도한 손해배상 청구액 설정\n예문: 수급사업자의 귀책사유로 인한 하자 발생 시 수급사업자는 하자 복구 비용 외에 원사업자가 입은 간접 손해, 기회손실, 영업상 손해 일체를 배상하여야 하며, 그 금액은 원사업자가 산정한 바에 따른다."
+        ]
+      ],
+      "score_diff": [
+        {
+          "after": 0.008682475425302982,
+          "before": 0.029909977689385414,
+          "delta": -0.021227502264082432
+        },
+        {
+          "after": 0.0016263686120510101,
+          "before": 0.009550883434712887,
+          "delta": -0.007924514822661877
+        },
+        {
+          "after": 3.1945230148267e-05,
+          "before": 4.6676308556925505e-05,
+          "delta": -1.4731078408658504e-05
+        }
+      ]
+    },
+    {
+      "after_top3": [
+        {
+          "category": "TERMINATION",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "pattern_id": "toxic-unilateral_cancellation-02",
+          "rank": 1,
+          "rerank_text": "검토 패턴: 발주자의 일방적 위탁 취소 및 무보상 계약 해지\n예문: 도급인은 프로젝트 방향 변경, 예산 삭감, 발주자 사정 등을 이유로 계약을 즉시 해지할 수 있으며, 이 경우 수급인에 대한 보상은 없고 수급인은 즉시 업무를 중단하여야 한다.",
+          "score": 0.8783210515975952,
+          "text": "도급인은 프로젝트 방향 변경, 예산 삭감, 발주자 사정 등을 이유로 계약을 즉시 해지할 수 있으며, 이 경우 수급인에 대한 보상은 없고 수급인은 즉시 업무를 중단하여야 한다."
+        },
+        {
+          "category": "TERMINATION",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "pattern_id": "toxic-unilateral_cancellation-sub-02",
+          "rank": 2,
+          "rerank_text": "검토 패턴: 발주자의 일방적 위탁 취소 및 무보상 계약 해지\n예문: 원사업자는 프로젝트 방향 변경, 예산 삭감, 발주자 사정 등을 이유로 계약을 즉시 해지할 수 있으며, 이 경우 수급사업자에 대한 보상은 없고 수급사업자는 즉시 업무를 중단하여야 한다.",
+          "score": 0.013798447325825691,
+          "text": "원사업자는 프로젝트 방향 변경, 예산 삭감, 발주자 사정 등을 이유로 계약을 즉시 해지할 수 있으며, 이 경우 수급사업자에 대한 보상은 없고 수급사업자는 즉시 업무를 중단하여야 한다."
+        },
+        {
+          "category": "TERMINATION",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "pattern_id": "toxic-unilateral_cancellation-04",
+          "rank": 3,
+          "rerank_text": "검토 패턴: 발주자의 일방적 위탁 취소 및 무보상 계약 해지\n예문: 본 계약은 도급인의 사정에 의해 언제든지 해지될 수 있으며, 해지 시 수급인은 진행 중인 업무를 즉시 중단하고 관련 자료를 도급인에게 반환하여야 한다. 수급인은 해지로 인한 손실에 대해 도급인에게 청구권을 행사하지 아니한다.",
+          "score": 0.004828834906220436,
+          "text": "본 계약은 도급인의 사정에 의해 언제든지 해지될 수 있으며, 해지 시 수급인은 진행 중인 업무를 즉시 중단하고 관련 자료를 도급인에게 반환하여야 한다. 수급인은 해지로 인한 손실에 대해 도급인에게 청구권을 행사하지 아니한다."
+        }
+      ],
+      "before_top3": [
+        {
+          "category": "TERMINATION",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "pattern_id": "toxic-unilateral_cancellation-02",
+          "rank": 1,
+          "score": 0.9893617033958435
+        },
+        {
+          "category": "TERMINATION",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "pattern_id": "toxic-unilateral_cancellation-04",
+          "rank": 2,
+          "score": 0.1090802401304245
+        },
+        {
+          "category": "TERMINATION",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "pattern_id": "toxic-unilateral_cancellation-sub-02",
+          "rank": 3,
+          "score": 0.07999303936958313
+        }
+      ],
+      "case_id": "v4-sw-11",
+      "rerank_text_changed": [
+        [
+          "toxic-unilateral_cancellation-02",
+          "검토 패턴: 발주자의 일방적 위탁 취소 및 무보상 계약 해지\n예문: 도급인은 프로젝트 방향 변경, 예산 삭감, 발주자 사정 등을 이유로 계약을 즉시 해지할 수 있으며, 이 경우 수급인에 대한 보상은 없고 수급인은 즉시 업무를 중단하여야 한다."
+        ],
+        [
+          "toxic-unilateral_cancellation-sub-02",
+          "검토 패턴: 발주자의 일방적 위탁 취소 및 무보상 계약 해지\n예문: 원사업자는 프로젝트 방향 변경, 예산 삭감, 발주자 사정 등을 이유로 계약을 즉시 해지할 수 있으며, 이 경우 수급사업자에 대한 보상은 없고 수급사업자는 즉시 업무를 중단하여야 한다."
+        ],
+        [
+          "toxic-unilateral_cancellation-04",
+          "검토 패턴: 발주자의 일방적 위탁 취소 및 무보상 계약 해지\n예문: 본 계약은 도급인의 사정에 의해 언제든지 해지될 수 있으며, 해지 시 수급인은 진행 중인 업무를 즉시 중단하고 관련 자료를 도급인에게 반환하여야 한다. 수급인은 해지로 인한 손실에 대해 도급인에게 청구권을 행사하지 아니한다."
+        ]
+      ],
+      "score_diff": [
+        {
+          "after": 0.8783210515975952,
+          "before": 0.9893617033958435,
+          "delta": -0.11104065179824829
+        },
+        {
+          "after": 0.013798447325825691,
+          "before": 0.1090802401304245,
+          "delta": -0.09528179280459881
+        },
+        {
+          "after": 0.004828834906220436,
+          "before": 0.07999303936958313,
+          "delta": -0.0751642044633627
+        }
+      ]
+    },
+    {
+      "after_top3": [
+        {
+          "category": "TERMINATION",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "pattern_id": "toxic-unilateral_cancellation-05",
+          "rank": 1,
+          "rerank_text": "검토 패턴: 발주자의 일방적 위탁 취소 및 무보상 계약 해지\n예문: 발주자의 계약 취소 또는 도급인의 내부 결정에 따라 본 계약이 중도 해지되는 경우, 수급인은 해지 통보를 받은 즉시 업무를 종료하여야 하며 미완료 부분에 대한 보수는 지급되지 아니한다.",
+          "score": 0.02086116187274456,
+          "text": "발주자의 계약 취소 또는 도급인의 내부 결정에 따라 본 계약이 중도 해지되는 경우, 수급인은 해지 통보를 받은 즉시 업무를 종료하여야 하며 미완료 부분에 대한 보수는 지급되지 아니한다."
+        },
+        {
+          "category": "LIABILITY",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "pattern_id": "toxic-unfair_damage_claim-04",
+          "rank": 2,
+          "rerank_text": "검토 패턴: 부당하게 과도한 손해배상 청구액 설정\n예문: 수급인이 본 계약을 중도에 해지하거나 계약 이행을 거부하는 경우, 계약 잔여 기간에 해당하는 보수 전액 및 도급인이 대체 용역 수급에 소요한 비용의 합산액을 위약금으로 즉시 지급하여야 한다.",
+          "score": 0.0035295123234391212,
+          "text": "수급인이 본 계약을 중도에 해지하거나 계약 이행을 거부하는 경우, 계약 잔여 기간에 해당하는 보수 전액 및 도급인이 대체 용역 수급에 소요한 비용의 합산액을 위약금으로 즉시 지급하여야 한다."
+        },
+        {
+          "category": "TERMINATION",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "pattern_id": "toxic-unilateral_cancellation-sub-05",
+          "rank": 3,
+          "rerank_text": "검토 패턴: 발주자의 일방적 위탁 취소 및 무보상 계약 해지\n예문: 발주자의 계약 취소 또는 원사업자의 내부 결정에 따라 본 계약이 중도 해지되는 경우, 수급사업자는 해지 통보를 받은 즉시 업무를 종료하여야 하며 미완료 부분에 대한 하도급대금은 지급되지 아니한다.",
+          "score": 0.00039840087993070483,
+          "text": "발주자의 계약 취소 또는 원사업자의 내부 결정에 따라 본 계약이 중도 해지되는 경우, 수급사업자는 해지 통보를 받은 즉시 업무를 종료하여야 하며 미완료 부분에 대한 하도급대금은 지급되지 아니한다."
+        }
+      ],
+      "before_top3": [
+        {
+          "category": "TERMINATION",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "pattern_id": "toxic-unilateral_cancellation-05",
+          "rank": 1,
+          "score": 0.02290131337940693
+        },
+        {
+          "category": "LIABILITY",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "pattern_id": "toxic-unfair_damage_claim-04",
+          "rank": 2,
+          "score": 0.0183083675801754
+        },
+        {
+          "category": "TERMINATION",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "pattern_id": "toxic-unilateral_cancellation-sub-05",
+          "rank": 3,
+          "score": 0.0003738002560567111
+        }
+      ],
+      "case_id": "v4-sw-12",
+      "rerank_text_changed": [
+        [
+          "toxic-unilateral_cancellation-05",
+          "검토 패턴: 발주자의 일방적 위탁 취소 및 무보상 계약 해지\n예문: 발주자의 계약 취소 또는 도급인의 내부 결정에 따라 본 계약이 중도 해지되는 경우, 수급인은 해지 통보를 받은 즉시 업무를 종료하여야 하며 미완료 부분에 대한 보수는 지급되지 아니한다."
+        ],
+        [
+          "toxic-unfair_damage_claim-04",
+          "검토 패턴: 부당하게 과도한 손해배상 청구액 설정\n예문: 수급인이 본 계약을 중도에 해지하거나 계약 이행을 거부하는 경우, 계약 잔여 기간에 해당하는 보수 전액 및 도급인이 대체 용역 수급에 소요한 비용의 합산액을 위약금으로 즉시 지급하여야 한다."
+        ],
+        [
+          "toxic-unilateral_cancellation-sub-05",
+          "검토 패턴: 발주자의 일방적 위탁 취소 및 무보상 계약 해지\n예문: 발주자의 계약 취소 또는 원사업자의 내부 결정에 따라 본 계약이 중도 해지되는 경우, 수급사업자는 해지 통보를 받은 즉시 업무를 종료하여야 하며 미완료 부분에 대한 하도급대금은 지급되지 아니한다."
+        ]
+      ],
+      "score_diff": [
+        {
+          "after": 0.02086116187274456,
+          "before": 0.02290131337940693,
+          "delta": -0.0020401515066623688
+        },
+        {
+          "after": 0.0035295123234391212,
+          "before": 0.0183083675801754,
+          "delta": -0.014778855256736279
+        },
+        {
+          "after": 0.00039840087993070483,
+          "before": 0.0003738002560567111,
+          "delta": 2.4600623873993754e-05
+        }
+      ]
+    }
+  ],
+  "version": "v4"
+}

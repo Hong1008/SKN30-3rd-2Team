@@ -1,0 +1,17 @@
+{
+  "experiment_id": "C",
+  "version": "v5",
+  "contract_type": "SW_FREELANCE",
+  "baseline_commit": "6c3c8602d0a9d78188a9c5f33ffaba627df99af4",
+  "match_threshold": 0.5,
+  "counts": {"n": 45, "tp": 16, "fp": 3, "fn": 14, "tn": 12},
+  "f1": 0.653,
+  "files_sha256": {
+    "golden": "a23c5d4c1e1760a6ab4e854bb4a70474e19817dcefed53dbd9eeaa45d75c729c",
+    "case_matrix": "f7110c2a52a55bb74098308cadb1a2e53a4d4db11adf171cdc77593b42b56aef",
+    "heldout_manifest": "776ee651b64d3595d0f5f1038a4483a325c846ccdf120814cfd7537e957a9aed",
+    "diagnostics": "d53c3a418cc9915e039c6eceacf9f22a9515051880b3517e58ebf30f34658a19"
+  },
+  "overmatch_definition": "gold_deviation=EXTRA and predicted_deviation=NONE",
+  "status": "baseline_frozen"
+}

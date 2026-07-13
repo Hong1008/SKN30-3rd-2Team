@@ -1,22 +1,13 @@
 """
 [작업 규격 · 담당: 팀원 C + 리드] pipe.review_pipe — review_contract 조립
 
-기획서 4.1/4.2 의 동결 출력 계약을 만족하는지 검증합니다. (MCP `review_contract` 본체)
-core 의 순수 함수(select_best_match·classify_clause_deviation·detect_missing_clauses·
-roll_up_sub_chunks·detect_toxic_patterns)를 조립하고, 외부 작업은 ports 로 **주입**받습니다.
-
-검증 대상:
-  1. 반환은 DeviationResult 리스트 (4.1)
-  2. 검색 결과가 없으면 NO_MATCH, 후보는 있으나 임계 미달이면 EXTRA (4.2 / core 규격 구분)
-  3. 강하게 매칭 + 본문 상이 → CHANGED + grounding 부착, 본문 동일 → NONE + grounding 없음
-  4. 어떤 사용자 조항에도 매칭 안 된 표준조항은 MISSING
-  5. 독소 패턴 역방향 검색 결과가 toxic_patterns 에 채워짐
-  6. 서브청크 roll-up 으로 부모 표준조항이 매칭됨
+개정 사항: 1차 판정을 매칭 임계값 단일 기준으로 전면 단순화하여 CHANGED 및 커버리지 2패스를 삭제.
+이에 따라 관련 커버리지 테스트들이 제거되었습니다.
 """
 from typing import Any, Dict, List
 
 from contracts.enums import ContractType, Category, Deviation, ToxicPattern, ProgressPhase
-from contracts.models import Clause, StandardClause, StandardSubChunk, GroundingLaw, DeviationResult
+from contracts.models import Clause, StandardClause, GroundingLaw, DeviationResult
 from pipe.review_pipe import review_contract
 
 
@@ -57,7 +48,7 @@ class FakeRetriever:
             if "무상" in query:
                 return [dict(_TOXIC_HIT)]
             return []
-        return []  # standard_sub_chunks 기본 없음
+        return []
 
     def hybrid_search_many(self, collection_name, vectors, queries, metadata_filter=None, top_k=5):
         return [self._search_one(collection_name, q) for q in queries]
@@ -74,6 +65,15 @@ class FakeSubChunkRetriever(FakeRetriever):
         return super()._search_one(collection_name, query)
 
 
+class FakeConflictingParentRetriever(FakeRetriever):
+    """표준 조항과 서브청크 부모가 서로 다른 후보를 반환한다."""
+    def _search_one(self, collection_name, query):
+        if collection_name == "standard_sub_chunks" and ("저작권" in query or "지식재산" in query):
+            return [{"id": "sw_freelance-art99-sub01", "text": ART99_UNMATCHED.text,
+                     "parent_clause_id": "sw_freelance-art99", "sub_chunk_index": 0}]
+        return super()._search_one(collection_name, query)
+
+
 class FakeEmbedder:
     """검색 fake 가 벡터 값 자체는 쓰지 않으므로, 텍스트 수만큼 더미 벡터를 반환한다."""
     def embed_documents(self, texts: List[str]) -> List[List[float]]:
@@ -87,19 +87,22 @@ class FakeEmbedder:
 
 
 class _Reranker:
-    """모든 후보에 고정 로짓을 부여하는 리랭커 fake (logit>0 → sigmoid>0.5 → 매칭)."""
-    def __init__(self, logit: float):
-        self._logit = logit
+    """모든 후보에 고정 점수를 부여하는 리랭커 fake.
+
+    실제 BgeReranker(CrossEncoder, num_labels=1)는 predict() 내부에서 이미 Sigmoid를
+    적용해 0~1 확률값을 반환하므로, fake도 로짓이 아니라 그 확률값을 직접 준다.
+    """
+    def __init__(self, score: float):
+        self._score = score
 
     def compute_scores(self, query, documents):
-        return [self._logit] * len(documents)
+        return [self._score] * len(documents)
 
     def compute_scores_many(self, queries, docs_per_query):
-        # 실제 어댑터와 동일하게 질의별 compute_scores 를 순서대로 위임 (서브클래스 오버라이드 존중)
         return [self.compute_scores(q, docs) for q, docs in zip(queries, docs_per_query)]
 
     def rerank(self, query, items, text_key="text", top_k=None):
-        out = [{**it, "rerank_score": self._logit} for it in items]
+        out = [{**it, "rerank_score": self._score} for it in items]
         out.sort(key=lambda x: x["rerank_score"], reverse=True)
         return out[:top_k] if top_k is not None else out
 
@@ -110,12 +113,22 @@ class _Reranker:
         ]
 
 
-HIGH_RERANKER = _Reranker(8.0)   # sigmoid≈0.9997 → 매칭 인정
-LOW_RERANKER = _Reranker(-8.0)   # sigmoid≈0.0003 → 임계 미달
+class _CapturingReranker(_Reranker):
+    def __init__(self, score: float):
+        super().__init__(score)
+        self.calls = []
+
+    def rerank_many(self, queries, items_per_query, text_key="text", top_k=None):
+        self.calls.append((text_key, items_per_query))
+        return super().rerank_many(queries, items_per_query, text_key=text_key, top_k=top_k)
+
+
+HIGH_RERANKER = _Reranker(0.9997)  # 매칭 인정 (match_threshold=0.5 이상)
+LOW_RERANKER = _Reranker(0.0003)   # 임계 미달
 
 
 class FakeGrounder:
-    def get_grounding(self, _category: Category) -> List[GroundingLaw]:
+    def get_grounding(self, _category: Category, _contract_type=None) -> List[GroundingLaw]:
         return [GroundingLaw(법령명="저작권법", 조번호="제5조", 본문="...", 출처="국가법령정보")]
 
     def query_law(self, _clause_text: str) -> List[GroundingLaw]:
@@ -139,6 +152,18 @@ def test_반환은_DeviationResult_리스트():
     assert all(isinstance(r, DeviationResult) for r in results)
 
 
+def test_독소_리랭커만_rerank_text와_원문을_함께_받는다():
+    reranker = _CapturingReranker(0.9)
+    _review(
+        [Clause(idx=1, num="제5조", title="저작권", text="저작권 전부 무상")],
+        reranker=reranker,
+    )
+
+    toxic_call = next(items for text_key, items in reranker.calls if text_key == "rerank_text")
+    assert toxic_call[0][0]["text"] == _TOXIC_HIT["text"]
+    assert toxic_call[0][0]["rerank_text"].startswith("검토 패턴: IP 전부 무상 귀속\n예문: ")
+
+
 def test_검색결과_없으면_NO_MATCH():
     clause = Clause(idx=1, num="제9조", title="기타", text="완전히 무관한 비표준 내용")
     results = _review([clause])
@@ -147,20 +172,22 @@ def test_검색결과_없으면_NO_MATCH():
 
 
 def test_후보는_있으나_임계미달이면_EXTRA():
-    # 검색은 art20 을 반환하지만 리랭커 점수가 낮아 임계 미달 → NO_MATCH 아니라 EXTRA
     clause = Clause(idx=1, num="제5조", title="저작권", text="저작권 귀속은 회사에 있다")
     results = _review([clause], reranker=LOW_RERANKER)
     target = [r for r in results if r.user_clause == clause.text]
     assert target and target[0].deviation == Deviation.EXTRA
+    # 2차 LLM이 "무엇과 비교해 다른지" 판단할 수 있도록 근접후보는 버리지 않는다.
+    assert target[0].matched_standard is not None
+    assert target[0].matched_standard.clause_id == "sw_freelance-art20"
 
 
-def test_강한_매칭_상이본문은_CHANGED_와_근거부착():
+def test_강한_매칭도_매칭되면_NONE():
     clause = Clause(idx=1, num="제5조", title="저작권", text="저작권 귀속은 회사에 있다")
     results = _review([clause])
     matched = [r for r in results if r.matched_standard and r.matched_standard.clause_id == "sw_freelance-art20"]
     assert matched
-    assert matched[0].deviation == Deviation.CHANGED
-    assert len(matched[0].grounding) >= 1
+    assert matched[0].deviation == Deviation.NONE
+    assert matched[0].grounding == []
 
 
 def test_본문_동일하면_NONE_이고_근거없음():
@@ -168,7 +195,7 @@ def test_본문_동일하면_NONE_이고_근거없음():
     results = _review([clause])
     matched = [r for r in results if r.matched_standard and r.matched_standard.clause_id == "sw_freelance-art20"]
     assert matched and matched[0].deviation == Deviation.NONE
-    assert matched[0].grounding == []  # NONE 은 이탈이 아니므로 grounding 미부착
+    assert matched[0].grounding == []
 
 
 def test_매칭안된_표준조항은_MISSING():
@@ -180,6 +207,17 @@ def test_매칭안된_표준조항은_MISSING():
     assert "sw_freelance-art99" in missing_ids
 
 
+def test_임계미달_근접후보는_MISSING_탐지를_오염시키지_않음():
+    """EXTRA로 판정된 근접후보가 있어도, 그 표준조항은 '커버됨'으로 치지 않고 MISSING으로 잡혀야 한다."""
+    clause = Clause(idx=1, num="제5조", title="저작권", text="저작권 귀속은 회사에 있다")
+    results = _review([clause], reranker=LOW_RERANKER)
+    missing_ids = [
+        r.matched_standard.clause_id for r in results
+        if r.deviation == Deviation.MISSING and r.matched_standard
+    ]
+    assert "sw_freelance-art20" in missing_ids
+
+
 def test_독소패턴_역방향검색이_toxic_patterns에_채워짐():
     clause = Clause(idx=1, num="제5조", title="저작권", text="저작권을 전부 무상으로 양도한다")
     results = _review([clause])
@@ -188,161 +226,23 @@ def test_독소패턴_역방향검색이_toxic_patterns에_채워짐():
 
 
 def test_서브청크_rollup으로_부모조항_매칭():
-    # standard_clauses 미스 + standard_sub_chunks 히트 → parent(art20) 로 roll-up 매칭
     clause = Clause(idx=1, num="제20조", title="지식재산권", text=ART20.text)
     results = _review([clause], retriever=FakeSubChunkRetriever())
     matched = [r for r in results if r.matched_standard and r.matched_standard.clause_id == "sw_freelance-art20"]
     assert matched and matched[0].deviation != Deviation.NO_MATCH
 
 
-# ── 커버리지 체크 통합 테스트 ──────────────────────────────────────────────────
-#
-# 시나리오: 항이 3개(①②③)인 거대 조항(ART58)에서 ②(이자 항)가 사용자 조항에 없음.
-# 본문 유사도 기준으로는 NONE 판정되지만, 커버리지 체크가 미커버를 잡아 CHANGED 로 상향.
+def test_표준조항과_서브청크부모가_충돌해도_기준선_판정을_유지한다():
+    """보류된 C1 실험 규칙은 기본 런타임의 판정을 바꾸지 않는다."""
+    clause = Clause(idx=1, num="제20조", title="지식재산권", text=ART20.text)
 
-ART58 = StandardClause(
-    clause_id="sw_freelance-art58", contract_type=ContractType.SW_FREELANCE,
-    category=Category.PAYMENT, title="하도급대금 지급",
-    text="① 원사업자는 대금을 지급한다.\n② 지연 시 이자를 부과한다.\n③ 기한은 60일이다.",
-    source="s/제58조", version="2020",
-)
-_SUB_00 = StandardSubChunk(
-    sub_chunk_id="sw_freelance-art58-sub00", parent_clause_id="sw_freelance-art58",
-    sub_chunk_index=0, text="① 원사업자는 대금을 지급한다.",
-    contract_type=ContractType.SW_FREELANCE,
-)
-_SUB_01 = StandardSubChunk(
-    sub_chunk_id="sw_freelance-art58-sub01", parent_clause_id="sw_freelance-art58",
-    sub_chunk_index=1, text="② 지연 시 이자를 부과한다.",
-    contract_type=ContractType.SW_FREELANCE,
-)
-_SUB_02 = StandardSubChunk(
-    sub_chunk_id="sw_freelance-art58-sub02", parent_clause_id="sw_freelance-art58",
-    sub_chunk_index=2, text="③ 기한은 60일이다.",
-    contract_type=ContractType.SW_FREELANCE,
-)
-_ART58_HIT = {
-    "id": "sw_freelance-art58", "text": ART58.text,
-    "contract_type": "SW_FREELANCE", "category": "PAYMENT",
-    "title": ART58.title, "source": ART58.source, "version": "2020",
-    "fusion_score": 0.03,
-}
-_ART58_SUB_MAP = {"sw_freelance-art58": [_SUB_00, _SUB_01, _SUB_02]}
-_ALL_STD_WITH_58 = [ART20, ART58, ART99_UNMATCHED]
+    results = _review([clause], retriever=FakeConflictingParentRetriever())
 
-
-class _Art58Retriever(FakeRetriever):
-    """standard_clauses 쿼리에 항상 ART58 을 반환하는 검색 fake."""
-    def _search_one(self, collection_name, query):
-        if collection_name == "standard_clauses":
-            return [dict(_ART58_HIT)]
-        return []
-
-
-class _PartialCoverageReranker(_Reranker):
-    """rerank 는 고점수, compute_scores 는 '이자' 항(SUB_01) 쿼리만 저점수.
-
-    커버리지 체크 시 SUB_01 이 미커버로 판정되도록 시뮬레이션합니다.
-    나머지 항(SUB_00·SUB_02)과 일반 rerank 는 HIGH_RERANKER 와 동일하게 동작합니다.
-    """
-    def __init__(self):
-        super().__init__(8.0)
-
-    def compute_scores(self, query: str, documents: list) -> list:
-        # SUB_01.text("② 지연 시 이자를 부과한다.") 가 쿼리일 때 저점수
-        if "이자" in query:
-            return [-8.0] * len(documents)
-        return [8.0] * len(documents)
-
-
-def _review58(clauses, *, sub_map=_ART58_SUB_MAP, reranker=None, use_coverage=True):
-    return review_contract(
-        clauses, ContractType.SW_FREELANCE,
-        retriever=_Art58Retriever(),
-        embedder=FakeEmbedder(),
-        reranker=reranker or _PartialCoverageReranker(),
-        grounder=FakeGrounder(),
-        all_standard_clauses=_ALL_STD_WITH_58,
-        all_standard_sub_chunks=sub_map,
-        coverage_threshold=0.5,
-        use_coverage=use_coverage,
-    )
-
-
-def test_서브청크_미커버_NONE에서_CHANGED_상향():
-    """표준 서브청크 1개 미커버 → NONE 판정 조항이 CHANGED 로 상향됨."""
-    clause = Clause(idx=1, num="제58조", title="하도급대금", text=ART58.text)
-    results = _review58([clause])
-    target = next(r for r in results if r.user_clause == clause.text)
-    assert target.deviation == Deviation.CHANGED
-
-
-def test_서브청크_미커버_uncovered_ids_채워짐():
-    """CHANGED 상향 시 미커버된 표준 항 id 가 uncovered_sub_chunk_ids 에 포함됨."""
-    clause = Clause(idx=1, num="제58조", title="하도급대금", text=ART58.text)
-    results = _review58([clause])
-    target = next(r for r in results if r.user_clause == clause.text)
-    assert "sw_freelance-art58-sub01" in target.uncovered_sub_chunk_ids
-
-
-def test_서브청크_미커버_grounding_부착():
-    """CHANGED 상향 시 법령 근거가 grounding 에 부착됨."""
-    clause = Clause(idx=1, num="제58조", title="하도급대금", text=ART58.text)
-    results = _review58([clause])
-    target = next(r for r in results if r.user_clause == clause.text)
-    assert len(target.grounding) >= 1
-
-
-def test_서브청크_전체_커버_NONE_유지():
-    """모든 표준 서브청크가 커버됨 → NONE 유지, uncovered_ids 비어있음."""
-    clause = Clause(idx=1, num="제58조", title="하도급대금", text=ART58.text)
-    results = _review58([clause], reranker=HIGH_RERANKER)
-    target = next(r for r in results if r.user_clause == clause.text)
+    target = next(result for result in results if result.user_clause == clause.text)
     assert target.deviation == Deviation.NONE
-    assert target.uncovered_sub_chunk_ids == []
+    assert target.matched_standard is not None
+    assert target.matched_standard.clause_id == "sw_freelance-art20"
 
-
-def test_use_coverage_false_NONE_유지():
-    """use_coverage=False 이면 커버리지 체크 전체 스킵 → NONE 유지 (ablation)."""
-    clause = Clause(idx=1, num="제58조", title="하도급대금", text=ART58.text)
-    results = _review58([clause], use_coverage=False)
-    target = next(r for r in results if r.user_clause == clause.text)
-    assert target.deviation == Deviation.NONE
-    assert target.uncovered_sub_chunk_ids == []
-
-
-def test_서브청크_맵_미주입_NONE_유지():
-    """all_standard_sub_chunks=None 이면 커버리지 체크 없이 NONE 유지."""
-    clause = Clause(idx=1, num="제58조", title="하도급대금", text=ART58.text)
-    results = _review58([clause], sub_map=None)
-    target = next(r for r in results if r.user_clause == clause.text)
-    assert target.deviation == Deviation.NONE
-
-
-def test_단일_항_조항도_의미_커버리지_검사_NONE():
-    """단일 항 표준도 의미 커버리지로 판정한다(의미 게이트 전환). 커버되면 NONE.
-
-    이전 설계는 std_subs<2 를 스킵했으나, 실계약 대부분이 단일 항 매칭이라(v1_review Track B)
-    단일 항도 의미 커버리지 게이트를 태워야 NONE 도달이 가능하다.
-    """
-    clause = Clause(idx=1, num="제58조", title="하도급대금", text=_SUB_00.text)
-    results = _review58([clause], sub_map={"sw_freelance-art58": [_SUB_00]})
-    target = next(r for r in results if r.user_clause == clause.text)
-    assert target.deviation == Deviation.NONE
-    assert target.uncovered_sub_chunk_ids == []
-
-
-def test_커버돼도_치명변경_숫자면_CHANGED():
-    """의미 커버리지는 통과해도 치명변경(숫자 변경)이 있으면 CHANGED 로 강제한다.
-
-    의미 게이트가 '같은 뜻 다른 글자'를 NONE 으로 인정하는 대신, 부정어·숫자·당사자
-    플립은 글자 규칙(detect_critical_changes)으로 반드시 CHANGED 로 되돌린다.
-    """
-    changed_text = ART58.text.replace("60일", "90일")  # ③ 기한 60→90 변경
-    clause = Clause(idx=1, num="제58조", title="하도급대금", text=changed_text)
-    results = _review58([clause], reranker=HIGH_RERANKER)  # 전부 커버됨
-    target = next(r for r in results if r.user_clause == changed_text)
-    assert target.deviation == Deviation.CHANGED
 
 def test_progress_callback_호출_검증():
     called = []
@@ -370,4 +270,3 @@ def test_progress_callback_호출_검증():
         (2, 2, ProgressPhase.CLAUSE_REVIEW),
         (2, 2, ProgressPhase.MISSING_DETECTION),
     ]
-

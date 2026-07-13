@@ -11,7 +11,7 @@ from chromadb.config import Settings
 from rank_bm25 import BM25Okapi
 from kiwipiepy import Kiwi
 
-from config import BASE_DIR
+from config import BASE_DIR, CHROMA_DIR
 from .port import Embedder
 
 # Kiwi 형태소 분석기 초기화 (글로벌 단일 인스턴스)
@@ -30,7 +30,13 @@ class VectorManager:
     def __init__(self, embedder: Embedder):
         self._embedder = embedder
         # 1. 크로마 DB 경로 설정 및 클라이언트 초기화
-        self.persist_dir = str(BASE_DIR / "data" / "migration")
+        # RDB(contract.sqlite3)와 생명주기가 달라(오프라인 재빌드 시 폴더 자체를 삭제 후 재생성)
+        # data/migration 과 분리된 전용 폴더를 사용합니다.
+        # 주의: chromadb PersistentClient는 같은 프로세스 안에서 동일 경로를 가리키는 클라이언트를
+        # 두 번째로 만드는 것을 지원하지 않습니다(재생성 시 "readonly database" 에러). 그래서 폴더
+        # 전체 삭제·재생성은 이 클래스가 아니라 pipe/build_index.py 가 adapter를 import 하기
+        # 이전(=이 생성자가 호출되기 전)에 수행합니다.
+        self.persist_dir = str(BASE_DIR / CHROMA_DIR)
         self.settings = Settings(
             is_persistent=True,
             persist_directory=self.persist_dir,
@@ -293,20 +299,34 @@ class VectorManager:
             scored_docs.append(doc_copy)
         return scored_docs
 
-    def _reciprocal_rank_fusion(self, dense_results: List[Dict], bm25_results: List[Dict], k: int = 60) -> List[Dict]:
-        """두 리트리벌 결과 집합의 상호 순위(RRF) 결합 가중치를 매겨 통합 정렬 목록을 생성합니다."""
+    def _reciprocal_rank_fusion(
+        self,
+        dense_results: List[Dict],
+        bm25_results: List[Dict],
+        k: int = 60,
+        dense_weight: float = 1.0,
+        bm25_weight: float = 1.0,
+    ) -> List[Dict]:
+        """두 리트리벌 결과 집합의 상호 순위(RRF) 결합 가중치를 매겨 통합 정렬 목록을 생성합니다.
+
+        dense_weight/bm25_weight 는 각 리스트의 RRF 기여도에 곱하는 배율이다. 기본값 1.0/1.0은
+        가중치 없는 표준 RRF와 동일하다(하위호환). 조항 매칭처럼 어휘가 계약유형별로 바뀌는
+        패러프레이즈 도메인에서 BM25가 구조적으로 dense보다 약할 때(v3_result.md 실측: bm25
+        recall@5=0.880 < dense=0.920, 동일가중 hybrid=0.893으로 dense 단독보다 낮음) 비율을
+        조절하는 용도 — 최적 비율은 held-out 골든셋 스윕으로 정한다(M_eval_dual_track.md).
+        """
         scores = {}
         doc_map = {}
 
         for rank, doc in enumerate(dense_results):
             doc_id = doc["id"]
             doc_map[doc_id] = doc
-            scores[doc_id] = scores.get(doc_id, 0.0) + 1.0 / (k + rank + 1)
+            scores[doc_id] = scores.get(doc_id, 0.0) + dense_weight / (k + rank + 1)
 
         for rank, doc in enumerate(bm25_results):
             doc_id = doc["id"]
             doc_map[doc_id] = doc
-            scores[doc_id] = scores.get(doc_id, 0.0) + 1.0 / (k + rank + 1)
+            scores[doc_id] = scores.get(doc_id, 0.0) + bm25_weight / (k + rank + 1)
 
         sorted_ids = sorted(scores.keys(), key=lambda x: scores[x], reverse=True)
 
@@ -325,11 +345,14 @@ class VectorManager:
         query: str,
         metadata_filter: Optional[Dict[str, Any]] = None,
         top_k: int = 5,
+        dense_weight: float = 1.0,
+        bm25_weight: float = 1.0,
     ) -> List[Dict[str, Any]]:
         """이미 계산된 밀도 벡터와 질의 텍스트를 함께 사용해 dense·BM25 결과를 RRF 로 융합합니다.
 
         Dense·BM25 두 검색은 상호 독립적이므로 병렬 실행하여 지연시간을 max(dense, bm25)로 줄인다.
         임베딩 계산은 호출부 책임입니다 (VectorManager 는 Embedder 에 의존하지 않음).
+        dense_weight/bm25_weight: _reciprocal_rank_fusion 참고 (기본값은 하위호환 동일가중).
         """
         fetch_k = top_k * 2
         collection = self.get_collection(collection_name)
@@ -339,7 +362,7 @@ class VectorManager:
             dense_res = dense_future.result()
             bm25_res = bm25_future.result()
 
-        fused_results = self._reciprocal_rank_fusion(dense_res, bm25_res)
+        fused_results = self._reciprocal_rank_fusion(dense_res, bm25_res, dense_weight=dense_weight, bm25_weight=bm25_weight)
         return fused_results[:top_k]
 
     def dense_search_many(
@@ -377,11 +400,14 @@ class VectorManager:
         queries: List[str],
         metadata_filter: Optional[Dict[str, Any]] = None,
         top_k: int = 5,
+        dense_weight: float = 1.0,
+        bm25_weight: float = 1.0,
     ) -> List[List[Dict[str, Any]]]:
         """여러 질의를 하이브리드(dense+BM25) 방식으로 한 번에 검색합니다.
 
         조항별로 hybrid_search 를 개별 호출할 때 발생하는 N회 임베딩 왕복을, 호출부가 vectors 를
         배치로 미리 계산해 넘기게 하여 없앱니다. 반환은 queries 와 1:1 정렬된 결과 목록의 목록입니다.
+        dense_weight/bm25_weight: _reciprocal_rank_fusion 참고 (기본값은 하위호환 동일가중).
         """
         if not queries:
             return []
@@ -392,7 +418,7 @@ class VectorManager:
         for query, vector in zip(queries, vectors):
             dense_res = self._dense_query(collection, vector, metadata_filter, fetch_k)
             bm25_res = self.bm25_search(collection_name, query, metadata_filter, fetch_k)
-            fused = self._reciprocal_rank_fusion(dense_res, bm25_res)
+            fused = self._reciprocal_rank_fusion(dense_res, bm25_res, dense_weight=dense_weight, bm25_weight=bm25_weight)
             fused_per_query.append(fused[:top_k])
         return fused_per_query
 

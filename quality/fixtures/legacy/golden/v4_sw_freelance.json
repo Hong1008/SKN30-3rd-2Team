@@ -1,0 +1,200 @@
+[
+  {
+    "case_id": "v4-sw-01",
+    "contract_type": "SW_FREELANCE",
+    "user_clause": "### 제4조(업무의 범위)\n도급인은 프리랜서 수급인이 작성한 산출물의 완성도를 제고하기 위하여 명시되지 않은 관련 UI 보완 및 개발 변경 사항을 추가로 요구할 수 있으며, 수급인은 이에 따라 무상으로 추가 개발 작업을 완수하여야 한다.",
+    "gold_clause_id": "sw_freelance-2020-art4",
+    "gold_deviation": "NONE",
+    "gold_toxic": [
+      "UNPAID_ADDITIONAL_WORK"
+    ],
+    "trap": "negation",
+    "note": "명시되지 않은 보완 및 개발에 대한 프리랜서 무상 추가 노동 요구 독소 조항"
+  },
+  {
+    "case_id": "v4-sw-02",
+    "contract_type": "SW_FREELANCE",
+    "user_clause": "### 제4조(업무의 범위)\n본 계약상의 업무 범위를 초과하는 과업지시나 추가 기능 개발 요청에 대해서는 당사자 간 별도의 서면 합의로 개발 조건 및 대가를 조정하여 추가 용역 보수를 지급하기로 한다.",
+    "gold_clause_id": "sw_freelance-2020-art4",
+    "gold_deviation": "NONE",
+    "gold_toxic": [],
+    "trap": "none",
+    "note": "업무 범위 초과 시 대금 서면 조정 보장 (v4-sw-01에 대응하는 Hard-Negative)"
+  },
+  {
+    "case_id": "v4-sw-03",
+    "contract_type": "SW_FREELANCE",
+    "user_clause": "### 제20조(지식재산권의 귀속)\n프리랜서 수급인이 본 건 업무 수행 중 독자적으로 고안하거나 창작한 소스코드 및 지식재산에 관한 일체의 독점적 소유권과 저작권은 도급인에게 전적으로 영구 무상 귀속된다.",
+    "gold_clause_id": "sw_freelance-2020-art20",
+    "gold_deviation": "NONE",
+    "gold_toxic": [
+      "IP_TOTAL_FREE"
+    ],
+    "trap": "party",
+    "note": "수급인의 창작 소스코드 및 특허 저작권을 일방에게 전면 영구 무상 양도하는 독소 조항"
+  },
+  {
+    "case_id": "v4-sw-04",
+    "contract_type": "SW_FREELANCE",
+    "user_clause": "### 제20조(지식재산권의 귀속)\n수급인이 본 업무를 수행하면서 개발한 시작품 및 지식재산권은 양 당사자의 공동 소유로 귀속하며, 상호 서면 합의 하에 비독점적으로 자유롭게 사용할 수 있는 권리를 부여한다.",
+    "gold_clause_id": "sw_freelance-2020-art20",
+    "gold_deviation": "NONE",
+    "gold_toxic": [],
+    "trap": "none",
+    "note": "지식재산권 양사 공동 소유 및 상호 이용 보장 (v4-sw-03에 대응하는 Hard-Negative)"
+  },
+  {
+    "case_id": "v4-sw-05",
+    "contract_type": "SW_FREELANCE",
+    "user_clause": "### 제17조(비밀준수)\n수급인은 용역을 대행하며 인지한 도급인의 소스코드 및 제반 업무 내용에 대하여 본 계약 종료 후에도 영구히 기간 제한 없이 기밀 유지의 비밀준수 의무를 진다.",
+    "gold_clause_id": "sw_freelance-2020-art17",
+    "gold_deviation": "NONE",
+    "gold_toxic": [
+      "INDEFINITE_CONFIDENTIALITY"
+    ],
+    "trap": "negation",
+    "note": "용역 완료 후 평생/무제한적 기밀 유지 강제 독소 조항"
+  },
+  {
+    "case_id": "v4-sw-06",
+    "contract_type": "SW_FREELANCE",
+    "user_clause": "### 제17조(비밀준수)\n본 용역 이행 중 지득한 기술 기밀 및 운영 정보에 대한 비밀의무보존 기간은 용역을 종료 또는 최종 완료한 날로부터 1년 이내로 하며, 기간 만료 시 준수 책임은 자동으로 해제된다.",
+    "gold_clause_id": "sw_freelance-2020-art17",
+    "gold_deviation": "NONE",
+    "gold_toxic": [],
+    "trap": "none",
+    "note": "비밀보장 의무 1년 제한 명시 (v4-sw-05에 대응하는 Hard-Negative)"
+  },
+  {
+    "case_id": "v4-sw-07",
+    "contract_type": "SW_FREELANCE",
+    "user_clause": "### 제21조(이의 및 분쟁의 해결)\n본 계약 조건의 해석 및 이행 과업 범위의 도달성 여부에 대하여 양사간 상충하는 이견이 있을 경우, 수급인은 민형사상 이의를 포기하고 전적으로 도급인의 일방적인 결정과 해석에 따른다.",
+    "gold_clause_id": "sw_freelance-2020-art21",
+    "gold_deviation": "NONE",
+    "gold_toxic": [
+      "UNILATERAL_INTERPRETATION"
+    ],
+    "trap": "party",
+    "note": "계약 문맥 해석 이견 발생 시 도급인 일방 판정 구속 독소 조항"
+  },
+  {
+    "case_id": "v4-sw-08",
+    "contract_type": "SW_FREELANCE",
+    "user_clause": "### 제21조(이의 및 분쟁의 해결)\n계약에 규정된 세부 사항에 관한 문구상 이견이 있을 시에는 관련 노동 관계법과 상사 관례 및 우호적 협의를 토대로 상호 대등한 관점에서 조율하여 판정을 결정한다.",
+    "gold_clause_id": "sw_freelance-2020-art21",
+    "gold_deviation": "NONE",
+    "gold_toxic": [],
+    "trap": "none",
+    "note": "상호 대등한 관점 합의 및 노동법 기준 조율 (v4-sw-07에 대응하는 Hard-Negative)"
+  },
+  {
+    "case_id": "v4-sw-09",
+    "contract_type": "SW_FREELANCE",
+    "user_clause": "### 제18조(손해배상)\n수급인이 용역 일정을 지키지 못하거나 과실로 장애가 날 경우, 도급인은 발생 원인과 피해액을 불문하고 전체 계약 금액의 2배 상당액을 확정 위약벌로 즉시 청구할 수 있으며 수급인은 이를 즉각 납부한다.",
+    "gold_clause_id": "sw_freelance-2020-art18",
+    "gold_deviation": "NONE",
+    "gold_toxic": [
+      "UNFAIR_DAMAGE_CLAIM"
+    ],
+    "trap": "negation",
+    "note": "피해액 실증 없이 과도한 계약총액 2배 위약벌 즉시 반환 요구 독소 조항"
+  },
+  {
+    "case_id": "v4-sw-10",
+    "contract_type": "SW_FREELANCE",
+    "user_clause": "### 제18조(손해배상)\n수급인이 본 업무를 진행하며 고의 또는 중대한 과실로 인하여 도급인에게 손해를 입힌 경우에는, 양사 인과관계가 객관적으로 입증된 실제 직접 손해 범위 내로 책임을 제한한다.",
+    "gold_clause_id": "sw_freelance-2020-art18",
+    "gold_deviation": "NONE",
+    "gold_toxic": [],
+    "trap": "none",
+    "note": "고의/중과실 직접 실손해액 범위 배상 제한 (v4-sw-09에 대응하는 Hard-Negative)"
+  },
+  {
+    "case_id": "v4-sw-11",
+    "contract_type": "SW_FREELANCE",
+    "user_clause": "### 제16조(계약의 해제 및 해지)\n도급인은 프로젝트 일정의 변동이나 필요성 소멸 등 임의의 사유가 발생할 경우, 프리랜서에게 통지 즉시 계약을 일방 해지할 수 있으며 해지 시점 기준 기성 정산은 이행하지 아니한다.",
+    "gold_clause_id": "sw_freelance-2020-art16",
+    "gold_deviation": "NONE",
+    "gold_toxic": [
+      "UNILATERAL_CANCELLATION"
+    ],
+    "trap": "party",
+    "note": "도급인 필요 시 임의 일방 계약 해지 및 해지 시 기성 미정산 독소 조항"
+  },
+  {
+    "case_id": "v4-sw-12",
+    "contract_type": "SW_FREELANCE",
+    "user_clause": "### 제16조(계약의 해제 및 해지)\n도급인이 귀책 없는 수급인과의 계약을 임의로 중도 해지하고자 하는 때에는 최소 15일 전에 사전 서면 예고하여야 하며, 해지 통지일 기준 이미 수행한 작업 기성 진척도에 상응하는 잔여 보수를 정산 지급하여야 한다.",
+    "gold_clause_id": "sw_freelance-2020-art16",
+    "gold_deviation": "NONE",
+    "gold_toxic": [],
+    "trap": "none",
+    "note": "임의 해지 시 사전 예고 및 완료분 기성비용 보장 정산 (v4-sw-11에 대응하는 Hard-Negative)"
+  },
+  {
+    "case_id": "v4-sw-13",
+    "contract_type": "SW_FREELANCE",
+    "user_clause": "### 제4조(검수 불합격 시 보완)\n수령받은 산출물의 검수가 원사업자 기준에 불합격한 경우, 수급인은 합격점을 취득할 때까지 원사업자가 요구하는 추가 기능 삽입 및 반복 코딩을 무상으로 영구히 책임 완수하여야 한다.",
+    "gold_clause_id": "sw_freelance-2020-art4",
+    "gold_deviation": "NONE",
+    "gold_toxic": [
+      "UNPAID_ADDITIONAL_WORK"
+    ],
+    "trap": "negation",
+    "note": "불합격 보완 명목으로 무제한/영구적 무상 추가 보완 개발을 강요하는 독소 조항 (Held-out)"
+  },
+  {
+    "case_id": "v4-sw-14",
+    "contract_type": "SW_FREELANCE",
+    "user_clause": "### 제4조(검수 불합격 시 보완)\n검수 결과 불합격 사항 중 당초 계약 사양 이외의 신규 기능 개발이나 대폭적 수정 요구가 포함될 시에는, 양사 협의를 통해 추가 일정을 연장하고 추가 용역 대금을 지급하기로 약정한다.",
+    "gold_clause_id": "sw_freelance-2020-art4",
+    "gold_deviation": "NONE",
+    "gold_toxic": [],
+    "trap": "none",
+    "note": "규격 외 추가 검수 요구 시 단가 가산 합의 보장 (v4-sw-13에 대응하는 Hard-Negative) (Held-out)"
+  },
+  {
+    "case_id": "v4-sw-15",
+    "contract_type": "SW_FREELANCE",
+    "user_clause": "### 제17조(기밀유지 한도)\n본 계약에 기인하여 수급인이 지득하게 된 도급인의 업무 전반의 정보 및 운영 방식 지식은 본 용역의 완료 후에도 기한의 제약을 받지 않고 영구적으로 타인에게 배포 및 누설이 절대 불가하다.",
+    "gold_clause_id": "sw_freelance-2020-art17",
+    "gold_deviation": "NONE",
+    "gold_toxic": [
+      "INDEFINITE_CONFIDENTIALITY"
+    ],
+    "trap": "negation",
+    "note": "프리랜서의 비밀보장 의무를 영구화하는 독소 조항 (Held-out)"
+  },
+  {
+    "case_id": "v4-sw-16",
+    "contract_type": "SW_FREELANCE",
+    "user_clause": "### 제17조(기밀유지 한도)\n프리랜서 용역 수행 중 획득한 각종 개발 명세서 및 영업 기밀의 유지 의무 유효기간은 최종 검수 완료일로부터 2년간으로 기한을 한정하며, 2년 경과 시에는 의무가 종결된다.",
+    "gold_clause_id": "sw_freelance-2020-art17",
+    "gold_deviation": "NONE",
+    "gold_toxic": [],
+    "trap": "none",
+    "note": "기밀 자료 준수 기간을 완료 후 2년 기한 한정 (v4-sw-15에 대응하는 Hard-Negative) (Held-out)"
+  },
+  {
+    "case_id": "v4-sw-17",
+    "contract_type": "SW_FREELANCE",
+    "user_clause": "### 제6조(지체상금 특약)\n수급인이 약정된 납기일을 맞추지 못하고 지연하는 때에는 매 지체 1일마다 총 용역보수의 10%에 이르는 과도한 비율의 손해금을 매일 삭감하여 프리랜서에게 지체 의무를 지운다.",
+    "gold_clause_id": "sw_freelance-2020-art6",
+    "gold_deviation": "NONE",
+    "gold_toxic": [
+      "UNFAIR_DAMAGE_CLAIM"
+    ],
+    "trap": "negation",
+    "note": "1일 지연당 10% 삭감 등 과도한 지체 책임을 수급사업자에게 전가하는 독소 조항 (Held-out)"
+  },
+  {
+    "case_id": "v4-sw-18",
+    "contract_type": "SW_FREELANCE",
+    "user_clause": "### 제6조(지체상금 특약)\n수급인의 책임 있는 사유로 완료일이 순연되는 경우, 당사자가 서면으로 합의한 요율·적용 일수·상한에 따라 지연 배상금을 산정하여 잔금 정산 시 공제할 수 있다.",
+    "gold_clause_id": "sw_freelance-2020-art6",
+    "gold_deviation": "NONE",
+    "gold_toxic": [],
+    "trap": "none",
+    "note": "귀책사유와 요율·기간·상한을 당사자 합의로 특정한 지체상금 사례로, v4-sw-17에 대응하는 Hard-Negative (Held-out)"
+  }
+]

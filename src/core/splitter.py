@@ -1,5 +1,5 @@
 """
-항·호 단위 조항 분할기 (순수 함수)
+항·호 단위 조항 분할기 + 검색용 표면형 정규화 (순수 함수)
 
 오프라인(normalize.py) 과 런타임(review_pipe.py 커버리지 체크) 이 동일 조건을 공유합니다.
 외부 의존성 없음 — re 표준 라이브러리만 사용.
@@ -19,6 +19,32 @@ _LARGE_CLAUSE_SYMBOL_LIMIT = 3
 _SYMBOL_RE = re.compile(r"[①-⑳]")
 _NUM_RE = re.compile(r"^[ \t]*-?[ \t]*[0-9]+[.)]", re.MULTILINE)
 _SPLIT_RE = re.compile(r"(^[ \t]*-?[ \t]*[0-9]+[.)]|^[ \t]*[①-⑳])", re.MULTILINE)
+
+# ── 검색용 표면형 정규화 (P_text_normalization.md) ─────────────────────────
+# RDB 원본 텍스트는 절대 바꾸지 않는다. 이 함수의 출력은 임베딩·BM25 색인 직전에만
+# 쓰이는 "검색 전용 사본"이다(호출부: pipe/build_index.py 의 documents, pipe/review_pipe.py 의
+# clause_texts). 표준조항 코퍼스는 헤더가 있고 독소조항 코퍼스는 없어 리랭커 점수가 붕괴하던
+# 비대칭(07-09 실측: 0.998→0.0003)을 없애는 것이 목적이므로, 제거 대상은 코퍼스마다 유무가
+# 갈리는 "구조적 표식"(마크다운·조번호·항호 기호)으로만 좁힌다 — 제목·본문의 실제 어휘·숫자는
+# 유지한다(제목은 의미 신호, 실제 숫자는 BM25·의미 매칭에 필요한 내용이기 때문).
+_CLAUSE_HEADER_RE = re.compile(r"^\s*#*\s*제\d+조\s*[\(\（]([^\)\）\n]*)[\)\）]\s*\n?")
+_LEADING_ENUM_STRIP_RE = re.compile(r"^[ \t]*-?[ \t]*(?:[0-9]+[.)]|[①-⑳])[ \t]*", re.MULTILINE)
+
+
+def normalize_for_search(text: str) -> str:
+    """검색·임베딩 입력 전용 표면형 정규화.
+
+    - "### 제N조(제목)" 헤더에서 마크다운·조번호·괄호를 제거하고 제목 텍스트만 본문 앞에 병합한다
+      (독소조항 코퍼스처럼 애초에 헤더가 없는 텍스트는 매칭되지 않아 그대로 통과한다).
+    - 줄 시작의 항·호 열거 기호(①~⑳, "1.", "1)", "- 1)")를 제거한다.
+    """
+    match = _CLAUSE_HEADER_RE.match(text)
+    if match:
+        title = match.group(1).strip()
+        rest = text[match.end():]
+        # 개행으로 이어붙여야 rest 쪽 항·호 기호가 줄 시작(^) 위치를 유지해 아래 정규식에 걸린다.
+        text = f"{title}\n{rest}".strip() if title else rest.strip()
+    return _LEADING_ENUM_STRIP_RE.sub("", text).strip()
 
 
 def is_large_clause(text: str) -> bool:

@@ -1,0 +1,5268 @@
+{
+  "deviation": [
+    {
+      "case_id": "v4-si-01",
+      "contract_type": "SI_SUBCONTRACT",
+      "trap": "negation",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "NONE",
+      "confidence": 0.9898354411125183,
+      "matched_standard": {
+        "id": "si_subcontract-2025-art11",
+        "version": "2025",
+        "category": "SCOPE_SOW"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "si_subcontract-2025-art11-sub00",
+          "parent_clause_id": "si_subcontract-2025-art11",
+          "category": null,
+          "version": null,
+          "score": 0.9898354411125183,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "si_subcontract-2025-art11",
+          "parent_clause_id": null,
+          "category": "SCOPE_SOW",
+          "version": "2025",
+          "score": 0.8242197036743164,
+          "source": "standard_clauses"
+        },
+        {
+          "rank": 3,
+          "standard_id": "si_subcontract-2025-art11-sub01",
+          "parent_clause_id": "si_subcontract-2025-art11",
+          "category": null,
+          "version": null,
+          "score": 0.09935811161994934,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "TN",
+      "predicted_by_threshold": {
+        "0.40": false,
+        "0.45": false,
+        "0.50": false,
+        "0.55": false,
+        "0.60": false
+      },
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-si-02",
+      "contract_type": "SI_SUBCONTRACT",
+      "trap": "none",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "NONE",
+      "confidence": 0.6683350205421448,
+      "matched_standard": {
+        "id": "si_subcontract-2025-art11",
+        "version": "2025",
+        "category": "SCOPE_SOW"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "si_subcontract-2025-art11-sub00",
+          "parent_clause_id": "si_subcontract-2025-art11",
+          "category": null,
+          "version": null,
+          "score": 0.6683350205421448,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "si_subcontract-2025-art11",
+          "parent_clause_id": null,
+          "category": "SCOPE_SOW",
+          "version": "2025",
+          "score": 0.03017851710319519,
+          "source": "standard_clauses"
+        },
+        {
+          "rank": 3,
+          "standard_id": "si_subcontract-2025-art11-sub01",
+          "parent_clause_id": "si_subcontract-2025-art11",
+          "category": null,
+          "version": null,
+          "score": 0.00010269207996316254,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "TN",
+      "predicted_by_threshold": {
+        "0.40": false,
+        "0.45": false,
+        "0.50": false,
+        "0.55": false,
+        "0.60": false
+      },
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-si-03",
+      "contract_type": "SI_SUBCONTRACT",
+      "trap": "party",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "NONE",
+      "confidence": 0.9997184872627258,
+      "matched_standard": {
+        "id": "si_subcontract-2025-art10",
+        "version": "2025",
+        "category": "IP_OWNERSHIP"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "si_subcontract-2025-art10-sub00",
+          "parent_clause_id": "si_subcontract-2025-art10",
+          "category": null,
+          "version": null,
+          "score": 0.9997184872627258,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "si_subcontract-2025-art10",
+          "parent_clause_id": null,
+          "category": "IP_OWNERSHIP",
+          "version": "2025",
+          "score": 0.9929962754249573,
+          "source": "standard_clauses"
+        },
+        {
+          "rank": 3,
+          "standard_id": "si_subcontract-2025-art28-sub00",
+          "parent_clause_id": "si_subcontract-2025-art28",
+          "category": null,
+          "version": null,
+          "score": 0.6868557929992676,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "TN",
+      "predicted_by_threshold": {
+        "0.40": false,
+        "0.45": false,
+        "0.50": false,
+        "0.55": false,
+        "0.60": false
+      },
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-si-04",
+      "contract_type": "SI_SUBCONTRACT",
+      "trap": "none",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "EXTRA",
+      "confidence": 0.12813954055309296,
+      "matched_standard": {
+        "id": "si_subcontract-2025-art10",
+        "version": "2025",
+        "category": "IP_OWNERSHIP"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "si_subcontract-2025-art10-sub00",
+          "parent_clause_id": "si_subcontract-2025-art10",
+          "category": null,
+          "version": null,
+          "score": 0.12813954055309296,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "si_subcontract-2025-art10",
+          "parent_clause_id": null,
+          "category": "IP_OWNERSHIP",
+          "version": "2025",
+          "score": 0.006324470974504948,
+          "source": "standard_clauses"
+        },
+        {
+          "rank": 3,
+          "standard_id": "si_subcontract-2025-art28",
+          "parent_clause_id": null,
+          "category": "IP_OWNERSHIP",
+          "version": "2025",
+          "score": 0.0001224099105456844,
+          "source": "standard_clauses"
+        }
+      ],
+      "outcome": "FP",
+      "predicted_by_threshold": {
+        "0.40": true,
+        "0.45": true,
+        "0.50": true,
+        "0.55": true,
+        "0.60": true
+      },
+      "reason": "UNDER_MATCH"
+    },
+    {
+      "case_id": "v4-si-05",
+      "contract_type": "SI_SUBCONTRACT",
+      "trap": "negation",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "EXTRA",
+      "confidence": 0.1533282995223999,
+      "matched_standard": {
+        "id": "si_subcontract-2025-art39",
+        "version": "2025",
+        "category": "CONFIDENTIALITY"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "si_subcontract-2025-art39-sub00",
+          "parent_clause_id": "si_subcontract-2025-art39",
+          "category": null,
+          "version": null,
+          "score": 0.1533282995223999,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "si_subcontract-2025-art5-sub05",
+          "parent_clause_id": "si_subcontract-2025-art5",
+          "category": null,
+          "version": null,
+          "score": 0.023688379675149918,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "si_subcontract-2025-art39",
+          "parent_clause_id": null,
+          "category": "CONFIDENTIALITY",
+          "version": "2025",
+          "score": 0.00022375361004378647,
+          "source": "standard_clauses"
+        }
+      ],
+      "outcome": "FP",
+      "predicted_by_threshold": {
+        "0.40": true,
+        "0.45": true,
+        "0.50": true,
+        "0.55": true,
+        "0.60": true
+      },
+      "reason": "UNDER_MATCH"
+    },
+    {
+      "case_id": "v4-si-06",
+      "contract_type": "SI_SUBCONTRACT",
+      "trap": "none",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "EXTRA",
+      "confidence": 1.840825643739663e-05,
+      "matched_standard": {
+        "id": "si_subcontract-2025-art39",
+        "version": "2025",
+        "category": "CONFIDENTIALITY"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "si_subcontract-2025-art39-sub00",
+          "parent_clause_id": "si_subcontract-2025-art39",
+          "category": null,
+          "version": null,
+          "score": 1.840825643739663e-05,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "si_subcontract-2025-art40-sub11",
+          "parent_clause_id": "si_subcontract-2025-art40",
+          "category": null,
+          "version": null,
+          "score": 1.428963241778547e-05,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "si_subcontract-2025-art25-sub12",
+          "parent_clause_id": "si_subcontract-2025-art25",
+          "category": null,
+          "version": null,
+          "score": 2.675408723007422e-06,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "FP",
+      "predicted_by_threshold": {
+        "0.40": true,
+        "0.45": true,
+        "0.50": true,
+        "0.55": true,
+        "0.60": true
+      },
+      "reason": "UNDER_MATCH"
+    },
+    {
+      "case_id": "v4-si-07",
+      "contract_type": "SI_SUBCONTRACT",
+      "trap": "party",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "EXTRA",
+      "confidence": 0.031787510961294174,
+      "matched_standard": {
+        "id": "si_subcontract-2025-art3",
+        "version": "2025",
+        "category": "CONTRACT_PERIOD"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "si_subcontract-2025-art3-sub02",
+          "parent_clause_id": "si_subcontract-2025-art3",
+          "category": null,
+          "version": null,
+          "score": 0.031787510961294174,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "si_subcontract-2025-art51-sub04",
+          "parent_clause_id": "si_subcontract-2025-art51",
+          "category": null,
+          "version": null,
+          "score": 0.003361958311870694,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "si_subcontract-2025-art51-sub03",
+          "parent_clause_id": "si_subcontract-2025-art51",
+          "category": null,
+          "version": null,
+          "score": 0.0027078574057668447,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "FP",
+      "predicted_by_threshold": {
+        "0.40": true,
+        "0.45": true,
+        "0.50": true,
+        "0.55": true,
+        "0.60": true
+      },
+      "reason": "UNDER_MATCH"
+    },
+    {
+      "case_id": "v4-si-08",
+      "contract_type": "SI_SUBCONTRACT",
+      "trap": "none",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "EXTRA",
+      "confidence": 0.003486317116767168,
+      "matched_standard": {
+        "id": "si_subcontract-2025-art40",
+        "version": "2025",
+        "category": "DELIVERY_INSPECTION"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "si_subcontract-2025-art40-sub12",
+          "parent_clause_id": "si_subcontract-2025-art40",
+          "category": null,
+          "version": null,
+          "score": 0.003486317116767168,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "si_subcontract-2025-art41-sub00",
+          "parent_clause_id": "si_subcontract-2025-art41",
+          "category": null,
+          "version": null,
+          "score": 0.0034693353809416294,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "si_subcontract-2025-art3-sub00",
+          "parent_clause_id": "si_subcontract-2025-art3",
+          "category": null,
+          "version": null,
+          "score": 9.290854359278455e-05,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "FP",
+      "predicted_by_threshold": {
+        "0.40": true,
+        "0.45": true,
+        "0.50": true,
+        "0.55": true,
+        "0.60": true
+      },
+      "reason": "UNDER_MATCH"
+    },
+    {
+      "case_id": "v4-si-09",
+      "contract_type": "SI_SUBCONTRACT",
+      "trap": "negation",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "NONE",
+      "confidence": 0.8983859419822693,
+      "matched_standard": {
+        "id": "si_subcontract-2025-art48",
+        "version": "2025",
+        "category": "LIABILITY"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "si_subcontract-2025-art48-sub00",
+          "parent_clause_id": "si_subcontract-2025-art48",
+          "category": null,
+          "version": null,
+          "score": 0.8983859419822693,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "si_subcontract-2025-art48-sub04",
+          "parent_clause_id": "si_subcontract-2025-art48",
+          "category": null,
+          "version": null,
+          "score": 0.7848832607269287,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "si_subcontract-2025-art48-sub02",
+          "parent_clause_id": "si_subcontract-2025-art48",
+          "category": null,
+          "version": null,
+          "score": 0.5334985256195068,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "TN",
+      "predicted_by_threshold": {
+        "0.40": false,
+        "0.45": false,
+        "0.50": false,
+        "0.55": false,
+        "0.60": false
+      },
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-si-10",
+      "contract_type": "SI_SUBCONTRACT",
+      "trap": "none",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "NONE",
+      "confidence": 0.9952418804168701,
+      "matched_standard": {
+        "id": "si_subcontract-2025-art48",
+        "version": "2025",
+        "category": "LIABILITY"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "si_subcontract-2025-art48-sub00",
+          "parent_clause_id": "si_subcontract-2025-art48",
+          "category": null,
+          "version": null,
+          "score": 0.9952418804168701,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "si_subcontract-2025-art48",
+          "parent_clause_id": null,
+          "category": "LIABILITY",
+          "version": "2025",
+          "score": 0.12373971194028854,
+          "source": "standard_clauses"
+        },
+        {
+          "rank": 3,
+          "standard_id": "si_subcontract-2025-art40-sub12",
+          "parent_clause_id": "si_subcontract-2025-art40",
+          "category": null,
+          "version": null,
+          "score": 0.0132990051060915,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "TN",
+      "predicted_by_threshold": {
+        "0.40": false,
+        "0.45": false,
+        "0.50": false,
+        "0.55": false,
+        "0.60": false
+      },
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-si-11",
+      "contract_type": "SI_SUBCONTRACT",
+      "trap": "party",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "EXTRA",
+      "confidence": 0.09394453465938568,
+      "matched_standard": {
+        "id": "si_subcontract-2025-art42",
+        "version": "2025",
+        "category": "TERMINATION"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "si_subcontract-2025-art42-sub00",
+          "parent_clause_id": "si_subcontract-2025-art42",
+          "category": null,
+          "version": null,
+          "score": 0.09394453465938568,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "si_subcontract-2025-art51",
+          "parent_clause_id": null,
+          "category": "TERMINATION",
+          "version": "2025",
+          "score": 0.025284258648753166,
+          "source": "standard_clauses"
+        },
+        {
+          "rank": 3,
+          "standard_id": "si_subcontract-2025-art24-sub00",
+          "parent_clause_id": "si_subcontract-2025-art24",
+          "category": null,
+          "version": null,
+          "score": 0.004575577564537525,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "FP",
+      "predicted_by_threshold": {
+        "0.40": true,
+        "0.45": true,
+        "0.50": true,
+        "0.55": true,
+        "0.60": true
+      },
+      "reason": "UNDER_MATCH"
+    },
+    {
+      "case_id": "v4-si-12",
+      "contract_type": "SI_SUBCONTRACT",
+      "trap": "none",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "NONE",
+      "confidence": 0.9783686399459839,
+      "matched_standard": {
+        "id": "si_subcontract-2025-art51",
+        "version": "2025",
+        "category": "TERMINATION"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "si_subcontract-2025-art51-sub00",
+          "parent_clause_id": "si_subcontract-2025-art51",
+          "category": null,
+          "version": null,
+          "score": 0.9783686399459839,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "si_subcontract-2025-art42-sub01",
+          "parent_clause_id": "si_subcontract-2025-art42",
+          "category": null,
+          "version": null,
+          "score": 0.9527072310447693,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "si_subcontract-2025-art29-sub10",
+          "parent_clause_id": "si_subcontract-2025-art29",
+          "category": null,
+          "version": null,
+          "score": 0.7844877243041992,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "TN",
+      "predicted_by_threshold": {
+        "0.40": false,
+        "0.45": false,
+        "0.50": false,
+        "0.55": false,
+        "0.60": false
+      },
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-si-13",
+      "contract_type": "SI_SUBCONTRACT",
+      "trap": "negation",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "NONE",
+      "confidence": 0.9396798014640808,
+      "matched_standard": {
+        "id": "si_subcontract-2025-art11",
+        "version": "2025",
+        "category": "SCOPE_SOW"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "si_subcontract-2025-art11-sub00",
+          "parent_clause_id": "si_subcontract-2025-art11",
+          "category": null,
+          "version": null,
+          "score": 0.9396798014640808,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "si_subcontract-2025-art11-sub02",
+          "parent_clause_id": "si_subcontract-2025-art11",
+          "category": null,
+          "version": null,
+          "score": 0.9306349754333496,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "si_subcontract-2025-art11-sub01",
+          "parent_clause_id": "si_subcontract-2025-art11",
+          "category": null,
+          "version": null,
+          "score": 0.6905487179756165,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "TN",
+      "predicted_by_threshold": {
+        "0.40": false,
+        "0.45": false,
+        "0.50": false,
+        "0.55": false,
+        "0.60": false
+      },
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-si-14",
+      "contract_type": "SI_SUBCONTRACT",
+      "trap": "none",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "NONE",
+      "confidence": 0.6310510039329529,
+      "matched_standard": {
+        "id": "si_subcontract-2025-art11",
+        "version": "2025",
+        "category": "SCOPE_SOW"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "si_subcontract-2025-art11-sub02",
+          "parent_clause_id": "si_subcontract-2025-art11",
+          "category": null,
+          "version": null,
+          "score": 0.6310510039329529,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "si_subcontract-2025-art11-sub00",
+          "parent_clause_id": "si_subcontract-2025-art11",
+          "category": null,
+          "version": null,
+          "score": 0.21827346086502075,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "si_subcontract-2025-art11-sub01",
+          "parent_clause_id": "si_subcontract-2025-art11",
+          "category": null,
+          "version": null,
+          "score": 0.18196941912174225,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "TN",
+      "predicted_by_threshold": {
+        "0.40": false,
+        "0.45": false,
+        "0.50": false,
+        "0.55": false,
+        "0.60": false
+      },
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-si-15",
+      "contract_type": "SI_SUBCONTRACT",
+      "trap": "party",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "EXTRA",
+      "confidence": 0.0020452714525163174,
+      "matched_standard": {
+        "id": "si_subcontract-2025-art28",
+        "version": "2025",
+        "category": "IP_OWNERSHIP"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "si_subcontract-2025-art28-sub00",
+          "parent_clause_id": "si_subcontract-2025-art28",
+          "category": null,
+          "version": null,
+          "score": 0.0020452714525163174,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "si_subcontract-2025-art28-sub02",
+          "parent_clause_id": "si_subcontract-2025-art28",
+          "category": null,
+          "version": null,
+          "score": 6.654997559962794e-05,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "si_subcontract-2025-art28-sub01",
+          "parent_clause_id": "si_subcontract-2025-art28",
+          "category": null,
+          "version": null,
+          "score": 5.805156615679152e-05,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "FP",
+      "predicted_by_threshold": {
+        "0.40": true,
+        "0.45": true,
+        "0.50": true,
+        "0.55": true,
+        "0.60": true
+      },
+      "reason": "UNDER_MATCH"
+    },
+    {
+      "case_id": "v4-si-16",
+      "contract_type": "SI_SUBCONTRACT",
+      "trap": "none",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "EXTRA",
+      "confidence": 0.10309881716966629,
+      "matched_standard": {
+        "id": "si_subcontract-2025-art28",
+        "version": "2025",
+        "category": "IP_OWNERSHIP"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "si_subcontract-2025-art28-sub00",
+          "parent_clause_id": "si_subcontract-2025-art28",
+          "category": null,
+          "version": null,
+          "score": 0.10309881716966629,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "si_subcontract-2025-art1",
+          "parent_clause_id": null,
+          "category": "DELIVERY_INSPECTION",
+          "version": "2025",
+          "score": 0.0410253182053566,
+          "source": "standard_clauses"
+        },
+        {
+          "rank": 3,
+          "standard_id": "si_subcontract-2025-art10-sub01",
+          "parent_clause_id": "si_subcontract-2025-art10",
+          "category": null,
+          "version": null,
+          "score": 0.0125294653698802,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "FP",
+      "predicted_by_threshold": {
+        "0.40": true,
+        "0.45": true,
+        "0.50": true,
+        "0.55": true,
+        "0.60": true
+      },
+      "reason": "UNDER_MATCH"
+    },
+    {
+      "case_id": "v4-si-17",
+      "contract_type": "SI_SUBCONTRACT",
+      "trap": "negation",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "NONE",
+      "confidence": 0.7183414101600647,
+      "matched_standard": {
+        "id": "si_subcontract-2025-art39",
+        "version": "2025",
+        "category": "CONFIDENTIALITY"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "si_subcontract-2025-art39-sub00",
+          "parent_clause_id": "si_subcontract-2025-art39",
+          "category": null,
+          "version": null,
+          "score": 0.7183414101600647,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "si_subcontract-2025-art39",
+          "parent_clause_id": null,
+          "category": "CONFIDENTIALITY",
+          "version": "2025",
+          "score": 0.03374864533543587,
+          "source": "standard_clauses"
+        },
+        {
+          "rank": 3,
+          "standard_id": "si_subcontract-2025-art51-sub11",
+          "parent_clause_id": "si_subcontract-2025-art51",
+          "category": null,
+          "version": null,
+          "score": 0.004192169290035963,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "TN",
+      "predicted_by_threshold": {
+        "0.40": false,
+        "0.45": false,
+        "0.50": false,
+        "0.55": false,
+        "0.60": false
+      },
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-si-18",
+      "contract_type": "SI_SUBCONTRACT",
+      "trap": "none",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "EXTRA",
+      "confidence": 0.0008628437644802034,
+      "matched_standard": {
+        "id": "si_subcontract-2025-art25",
+        "version": "2025",
+        "category": "SUBCONTRACTING"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "si_subcontract-2025-art25-sub12",
+          "parent_clause_id": "si_subcontract-2025-art25",
+          "category": null,
+          "version": null,
+          "score": 0.0008628437644802034,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "si_subcontract-2025-art39-sub00",
+          "parent_clause_id": "si_subcontract-2025-art39",
+          "category": null,
+          "version": null,
+          "score": 0.0001602718693902716,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "si_subcontract-2025-art39-sub02",
+          "parent_clause_id": "si_subcontract-2025-art39",
+          "category": null,
+          "version": null,
+          "score": 5.225610584602691e-05,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "FP",
+      "predicted_by_threshold": {
+        "0.40": true,
+        "0.45": true,
+        "0.50": true,
+        "0.55": true,
+        "0.60": true
+      },
+      "reason": "UNDER_MATCH"
+    },
+    {
+      "case_id": "v4-sm-01",
+      "contract_type": "SM_SUBCONTRACT",
+      "trap": "negation",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "EXTRA",
+      "confidence": 0.0010660229017958045,
+      "matched_standard": {
+        "id": "sm_subcontract-2025-art16",
+        "version": "2025",
+        "category": "SCOPE_SOW"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sm_subcontract-2025-art16-sub00",
+          "parent_clause_id": "sm_subcontract-2025-art16",
+          "category": null,
+          "version": null,
+          "score": 0.0010660229017958045,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sm_subcontract-2025-art16-sub02",
+          "parent_clause_id": "sm_subcontract-2025-art16",
+          "category": null,
+          "version": null,
+          "score": 7.511889634770341e-06,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sm_subcontract-2025-art10-sub02",
+          "parent_clause_id": "sm_subcontract-2025-art10",
+          "category": null,
+          "version": null,
+          "score": 6.969869900785852e-06,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "FP",
+      "predicted_by_threshold": {
+        "0.40": true,
+        "0.45": true,
+        "0.50": true,
+        "0.55": true,
+        "0.60": true
+      },
+      "reason": "UNDER_MATCH"
+    },
+    {
+      "case_id": "v4-sm-02",
+      "contract_type": "SM_SUBCONTRACT",
+      "trap": "none",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "EXTRA",
+      "confidence": 5.251092079561204e-05,
+      "matched_standard": {
+        "id": "sm_subcontract-2025-art16",
+        "version": "2025",
+        "category": "SCOPE_SOW"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sm_subcontract-2025-art16-sub00",
+          "parent_clause_id": "sm_subcontract-2025-art16",
+          "category": null,
+          "version": null,
+          "score": 5.251092079561204e-05,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sm_subcontract-2025-art16-sub01",
+          "parent_clause_id": "sm_subcontract-2025-art16",
+          "category": null,
+          "version": null,
+          "score": 5.279160177451558e-06,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sm_subcontract-2025-art16-sub02",
+          "parent_clause_id": "sm_subcontract-2025-art16",
+          "category": null,
+          "version": null,
+          "score": 4.015987087768735e-06,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "FP",
+      "predicted_by_threshold": {
+        "0.40": true,
+        "0.45": true,
+        "0.50": true,
+        "0.55": true,
+        "0.60": true
+      },
+      "reason": "UNDER_MATCH"
+    },
+    {
+      "case_id": "v4-sm-03",
+      "contract_type": "SM_SUBCONTRACT",
+      "trap": "party",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "EXTRA",
+      "confidence": 0.4264887869358063,
+      "matched_standard": {
+        "id": "sm_subcontract-2025-art15",
+        "version": "2025",
+        "category": "IP_OWNERSHIP"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sm_subcontract-2025-art15-sub00",
+          "parent_clause_id": "sm_subcontract-2025-art15",
+          "category": null,
+          "version": null,
+          "score": 0.4264887869358063,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sm_subcontract-2025-art15-sub02",
+          "parent_clause_id": "sm_subcontract-2025-art15",
+          "category": null,
+          "version": null,
+          "score": 0.024048056453466415,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sm_subcontract-2025-art34-sub00",
+          "parent_clause_id": "sm_subcontract-2025-art34",
+          "category": null,
+          "version": null,
+          "score": 0.005196206271648407,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "FP",
+      "predicted_by_threshold": {
+        "0.40": false,
+        "0.45": true,
+        "0.50": true,
+        "0.55": true,
+        "0.60": true
+      },
+      "reason": "UNDER_MATCH"
+    },
+    {
+      "case_id": "v4-sm-04",
+      "contract_type": "SM_SUBCONTRACT",
+      "trap": "none",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "NONE",
+      "confidence": 0.7207664251327515,
+      "matched_standard": {
+        "id": "sm_subcontract-2025-art15",
+        "version": "2025",
+        "category": "IP_OWNERSHIP"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sm_subcontract-2025-art15-sub00",
+          "parent_clause_id": "sm_subcontract-2025-art15",
+          "category": null,
+          "version": null,
+          "score": 0.7207664251327515,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sm_subcontract-2025-art15",
+          "parent_clause_id": null,
+          "category": "IP_OWNERSHIP",
+          "version": "2025",
+          "score": 0.06087840721011162,
+          "source": "standard_clauses"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sm_subcontract-2025-art34-sub00",
+          "parent_clause_id": "sm_subcontract-2025-art34",
+          "category": null,
+          "version": null,
+          "score": 0.0006286575808189809,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "TN",
+      "predicted_by_threshold": {
+        "0.40": false,
+        "0.45": false,
+        "0.50": false,
+        "0.55": false,
+        "0.60": false
+      },
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-sm-05",
+      "contract_type": "SM_SUBCONTRACT",
+      "trap": "negation",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "EXTRA",
+      "confidence": 0.08208399266004562,
+      "matched_standard": {
+        "id": "sm_subcontract-2025-art45",
+        "version": "2025",
+        "category": "CONFIDENTIALITY"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sm_subcontract-2025-art45-sub00",
+          "parent_clause_id": "sm_subcontract-2025-art45",
+          "category": null,
+          "version": null,
+          "score": 0.08208399266004562,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sm_subcontract-2025-art45",
+          "parent_clause_id": null,
+          "category": "CONFIDENTIALITY",
+          "version": "2025",
+          "score": 0.0013720165006816387,
+          "source": "standard_clauses"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sm_subcontract-2025-art58-sub23",
+          "parent_clause_id": "sm_subcontract-2025-art58",
+          "category": null,
+          "version": null,
+          "score": 0.0005580680444836617,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "FP",
+      "predicted_by_threshold": {
+        "0.40": true,
+        "0.45": true,
+        "0.50": true,
+        "0.55": true,
+        "0.60": true
+      },
+      "reason": "UNDER_MATCH"
+    },
+    {
+      "case_id": "v4-sm-06",
+      "contract_type": "SM_SUBCONTRACT",
+      "trap": "none",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "NONE",
+      "confidence": 0.9659662246704102,
+      "matched_standard": {
+        "id": "sm_subcontract-2025-art45",
+        "version": "2025",
+        "category": "CONFIDENTIALITY"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sm_subcontract-2025-art45-sub00",
+          "parent_clause_id": "sm_subcontract-2025-art45",
+          "category": null,
+          "version": null,
+          "score": 0.9659662246704102,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sm_subcontract-2025-art58-sub07",
+          "parent_clause_id": "sm_subcontract-2025-art58",
+          "category": null,
+          "version": null,
+          "score": 0.3708169758319855,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sm_subcontract-2025-art45",
+          "parent_clause_id": null,
+          "category": "CONFIDENTIALITY",
+          "version": "2025",
+          "score": 0.30231568217277527,
+          "source": "standard_clauses"
+        }
+      ],
+      "outcome": "TN",
+      "predicted_by_threshold": {
+        "0.40": false,
+        "0.45": false,
+        "0.50": false,
+        "0.55": false,
+        "0.60": false
+      },
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-sm-07",
+      "contract_type": "SM_SUBCONTRACT",
+      "trap": "party",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "NONE",
+      "confidence": 0.9994333386421204,
+      "matched_standard": {
+        "id": "sm_subcontract-2025-art10",
+        "version": "2025",
+        "category": "SCOPE_SOW"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sm_subcontract-2025-art10-sub00",
+          "parent_clause_id": "sm_subcontract-2025-art10",
+          "category": null,
+          "version": null,
+          "score": 0.9994333386421204,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sm_subcontract-2025-art10",
+          "parent_clause_id": null,
+          "category": "SCOPE_SOW",
+          "version": "2025",
+          "score": 0.9938263297080994,
+          "source": "standard_clauses"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sm_subcontract-2025-art58-sub11",
+          "parent_clause_id": "sm_subcontract-2025-art58",
+          "category": null,
+          "version": null,
+          "score": 0.9853227138519287,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "TN",
+      "predicted_by_threshold": {
+        "0.40": false,
+        "0.45": false,
+        "0.50": false,
+        "0.55": false,
+        "0.60": false
+      },
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-sm-08",
+      "contract_type": "SM_SUBCONTRACT",
+      "trap": "none",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "NONE",
+      "confidence": 0.999840259552002,
+      "matched_standard": {
+        "id": "sm_subcontract-2025-art10",
+        "version": "2025",
+        "category": "SCOPE_SOW"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sm_subcontract-2025-art10-sub01",
+          "parent_clause_id": "sm_subcontract-2025-art10",
+          "category": null,
+          "version": null,
+          "score": 0.999840259552002,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sm_subcontract-2025-art28-sub01",
+          "parent_clause_id": "sm_subcontract-2025-art28",
+          "category": null,
+          "version": null,
+          "score": 0.9993828535079956,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sm_subcontract-2025-art10",
+          "parent_clause_id": null,
+          "category": "SCOPE_SOW",
+          "version": "2025",
+          "score": 0.9778140187263489,
+          "source": "standard_clauses"
+        }
+      ],
+      "outcome": "TN",
+      "predicted_by_threshold": {
+        "0.40": false,
+        "0.45": false,
+        "0.50": false,
+        "0.55": false,
+        "0.60": false
+      },
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-sm-09",
+      "contract_type": "SM_SUBCONTRACT",
+      "trap": "negation",
+      "gold_deviation": "EXTRA",
+      "predicted_deviation": "EXTRA",
+      "confidence": 0.00170258863363415,
+      "matched_standard": {
+        "id": "sm_subcontract-2025-art5",
+        "version": "2025",
+        "category": "SCOPE_SOW"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sm_subcontract-2025-art5-sub05",
+          "parent_clause_id": "sm_subcontract-2025-art5",
+          "category": null,
+          "version": null,
+          "score": 0.00170258863363415,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sm_subcontract-2025-art58-sub11",
+          "parent_clause_id": "sm_subcontract-2025-art58",
+          "category": null,
+          "version": null,
+          "score": 0.0006418499397113919,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sm_subcontract-2025-art30-sub00",
+          "parent_clause_id": "sm_subcontract-2025-art30",
+          "category": null,
+          "version": null,
+          "score": 0.0001909210841404274,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "TP",
+      "predicted_by_threshold": {
+        "0.40": true,
+        "0.45": true,
+        "0.50": true,
+        "0.55": true,
+        "0.60": true
+      },
+      "reason": "BELOW_THRESHOLD"
+    },
+    {
+      "case_id": "v4-sm-10",
+      "contract_type": "SM_SUBCONTRACT",
+      "trap": "none",
+      "gold_deviation": "EXTRA",
+      "predicted_deviation": "EXTRA",
+      "confidence": 2.654535592228058e-06,
+      "matched_standard": {
+        "id": "sm_subcontract-2025-art45",
+        "version": "2025",
+        "category": "CONFIDENTIALITY"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sm_subcontract-2025-art45-sub00",
+          "parent_clause_id": "sm_subcontract-2025-art45",
+          "category": null,
+          "version": null,
+          "score": 2.654535592228058e-06,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sm_subcontract-2025-art46-sub11",
+          "parent_clause_id": "sm_subcontract-2025-art46",
+          "category": null,
+          "version": null,
+          "score": 1.2243268656675355e-06,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sm_subcontract-2025-art46-sub00",
+          "parent_clause_id": "sm_subcontract-2025-art46",
+          "category": null,
+          "version": null,
+          "score": 9.411238579559722e-07,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "TP",
+      "predicted_by_threshold": {
+        "0.40": true,
+        "0.45": true,
+        "0.50": true,
+        "0.55": true,
+        "0.60": true
+      },
+      "reason": "BELOW_THRESHOLD"
+    },
+    {
+      "case_id": "v4-sm-11",
+      "contract_type": "SM_SUBCONTRACT",
+      "trap": "party",
+      "gold_deviation": "EXTRA",
+      "predicted_deviation": "EXTRA",
+      "confidence": 0.05395231023430824,
+      "matched_standard": {
+        "id": "sm_subcontract-2025-art58",
+        "version": "2025",
+        "category": "TERMINATION"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sm_subcontract-2025-art58-sub00",
+          "parent_clause_id": "sm_subcontract-2025-art58",
+          "category": null,
+          "version": null,
+          "score": 0.05395231023430824,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sm_subcontract-2025-art58",
+          "parent_clause_id": null,
+          "category": "TERMINATION",
+          "version": "2025",
+          "score": 0.009020267054438591,
+          "source": "standard_clauses"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sm_subcontract-2025-art58-sub07",
+          "parent_clause_id": "sm_subcontract-2025-art58",
+          "category": null,
+          "version": null,
+          "score": 0.008385606110095978,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "TP",
+      "predicted_by_threshold": {
+        "0.40": true,
+        "0.45": true,
+        "0.50": true,
+        "0.55": true,
+        "0.60": true
+      },
+      "reason": "BELOW_THRESHOLD"
+    },
+    {
+      "case_id": "v4-sm-12",
+      "contract_type": "SM_SUBCONTRACT",
+      "trap": "none",
+      "gold_deviation": "EXTRA",
+      "predicted_deviation": "NONE",
+      "confidence": 0.9951712489128113,
+      "matched_standard": {
+        "id": "sm_subcontract-2025-art58",
+        "version": "2025",
+        "category": "TERMINATION"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sm_subcontract-2025-art58-sub07",
+          "parent_clause_id": "sm_subcontract-2025-art58",
+          "category": null,
+          "version": null,
+          "score": 0.9951712489128113,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sm_subcontract-2025-art58-sub17",
+          "parent_clause_id": "sm_subcontract-2025-art58",
+          "category": null,
+          "version": null,
+          "score": 0.992747962474823,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sm_subcontract-2025-art35-sub10",
+          "parent_clause_id": "sm_subcontract-2025-art35",
+          "category": null,
+          "version": null,
+          "score": 0.9899579882621765,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "FN",
+      "predicted_by_threshold": {
+        "0.40": false,
+        "0.45": false,
+        "0.50": false,
+        "0.55": false,
+        "0.60": false
+      },
+      "reason": "OVER_MATCH"
+    },
+    {
+      "case_id": "v4-sm-13",
+      "contract_type": "SM_SUBCONTRACT",
+      "trap": "negation",
+      "gold_deviation": "EXTRA",
+      "predicted_deviation": "EXTRA",
+      "confidence": 0.0011411046143621206,
+      "matched_standard": {
+        "id": "sm_subcontract-2025-art58",
+        "version": "2025",
+        "category": "TERMINATION"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sm_subcontract-2025-art58-sub11",
+          "parent_clause_id": "sm_subcontract-2025-art58",
+          "category": null,
+          "version": null,
+          "score": 0.0011411046143621206,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sm_subcontract-2025-art11-sub03",
+          "parent_clause_id": "sm_subcontract-2025-art11",
+          "category": null,
+          "version": null,
+          "score": 0.0005416643107309937,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sm_subcontract-2025-art22-sub03",
+          "parent_clause_id": "sm_subcontract-2025-art22",
+          "category": null,
+          "version": null,
+          "score": 0.0002174058899981901,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "TP",
+      "predicted_by_threshold": {
+        "0.40": true,
+        "0.45": true,
+        "0.50": true,
+        "0.55": true,
+        "0.60": true
+      },
+      "reason": "BELOW_THRESHOLD"
+    },
+    {
+      "case_id": "v4-sm-14",
+      "contract_type": "SM_SUBCONTRACT",
+      "trap": "none",
+      "gold_deviation": "EXTRA",
+      "predicted_deviation": "EXTRA",
+      "confidence": 3.0384097044588998e-05,
+      "matched_standard": {
+        "id": "sm_subcontract-2025-art45",
+        "version": "2025",
+        "category": "CONFIDENTIALITY"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sm_subcontract-2025-art45-sub00",
+          "parent_clause_id": "sm_subcontract-2025-art45",
+          "category": null,
+          "version": null,
+          "score": 3.0384097044588998e-05,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sm_subcontract-2025-art11",
+          "parent_clause_id": null,
+          "category": "GENERAL",
+          "version": "2025",
+          "score": 1.1803899724327493e-05,
+          "source": "standard_clauses"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sm_subcontract-2025-art22-sub03",
+          "parent_clause_id": "sm_subcontract-2025-art22",
+          "category": null,
+          "version": null,
+          "score": 1.1018791155947838e-05,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "TP",
+      "predicted_by_threshold": {
+        "0.40": true,
+        "0.45": true,
+        "0.50": true,
+        "0.55": true,
+        "0.60": true
+      },
+      "reason": "BELOW_THRESHOLD"
+    },
+    {
+      "case_id": "v4-sm-15",
+      "contract_type": "SM_SUBCONTRACT",
+      "trap": "party",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "EXTRA",
+      "confidence": 0.0267635565251112,
+      "matched_standard": {
+        "id": "sm_subcontract-2025-art30",
+        "version": "2025",
+        "category": "SUBCONTRACTING"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sm_subcontract-2025-art30-sub00",
+          "parent_clause_id": "sm_subcontract-2025-art30",
+          "category": null,
+          "version": null,
+          "score": 0.0267635565251112,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sm_subcontract-2025-art48-sub00",
+          "parent_clause_id": "sm_subcontract-2025-art48",
+          "category": null,
+          "version": null,
+          "score": 0.0003797891258727759,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sm_subcontract-2025-art48-sub01",
+          "parent_clause_id": "sm_subcontract-2025-art48",
+          "category": null,
+          "version": null,
+          "score": 0.00010033421131083742,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "FP",
+      "predicted_by_threshold": {
+        "0.40": true,
+        "0.45": true,
+        "0.50": true,
+        "0.55": true,
+        "0.60": true
+      },
+      "reason": "UNDER_MATCH"
+    },
+    {
+      "case_id": "v4-sm-16",
+      "contract_type": "SM_SUBCONTRACT",
+      "trap": "none",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "EXTRA",
+      "confidence": 1.8504746549297124e-05,
+      "matched_standard": {
+        "id": "sm_subcontract-2025-art37",
+        "version": "2025",
+        "category": "DISPUTE"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sm_subcontract-2025-art37-sub01",
+          "parent_clause_id": "sm_subcontract-2025-art37",
+          "category": null,
+          "version": null,
+          "score": 1.8504746549297124e-05,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sm_subcontract-2025-art46-sub11",
+          "parent_clause_id": "sm_subcontract-2025-art46",
+          "category": null,
+          "version": null,
+          "score": 1.838346906879451e-05,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sm_subcontract-2025-art48-sub00",
+          "parent_clause_id": "sm_subcontract-2025-art48",
+          "category": null,
+          "version": null,
+          "score": 1.0393461707280949e-05,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "FP",
+      "predicted_by_threshold": {
+        "0.40": true,
+        "0.45": true,
+        "0.50": true,
+        "0.55": true,
+        "0.60": true
+      },
+      "reason": "UNDER_MATCH"
+    },
+    {
+      "case_id": "v4-sm-17",
+      "contract_type": "SM_SUBCONTRACT",
+      "trap": "negation",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "EXTRA",
+      "confidence": 0.006785113364458084,
+      "matched_standard": {
+        "id": "sm_subcontract-2025-art57",
+        "version": "2025",
+        "category": "WARRANTY"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sm_subcontract-2025-art57-sub08",
+          "parent_clause_id": "sm_subcontract-2025-art57",
+          "category": null,
+          "version": null,
+          "score": 0.006785113364458084,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sm_subcontract-2025-art57-sub01",
+          "parent_clause_id": "sm_subcontract-2025-art57",
+          "category": null,
+          "version": null,
+          "score": 0.003038157010450959,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sm_subcontract-2025-art46-sub14",
+          "parent_clause_id": "sm_subcontract-2025-art46",
+          "category": null,
+          "version": null,
+          "score": 0.002908331574872136,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "FP",
+      "predicted_by_threshold": {
+        "0.40": true,
+        "0.45": true,
+        "0.50": true,
+        "0.55": true,
+        "0.60": true
+      },
+      "reason": "UNDER_MATCH"
+    },
+    {
+      "case_id": "v4-sm-18",
+      "contract_type": "SM_SUBCONTRACT",
+      "trap": "none",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "EXTRA",
+      "confidence": 1.983298898267094e-05,
+      "matched_standard": {
+        "id": "sm_subcontract-2025-art46",
+        "version": "2025",
+        "category": "DELIVERY_INSPECTION"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sm_subcontract-2025-art46-sub00",
+          "parent_clause_id": "sm_subcontract-2025-art46",
+          "category": null,
+          "version": null,
+          "score": 1.983298898267094e-05,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sm_subcontract-2025-art18",
+          "parent_clause_id": null,
+          "category": "INDUSTRIAL_SAFETY",
+          "version": "2025",
+          "score": 1.963060822163243e-05,
+          "source": "standard_clauses"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sm_subcontract-2025-art57-sub00",
+          "parent_clause_id": "sm_subcontract-2025-art57",
+          "category": null,
+          "version": null,
+          "score": 1.7188374840770848e-05,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "FP",
+      "predicted_by_threshold": {
+        "0.40": true,
+        "0.45": true,
+        "0.50": true,
+        "0.55": true,
+        "0.60": true
+      },
+      "reason": "UNDER_MATCH"
+    },
+    {
+      "case_id": "v4-sw-01",
+      "contract_type": "SW_FREELANCE",
+      "trap": "negation",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "NONE",
+      "confidence": 0.8496842384338379,
+      "matched_standard": {
+        "id": "sw_freelance-2020-art4",
+        "version": "2020",
+        "category": "SCOPE_SOW"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sw_freelance-2020-art4-sub06",
+          "parent_clause_id": "sw_freelance-2020-art4",
+          "category": null,
+          "version": null,
+          "score": 0.8496842384338379,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sw_freelance-2020-art4",
+          "parent_clause_id": null,
+          "category": "SCOPE_SOW",
+          "version": "2020",
+          "score": 0.0010475292801856995,
+          "source": "standard_clauses"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sw_freelance-2020-art4-sub08",
+          "parent_clause_id": "sw_freelance-2020-art4",
+          "category": null,
+          "version": null,
+          "score": 0.0005189874209463596,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "TN",
+      "predicted_by_threshold": {
+        "0.40": false,
+        "0.45": false,
+        "0.50": false,
+        "0.55": false,
+        "0.60": false
+      },
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-sw-02",
+      "contract_type": "SW_FREELANCE",
+      "trap": "none",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "EXTRA",
+      "confidence": 0.20164091885089874,
+      "matched_standard": {
+        "id": "sw_freelance-2020-art4",
+        "version": "2020",
+        "category": "SCOPE_SOW"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sw_freelance-2020-art4-sub08",
+          "parent_clause_id": "sw_freelance-2020-art4",
+          "category": null,
+          "version": null,
+          "score": 0.20164091885089874,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sw_freelance-2020-art6-sub11",
+          "parent_clause_id": "sw_freelance-2020-art6",
+          "category": null,
+          "version": null,
+          "score": 0.04549821466207504,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sw_freelance-2020-art2-sub01",
+          "parent_clause_id": "sw_freelance-2020-art2",
+          "category": null,
+          "version": null,
+          "score": 0.002603063825517893,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "FP",
+      "predicted_by_threshold": {
+        "0.40": true,
+        "0.45": true,
+        "0.50": true,
+        "0.55": true,
+        "0.60": true
+      },
+      "reason": "UNDER_MATCH"
+    },
+    {
+      "case_id": "v4-sw-03",
+      "contract_type": "SW_FREELANCE",
+      "trap": "party",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "NONE",
+      "confidence": 0.9737202525138855,
+      "matched_standard": {
+        "id": "sw_freelance-2020-art20",
+        "version": "2020",
+        "category": "IP_OWNERSHIP"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sw_freelance-2020-art20-sub00",
+          "parent_clause_id": "sw_freelance-2020-art20",
+          "category": null,
+          "version": null,
+          "score": 0.9737202525138855,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sw_freelance-2020-art2-sub03",
+          "parent_clause_id": "sw_freelance-2020-art2",
+          "category": null,
+          "version": null,
+          "score": 0.4839934706687927,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sw_freelance-2020-art20-sub01",
+          "parent_clause_id": "sw_freelance-2020-art20",
+          "category": null,
+          "version": null,
+          "score": 0.13006377220153809,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "TN",
+      "predicted_by_threshold": {
+        "0.40": false,
+        "0.45": false,
+        "0.50": false,
+        "0.55": false,
+        "0.60": false
+      },
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-sw-04",
+      "contract_type": "SW_FREELANCE",
+      "trap": "none",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "NONE",
+      "confidence": 0.9999967813491821,
+      "matched_standard": {
+        "id": "sw_freelance-2020-art20",
+        "version": "2020",
+        "category": "IP_OWNERSHIP"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sw_freelance-2020-art20",
+          "parent_clause_id": null,
+          "category": "IP_OWNERSHIP",
+          "version": "2020",
+          "score": 0.9999967813491821,
+          "source": "standard_clauses"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sw_freelance-2020-art20-sub01",
+          "parent_clause_id": "sw_freelance-2020-art20",
+          "category": null,
+          "version": null,
+          "score": 0.999964714050293,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sw_freelance-2020-art20-sub00",
+          "parent_clause_id": "sw_freelance-2020-art20",
+          "category": null,
+          "version": null,
+          "score": 0.9997497200965881,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "TN",
+      "predicted_by_threshold": {
+        "0.40": false,
+        "0.45": false,
+        "0.50": false,
+        "0.55": false,
+        "0.60": false
+      },
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-sw-05",
+      "contract_type": "SW_FREELANCE",
+      "trap": "negation",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "NONE",
+      "confidence": 0.8136743903160095,
+      "matched_standard": {
+        "id": "sw_freelance-2020-art17",
+        "version": "2020",
+        "category": "CONFIDENTIALITY"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sw_freelance-2020-art17-sub00",
+          "parent_clause_id": "sw_freelance-2020-art17",
+          "category": null,
+          "version": null,
+          "score": 0.8136743903160095,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sw_freelance-2020-art17-sub03",
+          "parent_clause_id": "sw_freelance-2020-art17",
+          "category": null,
+          "version": null,
+          "score": 0.6175901293754578,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sw_freelance-2020-art17",
+          "parent_clause_id": null,
+          "category": "CONFIDENTIALITY",
+          "version": "2020",
+          "score": 0.25209125876426697,
+          "source": "standard_clauses"
+        }
+      ],
+      "outcome": "TN",
+      "predicted_by_threshold": {
+        "0.40": false,
+        "0.45": false,
+        "0.50": false,
+        "0.55": false,
+        "0.60": false
+      },
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-sw-06",
+      "contract_type": "SW_FREELANCE",
+      "trap": "none",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "NONE",
+      "confidence": 0.9810426235198975,
+      "matched_standard": {
+        "id": "sw_freelance-2020-art17",
+        "version": "2020",
+        "category": "CONFIDENTIALITY"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sw_freelance-2020-art17-sub00",
+          "parent_clause_id": "sw_freelance-2020-art17",
+          "category": null,
+          "version": null,
+          "score": 0.9810426235198975,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sw_freelance-2020-art17",
+          "parent_clause_id": null,
+          "category": "CONFIDENTIALITY",
+          "version": "2020",
+          "score": 0.0006459388532675803,
+          "source": "standard_clauses"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sw_freelance-2020-art17-sub04",
+          "parent_clause_id": "sw_freelance-2020-art17",
+          "category": null,
+          "version": null,
+          "score": 0.0003618181508500129,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "TN",
+      "predicted_by_threshold": {
+        "0.40": false,
+        "0.45": false,
+        "0.50": false,
+        "0.55": false,
+        "0.60": false
+      },
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-sw-07",
+      "contract_type": "SW_FREELANCE",
+      "trap": "party",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "EXTRA",
+      "confidence": 0.41800087690353394,
+      "matched_standard": {
+        "id": "sw_freelance-2020-art21",
+        "version": "2020",
+        "category": "DISPUTE"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sw_freelance-2020-art21",
+          "parent_clause_id": null,
+          "category": "DISPUTE",
+          "version": "2020",
+          "score": 0.41800087690353394,
+          "source": "standard_clauses"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sw_freelance-2020-art21-sub00",
+          "parent_clause_id": "sw_freelance-2020-art21",
+          "category": null,
+          "version": null,
+          "score": 0.41800087690353394,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sw_freelance-2020-art4-sub05",
+          "parent_clause_id": "sw_freelance-2020-art4",
+          "category": null,
+          "version": null,
+          "score": 0.0003811703354585916,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "FP",
+      "predicted_by_threshold": {
+        "0.40": false,
+        "0.45": true,
+        "0.50": true,
+        "0.55": true,
+        "0.60": true
+      },
+      "reason": "UNDER_MATCH"
+    },
+    {
+      "case_id": "v4-sw-08",
+      "contract_type": "SW_FREELANCE",
+      "trap": "none",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "EXTRA",
+      "confidence": 0.039757102727890015,
+      "matched_standard": {
+        "id": "sw_freelance-2020-art21",
+        "version": "2020",
+        "category": "DISPUTE"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sw_freelance-2020-art21",
+          "parent_clause_id": null,
+          "category": "DISPUTE",
+          "version": "2020",
+          "score": 0.039757102727890015,
+          "source": "standard_clauses"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sw_freelance-2020-art21-sub00",
+          "parent_clause_id": "sw_freelance-2020-art21",
+          "category": null,
+          "version": null,
+          "score": 0.039757102727890015,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sw_freelance-2020-art3-sub04",
+          "parent_clause_id": "sw_freelance-2020-art3",
+          "category": null,
+          "version": null,
+          "score": 4.53801339972415e-06,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "FP",
+      "predicted_by_threshold": {
+        "0.40": true,
+        "0.45": true,
+        "0.50": true,
+        "0.55": true,
+        "0.60": true
+      },
+      "reason": "UNDER_MATCH"
+    },
+    {
+      "case_id": "v4-sw-09",
+      "contract_type": "SW_FREELANCE",
+      "trap": "negation",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "EXTRA",
+      "confidence": 0.008079077117145061,
+      "matched_standard": {
+        "id": "sw_freelance-2020-art19",
+        "version": "2020",
+        "category": "WARRANTY"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sw_freelance-2020-art19",
+          "parent_clause_id": null,
+          "category": "WARRANTY",
+          "version": "2020",
+          "score": 0.008079077117145061,
+          "source": "standard_clauses"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sw_freelance-2020-art19-sub07",
+          "parent_clause_id": "sw_freelance-2020-art19",
+          "category": null,
+          "version": null,
+          "score": 0.006198927294462919,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sw_freelance-2020-art18",
+          "parent_clause_id": null,
+          "category": "LIABILITY",
+          "version": "2020",
+          "score": 0.003933747764676809,
+          "source": "standard_clauses"
+        }
+      ],
+      "outcome": "FP",
+      "predicted_by_threshold": {
+        "0.40": true,
+        "0.45": true,
+        "0.50": true,
+        "0.55": true,
+        "0.60": true
+      },
+      "reason": "UNDER_MATCH"
+    },
+    {
+      "case_id": "v4-sw-10",
+      "contract_type": "SW_FREELANCE",
+      "trap": "none",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "NONE",
+      "confidence": 0.9995501637458801,
+      "matched_standard": {
+        "id": "sw_freelance-2020-art18",
+        "version": "2020",
+        "category": "LIABILITY"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sw_freelance-2020-art18",
+          "parent_clause_id": null,
+          "category": "LIABILITY",
+          "version": "2020",
+          "score": 0.9995501637458801,
+          "source": "standard_clauses"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sw_freelance-2020-art18-sub00",
+          "parent_clause_id": "sw_freelance-2020-art18",
+          "category": null,
+          "version": null,
+          "score": 0.9995501637458801,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sw_freelance-2020-art10-sub01",
+          "parent_clause_id": "sw_freelance-2020-art10",
+          "category": null,
+          "version": null,
+          "score": 0.9947304725646973,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "TN",
+      "predicted_by_threshold": {
+        "0.40": false,
+        "0.45": false,
+        "0.50": false,
+        "0.55": false,
+        "0.60": false
+      },
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-sw-11",
+      "contract_type": "SW_FREELANCE",
+      "trap": "party",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "NONE",
+      "confidence": 0.995674192905426,
+      "matched_standard": {
+        "id": "sw_freelance-2020-art16",
+        "version": "2020",
+        "category": "TERMINATION"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sw_freelance-2020-art16-sub00",
+          "parent_clause_id": "sw_freelance-2020-art16",
+          "category": null,
+          "version": null,
+          "score": 0.995674192905426,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sw_freelance-2020-art16-sub01",
+          "parent_clause_id": "sw_freelance-2020-art16",
+          "category": null,
+          "version": null,
+          "score": 0.944299578666687,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sw_freelance-2020-art16-sub10",
+          "parent_clause_id": "sw_freelance-2020-art16",
+          "category": null,
+          "version": null,
+          "score": 0.8155795335769653,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "TN",
+      "predicted_by_threshold": {
+        "0.40": false,
+        "0.45": false,
+        "0.50": false,
+        "0.55": false,
+        "0.60": false
+      },
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-sw-12",
+      "contract_type": "SW_FREELANCE",
+      "trap": "none",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "NONE",
+      "confidence": 0.984205961227417,
+      "matched_standard": {
+        "id": "sw_freelance-2020-art16",
+        "version": "2020",
+        "category": "TERMINATION"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sw_freelance-2020-art16-sub10",
+          "parent_clause_id": "sw_freelance-2020-art16",
+          "category": null,
+          "version": null,
+          "score": 0.984205961227417,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sw_freelance-2020-art16",
+          "parent_clause_id": null,
+          "category": "TERMINATION",
+          "version": "2020",
+          "score": 0.9508660435676575,
+          "source": "standard_clauses"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sw_freelance-2020-art5-sub02",
+          "parent_clause_id": "sw_freelance-2020-art5",
+          "category": null,
+          "version": null,
+          "score": 0.7904301881790161,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "TN",
+      "predicted_by_threshold": {
+        "0.40": false,
+        "0.45": false,
+        "0.50": false,
+        "0.55": false,
+        "0.60": false
+      },
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-sw-13",
+      "contract_type": "SW_FREELANCE",
+      "trap": "negation",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "EXTRA",
+      "confidence": 0.0003453457320574671,
+      "matched_standard": {
+        "id": "sw_freelance-2020-art12",
+        "version": "2020",
+        "category": "DELIVERY_INSPECTION"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sw_freelance-2020-art12-sub04",
+          "parent_clause_id": "sw_freelance-2020-art12",
+          "category": null,
+          "version": null,
+          "score": 0.0003453457320574671,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sw_freelance-2020-art12-sub03",
+          "parent_clause_id": "sw_freelance-2020-art12",
+          "category": null,
+          "version": null,
+          "score": 5.537776087294333e-05,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sw_freelance-2020-art19-sub01",
+          "parent_clause_id": "sw_freelance-2020-art19",
+          "category": null,
+          "version": null,
+          "score": 3.2784890208859e-05,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "FP",
+      "predicted_by_threshold": {
+        "0.40": true,
+        "0.45": true,
+        "0.50": true,
+        "0.55": true,
+        "0.60": true
+      },
+      "reason": "UNDER_MATCH"
+    },
+    {
+      "case_id": "v4-sw-14",
+      "contract_type": "SW_FREELANCE",
+      "trap": "none",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "EXTRA",
+      "confidence": 0.0008815830224193633,
+      "matched_standard": {
+        "id": "sw_freelance-2020-art12",
+        "version": "2020",
+        "category": "DELIVERY_INSPECTION"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sw_freelance-2020-art12-sub04",
+          "parent_clause_id": "sw_freelance-2020-art12",
+          "category": null,
+          "version": null,
+          "score": 0.0008815830224193633,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sw_freelance-2020-art12-sub05",
+          "parent_clause_id": "sw_freelance-2020-art12",
+          "category": null,
+          "version": null,
+          "score": 4.174022251390852e-06,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sw_freelance-2020-art6-sub10",
+          "parent_clause_id": "sw_freelance-2020-art6",
+          "category": null,
+          "version": null,
+          "score": 3.2885984637687216e-06,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "FP",
+      "predicted_by_threshold": {
+        "0.40": true,
+        "0.45": true,
+        "0.50": true,
+        "0.55": true,
+        "0.60": true
+      },
+      "reason": "UNDER_MATCH"
+    },
+    {
+      "case_id": "v4-sw-15",
+      "contract_type": "SW_FREELANCE",
+      "trap": "negation",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "NONE",
+      "confidence": 0.767693281173706,
+      "matched_standard": {
+        "id": "sw_freelance-2020-art17",
+        "version": "2020",
+        "category": "CONFIDENTIALITY"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sw_freelance-2020-art17-sub01",
+          "parent_clause_id": "sw_freelance-2020-art17",
+          "category": null,
+          "version": null,
+          "score": 0.767693281173706,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sw_freelance-2020-art17-sub02",
+          "parent_clause_id": "sw_freelance-2020-art17",
+          "category": null,
+          "version": null,
+          "score": 0.18756411969661713,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sw_freelance-2020-art19-sub01",
+          "parent_clause_id": "sw_freelance-2020-art19",
+          "category": null,
+          "version": null,
+          "score": 0.004586649592965841,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "TN",
+      "predicted_by_threshold": {
+        "0.40": false,
+        "0.45": false,
+        "0.50": false,
+        "0.55": false,
+        "0.60": false
+      },
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-sw-16",
+      "contract_type": "SW_FREELANCE",
+      "trap": "none",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "EXTRA",
+      "confidence": 5.169460109755164e-06,
+      "matched_standard": {
+        "id": "sw_freelance-2020-art5",
+        "version": "2020",
+        "category": "CONTRACT_PERIOD"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sw_freelance-2020-art5-sub00",
+          "parent_clause_id": "sw_freelance-2020-art5",
+          "category": null,
+          "version": null,
+          "score": 5.169460109755164e-06,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sw_freelance-2020-art6-sub08",
+          "parent_clause_id": "sw_freelance-2020-art6",
+          "category": null,
+          "version": null,
+          "score": 2.0609852526831673e-06,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sw_freelance-2020-art17-sub04",
+          "parent_clause_id": "sw_freelance-2020-art17",
+          "category": null,
+          "version": null,
+          "score": 1.5797173773535178e-06,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "FP",
+      "predicted_by_threshold": {
+        "0.40": true,
+        "0.45": true,
+        "0.50": true,
+        "0.55": true,
+        "0.60": true
+      },
+      "reason": "UNDER_MATCH"
+    },
+    {
+      "case_id": "v4-sw-17",
+      "contract_type": "SW_FREELANCE",
+      "trap": "negation",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "EXTRA",
+      "confidence": 6.499965093098581e-05,
+      "matched_standard": {
+        "id": "sw_freelance-2020-art6",
+        "version": "2020",
+        "category": "PAYMENT"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sw_freelance-2020-art6-sub03",
+          "parent_clause_id": "sw_freelance-2020-art6",
+          "category": null,
+          "version": null,
+          "score": 6.499965093098581e-05,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sw_freelance-2020-art5-sub02",
+          "parent_clause_id": "sw_freelance-2020-art5",
+          "category": null,
+          "version": null,
+          "score": 1.0527443009777926e-05,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sw_freelance-2020-art5-sub04",
+          "parent_clause_id": "sw_freelance-2020-art5",
+          "category": null,
+          "version": null,
+          "score": 3.4301606319786515e-06,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "FP",
+      "predicted_by_threshold": {
+        "0.40": true,
+        "0.45": true,
+        "0.50": true,
+        "0.55": true,
+        "0.60": true
+      },
+      "reason": "UNDER_MATCH"
+    },
+    {
+      "case_id": "v4-sw-18",
+      "contract_type": "SW_FREELANCE",
+      "trap": "none",
+      "gold_deviation": "NONE",
+      "predicted_deviation": "EXTRA",
+      "confidence": 0.0002209269441664219,
+      "matched_standard": {
+        "id": "sw_freelance-2020-art6",
+        "version": "2020",
+        "category": "PAYMENT"
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "standard_id": "sw_freelance-2020-art6-sub03",
+          "parent_clause_id": "sw_freelance-2020-art6",
+          "category": null,
+          "version": null,
+          "score": 0.0002209269441664219,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 2,
+          "standard_id": "sw_freelance-2020-art6-sub05",
+          "parent_clause_id": "sw_freelance-2020-art6",
+          "category": null,
+          "version": null,
+          "score": 9.923690959112719e-05,
+          "source": "standard_sub_chunks"
+        },
+        {
+          "rank": 3,
+          "standard_id": "sw_freelance-2020-art5-sub02",
+          "parent_clause_id": "sw_freelance-2020-art5",
+          "category": null,
+          "version": null,
+          "score": 9.638416668167338e-05,
+          "source": "standard_sub_chunks"
+        }
+      ],
+      "outcome": "FP",
+      "predicted_by_threshold": {
+        "0.40": true,
+        "0.45": true,
+        "0.50": true,
+        "0.55": true,
+        "0.60": true
+      },
+      "reason": "UNDER_MATCH"
+    }
+  ],
+  "toxic": [
+    {
+      "case_id": "v4-si-01",
+      "contract_type": "SI_SUBCONTRACT",
+      "gold_patterns": [
+        "UNPAID_ADDITIONAL_WORK"
+      ],
+      "predicted_patterns": [
+        "UNPAID_ADDITIONAL_WORK"
+      ],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-unpaid_additional_work-sub-02",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "category": "SCOPE_SOW",
+          "score": 0.8590092658996582
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unpaid_additional_work-sub-01",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "category": "SCOPE_SOW",
+          "score": 0.037392593920230865
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-unilateral_change-sub-05",
+          "pattern": "UNILATERAL_CHANGE",
+          "category": "SCOPE_SOW",
+          "score": 0.000881619518622756
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [
+          "UNPAID_ADDITIONAL_WORK"
+        ],
+        "0.65": [
+          "UNPAID_ADDITIONAL_WORK"
+        ],
+        "0.70": [
+          "UNPAID_ADDITIONAL_WORK"
+        ],
+        "0.75": [
+          "UNPAID_ADDITIONAL_WORK"
+        ],
+        "0.80": [
+          "UNPAID_ADDITIONAL_WORK"
+        ],
+        "0.85": [
+          "UNPAID_ADDITIONAL_WORK"
+        ],
+        "0.90": []
+      },
+      "outcome": "TP",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-si-02",
+      "contract_type": "SI_SUBCONTRACT",
+      "gold_patterns": [],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-unpaid_additional_work-sub-01",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "category": "SCOPE_SOW",
+          "score": 4.8620921006659046e-05
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unpaid_additional_work-sub-05",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "category": "SCOPE_SOW",
+          "score": 9.113406122196466e-06
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-unilateral_change-sub-01",
+          "pattern": "UNILATERAL_CHANGE",
+          "category": "SCOPE_SOW",
+          "score": 1.10905523342808e-06
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "TN",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-si-03",
+      "contract_type": "SI_SUBCONTRACT",
+      "gold_patterns": [
+        "IP_TOTAL_FREE"
+      ],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-ip_total_free-sub-03",
+          "pattern": "IP_TOTAL_FREE",
+          "category": "IP_OWNERSHIP",
+          "score": 0.042421888560056686
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-ip_total_free-sub-01",
+          "pattern": "IP_TOTAL_FREE",
+          "category": "IP_OWNERSHIP",
+          "score": 0.03059527650475502
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-ip_total_free-01",
+          "pattern": "IP_TOTAL_FREE",
+          "category": "IP_OWNERSHIP",
+          "score": 0.001181863248348236
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "FN",
+      "reason": "BELOW_THRESHOLD"
+    },
+    {
+      "case_id": "v4-si-04",
+      "contract_type": "SI_SUBCONTRACT",
+      "gold_patterns": [],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-ip_total_free-sub-01",
+          "pattern": "IP_TOTAL_FREE",
+          "category": "IP_OWNERSHIP",
+          "score": 4.460831405594945e-05
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-ip_total_free-sub-03",
+          "pattern": "IP_TOTAL_FREE",
+          "category": "IP_OWNERSHIP",
+          "score": 3.402650690986775e-05
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-ip_total_free-03",
+          "pattern": "IP_TOTAL_FREE",
+          "category": "IP_OWNERSHIP",
+          "score": 2.3981574486242607e-05
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "TN",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-si-05",
+      "contract_type": "SI_SUBCONTRACT",
+      "gold_patterns": [
+        "INDEFINITE_CONFIDENTIALITY"
+      ],
+      "predicted_patterns": [
+        "INDEFINITE_CONFIDENTIALITY"
+      ],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-indefinite_confidentiality-sub-01",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "category": "CONFIDENTIALITY",
+          "score": 0.9997593760490417
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-indefinite_confidentiality-01",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "category": "CONFIDENTIALITY",
+          "score": 0.9987553358078003
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-indefinite_confidentiality-sub-03",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "category": "CONFIDENTIALITY",
+          "score": 0.15314897894859314
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [
+          "INDEFINITE_CONFIDENTIALITY"
+        ],
+        "0.65": [
+          "INDEFINITE_CONFIDENTIALITY"
+        ],
+        "0.70": [
+          "INDEFINITE_CONFIDENTIALITY"
+        ],
+        "0.75": [
+          "INDEFINITE_CONFIDENTIALITY"
+        ],
+        "0.80": [
+          "INDEFINITE_CONFIDENTIALITY"
+        ],
+        "0.85": [
+          "INDEFINITE_CONFIDENTIALITY"
+        ],
+        "0.90": [
+          "INDEFINITE_CONFIDENTIALITY"
+        ]
+      },
+      "outcome": "TP",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-si-06",
+      "contract_type": "SI_SUBCONTRACT",
+      "gold_patterns": [],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-indefinite_confidentiality-01",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "category": "CONFIDENTIALITY",
+          "score": 9.445924661122262e-06
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-indefinite_confidentiality-sub-01",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "category": "CONFIDENTIALITY",
+          "score": 6.424978437280515e-06
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-indefinite_confidentiality-sub-04",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "category": "CONFIDENTIALITY",
+          "score": 3.990317054558545e-06
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "TN",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-si-07",
+      "contract_type": "SI_SUBCONTRACT",
+      "gold_patterns": [
+        "UNILATERAL_INTERPRETATION"
+      ],
+      "predicted_patterns": [
+        "UNILATERAL_INTERPRETATION"
+      ],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-unilateral_interpretation-sub-01",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "category": "DISPUTE",
+          "score": 0.9986226558685303
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unilateral_interpretation-01",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "category": "DISPUTE",
+          "score": 0.9932952523231506
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-unilateral_interpretation-sub-03",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "category": "DISPUTE",
+          "score": 0.99184650182724
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [
+          "UNILATERAL_INTERPRETATION"
+        ],
+        "0.65": [
+          "UNILATERAL_INTERPRETATION"
+        ],
+        "0.70": [
+          "UNILATERAL_INTERPRETATION"
+        ],
+        "0.75": [
+          "UNILATERAL_INTERPRETATION"
+        ],
+        "0.80": [
+          "UNILATERAL_INTERPRETATION"
+        ],
+        "0.85": [
+          "UNILATERAL_INTERPRETATION"
+        ],
+        "0.90": [
+          "UNILATERAL_INTERPRETATION"
+        ]
+      },
+      "outcome": "TP",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-si-08",
+      "contract_type": "SI_SUBCONTRACT",
+      "gold_patterns": [],
+      "predicted_patterns": [
+        "UNILATERAL_INTERPRETATION"
+      ],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-unilateral_interpretation-02",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "category": "DISPUTE",
+          "score": 0.8743363618850708
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unilateral_interpretation-04",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "category": "DISPUTE",
+          "score": 0.43954503536224365
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-unilateral_interpretation-sub-04",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "category": "DISPUTE",
+          "score": 0.2058579921722412
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [
+          "UNILATERAL_INTERPRETATION"
+        ],
+        "0.65": [
+          "UNILATERAL_INTERPRETATION"
+        ],
+        "0.70": [
+          "UNILATERAL_INTERPRETATION"
+        ],
+        "0.75": [
+          "UNILATERAL_INTERPRETATION"
+        ],
+        "0.80": [
+          "UNILATERAL_INTERPRETATION"
+        ],
+        "0.85": [
+          "UNILATERAL_INTERPRETATION"
+        ],
+        "0.90": []
+      },
+      "outcome": "FP",
+      "reason": "WRONG_PATTERN"
+    },
+    {
+      "case_id": "v4-si-09",
+      "contract_type": "SI_SUBCONTRACT",
+      "gold_patterns": [
+        "UNFAIR_DAMAGE_CLAIM"
+      ],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-unilateral_change-sub-05",
+          "pattern": "UNILATERAL_CHANGE",
+          "category": "SCOPE_SOW",
+          "score": 0.07468840479850769
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-noncompete_excess-sub-01",
+          "pattern": "NONCOMPETE_EXCESS",
+          "category": "CONFIDENTIALITY",
+          "score": 0.02215946838259697
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-unfair_damage_claim-sub-04",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "category": "LIABILITY",
+          "score": 0.01160830445587635
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "FN",
+      "reason": "BELOW_THRESHOLD"
+    },
+    {
+      "case_id": "v4-si-10",
+      "contract_type": "SI_SUBCONTRACT",
+      "gold_patterns": [],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-indefinite_confidentiality-05",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "category": "CONFIDENTIALITY",
+          "score": 0.37115979194641113
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unfair_damage_claim-03",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "category": "LIABILITY",
+          "score": 9.450405923416838e-05
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-unfair_damage_claim-sub-03",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "category": "LIABILITY",
+          "score": 7.028925028862432e-05
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "TN",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-si-11",
+      "contract_type": "SI_SUBCONTRACT",
+      "gold_patterns": [
+        "UNILATERAL_CHANGE"
+      ],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-unilateral_cancellation-sub-02",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "category": "TERMINATION",
+          "score": 0.0024477923288941383
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unilateral_change-sub-04",
+          "pattern": "UNILATERAL_CHANGE",
+          "category": "SCOPE_SOW",
+          "score": 0.0017980404663830996
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-unilateral_cancellation-sub-04",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "category": "TERMINATION",
+          "score": 0.001000896212644875
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "FN",
+      "reason": "BELOW_THRESHOLD"
+    },
+    {
+      "case_id": "v4-si-12",
+      "contract_type": "SI_SUBCONTRACT",
+      "gold_patterns": [],
+      "predicted_patterns": [
+        "UNILATERAL_CANCELLATION"
+      ],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-unilateral_cancellation-sub-04",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "category": "TERMINATION",
+          "score": 0.6385211944580078
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unfair_damage_claim-sub-04",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "category": "LIABILITY",
+          "score": 0.5729299187660217
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-unilateral_cancellation-sub-02",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "category": "TERMINATION",
+          "score": 0.42316263914108276
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [
+          "UNILATERAL_CANCELLATION"
+        ],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "FP",
+      "reason": "WRONG_PATTERN"
+    },
+    {
+      "case_id": "v4-si-13",
+      "contract_type": "SI_SUBCONTRACT",
+      "gold_patterns": [
+        "UNPAID_ADDITIONAL_WORK"
+      ],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-unpaid_additional_work-sub-02",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "category": "SCOPE_SOW",
+          "score": 0.07566199451684952
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unpaid_additional_work-sub-05",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "category": "SCOPE_SOW",
+          "score": 0.02667873725295067
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-unpaid_additional_work-02",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "category": "SCOPE_SOW",
+          "score": 0.0018971385434269905
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "FN",
+      "reason": "BELOW_THRESHOLD"
+    },
+    {
+      "case_id": "v4-si-14",
+      "contract_type": "SI_SUBCONTRACT",
+      "gold_patterns": [],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-unpaid_additional_work-sub-01",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "category": "SCOPE_SOW",
+          "score": 0.002332796575501561
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unpaid_additional_work-sub-04",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "category": "SCOPE_SOW",
+          "score": 0.000307116424664855
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-unilateral_change-sub-02",
+          "pattern": "UNILATERAL_CHANGE",
+          "category": "SCOPE_SOW",
+          "score": 8.87330861587543e-06
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "TN",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-si-15",
+      "contract_type": "SI_SUBCONTRACT",
+      "gold_patterns": [
+        "IP_TOTAL_FREE"
+      ],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-ip_total_free-sub-02",
+          "pattern": "IP_TOTAL_FREE",
+          "category": "IP_OWNERSHIP",
+          "score": 0.0015177238965407014
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-ip_total_free-sub-03",
+          "pattern": "IP_TOTAL_FREE",
+          "category": "IP_OWNERSHIP",
+          "score": 0.00043375283712521195
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-ip_total_free-sub-01",
+          "pattern": "IP_TOTAL_FREE",
+          "category": "IP_OWNERSHIP",
+          "score": 8.651086682220921e-05
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "FN",
+      "reason": "BELOW_THRESHOLD"
+    },
+    {
+      "case_id": "v4-si-16",
+      "contract_type": "SI_SUBCONTRACT",
+      "gold_patterns": [],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-ip_total_free-sub-03",
+          "pattern": "IP_TOTAL_FREE",
+          "category": "IP_OWNERSHIP",
+          "score": 0.27727189660072327
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-ip_total_free-sub-01",
+          "pattern": "IP_TOTAL_FREE",
+          "category": "IP_OWNERSHIP",
+          "score": 0.1788869947195053
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-ip_total_free-03",
+          "pattern": "IP_TOTAL_FREE",
+          "category": "IP_OWNERSHIP",
+          "score": 0.10501672327518463
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "TN",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-si-17",
+      "contract_type": "SI_SUBCONTRACT",
+      "gold_patterns": [
+        "INDEFINITE_CONFIDENTIALITY"
+      ],
+      "predicted_patterns": [
+        "INDEFINITE_CONFIDENTIALITY"
+      ],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-indefinite_confidentiality-sub-01",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "category": "CONFIDENTIALITY",
+          "score": 0.9742650389671326
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-indefinite_confidentiality-sub-03",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "category": "CONFIDENTIALITY",
+          "score": 0.8758294582366943
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-indefinite_confidentiality-03",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "category": "CONFIDENTIALITY",
+          "score": 0.7691043019294739
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [
+          "INDEFINITE_CONFIDENTIALITY"
+        ],
+        "0.65": [
+          "INDEFINITE_CONFIDENTIALITY"
+        ],
+        "0.70": [
+          "INDEFINITE_CONFIDENTIALITY"
+        ],
+        "0.75": [
+          "INDEFINITE_CONFIDENTIALITY"
+        ],
+        "0.80": [
+          "INDEFINITE_CONFIDENTIALITY"
+        ],
+        "0.85": [
+          "INDEFINITE_CONFIDENTIALITY"
+        ],
+        "0.90": [
+          "INDEFINITE_CONFIDENTIALITY"
+        ]
+      },
+      "outcome": "TP",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-si-18",
+      "contract_type": "SI_SUBCONTRACT",
+      "gold_patterns": [],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-indefinite_confidentiality-05",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "category": "CONFIDENTIALITY",
+          "score": 1.6009204045985825e-05
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-indefinite_confidentiality-sub-03",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "category": "CONFIDENTIALITY",
+          "score": 1.0535578439885285e-05
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-indefinite_confidentiality-03",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "category": "CONFIDENTIALITY",
+          "score": 6.5004533098544925e-06
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "TN",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-sm-01",
+      "contract_type": "SM_SUBCONTRACT",
+      "gold_patterns": [
+        "UNPAID_ADDITIONAL_WORK"
+      ],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-unpaid_additional_work-sub-02",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "category": "SCOPE_SOW",
+          "score": 1.1867469766002614e-05
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unpaid_additional_work-sub-04",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "category": "SCOPE_SOW",
+          "score": 2.208482101195841e-06
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-unilateral_change-sub-01",
+          "pattern": "UNILATERAL_CHANGE",
+          "category": "SCOPE_SOW",
+          "score": 1.184845586976735e-06
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "FN",
+      "reason": "BELOW_THRESHOLD"
+    },
+    {
+      "case_id": "v4-sm-02",
+      "contract_type": "SM_SUBCONTRACT",
+      "gold_patterns": [],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-unpaid_additional_work-sub-02",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "category": "SCOPE_SOW",
+          "score": 1.3523447705665603e-05
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unpaid_additional_work-01",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "category": "SCOPE_SOW",
+          "score": 2.3410593712469563e-06
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-unpaid_additional_work-sub-01",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "category": "SCOPE_SOW",
+          "score": 2.31582475862524e-06
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "TN",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-sm-03",
+      "contract_type": "SM_SUBCONTRACT",
+      "gold_patterns": [
+        "IP_TOTAL_FREE"
+      ],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-ip_total_free-sub-02",
+          "pattern": "IP_TOTAL_FREE",
+          "category": "IP_OWNERSHIP",
+          "score": 0.0021661785431206226
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-ip_total_free-sub-01",
+          "pattern": "IP_TOTAL_FREE",
+          "category": "IP_OWNERSHIP",
+          "score": 0.0005832142778672278
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-ip_total_free-sub-03",
+          "pattern": "IP_TOTAL_FREE",
+          "category": "IP_OWNERSHIP",
+          "score": 0.00016589761071372777
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "FN",
+      "reason": "BELOW_THRESHOLD"
+    },
+    {
+      "case_id": "v4-sm-04",
+      "contract_type": "SM_SUBCONTRACT",
+      "gold_patterns": [],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-ip_total_free-sub-03",
+          "pattern": "IP_TOTAL_FREE",
+          "category": "IP_OWNERSHIP",
+          "score": 0.0001060456270352006
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-ip_total_free-sub-01",
+          "pattern": "IP_TOTAL_FREE",
+          "category": "IP_OWNERSHIP",
+          "score": 9.208649134961888e-05
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-ip_total_free-03",
+          "pattern": "IP_TOTAL_FREE",
+          "category": "IP_OWNERSHIP",
+          "score": 1.9576449631131254e-05
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "TN",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-sm-05",
+      "contract_type": "SM_SUBCONTRACT",
+      "gold_patterns": [
+        "INDEFINITE_CONFIDENTIALITY"
+      ],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-indefinite_confidentiality-sub-01",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "category": "CONFIDENTIALITY",
+          "score": 0.191267728805542
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-indefinite_confidentiality-sub-04",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "category": "CONFIDENTIALITY",
+          "score": 0.04342377558350563
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-indefinite_confidentiality-sub-03",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "category": "CONFIDENTIALITY",
+          "score": 0.01929342932999134
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "FN",
+      "reason": "BELOW_THRESHOLD"
+    },
+    {
+      "case_id": "v4-sm-06",
+      "contract_type": "SM_SUBCONTRACT",
+      "gold_patterns": [],
+      "predicted_patterns": [
+        "INDEFINITE_CONFIDENTIALITY"
+      ],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-indefinite_confidentiality-sub-02",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "category": "CONFIDENTIALITY",
+          "score": 0.991302490234375
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-indefinite_confidentiality-sub-03",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "category": "CONFIDENTIALITY",
+          "score": 0.9670391082763672
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-indefinite_confidentiality-02",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "category": "CONFIDENTIALITY",
+          "score": 0.06582391262054443
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [
+          "INDEFINITE_CONFIDENTIALITY"
+        ],
+        "0.65": [
+          "INDEFINITE_CONFIDENTIALITY"
+        ],
+        "0.70": [
+          "INDEFINITE_CONFIDENTIALITY"
+        ],
+        "0.75": [
+          "INDEFINITE_CONFIDENTIALITY"
+        ],
+        "0.80": [
+          "INDEFINITE_CONFIDENTIALITY"
+        ],
+        "0.85": [
+          "INDEFINITE_CONFIDENTIALITY"
+        ],
+        "0.90": [
+          "INDEFINITE_CONFIDENTIALITY"
+        ]
+      },
+      "outcome": "FP",
+      "reason": "WRONG_PATTERN"
+    },
+    {
+      "case_id": "v4-sm-07",
+      "contract_type": "SM_SUBCONTRACT",
+      "gold_patterns": [
+        "UNILATERAL_INTERPRETATION"
+      ],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-unilateral_interpretation-sub-01",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "category": "DISPUTE",
+          "score": 0.0027819261886179447
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unilateral_interpretation-sub-03",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "category": "DISPUTE",
+          "score": 3.1221916287904605e-05
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-unilateral_interpretation-04",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "category": "DISPUTE",
+          "score": 6.746011877112323e-06
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "FN",
+      "reason": "BELOW_THRESHOLD"
+    },
+    {
+      "case_id": "v4-sm-08",
+      "contract_type": "SM_SUBCONTRACT",
+      "gold_patterns": [],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-ip_total_free-02",
+          "pattern": "IP_TOTAL_FREE",
+          "category": "IP_OWNERSHIP",
+          "score": 9.04712635474425e-07
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unfair_damage_claim-01",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "category": "LIABILITY",
+          "score": 9.0449782419455e-07
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-payment_delay_unfair-04",
+          "pattern": "PAYMENT_DELAY_UNFAIR",
+          "category": "PAYMENT",
+          "score": 8.672826652400545e-07
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "TN",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-sm-09",
+      "contract_type": "SM_SUBCONTRACT",
+      "gold_patterns": [
+        "NONCOMPETE_EXCESS"
+      ],
+      "predicted_patterns": [
+        "NONCOMPETE_EXCESS"
+      ],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-noncompete_excess-sub-02",
+          "pattern": "NONCOMPETE_EXCESS",
+          "category": "CONFIDENTIALITY",
+          "score": 0.8099712133407593
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-noncompete_excess-sub-01",
+          "pattern": "NONCOMPETE_EXCESS",
+          "category": "CONFIDENTIALITY",
+          "score": 0.5768664479255676
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-noncompete_excess-02",
+          "pattern": "NONCOMPETE_EXCESS",
+          "category": "CONFIDENTIALITY",
+          "score": 0.37958914041519165
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [
+          "NONCOMPETE_EXCESS"
+        ],
+        "0.65": [
+          "NONCOMPETE_EXCESS"
+        ],
+        "0.70": [
+          "NONCOMPETE_EXCESS"
+        ],
+        "0.75": [
+          "NONCOMPETE_EXCESS"
+        ],
+        "0.80": [
+          "NONCOMPETE_EXCESS"
+        ],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "TP",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-sm-10",
+      "contract_type": "SM_SUBCONTRACT",
+      "gold_patterns": [],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-indefinite_confidentiality-04",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "category": "CONFIDENTIALITY",
+          "score": 2.846662255251431e-06
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-indefinite_confidentiality-sub-04",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "category": "CONFIDENTIALITY",
+          "score": 2.6093939595739357e-06
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-indefinite_confidentiality-sub-01",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "category": "CONFIDENTIALITY",
+          "score": 1.8617593013914302e-06
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "TN",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-sm-11",
+      "contract_type": "SM_SUBCONTRACT",
+      "gold_patterns": [
+        "UNILATERAL_CANCELLATION"
+      ],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-unilateral_cancellation-sub-05",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "category": "TERMINATION",
+          "score": 0.22638291120529175
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unilateral_cancellation-sub-02",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "category": "TERMINATION",
+          "score": 0.034057896584272385
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-unilateral_cancellation-sub-04",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "category": "TERMINATION",
+          "score": 0.0017425697296857834
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "FN",
+      "reason": "BELOW_THRESHOLD"
+    },
+    {
+      "case_id": "v4-sm-12",
+      "contract_type": "SM_SUBCONTRACT",
+      "gold_patterns": [],
+      "predicted_patterns": [
+        "UNFAIR_DAMAGE_CLAIM",
+        "UNILATERAL_CANCELLATION"
+      ],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-unilateral_cancellation-sub-05",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "category": "TERMINATION",
+          "score": 0.9933463335037231
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unfair_damage_claim-sub-04",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "category": "LIABILITY",
+          "score": 0.9844194054603577
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-unilateral_cancellation-05",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "category": "TERMINATION",
+          "score": 0.6836409568786621
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [
+          "UNFAIR_DAMAGE_CLAIM",
+          "UNILATERAL_CANCELLATION"
+        ],
+        "0.65": [
+          "UNFAIR_DAMAGE_CLAIM",
+          "UNILATERAL_CANCELLATION"
+        ],
+        "0.70": [
+          "UNFAIR_DAMAGE_CLAIM",
+          "UNILATERAL_CANCELLATION"
+        ],
+        "0.75": [
+          "UNFAIR_DAMAGE_CLAIM",
+          "UNILATERAL_CANCELLATION"
+        ],
+        "0.80": [
+          "UNFAIR_DAMAGE_CLAIM",
+          "UNILATERAL_CANCELLATION"
+        ],
+        "0.85": [
+          "UNFAIR_DAMAGE_CLAIM",
+          "UNILATERAL_CANCELLATION"
+        ],
+        "0.90": [
+          "UNFAIR_DAMAGE_CLAIM",
+          "UNILATERAL_CANCELLATION"
+        ]
+      },
+      "outcome": "FP",
+      "reason": "WRONG_PATTERN"
+    },
+    {
+      "case_id": "v4-sm-13",
+      "contract_type": "SM_SUBCONTRACT",
+      "gold_patterns": [
+        "NONCOMPETE_EXCESS"
+      ],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-noncompete_excess-sub-04",
+          "pattern": "NONCOMPETE_EXCESS",
+          "category": "CONFIDENTIALITY",
+          "score": 0.02918236330151558
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-noncompete_excess-04",
+          "pattern": "NONCOMPETE_EXCESS",
+          "category": "CONFIDENTIALITY",
+          "score": 0.004513523541390896
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-unfair_damage_claim-04",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "category": "LIABILITY",
+          "score": 0.00024022541765589267
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "FN",
+      "reason": "BELOW_THRESHOLD"
+    },
+    {
+      "case_id": "v4-sm-14",
+      "contract_type": "SM_SUBCONTRACT",
+      "gold_patterns": [],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-indefinite_confidentiality-sub-05",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "category": "CONFIDENTIALITY",
+          "score": 5.595973925665021e-05
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-indefinite_confidentiality-05",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "category": "CONFIDENTIALITY",
+          "score": 4.046891626785509e-05
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-indefinite_confidentiality-sub-01",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "category": "CONFIDENTIALITY",
+          "score": 3.2440730137750506e-05
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "TN",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-sm-15",
+      "contract_type": "SM_SUBCONTRACT",
+      "gold_patterns": [
+        "UNILATERAL_CHANGE"
+      ],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-unilateral_change-sub-02",
+          "pattern": "UNILATERAL_CHANGE",
+          "category": "SCOPE_SOW",
+          "score": 0.0006842254661023617
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unilateral_change-sub-04",
+          "pattern": "UNILATERAL_CHANGE",
+          "category": "SCOPE_SOW",
+          "score": 0.0004936301847919822
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-unilateral_change-02",
+          "pattern": "UNILATERAL_CHANGE",
+          "category": "SCOPE_SOW",
+          "score": 1.3343189493753016e-05
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "FN",
+      "reason": "BELOW_THRESHOLD"
+    },
+    {
+      "case_id": "v4-sm-16",
+      "contract_type": "SM_SUBCONTRACT",
+      "gold_patterns": [],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-unilateral_interpretation-sub-04",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "category": "DISPUTE",
+          "score": 1.6234949725912884e-05
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unilateral_interpretation-04",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "category": "DISPUTE",
+          "score": 1.1707396879501175e-05
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-unfair_damage_claim-04",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "category": "LIABILITY",
+          "score": 2.2986885142017854e-06
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "TN",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-sm-17",
+      "contract_type": "SM_SUBCONTRACT",
+      "gold_patterns": [
+        "UNFAIR_DAMAGE_CLAIM"
+      ],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-unfair_damage_claim-sub-03",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "category": "LIABILITY",
+          "score": 0.06376511603593826
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unfair_damage_claim-sub-02",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "category": "LIABILITY",
+          "score": 0.0008123562438413501
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-unfair_damage_claim-02",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "category": "LIABILITY",
+          "score": 0.0002701742632780224
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "FN",
+      "reason": "BELOW_THRESHOLD"
+    },
+    {
+      "case_id": "v4-sm-18",
+      "contract_type": "SM_SUBCONTRACT",
+      "gold_patterns": [],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-indefinite_confidentiality-sub-05",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "category": "CONFIDENTIALITY",
+          "score": 0.0001819952012738213
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unfair_damage_claim-sub-01",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "category": "LIABILITY",
+          "score": 9.298087388742715e-05
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-unfair_damage_claim-sub-03",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "category": "LIABILITY",
+          "score": 8.144364255713299e-05
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "TN",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-sw-01",
+      "contract_type": "SW_FREELANCE",
+      "gold_patterns": [
+        "UNPAID_ADDITIONAL_WORK"
+      ],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-unilateral_change-01",
+          "pattern": "UNILATERAL_CHANGE",
+          "category": "SCOPE_SOW",
+          "score": 0.43389642238616943
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unpaid_additional_work-04",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "category": "SCOPE_SOW",
+          "score": 0.031901225447654724
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-unpaid_additional_work-02",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "category": "SCOPE_SOW",
+          "score": 0.012556544505059719
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "FN",
+      "reason": "BELOW_THRESHOLD"
+    },
+    {
+      "case_id": "v4-sw-02",
+      "contract_type": "SW_FREELANCE",
+      "gold_patterns": [],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-unpaid_additional_work-01",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "category": "SCOPE_SOW",
+          "score": 0.0501839853823185
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unpaid_additional_work-sub-01",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "category": "SCOPE_SOW",
+          "score": 0.009714383631944656
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-unilateral_change-02",
+          "pattern": "UNILATERAL_CHANGE",
+          "category": "SCOPE_SOW",
+          "score": 0.00615081749856472
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "TN",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-sw-03",
+      "contract_type": "SW_FREELANCE",
+      "gold_patterns": [
+        "IP_TOTAL_FREE"
+      ],
+      "predicted_patterns": [
+        "IP_TOTAL_FREE"
+      ],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-ip_total_free-01",
+          "pattern": "IP_TOTAL_FREE",
+          "category": "IP_OWNERSHIP",
+          "score": 0.8063378930091858
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-ip_total_free-03",
+          "pattern": "IP_TOTAL_FREE",
+          "category": "IP_OWNERSHIP",
+          "score": 0.3593638241291046
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-ip_total_free-sub-01",
+          "pattern": "IP_TOTAL_FREE",
+          "category": "IP_OWNERSHIP",
+          "score": 0.030513573437929153
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [
+          "IP_TOTAL_FREE"
+        ],
+        "0.65": [
+          "IP_TOTAL_FREE"
+        ],
+        "0.70": [
+          "IP_TOTAL_FREE"
+        ],
+        "0.75": [
+          "IP_TOTAL_FREE"
+        ],
+        "0.80": [
+          "IP_TOTAL_FREE"
+        ],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "TP",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-sw-04",
+      "contract_type": "SW_FREELANCE",
+      "gold_patterns": [],
+      "predicted_patterns": [
+        "IP_TOTAL_FREE"
+      ],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-ip_total_free-03",
+          "pattern": "IP_TOTAL_FREE",
+          "category": "IP_OWNERSHIP",
+          "score": 0.9056432843208313
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-ip_total_free-01",
+          "pattern": "IP_TOTAL_FREE",
+          "category": "IP_OWNERSHIP",
+          "score": 0.7845200896263123
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-ip_total_free-sub-03",
+          "pattern": "IP_TOTAL_FREE",
+          "category": "IP_OWNERSHIP",
+          "score": 0.47627344727516174
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [
+          "IP_TOTAL_FREE"
+        ],
+        "0.65": [
+          "IP_TOTAL_FREE"
+        ],
+        "0.70": [
+          "IP_TOTAL_FREE"
+        ],
+        "0.75": [
+          "IP_TOTAL_FREE"
+        ],
+        "0.80": [
+          "IP_TOTAL_FREE"
+        ],
+        "0.85": [
+          "IP_TOTAL_FREE"
+        ],
+        "0.90": [
+          "IP_TOTAL_FREE"
+        ]
+      },
+      "outcome": "FP",
+      "reason": "WRONG_PATTERN"
+    },
+    {
+      "case_id": "v4-sw-05",
+      "contract_type": "SW_FREELANCE",
+      "gold_patterns": [
+        "INDEFINITE_CONFIDENTIALITY"
+      ],
+      "predicted_patterns": [
+        "INDEFINITE_CONFIDENTIALITY"
+      ],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-indefinite_confidentiality-01",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "category": "CONFIDENTIALITY",
+          "score": 0.999896764755249
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-indefinite_confidentiality-03",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "category": "CONFIDENTIALITY",
+          "score": 0.9972333312034607
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-indefinite_confidentiality-04",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "category": "CONFIDENTIALITY",
+          "score": 0.9864791035652161
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [
+          "INDEFINITE_CONFIDENTIALITY"
+        ],
+        "0.65": [
+          "INDEFINITE_CONFIDENTIALITY"
+        ],
+        "0.70": [
+          "INDEFINITE_CONFIDENTIALITY"
+        ],
+        "0.75": [
+          "INDEFINITE_CONFIDENTIALITY"
+        ],
+        "0.80": [
+          "INDEFINITE_CONFIDENTIALITY"
+        ],
+        "0.85": [
+          "INDEFINITE_CONFIDENTIALITY"
+        ],
+        "0.90": [
+          "INDEFINITE_CONFIDENTIALITY"
+        ]
+      },
+      "outcome": "TP",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-sw-06",
+      "contract_type": "SW_FREELANCE",
+      "gold_patterns": [],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-indefinite_confidentiality-05",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "category": "CONFIDENTIALITY",
+          "score": 0.0010926900431513786
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-indefinite_confidentiality-sub-05",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "category": "CONFIDENTIALITY",
+          "score": 0.0006552281556650996
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-indefinite_confidentiality-03",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "category": "CONFIDENTIALITY",
+          "score": 0.00019479604088701308
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "TN",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-sw-07",
+      "contract_type": "SW_FREELANCE",
+      "gold_patterns": [
+        "UNILATERAL_INTERPRETATION"
+      ],
+      "predicted_patterns": [
+        "UNILATERAL_INTERPRETATION"
+      ],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-unilateral_interpretation-01",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "category": "DISPUTE",
+          "score": 0.9768170714378357
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unilateral_interpretation-03",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "category": "DISPUTE",
+          "score": 0.48154592514038086
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-unilateral_interpretation-sub-01",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "category": "DISPUTE",
+          "score": 0.3649916350841522
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [
+          "UNILATERAL_INTERPRETATION"
+        ],
+        "0.65": [
+          "UNILATERAL_INTERPRETATION"
+        ],
+        "0.70": [
+          "UNILATERAL_INTERPRETATION"
+        ],
+        "0.75": [
+          "UNILATERAL_INTERPRETATION"
+        ],
+        "0.80": [
+          "UNILATERAL_INTERPRETATION"
+        ],
+        "0.85": [
+          "UNILATERAL_INTERPRETATION"
+        ],
+        "0.90": [
+          "UNILATERAL_INTERPRETATION"
+        ]
+      },
+      "outcome": "TP",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-sw-08",
+      "contract_type": "SW_FREELANCE",
+      "gold_patterns": [],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-unilateral_interpretation-01",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "category": "DISPUTE",
+          "score": 0.0001249909255420789
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unilateral_interpretation-sub-01",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "category": "DISPUTE",
+          "score": 0.00010949376155622303
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-unilateral_interpretation-03",
+          "pattern": "UNILATERAL_INTERPRETATION",
+          "category": "DISPUTE",
+          "score": 2.639504600665532e-05
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "TN",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-sw-09",
+      "contract_type": "SW_FREELANCE",
+      "gold_patterns": [
+        "UNFAIR_DAMAGE_CLAIM"
+      ],
+      "predicted_patterns": [
+        "UNFAIR_DAMAGE_CLAIM"
+      ],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-unfair_damage_claim-01",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "category": "LIABILITY",
+          "score": 0.9312618970870972
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unfair_damage_claim-sub-01",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "category": "LIABILITY",
+          "score": 0.026201920583844185
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-noncompete_excess-01",
+          "pattern": "NONCOMPETE_EXCESS",
+          "category": "CONFIDENTIALITY",
+          "score": 0.019282450899481773
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [
+          "UNFAIR_DAMAGE_CLAIM"
+        ],
+        "0.65": [
+          "UNFAIR_DAMAGE_CLAIM"
+        ],
+        "0.70": [
+          "UNFAIR_DAMAGE_CLAIM"
+        ],
+        "0.75": [
+          "UNFAIR_DAMAGE_CLAIM"
+        ],
+        "0.80": [
+          "UNFAIR_DAMAGE_CLAIM"
+        ],
+        "0.85": [
+          "UNFAIR_DAMAGE_CLAIM"
+        ],
+        "0.90": [
+          "UNFAIR_DAMAGE_CLAIM"
+        ]
+      },
+      "outcome": "TP",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-sw-10",
+      "contract_type": "SW_FREELANCE",
+      "gold_patterns": [],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-unfair_damage_claim-03",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "category": "LIABILITY",
+          "score": 0.029909977689385414
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unilateral_change-02",
+          "pattern": "UNILATERAL_CHANGE",
+          "category": "SCOPE_SOW",
+          "score": 0.009550883434712887
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-unfair_damage_claim-sub-03",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "category": "LIABILITY",
+          "score": 4.6676308556925505e-05
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "TN",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-sw-11",
+      "contract_type": "SW_FREELANCE",
+      "gold_patterns": [
+        "UNILATERAL_CANCELLATION"
+      ],
+      "predicted_patterns": [
+        "UNILATERAL_CANCELLATION"
+      ],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-unilateral_cancellation-02",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "category": "TERMINATION",
+          "score": 0.9893617033958435
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unilateral_cancellation-04",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "category": "TERMINATION",
+          "score": 0.1090802401304245
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-unilateral_cancellation-sub-02",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "category": "TERMINATION",
+          "score": 0.07999303936958313
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [
+          "UNILATERAL_CANCELLATION"
+        ],
+        "0.65": [
+          "UNILATERAL_CANCELLATION"
+        ],
+        "0.70": [
+          "UNILATERAL_CANCELLATION"
+        ],
+        "0.75": [
+          "UNILATERAL_CANCELLATION"
+        ],
+        "0.80": [
+          "UNILATERAL_CANCELLATION"
+        ],
+        "0.85": [
+          "UNILATERAL_CANCELLATION"
+        ],
+        "0.90": [
+          "UNILATERAL_CANCELLATION"
+        ]
+      },
+      "outcome": "TP",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-sw-12",
+      "contract_type": "SW_FREELANCE",
+      "gold_patterns": [],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-unilateral_cancellation-05",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "category": "TERMINATION",
+          "score": 0.02290131337940693
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unfair_damage_claim-04",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "category": "LIABILITY",
+          "score": 0.0183083675801754
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-unilateral_cancellation-sub-05",
+          "pattern": "UNILATERAL_CANCELLATION",
+          "category": "TERMINATION",
+          "score": 0.0003738002560567111
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "TN",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-sw-13",
+      "contract_type": "SW_FREELANCE",
+      "gold_patterns": [
+        "UNPAID_ADDITIONAL_WORK"
+      ],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-unpaid_additional_work-sub-04",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "category": "SCOPE_SOW",
+          "score": 0.06141309440135956
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unfair_damage_claim-sub-05",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "category": "LIABILITY",
+          "score": 0.019687660038471222
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-unpaid_additional_work-04",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "category": "SCOPE_SOW",
+          "score": 0.005263552535325289
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "FN",
+      "reason": "BELOW_THRESHOLD"
+    },
+    {
+      "case_id": "v4-sw-14",
+      "contract_type": "SW_FREELANCE",
+      "gold_patterns": [],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-unpaid_additional_work-sub-04",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "category": "SCOPE_SOW",
+          "score": 0.0015477542765438557
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unpaid_additional_work-04",
+          "pattern": "UNPAID_ADDITIONAL_WORK",
+          "category": "SCOPE_SOW",
+          "score": 0.0013976411428302526
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-unilateral_change-sub-04",
+          "pattern": "UNILATERAL_CHANGE",
+          "category": "SCOPE_SOW",
+          "score": 1.7245311028091237e-06
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "TN",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-sw-15",
+      "contract_type": "SW_FREELANCE",
+      "gold_patterns": [
+        "INDEFINITE_CONFIDENTIALITY"
+      ],
+      "predicted_patterns": [
+        "INDEFINITE_CONFIDENTIALITY"
+      ],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-indefinite_confidentiality-02",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "category": "CONFIDENTIALITY",
+          "score": 0.9996896982192993
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-indefinite_confidentiality-03",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "category": "CONFIDENTIALITY",
+          "score": 0.9908724427223206
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-indefinite_confidentiality-04",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "category": "CONFIDENTIALITY",
+          "score": 0.9869313836097717
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [
+          "INDEFINITE_CONFIDENTIALITY"
+        ],
+        "0.65": [
+          "INDEFINITE_CONFIDENTIALITY"
+        ],
+        "0.70": [
+          "INDEFINITE_CONFIDENTIALITY"
+        ],
+        "0.75": [
+          "INDEFINITE_CONFIDENTIALITY"
+        ],
+        "0.80": [
+          "INDEFINITE_CONFIDENTIALITY"
+        ],
+        "0.85": [
+          "INDEFINITE_CONFIDENTIALITY"
+        ],
+        "0.90": [
+          "INDEFINITE_CONFIDENTIALITY"
+        ]
+      },
+      "outcome": "TP",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-sw-16",
+      "contract_type": "SW_FREELANCE",
+      "gold_patterns": [],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-indefinite_confidentiality-02",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "category": "CONFIDENTIALITY",
+          "score": 4.955461008648854e-06
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-indefinite_confidentiality-04",
+          "pattern": "INDEFINITE_CONFIDENTIALITY",
+          "category": "CONFIDENTIALITY",
+          "score": 2.182142679885146e-06
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-noncompete_excess-02",
+          "pattern": "NONCOMPETE_EXCESS",
+          "category": "CONFIDENTIALITY",
+          "score": 1.4384686437551863e-06
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "TN",
+      "reason": "CORRECT"
+    },
+    {
+      "case_id": "v4-sw-17",
+      "contract_type": "SW_FREELANCE",
+      "gold_patterns": [
+        "UNFAIR_DAMAGE_CLAIM"
+      ],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-unfair_damage_claim-01",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "category": "LIABILITY",
+          "score": 0.0018210289999842644
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unfair_damage_claim-02",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "category": "LIABILITY",
+          "score": 0.0004833627608604729
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-unfair_damage_claim-sub-02",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "category": "LIABILITY",
+          "score": 6.803600263083354e-05
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "FN",
+      "reason": "BELOW_THRESHOLD"
+    },
+    {
+      "case_id": "v4-sw-18",
+      "contract_type": "SW_FREELANCE",
+      "gold_patterns": [],
+      "predicted_patterns": [],
+      "top_candidates": [
+        {
+          "rank": 1,
+          "pattern_id": "toxic-unfair_damage_claim-02",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "category": "LIABILITY",
+          "score": 0.00011108694161521271
+        },
+        {
+          "rank": 2,
+          "pattern_id": "toxic-unfair_damage_claim-sub-02",
+          "pattern": "UNFAIR_DAMAGE_CLAIM",
+          "category": "LIABILITY",
+          "score": 1.0762292731669731e-05
+        },
+        {
+          "rank": 3,
+          "pattern_id": "toxic-payment_delay_unfair-sub-02",
+          "pattern": "PAYMENT_DELAY_UNFAIR",
+          "category": "PAYMENT",
+          "score": 1.3328296972758835e-06
+        }
+      ],
+      "threshold": 0.6,
+      "predicted_by_threshold": {
+        "0.60": [],
+        "0.65": [],
+        "0.70": [],
+        "0.75": [],
+        "0.80": [],
+        "0.85": [],
+        "0.90": []
+      },
+      "outcome": "TN",
+      "reason": "CORRECT"
+    }
+  ]
+}

@@ -24,12 +24,20 @@ class ContractType(str, Enum):
     # ARTS_SERVICE = "ARTS_SERVICE"
     # """문화예술용역"""
 
+# 도급/용역 계열 3종 — Category 클래스 바디 안에 두면 Enum이 진짜 멤버로 오인해 여기 모듈
+# 레벨에 둔다(단순 밑줄 접두 이름은 Enum이 자동으로 걸러주지 않음).
+_SUBCONTRACT_FAMILY = (ContractType.SW_FREELANCE, ContractType.SI_SUBCONTRACT, ContractType.SM_SUBCONTRACT)
+
+
 class Category(str, Enum):
-    def __new__(cls, value, description, anchors):
+    def __new__(cls, value, description, anchors, contract_types=()):
         obj = str.__new__(cls, value)
         obj._value_ = value
         obj.description = description
         obj.anchors = anchors
+        obj.contract_types = contract_types
+        """이 카테고리가 유효한 ContractType 목록. 빈 튜플이면 전체 계약유형 공통(제한 없음).
+        label_category 의 후보 제한, get_grounding 의 무효조합 경고에 쓰인다."""
         return obj
 
     # ── 계약서 공통 ──────────────────────────────
@@ -80,32 +88,64 @@ class Category(str, Enum):
     )
 
     # ── 근로계약서 특화 ─────────────────────────────
+    # 근로기준법 특유 개념 — 도급/용역(SW_FREELANCE·SI·SM)엔 "근로시간·휴게" 개념 자체가 없음.
     WORKING_HOURS = (
         "WORKING_HOURS",
         "근로 및 휴게시간",
         ["근로시간", "휴게시간", "소정근로", "연장근로", "야간근로", "시업 종업"],
+        (ContractType.SW_EMPLOYMENT,),
     )
     HOLIDAY_LEAVE = (
         "HOLIDAY_LEAVE",
         "휴일 및 연차유급휴가",
         ["연차유급휴가", "휴일", "주휴일", "연차 휴가", "유급 휴가"],
+        (ContractType.SW_EMPLOYMENT,),
     )
 
     # ── 도급계약서 특화 ─────────────────────────────
+    # 민법 제667조(수급인의 담보책임) 확인 — 도급 일반(SW_FREELANCE·SI·SM)에 적용, 근로계약(완성물
+    # 개념 자체가 없음)엔 부적용. SUBCONTRACTING은 하도급법 고유개념이 아니어도(SI/SM만 하도급법
+    # 적용대상 — 하도급법 제2조 "수급사업자"=중소기업자) 민법상 계약자유에 따른 재위탁 금지 조항으로
+    # SW_FREELANCE에도 실측 확인(sw_freelance-2020-art15).
     DELIVERY_INSPECTION = (
         "DELIVERY_INSPECTION",
         "납품 및 검수",
         ["납품", "납기일", "검수", "수령 확인", "검사 기준", "계약목적물"],
+        _SUBCONTRACT_FAMILY,
     )
     WARRANTY = (
         "WARRANTY",
         "하자담보",
         ["하자담보", "하자보수", "하자 책임", "결함 보증", "하자보증"],
+        _SUBCONTRACT_FAMILY,
     )
     SUBCONTRACTING = (
         "SUBCONTRACTING",
         "재하도급 금지",
         ["재하도급", "재위탁", "하도급 금지", "제3자 위탁"],
+        _SUBCONTRACT_FAMILY,
+    )
+    # 산업안전보건법 제63조(도급인의 안전조치·보건조치) 확인 — "관계수급인 근로자" 보호가 전제라
+    # 수급인이 근로자를 둔 사업주여야 함. SI/SM은 하도급법상 수급사업자(=중소기업자)라 해당,
+    # SW_EMPLOYMENT는 사업주-근로자 직접관계(제5장 등)로 해당. 개인 프리랜서(SW_FREELANCE)는 자신이
+    # 근로자가 아니고 근로자를 두지도 않아 이 구조에 해당 안 됨(특수형태근로종사자 열거에도 미포함)
+    # — 2025.12.21 개정 SI/SM 표준하도급계약서 신설 "제2절 안전 등"에서 실측 확인.
+    INDUSTRIAL_SAFETY = (
+        "INDUSTRIAL_SAFETY",
+        "산업안전보건 (안전조치·보건조치·중대재해 대응)",
+        [
+            "안전조치", "보건조치", "산업재해 예방", "중대재해", "산업안전보건관리비",
+            "안전 및 보건", "응급조치", "작업중지", "위생시설", "안전보건교육",
+        ],
+        (ContractType.SI_SUBCONTRACT, ContractType.SM_SUBCONTRACT, ContractType.SW_EMPLOYMENT),
+    )
+    # SM(유지관리)에서만 실측 확인 — 지속적 시스템 접근/운영에 따른 사이버보안 의무.
+    # CONFIDENTIALITY(비밀 유지 의무)와는 달리 침해사고 대응 등 기술적 보안조치가 축.
+    INFO_SECURITY = (
+        "INFO_SECURITY",
+        "정보보안 (보안체계 수립·침해사고 대응)",
+        ["보안체계", "침해사고", "해킹", "정보보안", "정보보호 조치", "침해사고 보고"],
+        (ContractType.SM_SUBCONTRACT,),
     )
 
     # ── 공통 일반(캐치올) ────────────────────────────
@@ -121,15 +161,13 @@ class Category(str, Enum):
 
 class Deviation(str, Enum):
     MISSING = "MISSING"
-    """누락"""
+    """누락 (표준 계약서에 있으나 사용자 계약서에 없음)"""
     EXTRA = "EXTRA"
-    """추가 (표준 외 독소 또는 추가 조항)"""
-    CHANGED = "CHANGED"
-    """변경 (내용 차이 큼)"""
+    """추가 (표준에 대응되는 조항이 없거나 유사도 임계 미달로 표준에 없는 비표준 추가 조항)"""
     NONE = "NONE"
-    """이탈 없음 (일치)"""
+    """매칭됨 (1차 결정론 신호로 표준 조항과 매칭됨을 의미하며, 잠정적인 값으로 최종 확인은 2차 몫)"""
     NO_MATCH = "NO_MATCH"
-    """매칭 조항 없음 (4.2 실패 없음 규약 명시 표식)"""
+    """매칭 조항 없음 (검색 후보 자체가 없음)"""
 
 class ToxicPattern(str, Enum):
     NONCOMPETE_EXCESS = "NONCOMPETE_EXCESS"

@@ -4,7 +4,7 @@
 구현 대상: src/pipe/normalize.py
   - split_markdown_clauses(md_text) -> list[Clause]
   - build_category_vectors() -> None   (_category_vectors 전역 초기화)
-  - label_category(num, title, text) -> Category
+  - label_category(title, text, contract_type) -> Category
       _embedder / _category_vectors 전역 참조 — 테스트에서 monkeypatch 로 교체
   - normalize_file(md_path, contract_type, version) -> list[StandardClause]
 """
@@ -63,6 +63,7 @@ def test_저작권_조항은_IP_OWNERSHIP():
     assert label_category(
         "지식재산권의 귀속",
         "지식재산권 귀속은 공동소유로 하며 저작권도 동일하게 적용한다.",
+        ContractType.SW_FREELANCE,
     ) == Category.IP_OWNERSHIP
 
 
@@ -71,6 +72,7 @@ def test_보수_조항은_PAYMENT():
     assert label_category(
          "보수",
         "도급인은 수급인에게 보수 금액을 지급 시기에 따라 지급한다.",
+        ContractType.SW_FREELANCE,
     ) == Category.PAYMENT
 
 
@@ -79,6 +81,7 @@ def test_비밀준수_조항은_CONFIDENTIALITY():
     assert label_category(
          "비밀준수",
         "당사자는 영업비밀을 제3자에게 유출하지 않는다.",
+        ContractType.SW_FREELANCE,
     ) == Category.CONFIDENTIALITY
 
 
@@ -91,6 +94,7 @@ def test_하자담보_조항은_WARRANTY_PAYMENT_아님():
     result = label_category(
          "하자의 담보",
         "하자담보 기간은 12개월로 하며, 수급인은 하자보수 의무를 진다.",
+        ContractType.SW_FREELANCE,
     )
     assert result == Category.WARRANTY
     assert result != Category.PAYMENT
@@ -101,6 +105,7 @@ def test_계약기간_조항은_CONTRACT_PERIOD():
     assert label_category(
         "계약기간",
         "본 계약의 계약 기간은 업무 착수일부터 근로 개시일까지로 한다.",
+        ContractType.SW_FREELANCE,
     ) == Category.CONTRACT_PERIOD
 
 
@@ -109,6 +114,7 @@ def test_납품검수_조항은_DELIVERY_INSPECTION():
     assert label_category(
         "납품",
         "수급인은 납기일까지 계약목적물을 납품하고 도급인은 검수 기준에 따라 검사한다.",
+        ContractType.SW_FREELANCE,
     ) == Category.DELIVERY_INSPECTION
 
 
@@ -117,6 +123,7 @@ def test_재하도급_조항은_SUBCONTRACTING():
     assert label_category(
         "재하도급 금지",
         "수급인은 도급인의 서면 승인 없이 재하도급 및 재위탁을 할 수 없다.",
+        ContractType.SW_FREELANCE,
     ) == Category.SUBCONTRACTING
 
 
@@ -125,6 +132,7 @@ def test_손해배상_조항은_LIABILITY():
     assert label_category(
         "손해배상",
         "계약 위반으로 손해배상 청구가 발생한 경우 귀책사유 있는 자가 배상 책임을 진다.",
+        ContractType.SW_FREELANCE,
     ) == Category.LIABILITY
 
 
@@ -138,6 +146,7 @@ def test_일반조항은_GENERAL():
     result = label_category(
         "기본원칙",
         "당사자는 신의성실의 원칙에 따라 본 계약을 이행한다.",
+        ContractType.SW_FREELANCE,
     )
     assert result == Category.GENERAL
 
