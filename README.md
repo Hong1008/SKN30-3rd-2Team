@@ -210,45 +210,8 @@ just demo-bundle-down
 ## MCP 도구와 리소스
 
 최종 MCP 표면은 `src/app.py`가 `WorkShieldTools`와 `KoreanLawWrapper`를 조립해 만듭니다.
-`server.py`가 단독으로 모든 도구를 노출하거나 실행되는 구조가 아닙니다.
-
-### WorkShield 1차 도구
-
-| 도구 | 역할 |
-| --- | --- |
-| `assess_contract_scope` | 지원 범위와 계약 유형 후보를 사전 점검 |
-| `parse_contract` | 계약서 파일을 조항 목록으로 분해 |
-| `match_clause` | 단일 조항과 가까운 표준조항 후보 검색 |
-| `classify_clause` | 단일 조항 검색·rerank·1차 판정 |
-| `review_contract` | 계약서 전체 파싱·매칭·누락·독소·근거 조회 |
-| `get_grounding` | 카테고리 또는 조항에 관련된 법령 원문 조회 |
-| `list_contract_types` | 지원 계약 유형 조회 |
-| `list_categories` | 표준조항 카테고리와 검색 앵커 조회 |
-| `list_toxic_patterns` | 독소 패턴 종류 조회 |
-| `list_toxic_pattern_details` | 독소 패턴의 상세 기준 조회 |
-
-`WorkShieldTools`는 읽기 전용 MCP resource도 함께 등록합니다.
-
-- `standard://{contract_type}` — 계약 유형별 표준조항 목록
-- `standard://{contract_type}/{clause_id}` — 특정 표준조항 원문
-
-### 외부 법령 MCP 프록시 도구
-
-`KoreanLawWrapper`는 2차 클라이언트가 법령·판례 원문과 검증 기능을 사용할 수 있도록 다음 도구를 같은
-WorkShield MCP 표면에 등록합니다. WorkShield 서버가 LLM 해석을 생성하는 것이 아니라, 공용
-`KoreanLawMCPClient`를 통해 외부 `korean-law-mcp` 기능을 전달하는 계층입니다.
-
-| 도구 | 역할 |
-| --- | --- |
-| `search_law` | 법령명 키워드로 법령 식별자 검색 |
-| `get_law_text` | 법령·조문 본문 조회 |
-| `get_annexes` | 법령의 별표·서식 조회 |
-| `legal_research` | 외부 법률 MCP의 다단계 리서치 실행 |
-| `legal_analysis` | 외부 법률 MCP의 인용 검증·행위시법 분석 실행 |
-| `discover_tools` | 외부 법률 MCP의 추가 도구 탐색 |
-| `execute_tool` | 탐색한 외부 도구 실행 |
-| `search_decisions` | 판례·해석례 등 결정 검색 |
-| `get_decision_text` | 결정 식별자로 전문 조회 |
+도구·리소스 전체 목록, 계약 유형 사전 점검과 `review_contract` 호출 순서, 상태별 클라이언트 처리,
+외부 법령 MCP 프록시 도구는 [server MCP 통합 가이드](src/server/README.md)를 참고하세요.
 
 ## 자주 쓰는 명령
 

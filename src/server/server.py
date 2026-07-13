@@ -340,6 +340,13 @@ async def review_contract(
     계약서 파일 전체를 파싱하고 표준 대비 결과와 독소 신호를 함께 반환합니다.
     조항이 많은 계약서는 처리에 시간이 걸릴 수 있습니다(전체 조항을 배치로 검색·재정렬).
 
+    contract_type은 비교할 표준 코퍼스를 선택하는 호출자 지정값입니다. 이 도구는 지원하는
+    enum 값인지 확인할 뿐, 첨부 문서의 본문으로 계약 유형 일치 여부를 검증하거나 추천 유형으로
+    자동 변경하지 않습니다. 유형이 불명확하거나 첨부 문서와 요청 유형이 다를 가능성이 있으면
+    먼저 assess_contract_scope를 호출해 suggested_contract_type과 상태를 확인한 뒤, 사용자가
+    최종 contract_type을 선택하세요. 자세한 클라이언트 처리 흐름은 src/server/README.md를
+    참고하세요.
+
     각 사용자 조항은 두 독립 축으로 검토합니다.
 
     1. deviation: 표준조항 대비 대응·이탈·누락 신호(NO_MATCH/EXTRA/NONE/MISSING)
@@ -369,7 +376,9 @@ async def review_contract(
     않으므로 독소 신호까지 필요하면 review_contract를 사용하세요.
 
     Args:
-        contract_type: 계약 종류. 가능한 값은 list_contract_types 로 조회하세요.
+        contract_type: 비교 기준으로 쓸 계약 종류. 가능한 값은 list_contract_types 로 조회하세요.
+            첨부 문서와의 일치는 자동 검증하지 않으므로, 유형이 불명확하면 먼저
+            assess_contract_scope를 호출하세요.
         file_path: 검토할 계약서 파일의 절대 경로 (서버와 파일시스템을 공유할 때만 사용 가능. 로컬 stdio 배포용)
         file_content: base64 인코딩된 계약서 파일 바이트 (네트워크 배포용). file_name과 함께 지정해야 함.
         file_name: 원본 파일명 (확장자 판별용). file_content와 함께 지정해야 함.

@@ -59,6 +59,43 @@ just run-mcp-ui                      # MCP Inspector
 - `standard://{contract_type}` — 계약 유형별 표준조항 목록
 - `standard://{contract_type}/{clause_id}` — 특정 표준조항 원문
 
+## MCP 클라이언트 통합 가이드
+
+### 계약서 전체 검토 흐름
+
+`contract_type`은 파일에서 자동 추정되는 값이 아니라, `review_contract`가 비교에 사용할 표준
+코퍼스를 지정하는 입력입니다. `review_contract`는 지원 enum인지 확인한 뒤 그 유형으로만 표준조항
+검색·누락 탐지를 수행하며, 첨부 문서 본문과의 유형 일치를 검증하거나 값을 자동 변경하지 않습니다.
+
+유형이 불명확하거나 사용자가 선택한 유형과 문서 내용이 다를 가능성이 있으면 아래 흐름을 사용하세요.
+
+1. `assess_contract_scope`에 `file_path` 또는 `file_content`와 `file_name`을 전달합니다.
+2. 응답의 `status`, `suggested_contract_type`, `candidates`를 사용자에게 보여 주고 최종
+   `contract_type`을 선택받습니다.
+3. 선택된 `contract_type`으로 같은 파일을 `review_contract`에 전달합니다.
+
+| `assess_contract_scope.status` | 클라이언트 처리 |
+| --- | --- |
+| `IN_SCOPE` | `suggested_contract_type`을 기본값으로 제시하고, 사용자가 확인하거나 변경한 유형으로 검토합니다. |
+| `CONTRACT_TYPE_UNCERTAIN` | 유형 근거가 부족하다는 경고를 표시합니다. 자동 선택·차단하지 말고, 사용자가 명시한 유형으로 검토를 계속할 수 있습니다. |
+| `OUT_OF_SCOPE` | 현재 지원 표준 코퍼스와의 공통 근거가 부족하다고 안내하고, 기본적으로 검토 대상에서 제외합니다. 계속 진행하는 정책이라면 사용자의 명시적 재확인을 받습니다. |
+| `EMPTY_DOCUMENT` | 조항을 찾지 못한 상태입니다. `review_contract`를 호출하지 말고 파일 형식·스캔 상태를 확인하도록 안내합니다. |
+
+`assess_contract_scope`와 `review_contract`는 각각 파일을 파싱합니다. 사전 점검 뒤 전체 검토를
+호출하면 파일 전송·파싱이 두 번 발생하므로, 이미 계약 유형이 확실한 워크플로우에서는
+`review_contract`를 직접 호출할 수 있습니다. 반대로 유형 불일치 방지가 필요한 워크플로우에서는
+사전 점검을 기본 단계로 둡니다.
+
+### 입력과 결과 해석
+
+- 로컬 stdio 환경에서는 `file_path`를, 네트워크 환경에서는 base64 `file_content`와 `file_name`을
+  함께 전달합니다. 두 입력 방식은 동시에 사용할 수 없습니다.
+- 지원 유형은 하드코딩하지 말고 `list_contract_types`로 조회합니다.
+- `review_contract`의 `results`는 표준 대비 검토 후보입니다. `NONE`, `EXTRA`, `MISSING`,
+  `NO_MATCH` 및 `toxic_patterns`는 위법·합법이나 유불리를 단정하지 않습니다.
+- `results=[]`는 문제 없음이 아닙니다. `EMPTY_DOCUMENT`, `CORPUS_UNAVAILABLE`,
+  `INVALID_CONFIG`, `PIPELINE_ERROR` 중 어떤 `status`인지 먼저 확인합니다.
+
 ## `korean_law_wrapper.py` — KoreanLawWrapper
 
 [`korean_law_wrapper.py`](korean_law_wrapper.py)의 `KoreanLawWrapper`는 2차 LLM 클라이언트가 법령·판례
