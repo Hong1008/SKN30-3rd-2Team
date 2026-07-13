@@ -18,6 +18,8 @@ wheels/
 .antigravitycli/
 .idea/
 .DS_Store
+.claude/
+.codex/
 
 # 생성물: `just build-db` 로 재생성되는 DB 파생물 (normalize JSON/SQL이 진실의 원천)
 # 바이너리는 git 으로 관리하지 않습니다. (data/README.md 참고)
