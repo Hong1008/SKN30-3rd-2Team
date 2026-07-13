@@ -159,10 +159,26 @@ parse_eval file:
 eval track="a" version="" env="local":
     APP_ENV={{env}} PYTHONPATH=src uv run python -m eval.run_eval {{track}} {{version}}
 
+# 실험 S tuning/held-out 전용 진입점. held-out은 승인 파일을 명시해야 한다.
+[unix]
+eval-s split env="local" approval_file="":
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if [ "{{split}}" = "held-out" ]; then
+        test -n "{{approval_file}}"
+        APP_ENV={{env}} PYTHONPATH=src uv run python -m eval.run_eval --experiment=S --split=held-out --approval-file="{{approval_file}}"
+    else
+        APP_ENV={{env}} PYTHONPATH=src uv run python -m eval.run_eval --experiment=S --split=tuning
+    fi
+
 # Windows 환경용
 [windows]
 eval track="a" version="" env="local":
     $env:APP_ENV = '{{env}}'; $env:PYTHONPATH = 'src'; uv run python -m eval.run_eval {{track}} {{version}}
+
+[windows]
+eval-s split env="local" approval_file="":
+    if ("{{split}}" -eq "held-out") { if (-not "{{approval_file}}") { throw "approval_file is required" }; $env:APP_ENV = '{{env}}'; $env:PYTHONPATH = 'src'; uv run python -m eval.run_eval --experiment=S --split=held-out --approval-file="{{approval_file}}" } else { $env:APP_ENV = '{{env}}'; $env:PYTHONPATH = 'src'; uv run python -m eval.run_eval --experiment=S --split=tuning }
 
 # 테스트 실행 (type: unit (기본), integration, all)
 [windows]

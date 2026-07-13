@@ -11,6 +11,9 @@ run_eval.evaluate / eval.ablation.run_ablation / eval.metrics.precision_recall �
 """
 import sys
 import logging
+import json
+import os
+import subprocess
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -21,6 +24,24 @@ logger = logging.getLogger(__name__)
 from core.splitter import normalize_for_search
 from core import prepare_toxic_rerank_candidates
 from eval import metrics
+from eval.experiment_s import (
+    BASELINE_COMMIT,
+    EXPERIMENT_ID,
+    VERSION as EXPERIMENT_VERSION,
+    build_confusion_summary,
+    build_top3_diff,
+    ensure_case_ids_allowed,
+    heldout_passed,
+    load_manifest,
+    sha256_file,
+    split_cases,
+    tuning_passed,
+    validate_approval,
+    validate_approval_repository_state,
+    validate_run_record_absent,
+    reserve_run_record,
+    update_run_record,
+)
 
 
 def evaluate(cases: List[Dict], k: int = 5) -> Dict:
@@ -441,6 +462,8 @@ def rerank_standard_golden_clauses(golden: List[Dict], contract_type: str) -> Di
     return by_case
 
 GOLDEN_DIR = "src/eval/golden"
+EXPERIMENT_S_DIR = Path("docs/experiments/S")
+EXPERIMENT_S_MANIFEST = Path(GOLDEN_DIR) / "threshold_heldout.v4.json"
 
 
 def _load_golden(version: str, golden_dir: str = GOLDEN_DIR) -> List[Dict]:
@@ -775,6 +798,144 @@ def _run_track_a(
         "version": version, "n": len(golden), "metrics_by_type": metrics_by_type,
         "diagnostics": diagnostics, "result_md": out, "diagnostic_paths": diagnostic_paths,
     }
+
+
+def _git_commit() -> str:
+    """현재 코드 식별자를 반환합니다."""
+    return subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
+
+
+def _toxic_summary(report: Dict[str, Any]) -> Dict[str, float]:
+    """트랙 A 유형별 독소 결과를 실험용 전체 혼동행렬로 합칩니다."""
+    counts = {key: 0 for key in ("tp", "fp", "fn", "tn")}
+    for metrics_by_type in report["metrics_by_type"].values():
+        for key in counts:
+            counts[key] += metrics_by_type["tox"][key]
+    return build_confusion_summary([
+        {"outcome": outcome}
+        for outcome, count in (
+            ("TP", counts["tp"]), ("FP", counts["fp"]),
+            ("FN", counts["fn"]), ("TN", counts["tn"]),
+        )
+        for _ in range(int(count))
+    ])
+
+
+def _write_experiment_json(path: Path, payload: Dict[str, Any]) -> str:
+    """실험 전용 JSON 산출물을 결정론적 JSON으로 저장합니다."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return str(path)
+
+
+def _write_experiment_report(path: Path, payload: Dict[str, Any]) -> str:
+    """before/after 혼동행렬과 사례 diff를 포함한 실험 보고서를 저장합니다."""
+    after = payload["after"]
+    lines = [
+        f"# 실험 S — {payload['split']}", "",
+        f"- 판정: **{payload['decision']}**", "- 입력 케이스: " + str(payload["case_count"]), "",
+        "| 구분 | TP | FP | FN | TN | F1 |", "| --- | ---: | ---: | ---: | ---: | ---: |",
+        f"| 기준선 | {payload['before']['tp']} | {payload['before']['fp']} | {payload['before']['fn']} | {payload['before']['tn']} | {payload['before']['f1']:.3f} |",
+        f"| 후보 | {after['tp']} | {after['fp']} | {after['fn']} | {after['tn']} | {after['f1']:.3f} |", "",
+        "## 독소 top-3 / rerank_text diff", "",
+        f"변경 사례 수: {len(payload.get('toxic_top3_diff', []))}", "",
+    ]
+    for row in payload.get("toxic_top3_diff", []):
+        lines.append(f"- `{row['case_id']}`: 후보 top-3 변경, rerank_text 변경={bool(row['rerank_text_changed'])}")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return str(path)
+
+
+def _run_experiment_s(
+    split: str, *, env: str | None = None, approval_file: str | None = None,
+    write_output: bool = True, command: list[str] | None = None,
+) -> Dict[str, Any]:
+    """실험 S를 tuning 또는 승인된 held-out으로 실행합니다."""
+    if split not in {"tuning", "held-out"}:
+        raise ValueError("실험 S split은 tuning 또는 held-out이어야 합니다.")
+    manifest = load_manifest(EXPERIMENT_S_MANIFEST)
+    golden = _load_golden(EXPERIMENT_VERSION)
+    partitions = split_cases(golden, manifest)
+    selected = partitions[split]
+    output_dir = EXPERIMENT_S_DIR
+    tuning_path = output_dir / "tuning-result.json"
+    record_path = output_dir / "heldout-run.json"
+    if split == "held-out":
+        if not write_output:
+            raise ValueError("held-out에서는 --no-write를 사용할 수 없습니다.")
+        if not approval_file:
+            raise ValueError("held-out에는 --approval-file이 필요합니다.")
+        if not tuning_path.exists():
+            raise ValueError("tuning 결과 파일이 없습니다.")
+        approval = json.loads(Path(approval_file).read_text(encoding="utf-8"))
+        validate_run_record_absent(record_path)
+        validate_approval_repository_state(approval_file)
+        validate_approval(
+            approval, manifest_sha256=sha256_file(EXPERIMENT_S_MANIFEST),
+            tuning_report_sha256=sha256_file(tuning_path), code_commit=_git_commit(),
+            expected_baseline_commit=BASELINE_COMMIT,
+        )
+        tuning_payload = json.loads(tuning_path.read_text(encoding="utf-8"))
+        if not tuning_payload.get("passed"):
+            raise ValueError("tuning 통과 결과가 없어 held-out을 실행할 수 없습니다.")
+
+    reservation = {
+        "experiment_id": EXPERIMENT_ID, "version": EXPERIMENT_VERSION,
+        "split": split, "status": "STARTED",
+        "input_manifest_sha256": sha256_file(EXPERIMENT_S_MANIFEST),
+        "command": command or sys.argv,
+        "environment": {"APP_ENV": os.getenv("APP_ENV", "local")},
+    }
+    if split == "held-out":
+        # 평가 호출보다 먼저 선점한다. 두 프로세스 중 하나만 이 지점을 통과할 수 있다.
+        reserve_run_record(record_path, reservation)
+    try:
+        result = _run_track_a(
+            k=5, version=EXPERIMENT_VERSION,
+            case_ids={case["case_id"] for case in selected},
+            write_output=write_output, output_dir=str(output_dir),
+        )
+    except Exception as exc:
+        if split == "held-out":
+            update_run_record(record_path, {
+                "status": "FAILED", "error": f"{type(exc).__name__}: {exc}",
+            })
+        raise
+    after = _toxic_summary(result)
+    before = (
+        {"tp": 9, "fp": 5, "fn": 9, "tn": 13, "precision": 0.643, "recall": 0.5, "f1": 0.563}
+        if split == "tuning" else
+        {"tp": 2, "fp": 0, "fn": 7, "tn": 9, "precision": 1.0, "recall": 2 / 9, "f1": 0.364}
+    )
+    baseline_path = Path(GOLDEN_DIR) / "v4_diagnostics.json"
+    baseline_rows: list[dict[str, Any]] = []
+    if baseline_path.exists():
+        baseline_payload = json.loads(baseline_path.read_text(encoding="utf-8"))
+        selected_ids = {case["case_id"] for case in selected}
+        baseline_rows = [
+            row for row in baseline_payload.get("toxic", [])
+            if row.get("case_id") in selected_ids
+        ]
+    payload: Dict[str, Any] = {
+        "experiment_id": EXPERIMENT_ID, "version": EXPERIMENT_VERSION, "split": split,
+        "case_count": len(selected), "manifest_sha256": sha256_file(EXPERIMENT_S_MANIFEST),
+        "before": before, "after": after,
+        "passed": tuning_passed(after) if split == "tuning" else heldout_passed(after),
+        "decision": "통과" if (tuning_passed(after) if split == "tuning" else heldout_passed(after)) else "보류",
+        "toxic_top3_diff": build_top3_diff(baseline_rows, result["diagnostics"].get("toxic", [])),
+    }
+    result_path = output_dir / ("tuning-result.json" if split == "tuning" else "heldout-result.json")
+    _write_experiment_json(result_path, payload)
+    _write_experiment_report(output_dir / ("tuning-result.md" if split == "tuning" else "heldout-result.md"), payload)
+    if split == "held-out":
+        from datetime import datetime, timezone
+        update_run_record(record_path, {
+            "status": "SUCCEEDED", "result_sha256": sha256_file(result_path),
+            "confusion_matrix": after, "decision": payload["decision"],
+            "executed_at": datetime.now(timezone.utc).isoformat(),
+        })
+    return payload
 
 
 # ─────────────────────────────────────────────────────────────────────────
@@ -1122,7 +1283,10 @@ def main(
     *, case_ids: set[str] | None = None,
     write_output: bool = True,
     output_dir: str | None = None,
-) -> None:
+    experiment: str | None = None,
+    split: str | None = None,
+    approval_file: str | None = None,
+) -> Dict[str, Any] | None:
     """평가 드라이버 진입점. track 인자로 트랙을 분기한다(기본 'a').
 
     - track='a': 합성 조항 단위(검색·이탈·독소). `{version}_result.md` 생성.
@@ -1130,15 +1294,29 @@ def main(
       coverage_types 로 대조할 표준 유형 집합을 지정한다(None → 전체 3종 SW·SI·SM).
     """
     logging.basicConfig(level=logging.INFO, format="[%(asctime)s] [%(levelname)s] %(message)s")
-    _install_eval_embedding_cache()  # 임베딩 중복 제거 (드라이버 전용 국소 캐시 — 두 트랙 공통)
-
+    _install_eval_embedding_cache()  # 실험 S도 실제 review 경로와 동일한 드라이버 준비를 사용
+    if experiment is not None:
+        if experiment != EXPERIMENT_ID or split is None:
+            raise ValueError("지원되는 실험은 --experiment=S와 --split=tuning|held-out 조합입니다.")
+        manifest = load_manifest(EXPERIMENT_S_MANIFEST)
+        ensure_case_ids_allowed(case_ids, heldout_ids=set(manifest["heldout_case_ids"]), split=split)
+        return _run_experiment_s(
+            split, approval_file=approval_file, write_output=write_output, command=sys.argv,
+        )
+    if split is not None or approval_file is not None:
+        raise ValueError("--split/--approval-file은 실험 S에서만 사용할 수 있습니다.")
+    if track == "a" and (version or "").lower() == EXPERIMENT_VERSION and case_ids is not None:
+        # 실험 플래그를 빼먹은 일반 CLI도 v4 held-out을 case ID로 열 수 없게 한다.
+        manifest = load_manifest(EXPERIMENT_S_MANIFEST)
+        ensure_case_ids_allowed(case_ids, heldout_ids=set(manifest["heldout_case_ids"]), split=None)
     if track == "b":
         _run_track_b(version, coverage_types)
     else:
-        _run_track_a(
+        return _run_track_a(
             k, version, case_ids=case_ids,
             write_output=write_output, output_dir=output_dir,
         )
+    return None
 
 
 def _parse_cli_args(argv: List[str]) -> Dict[str, Any]:
@@ -1149,6 +1327,9 @@ def _parse_cli_args(argv: List[str]) -> Dict[str, Any]:
     case_ids: set[str] | None = None
     output_dir: str | None = None
     write_output = True
+    experiment: str | None = None
+    split: str | None = None
+    approval_file: str | None = None
     for arg in argv:
         if arg.startswith("--case-ids="):
             case_ids = {value for value in arg.split("=", 1)[1].split(",") if value}
@@ -1156,10 +1337,19 @@ def _parse_cli_args(argv: List[str]) -> Dict[str, Any]:
             output_dir = arg.split("=", 1)[1]
         elif arg == "--no-write":
             write_output = False
-    return {
+        elif arg.startswith("--experiment="):
+            experiment = arg.split("=", 1)[1]
+        elif arg.startswith("--split="):
+            split = arg.split("=", 1)[1]
+        elif arg.startswith("--approval-file="):
+            approval_file = arg.split("=", 1)[1]
+    parsed = {
         "track": track, "version": version, "case_ids": case_ids,
         "output_dir": output_dir, "write_output": write_output,
     }
+    if experiment is not None or split is not None or approval_file is not None:
+        parsed.update({"experiment": experiment, "split": split, "approval_file": approval_file})
+    return parsed
 
 
 if __name__ == "__main__":

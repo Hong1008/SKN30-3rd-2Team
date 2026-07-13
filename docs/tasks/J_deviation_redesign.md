@@ -1,7 +1,6 @@
-# [재설계 J] NONE/CHANGED 판정 — 규칙기반 치명변경 탐지 제거 + 잠정 NONE 재정의
+# [재설계 J — 과거 설계 이력] NONE/CHANGED 판정 초안
 
-> **현재 상태: 완료.** 현재 1차 NONE/EXTRA 판정 구조의 기준 카드다. 아래 K·M 재확인 항목은
-> J의 미완료가 아니라 2차 트랙 착수 조건이다.
+> **현재 상태: 폐기된 초안 보존.** 이 문서는 07-07의 중간 설계를 기록한다. 현행 1차 계약은 단일 `match_threshold`에 따른 잠정 `NONE`/`EXTRA`, 후보 없음 `NO_MATCH`, 계약 단위 `MISSING`이며 `CHANGED`·`change_threshold`·coverage 2-pass는 사용하지 않는다. 현재 기준은 [K_second_stage_llm.md](K_second_stage_llm.md)와 작업 카드 색인이다.
 
 > 근거: [07-03 결정 로그](../dicision/07-03.md) §2·§3, 07-07 세션(1차/2차 판정 경계 설계).
 > 선행: 없음(core/pipe 순수 리팩터, 즉시 착수 가능). **K·M 의 전제 조건.**
@@ -15,7 +14,7 @@
 확인됨(v3 `v3-sw-11`). 개별 패치는 끝나지 않는 두더지잡기이므로, 이 계층 전체를 없애고 그 자리를
 2차(LLM, 이 프로젝트 서버 밖)로 넘기기로 확정함.
 
-## 확정된 설계 (사인오프 완료 — 07-07 세션)
+## 폐기된 07-07 설계 초안 (사인오프 당시 기록)
 
 - **규칙기반 치명변경 탐지(`detect_critical_changes`, `_NEGATION_RE`, `_NUMBER_RE`, `_PARTY_RE`,
   `CRITICAL_NEGATION`/`CRITICAL_NUMBER`/`CRITICAL_PARTY`) 완전 제거.** 축소·보강 아님 — 삭제.
@@ -29,7 +28,7 @@
   다만 **`NONE`의 의미를 문서상 재정의**: "의미 동치 확정"이 아니라 **"1차 결정론 신호로는 이견 없음
   (잠정), 최종 확정은 2차 몫"**. `CHANGED`는 그대로 최종 확정 값(아래 판정표 참조).
 
-## 새 판정표 (매칭 성공 조항 기준 — 2026-07-07 재정의)
+## 폐기된 판정표 (매칭 성공 조항 기준 — 2026-07-07 당시)
 
 | 조건 | 판정 결과 | 설명 |
 | --- | --- | --- |
@@ -41,7 +40,7 @@
 수렴한다. **CHANGED로 확정되는 케이스가 줄고 잠정 NONE이 늘어나는 것은 의도된 방향**이다 — 애매하면
 확정하지 말고 2차에 넘기는 게 안전하다는 원칙(AGENTS.md §3 "검토 후보" 프레이밍)과 부합.
 
-## 구현 대상
+## 당시 구현 대상 (이력)
 
 1. `src/core/deviation.py`: `CRITICAL_NEGATION`/`CRITICAL_NUMBER`/`CRITICAL_PARTY` 상수,
    `_NEGATION_RE`/`_NUMBER_RE`/`_PARTY_RE`/`_content_numbers`/`detect_critical_changes` 전부 제거.
@@ -56,7 +55,7 @@
    `tests/pipe/test_review_pipe.py`의 관련 케이스) 정리 — 삭제된 동작은 테스트도 삭제, 남는 동작
    (커버리지 미달→CHANGED, 커버리지 불가→CHANGED)은 새 테스트로 명세.
 
-## 미결정 / 사인오프 필요 (AGENTS.md §2)
+## 당시 미결정 / 사인오프 필요 (이력)
 - ✅ 규칙계층 완전 제거 (07-07 세션 확정)
 - ✅ difflib 폴백도 함께 제거 (07-07 세션 확정)
 - ✅ `DeviationResult` 필드 확장 없음 (07-07 세션 확정)
@@ -64,7 +63,7 @@
 - [ ] K·M 카드는 이 변경으로 전제가 완전히 바뀌었으니 착수 전 반드시 재확인 필요.
 
 
-## 완료 조건 (DoD)
+## 당시 완료 조건 (이력)
 - ✅ 규칙기반 치명변경 탐지·difflib 폴백 코드 삭제, 참조하는 곳 전부 정리
 - ✅ 새 판정표대로 `classify_clause_deviation`/`review_pipe.py` 동작 확인
 - ✅ `uv run pytest tests/core/ tests/pipe/` 통과 (삭제분 반영한 테스트로 갱신)

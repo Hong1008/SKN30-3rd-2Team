@@ -48,11 +48,10 @@
     완전 추가조항)+독소 신호는 1차 필드를 그대로 인용하면 된다.
   - `MISSING`·`NO_MATCH`는 2차 대상 아님 — `MISSING`은 이미 확정 사실(비교할 `user_clause` 자체가
     없음), `NO_MATCH`는 비교 대상 자체가 없음.
-- **grounding은 2차가 필요할 때 직접 호출해야 한다(선택이 아니라 구조적 필연).** 1차는 이제
-  `MISSING`에만 grounding을 붙인다 — `NONE`/`EXTRA`는 원칙적으로 `grounding=[]`다. 다만 독소패턴이
-  잡힌 조항(`toxic_patterns` 비어있지 않음)에는 1차가 이미 결정론적으로 grounding을 붙여준다
-  (`Grounder.get_toxic_grounding` 계열 — 별도 카드/후속 작업, 이 문서 작성 시점엔 미착수).
-  2차가 NONE→"실질적 이탈"로 뒤집거나 EXTRA를 "내용차이 큰 변경"으로 설명하려면, 기존 MCP 도구
+- **grounding은 2차가 필요할 때 직접 호출해야 한다(선택이 아니라 구조적 필연).** 현재 1차는
+  `MISSING`에만 grounding을 붙이며 `NONE`/`EXTRA` 및 독소 패턴에는 `grounding=[]`다. 독소 전용
+  grounding은 아직 구현 범위 밖이다. 2차가 NONE을 "실질적 차이"로 설명하거나 EXTRA를
+  "내용차이 큰 변경"으로 설명하면서 근거가 필요하면, 기존 MCP 도구
   `get_grounding(category, contract_type)`을 그대로 재사용해 직접 호출한다(서버 코드 수정 불필요 —
   이미 있는 도구).
 - **사용자 표면 프레이밍은 "검토 후보"** (AGENTS.md §3) — "위법/합법", "이겼다/졌다" 같은 단정 금지.
@@ -71,7 +70,7 @@
 3. `review_contract` 반환 목록 중 `deviation in (Deviation.NONE, Deviation.EXTRA)`인 항목을 골라
    2차에 태우는 배치 호출 글루 코드(데모 레이어). `MISSING`·`NO_MATCH`는 제외.
 4. ~~2차가 CHANGED로 뒤집은 경우 grounding 부착 필요 여부 검토~~ → **위 "확정된 설계"에서 이미
-   결론남**: 1차가 NONE/EXTRA엔 grounding을 절대 안 붙이므로, 2차가 뒤집거나 설명할 때 필요하면
+   결론남**: 1차가 NONE/EXTRA엔 grounding을 붙이지 않으므로, 2차가 설명할 때 필요하면
    기존 `get_grounding` 도구를 직접 부르면 된다. 별도 결정 불필요.
 
 ## 미결정 / 사인오프 필요 (AGENTS.md §2)

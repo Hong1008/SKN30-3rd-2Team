@@ -1,5 +1,7 @@
 # 고도화 — `review_contract` 진행률(progress) 알림
 
+> **이력 주의:** 진행률 단계 설명 중 `CHANGED`·coverage·CHANGED grounding 언급은 당시 파이프라인 기준이다. 현재 런타임은 단일 매칭 게이트와 `MISSING` grounding을 사용하며, 이 문서는 진행률 기능의 완료 이력으로만 참조한다.
+
 > **현재 상태(2026-07-10): 구현·검증 완료.** 아래 보류 사유와 승인 게이트는 착수 전 검토 이력이다.
 > progress callback, 미지원 클라이언트 no-op, 조항별 notification, law MCP 충돌 검증까지 통과했다.
 

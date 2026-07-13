@@ -1,6 +1,7 @@
 # [실험 S] 독소 리랭커 후보 입력에 기존 패턴 제목 보강
 
-> **상태: 승인 완료·구현 완료(평가 보류).** 제목 접두 가설의 코드·단위 테스트 구현은 완료했다.
+> **상태: 승인 완료·거버넌스 구현 완료(평가 보류).** 제목 접두 가설의 코드·단위 테스트와
+> tuning→승인→held-out 단회 실행 게이트 구현을 완료했다.
 > `toxic_patterns.json`, 골든셋, 임계값, MCP 계약은 변경하지 않았으며, tuning/held-out 결과에
 > 따른 채택 여부는 별도 평가 후 기록한다.
 
@@ -68,6 +69,22 @@ MCP 시그니처를 변경하지 않는다.
 
 ## 4. 실험 절차
 
+### 실행 계약
+
+실험 S는 v4 매니페스트의 54건을 tuning 36건과 held-out 18건으로 자동 분할한다.
+재현 명령은 `just eval-s tuning prod`이며, tuning 통과 후 사람이
+`docs/experiments/S/approval.json`을 작성·커밋하고
+`just eval-s held-out prod docs/experiments/S/approval.json`을 실행한다.
+운영 순서는 ① 거버넌스 구현 커밋 ② tuning 실행 ③ 생성된 `tuning-result.*`와
+`approval.json` 동시 커밋 ④ clean worktree에서 held-out 실행이다. tuning은 결과 파일을
+생성하므로 이 커밋 전에는 held-out이 차단되는 것이 정상이다.
+승인 파일의 manifest/tuning 결과/code commit 해시와 기준선 커밋이 현재 입력과 일치하고,
+승인 파일이 git에 커밋된 clean worktree에 있으며, 기존 `heldout-run.json`이 없고 쓰기 모드인
+경우에만 held-out이 열린다. 실행 직전에 `heldout-run.json`을 `STARTED`로 원자 예약하고,
+실패 시 `FAILED`로 남겨 재실행을 차단한다.
+`--case-ids`와 `--split`은 함께 사용할 수 없고 held-out ID를 `--case-ids`로 지정할 수 없다.
+산출물은 `docs/experiments/S/` 아래에만 저장한다.
+
 1. 기준선 커밋과 v4 snapshot/held-out manifest가 일치하는지 확인한다.
 2. 순수 함수 테스트를 먼저 추가한다. 제목·본문이 있는 후보는 고정 형식으로 조립하고, 제목 또는
    본문이 없을 때는 조용히 빈 문자열을 만들지 않고 원본 텍스트를 보존한다.
@@ -130,6 +147,7 @@ hard-negative 보호 성질을 크게 훼손하는 변경을 채택하지 않기
 - 제목 보강 함수의 정상·누락 필드·원본 불변성 테스트가 추가된다. 본문 누락은 명시적 예외로 검증한다.
 - 런타임과 eval 독소 리랭킹 경로가 동일 함수를 사용한다.
 - `case_ids` 미지 ID 거부 및 `--no-write`/`--output-dir` 비파괴 평가 테스트가 통과한다.
+- 실험 S의 36/18 분할, 승인 해시, tuning 통과, 단회 실행 기록 게이트 테스트가 통과한다.
 - 전체 비통합 테스트가 통과한다.
 - tuning 결과, held-out 단회 결과, case-level toxic top-3 diff를 실험 보고서에 남긴다.
 - 최종 상태를 `채택`, `보류`, `폐기` 중 하나로 기록한다.

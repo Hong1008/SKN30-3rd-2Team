@@ -216,7 +216,7 @@ docker compose up  # mcp(:8000) + demo(:8501) 동시 기동
 | --- | --- | --- |
 | `parse_contract` | 계약서(HWP/PDF) → 조항(`Clause[]`) 분해 | 없음 |
 | `match_clause` | 단일 조항 텍스트 → 유사 표준조항 후보 나열 (검색 전용) | 없음 |
-| `classify_clause` | 단일 조항 → 재정렬·매칭·판정 (부분 검토용) | `EXTRA`/`CHANGED`/`NONE`/`NO_MATCH` (`MISSING` 불가) |
+| `classify_clause` | 단일 조항 → 재정렬·매칭·판정 (부분 검토용) | `EXTRA`/`NONE`/`NO_MATCH` (`MISSING` 불가) |
 | `review_contract` | 계약서 전체 → 파싱→매칭→분류→법령근거 (`async`, 진행률 보고) | 전체 (`MISSING` 포함) |
 | `get_grounding` | 카테고리 또는 조항 텍스트 → 관련 법령 조문 조회 | 없음 (근거 조회) |
 | `list_contract_types` | 지원 계약 종류(`ContractType`) 목록 조회 | 없음 |
@@ -226,6 +226,12 @@ docker compose up  # mcp(:8000) + demo(:8501) 동시 기동
 | `standard://{contract_type}/{clause_id}` (resource) | 표준조항 원문 전체 조회 | 없음 |
 
 전체 계약서를 다 돌리지 않고 조항 하나만 볼 때는 `match_clause`(후보 나열) 또는 `classify_clause`(판정까지)를 쓰는 편이 `review_contract`보다 빠릅니다. `contract_type`/`category` 등 enum 인자값은 하드코딩하지 말고 `list_contract_types`/`list_categories`로 런타임에 조회하세요(값 집합이 버전에 따라 바뀔 수 있음).
+
+### 1차·2차 책임 경계
+
+1차 MCP는 LLM 없이 표준 대비 **검토 후보**만 반환합니다. 조항별 후보가 없으면 `NO_MATCH`, 최고 후보 점수가 임계값 미만이면 `EXTRA`, 이상이면 잠정 `NONE`이며, 계약 전체에서 매칭되지 않은 표준조항은 `MISSING`으로 추가합니다. `NONE`은 본문 의미 동치의 법적·의미적 확정이 아닙니다.
+
+2차 LLM은 MCP 서버 밖의 데모/클라이언트에서만 동작합니다. `NONE`과 `EXTRA`의 `user_clause`, `matched_standard`, `toxic_patterns`, `confidence`를 받아 의미 차이 또는 추가조항 성격을 설명하며, `MISSING`과 `NO_MATCH`는 2차 재판정 대상이 아닙니다. 이 과정에서도 "위법/합법"이나 유불리를 단정하지 않고 검토 후보 프레이밍을 유지합니다.
 
 ---
 
