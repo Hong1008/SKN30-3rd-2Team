@@ -243,6 +243,15 @@ parse file:
 run-mcp transport="stdio" port="8000":
     PYTHONPATH=src MCP_TRANSPORT={{transport}} MCP_PORT={{port}} uv run python src/app.py
 
+# 현재 등록된 MCP 도구·리소스·프롬프트 명세를 site/에 생성
+[unix]
+build-mcp-docs:
+    PYTHONPATH=src uv run python site/mcp_spec.py
+
+[windows]
+build-mcp-docs:
+    $env:PYTHONPATH = 'src'; uv run python site/mcp_spec.py
+
 # MCP Inspector 웹 테스트 UI 실행 (.env 환경변수 및 PYTHONPATH 로드)
 run-mcp-ui:
     #!/usr/bin/env bash

@@ -726,10 +726,20 @@ class WorkShieldTools:
             mcp.add_tool(getattr(self, name), name=name)
 
         # 리소스도 전역 데코레이터가 아니라, 주입된 앱에만 바인딩한다.
-        @mcp.resource("standard://{contract_type}")
+        @mcp.resource("standard://{contract_type}", mime_type="application/json")
         def standard_list_resource(contract_type: str) -> list[dict]:
+            """계약 유형에 속한 표준조항의 식별자·제목·카테고리 목록을 반환한다.
+
+            전체 본문과 출처가 필요하면 standard://{contract_type}/{clause_id} 리소스를 읽는다.
+            contract_type에는 list_contract_types 도구가 반환한 값을 사용한다.
+            """
             return list_standard_clauses(contract_type)
 
-        @mcp.resource("standard://{contract_type}/{clause_id}")
+        @mcp.resource("standard://{contract_type}/{clause_id}", mime_type="application/json")
         def standard_detail_resource(contract_type: str, clause_id: str) -> dict:
+            """계약 유형과 표준조항 식별자로 표준조항의 전체 내용을 반환한다.
+
+            contract_type에는 list_contract_types 도구의 값을, clause_id에는 같은 유형의
+            standard://{contract_type} 리소스가 반환한 식별자를 사용한다.
+            """
             return get_standard_clause(contract_type, clause_id)

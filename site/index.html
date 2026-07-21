@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="WorkShield MCP 도구와 리소스 명세 문서" />
+    <title>WorkShield MCP Docs</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#top" aria-label="문서 처음으로">
+        <span class="brand-mark">W</span>
+        <span>WorkShield <strong>MCP Docs</strong></span>
+      </a>
+      <span id="format-version" class="format-version">명세 로드 중</span>
+    </header>
+
+    <main id="top" class="layout">
+      <aside class="sidebar" aria-label="명세 탐색">
+        <label class="search-label" for="search">검색</label>
+        <input id="search" type="search" placeholder="도구, 리소스, 설명 검색" autocomplete="off" />
+        <nav id="navigation" class="navigation" aria-label="MCP 항목 목록"></nav>
+      </aside>
+
+      <section class="content" aria-live="polite">
+        <div id="loading" class="loading">MCP 명세를 불러오는 중입니다.</div>
+        <div id="document" hidden>
+          <section class="hero">
+            <p class="eyebrow">MODEL CONTEXT PROTOCOL</p>
+            <h1 id="server-name">MCP 문서</h1>
+            <p>현재 FastMCP 등록 상태에서 생성된 정적 명세입니다. 실제 도구 호출은 MCP Inspector를 사용하세요.</p>
+            <div id="counts" class="counts"></div>
+          </section>
+          <article id="detail" class="detail"></article>
+        </div>
+        <div id="error" class="error" hidden></div>
+      </section>
+    </main>
+
+    <template id="count-template">
+      <div class="count-card"><strong></strong><span></span></div>
+    </template>
+    <script src="app.js"></script>
+  </body>
+</html>
