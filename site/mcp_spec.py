@@ -1,4 +1,4 @@
-"""등록된 MCP 표면을 문서용 JSON 명세로 내보낸다."""
+"""등록된 MCP 표면을 site/ 문서용 JSON 명세로 생성한다."""
 
 import asyncio
 import json
@@ -8,8 +8,9 @@ from typing import Any
 from mcp.server.fastmcp import FastMCP
 
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_OUTPUT_PATH = PROJECT_ROOT / "docs" / "mcp-spec.json"
+SITE_DIR = Path(__file__).resolve().parent
+DEFAULT_OUTPUT_PATH = SITE_DIR / "mcp-spec.json"
+_REQUIRED_STATIC_ASSETS = ("index.html", "styles.css", "app.js", ".nojekyll")
 
 
 def _serialize(item: Any) -> dict[str, Any]:
@@ -41,7 +42,7 @@ async def build_mcp_spec(app: FastMCP) -> dict[str, Any]:
 
 
 async def write_mcp_spec(output_path: Path = DEFAULT_OUTPUT_PATH) -> None:
-    """현재 앱 등록 내용을 JSON 명세 파일로 저장한다."""
+    """현재 앱 등록 내용을 site/의 JSON 명세 파일로 저장한다."""
     from app import create_app
 
     spec = await build_mcp_spec(create_app())
@@ -52,9 +53,22 @@ async def write_mcp_spec(output_path: Path = DEFAULT_OUTPUT_PATH) -> None:
     )
 
 
+def validate_static_assets() -> None:
+    """GitHub Pages에 올릴 정적 문서 자산이 모두 있는지 확인한다."""
+    missing = [name for name in _REQUIRED_STATIC_ASSETS if not (SITE_DIR / name).is_file()]
+    if missing:
+        raise FileNotFoundError(f"정적 MCP 문서 자산이 없습니다: {', '.join(missing)}")
+
+
+async def build_mcp_docs() -> None:
+    """명세를 생성하고 GitHub Pages용 정적 자산을 검증한다."""
+    await write_mcp_spec()
+    validate_static_assets()
+
+
 def main() -> None:
-    """기본 문서 경로에 MCP 명세를 생성한다."""
-    asyncio.run(write_mcp_spec())
+    """기본 site 경로에 MCP 문서 자산을 빌드한다."""
+    asyncio.run(build_mcp_docs())
 
 
 if __name__ == "__main__":

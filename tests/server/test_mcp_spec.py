@@ -1,12 +1,24 @@
 """MCP 문서 명세 생성과 등록 표면의 동기화를 검증한다."""
 
+import importlib.util
 import json
 from pathlib import Path
 
 import pytest
 
 from app import create_app
-from server.mcp_spec import DEFAULT_OUTPUT_PATH, build_mcp_spec, write_mcp_spec
+
+
+_SCRIPT_PATH = Path(__file__).resolve().parents[2] / "site" / "mcp_spec.py"
+_MODULE_SPEC = importlib.util.spec_from_file_location("workshield_mcp_spec", _SCRIPT_PATH)
+assert _MODULE_SPEC is not None and _MODULE_SPEC.loader is not None
+_MODULE = importlib.util.module_from_spec(_MODULE_SPEC)
+_MODULE_SPEC.loader.exec_module(_MODULE)
+
+DEFAULT_OUTPUT_PATH = _MODULE.DEFAULT_OUTPUT_PATH
+build_mcp_docs = _MODULE.build_mcp_docs
+build_mcp_spec = _MODULE.build_mcp_spec
+write_mcp_spec = _MODULE.write_mcp_spec
 
 
 @pytest.mark.anyio
@@ -37,3 +49,17 @@ async def test_checked_in_mcp_spec_matches_current_registration():
     actual = json.loads(DEFAULT_OUTPUT_PATH.read_text(encoding="utf-8"))
 
     assert actual == expected
+
+
+@pytest.mark.anyio
+async def test_mcp_docs_build_has_static_ui_and_current_spec():
+    """문서 빌드는 Pages에 필요한 정적 자산과 최신 명세를 함께 제공해야 한다."""
+    await build_mcp_docs()
+
+    site_dir = DEFAULT_OUTPUT_PATH.parent
+    assert {"index.html", "styles.css", "app.js", ".nojekyll", "mcp-spec.json"} <= {
+        path.name for path in site_dir.iterdir()
+    }
+    assert "mcp-spec.json" in (site_dir / "app.js").read_text(encoding="utf-8")
+    assert "inputSchema" in (site_dir / "app.js").read_text(encoding="utf-8")
+    assert "outputSchema" in (site_dir / "app.js").read_text(encoding="utf-8")
