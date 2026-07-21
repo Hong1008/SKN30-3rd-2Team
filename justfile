@@ -43,7 +43,7 @@ install-packages:
 [windows]
 [private]
 check-law-key:
-    @$envFile = ".env"; $hasKey = $false; $apiKey = ""; if (Test-Path $envFile) { $content = Get-Content $envFile; foreach ($line in $content) { if ($line -match "^OPEN_LAW_API_KEY=(.*)") { $hasKey = $true; $apiKey = $Matches[1].Trim() } } }; if ($env:OPEN_LAW_API_KEY) { $apiKey = $env:OPEN_LAW_API_KEY; $hasKey = $true }; if (-not $hasKey) { Write-Host "🔑 법제처 API 인증키(OPEN_LAW_API_KEY)가 설정되지 않았습니다." -ForegroundColor Yellow; $inputKey = Read-Host "법제처 API 인증키(OPEN_LAW_API_KEY)를 입력해 주세요 (엔터 누르면 패스)"; if ($inputKey) { Add-Content -Path $envFile -Value "`nOPEN_LAW_API_KEY=$inputKey"; Add-Content -Path $envFile -Value "LAW_OC=$inputKey"; Write-Host "✨ .env 파일에 인증키(OPEN_LAW_API_KEY, LAW_OC)가 저장되었습니다." -ForegroundColor Green; $apiKey = $inputKey } else { Write-Host "⚠ 인증키 입력이 건너뛰어졌습니다. 추후 .env 파일에 직접 설정해 주세요." -ForegroundColor Red } } else { Write-Host "[OK] 법제처 API 인증키(OPEN_LAW_API_KEY)가 구성되어 있습니다." -ForegroundColor Green; if (Test-Path $envFile) { $content = Get-Content $envFile; if (-not ($content -match "^LAW_OC=")) { Add-Content -Path $envFile -Value "LAW_OC=$apiKey"; Write-Host "✨ .env 파일에 LAW_OC 인증키가 연동 저장되었습니다." -ForegroundColor Green } } }; if ($apiKey) { Write-Host ""; Write-Host "💡 현재 터미널 세션에 환경변수를 등록하려면 아래 명령어를 실행하세요:" -ForegroundColor Cyan; Write-Host "set LAW_OC=$apiKey           # Windows CMD" -ForegroundColor Yellow; Write-Host "`$env:LAW_OC=`"$apiKey`"       # Windows PowerShell" -ForegroundColor Yellow }
+    @$envFile = ".env"; $hasKey = $false; $apiKey = ""; if (Test-Path $envFile) { $content = Get-Content $envFile; foreach ($line in $content) { if ($line -match "^LAW_OC=(.*)") { $hasKey = $true; $apiKey = $Matches[1].Trim() } } }; if ($env:LAW_OC) { $apiKey = $env:LAW_OC; $hasKey = $true }; if (-not $hasKey) { Write-Host "🔑 법제처 API 인증키(LAW_OC)가 설정되지 않았습니다." -ForegroundColor Yellow; $inputKey = Read-Host "법제처 API 인증키(LAW_OC)를 입력해 주세요 (엔터 누르면 패스)"; if ($inputKey) { Add-Content -Path $envFile -Value "`nLAW_OC=$inputKey"; Write-Host "✨ .env 파일에 인증키(LAW_OC)가 저장되었습니다." -ForegroundColor Green; $apiKey = $inputKey } else { Write-Host "⚠ 인증키 입력이 건너뛰어졌습니다. 추후 .env 파일에 직접 설정해 주세요." -ForegroundColor Red } } else { Write-Host "[OK] 법제처 API 인증키(LAW_OC)가 구성되어 있습니다." -ForegroundColor Green }; if ($apiKey) { Write-Host ""; Write-Host "💡 현재 터미널 세션에 환경변수를 등록하려면 아래 명령어를 실행하세요:" -ForegroundColor Cyan; Write-Host "set LAW_OC=$apiKey           # Windows CMD" -ForegroundColor Yellow; Write-Host "`$env:LAW_OC=`"$apiKey`"       # Windows PowerShell" -ForegroundColor Yellow }
 
 # 리눅스 / 맥(Unix 계열) 전용 패키지 체크 및 설치
 [unix]
@@ -61,33 +61,28 @@ check-law-key:
     has_key=false
     api_key=""
     if [ -f "$env_file" ]; then
-        if grep -q "OPEN_LAW_API_KEY" "$env_file"; then
+        if grep -q "LAW_OC" "$env_file"; then
             has_key=true
-            api_key=$(grep "OPEN_LAW_API_KEY" "$env_file" | cut -d'=' -f2 | tr -d '\r\n ')
+            api_key=$(grep "LAW_OC" "$env_file" | cut -d'=' -f2 | tr -d '\r\n ')
         fi
     fi
-    if [ -n "$OPEN_LAW_API_KEY" ]; then
-        api_key="$OPEN_LAW_API_KEY"
+    if [ -n "$LAW_OC" ]; then
+        api_key="$LAW_OC"
         has_key=true
     fi
     if [ "$has_key" = false ]; then
-        echo "🔑 법제처 API 인증키(OPEN_LAW_API_KEY)가 설정되지 않았습니다."
-        read -p "법제처 API 인증키(OPEN_LAW_API_KEY)를 입력해 주세요 (엔터 누르면 패스): " input_key
+        echo "🔑 법제처 API 인증키(LAW_OC)가 설정되지 않았습니다."
+        read -p "법제처 API 인증키(LAW_OC)를 입력해 주세요 (엔터 누르면 패스): " input_key
         if [ -n "$input_key" ]; then
             echo "" >> "$env_file"
-            echo "OPEN_LAW_API_KEY=$input_key" >> "$env_file"
             echo "LAW_OC=$input_key" >> "$env_file"
-            echo "✨ .env 파일에 인증키(OPEN_LAW_API_KEY, LAW_OC)가 저장되었습니다."
+            echo "✨ .env 파일에 인증키(LAW_OC)가 저장되었습니다."
             api_key="$input_key"
         else
             echo "⚠ 인증키 입력이 건너뛰어졌습니다. 추후 .env 파일에 직접 설정해 주세요."
         fi
     else
-        echo "[OK] 법제처 API 인증키(OPEN_LAW_API_KEY)가 구성되어 있습니다."
-        if [ -f "$env_file" ] && ! grep -q "LAW_OC" "$env_file"; then
-            echo "LAW_OC=$api_key" >> "$env_file"
-            echo "✨ .env 파일에 LAW_OC 인증키가 연동 저장되었습니다."
-        fi
+        echo "[OK] 법제처 API 인증키(LAW_OC)가 구성되어 있습니다."
     fi
     if [ -n "$api_key" ]; then
         echo ""
@@ -405,7 +400,7 @@ docker_image := "workshield-mcp"
 docker-build:
     docker build -t {{docker_image}} .
 
-# 포그라운드 실행 (streamable-http :8000). .env의 RUNPOD_API_KEY/RUNPOD_ENDPOINT_ID/OPEN_LAW_API_KEY 필요
+# 포그라운드 실행 (streamable-http :8000). .env의 RUNPOD_API_KEY/RUNPOD_ENDPOINT_ID/LAW_OC 필요
 docker-run: docker-build
     docker run --rm -it \
         --env-file .env \
