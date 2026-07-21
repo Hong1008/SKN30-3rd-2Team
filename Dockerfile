@@ -39,5 +39,5 @@ ENV APP_ENV=prod \
 
 EXPOSE 8000
 
-# RUNPOD_API_KEY / RUNPOD_ENDPOINT_ID / OPEN_LAW_API_KEY 는 런타임에 --env-file 등으로 주입
+# RUNPOD_API_KEY / RUNPOD_ENDPOINT_ID / LAW_OC 는 런타임에 --env-file 등으로 주입
 CMD ["python", "src/app.py"]
