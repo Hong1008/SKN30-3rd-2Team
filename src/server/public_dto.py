@@ -105,3 +105,45 @@ class ReviewContractCandidatesResponse(_PublicModel):
         if self.status != "OK" and (self.clause_results or self.missing_standard_clauses):
             raise ValueError("OK가 아닌 응답에는 검토 결과를 포함할 수 없습니다.")
         return self
+
+
+class PublicGroundingLaw(_PublicModel):
+    """카테고리 조회로 얻은 법령 조문 공개 모델."""
+
+    법령명: str = Field(..., description="법제처 공식 법령명.")
+    조번호: str = Field(..., description="법령 내 조문 번호.")
+    본문: str = Field(..., description="조회된 법령 조문 본문.")
+    출처: str = Field(..., description="조문 원문의 출처 좌표 또는 제공 기관.")
+
+
+class GetCategoryGroundingResponse(_PublicModel):
+    """카테고리 정적 매핑과 외부 검색 결과를 구분하는 법령 조회 응답."""
+
+    status: Literal[
+        "OK", "NO_RESULT", "UNMAPPED_CATEGORY", "UPSTREAM_ERROR", "TIMEOUT"
+    ] = Field(
+        ...,
+        description=(
+            "법령 조회 상태. UNMAPPED_CATEGORY는 정적 매핑 없음, NO_RESULT는 "
+            "매핑된 질의를 실행했지만 결과 없음이다."
+        ),
+    )
+    category: str = Field(..., description="조회 기준으로 사용한 조항 카테고리.")
+    contract_type: str | None = Field(
+        default=None,
+        description="카테고리 매핑 선택에 사용한 계약 유형. 생략했다면 null.",
+    )
+    grounding: list[PublicGroundingLaw] = Field(
+        default_factory=list,
+        description="조회된 법령 조문. OK일 때만 최소 1건이며 나머지 상태에서는 빈 목록이다.",
+    )
+    message: str | None = Field(default=None, description="상태의 원인과 가능한 다음 조치.")
+
+    @model_validator(mode="after")
+    def validate_status_and_grounding(self) -> "GetCategoryGroundingResponse":
+        """상태와 법령 배열이 서로 모순되지 않도록 강제한다."""
+        if self.status == "OK" and not self.grounding:
+            raise ValueError("OK 상태에는 최소 한 건의 grounding이 필요합니다.")
+        if self.status != "OK" and self.grounding:
+            raise ValueError("OK가 아닌 상태에는 grounding을 포함할 수 없습니다.")
+        return self

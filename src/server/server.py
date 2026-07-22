@@ -13,7 +13,7 @@ from contracts.enums import ContractType, Category, Deviation, ToxicPattern, Pro
 from contracts.models import GroundingLaw, StandardClause, StandardSubChunk
 from contracts.ports import Grounder
 from adapter import vector, db, reranker, embedder
-from server.deps import get_parser, get_grounder
+from server.deps import get_parser, get_grounder, supports_static_grounding
 from core import classify_clause_deviation, select_best_match, assess_contract_scope as assess_scope_rules
 from pipe.review_pipe import review_contract as review_contract_pipe
 from pipe.exceptions import EmptyDocumentError, CorpusUnavailableError, InvalidConfigError, PipelineIntegrityError
@@ -33,8 +33,8 @@ from server.dto import (
     AssessContractScopeResponse,
     ContractTypeScopeScore,
 )
-from server.mapper import to_review_contract_candidates_response
-from server.public_dto import ReviewContractCandidatesResponse
+from server.mapper import to_public_grounding_laws, to_review_contract_candidates_response
+from server.public_dto import GetCategoryGroundingResponse, ReviewContractCandidatesResponse
 
 logger = logging.getLogger(__name__)
 
@@ -53,6 +53,8 @@ _SUPPORTED_CONTRACT_FILE_SUFFIXES = frozenset({
     ".xlsx",
     ".docx",
 })
+
+_CATEGORY_GROUNDING_TIMEOUT_SECONDS = 30.0
 
 
 def _validate_contract_file_suffix(file_name: str) -> None:
@@ -352,6 +354,93 @@ def get_grounding(
         )
 
     return GetGroundingResponse(status="OK", grounding=grounding)
+
+
+async def get_category_grounding(
+    category: str,
+    contract_type: Optional[str] = None,
+) -> GetCategoryGroundingResponse:
+    """카테고리 정적 매핑으로 관련 법령을 조회하고 상태를 명시적으로 반환합니다.
+
+    기존 get_grounding의 동작은 유지합니다. 이 도구는 카테고리 조회만 담당하며,
+    UNMAPPED_CATEGORY(정적 매핑 없음), NO_RESULT(조회했으나 결과 없음),
+    UPSTREAM_ERROR(외부 서비스 실패), TIMEOUT(응답 시간 초과)을 구분합니다.
+    grounding은 OK일 때만 최소 1건이고, 그 외 상태에서는 항상 빈 목록입니다.
+    반환 내용은 참고 자료이며 위법·합법 또는 유불리 판단이 아닙니다.
+
+    Args:
+        category: list_categories가 반환한 조항 카테고리 값.
+        contract_type: 선택적 계약 유형. SI/SM 하도급의 전용 매핑 선택에 사용합니다.
+    """
+    try:
+        cat = Category(category)
+    except ValueError:
+        raise ValueError(
+            f"지원하지 않는 카테고리: '{category}'. "
+            f"가능한 값: {[item.value for item in Category]}"
+        )
+
+    ct = None
+    if contract_type is not None:
+        try:
+            ct = ContractType(contract_type)
+        except ValueError:
+            raise ValueError(
+                f"지원하지 않는 계약 종류: '{contract_type}'. "
+                f"가능한 값: {[item.value for item in ContractType]}"
+            )
+
+    if not supports_static_grounding(cat, ct):
+        return GetCategoryGroundingResponse(
+            status="UNMAPPED_CATEGORY",
+            category=cat.value,
+            contract_type=ct.value if ct is not None else None,
+            grounding=[],
+            message="현재 정적 정책에 이 카테고리와 연결된 특정 법령 조문이 없습니다.",
+        )
+
+    try:
+        with anyio.fail_after(_CATEGORY_GROUNDING_TIMEOUT_SECONDS):
+            grounding = await anyio.to_thread.run_sync(
+                get_grounder().get_grounding,
+                cat,
+                ct,
+                abandon_on_cancel=True,
+            )
+    except TimeoutError:
+        logger.warning("카테고리 법령 조회 시간 초과: category=%s", cat.value)
+        return GetCategoryGroundingResponse(
+            status="TIMEOUT",
+            category=cat.value,
+            contract_type=ct.value if ct is not None else None,
+            grounding=[],
+            message="법령 서비스 응답 시간이 초과되었습니다. 잠시 후 다시 시도하세요.",
+        )
+    except Exception:
+        logger.exception("카테고리 법령 조회 실패: category=%s", cat.value)
+        return GetCategoryGroundingResponse(
+            status="UPSTREAM_ERROR",
+            category=cat.value,
+            contract_type=ct.value if ct is not None else None,
+            grounding=[],
+            message="법령 서비스 호출에 실패했습니다. 잠시 후 다시 시도하세요.",
+        )
+
+    if not grounding:
+        return GetCategoryGroundingResponse(
+            status="NO_RESULT",
+            category=cat.value,
+            contract_type=ct.value if ct is not None else None,
+            grounding=[],
+            message="현재 조회 조건으로 관련 법령 조문을 찾지 못했습니다.",
+        )
+
+    return GetCategoryGroundingResponse(
+        status="OK",
+        category=cat.value,
+        contract_type=ct.value if ct is not None else None,
+        grounding=to_public_grounding_laws(grounding),
+    )
 
 
 # 상태별 한글 메시지 템플릿
@@ -798,6 +887,7 @@ class WorkShieldTools:
     assess_contract_scope = staticmethod(assess_contract_scope)
     match_clause = staticmethod(match_clause)
     get_grounding = staticmethod(get_grounding)
+    get_category_grounding = staticmethod(get_category_grounding)
     review_contract = staticmethod(review_contract)
     review_contract_candidates = staticmethod(review_contract_candidates)
     classify_clause = staticmethod(classify_clause)
@@ -812,6 +902,7 @@ class WorkShieldTools:
             "assess_contract_scope",
             "match_clause",
             "get_grounding",
+            "get_category_grounding",
             "review_contract",
             "review_contract_candidates",
             "classify_clause",

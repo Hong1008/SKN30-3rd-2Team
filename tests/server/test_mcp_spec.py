@@ -35,6 +35,7 @@ async def test_mcp_spec_includes_registered_tools_and_resource_templates(tmp_pat
         "parse_contract",
         "review_contract",
         "review_contract_candidates",
+        "get_category_grounding",
         "search_law",
     }
     templates = {template["uriTemplate"]: template for template in spec["resourceTemplates"]}

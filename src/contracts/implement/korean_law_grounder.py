@@ -49,6 +49,29 @@ SUBCONTRACT_CATEGORY_QUERIES = {
     Category.LIABILITY: "하도급거래 공정화에 관한 법률 제35조 손해배상 책임",
 }
 
+
+def get_static_grounding_query(
+    category: Category,
+    contract_type: Optional[ContractType] = None,
+) -> Optional[str]:
+    """외부 호출 없이 카테고리에 대응하는 특정 조문 질의를 반환한다.
+
+    반환값이 ``None``이면 현재 정적 정책에 매핑되지 않은 카테고리다. 조회 결과가
+    없다는 뜻은 아니며, 호출자는 이를 외부 검색의 빈 결과와 구분할 수 있다.
+    """
+    if category == Category.GENERAL:
+        return None
+
+    if contract_type in _SUBCONTRACT_TYPES and category in SUBCONTRACT_CATEGORY_QUERIES:
+        query_str = SUBCONTRACT_CATEGORY_QUERIES[category]
+    else:
+        query_str = CATEGORY_QUERIES.get(category)
+
+    if query_str is None or not re.search(r"제\s*\d+\s*조(?:\s*의\s*\d+)?", query_str):
+        return None
+    return query_str
+
+
 TOXIC_QUERIES = {
     ToxicPattern.NONCOMPETE_EXCESS: "민법 제103조 반사회질서의 법률행위",
     ToxicPattern.IP_TOTAL_FREE: "저작권법 제45조 저작재산권의 양도",
@@ -213,9 +236,6 @@ class KoreanLawGrounder(Grounder):
         contract_type이 SI/SM(하도급)이고 SUBCONTRACT_CATEGORY_QUERIES에 해당 카테고리
         오버라이드가 있으면 그걸 우선 쓰고, 없으면 CATEGORY_QUERIES(유형 무관 공용)로 폴백한다.
         """
-        # 일반 조항(정의·효력·통지·해석 등)은 법령 grounding 대상이 아니다.
-        if category == Category.GENERAL:
-            return []
         # 무효 조합(예: WORKING_HOURS + SI_SUBCONTRACT) 조용히 넘어가지 않고 경고만 남긴다.
         # (AGENTS.md "조용한 실패 금지" — 그래도 조회 자체는 유형무관 공용값으로 계속 진행한다)
         if (
@@ -224,14 +244,8 @@ class KoreanLawGrounder(Grounder):
             and contract_type not in category.contract_types
         ):
             print(f"[Warning] 무효 조합: {category.value}는 {contract_type.value}에 유효한 카테고리가 아닙니다.")
-        if contract_type in _SUBCONTRACT_TYPES and category in SUBCONTRACT_CATEGORY_QUERIES:
-            query_str = SUBCONTRACT_CATEGORY_QUERIES[category]
-        else:
-            query_str = CATEGORY_QUERIES.get(category)
-
-        # 1차 정적 grounding은 특정 조문만 허용한다. 조문 번호가 없는 질의나
-        # 미매핑 카테고리를 "민법 도급"으로 넓혀 조회하면 법령 전문이 노출된다.
-        if query_str is None or not re.search(r"제\s*\d+\s*조(?:\s*의\s*\d+)?", query_str):
+        query_str = get_static_grounding_query(category, contract_type)
+        if query_str is None:
             return []
 
         def load() -> List[GroundingLaw]:

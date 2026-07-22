@@ -1,7 +1,7 @@
 """MCP 출력 스키마에 DTO 의미가 노출되는지 검증한다."""
 
 from server.dto import ClassifyClauseResponse, MatchCandidate, ReviewContractResponse
-from server.public_dto import ReviewContractCandidatesResponse
+from server.public_dto import GetCategoryGroundingResponse, ReviewContractCandidatesResponse
 
 
 def test_response_fields_expose_descriptions_in_json_schema():
@@ -37,3 +37,24 @@ def test_review_candidates_schema_is_independent_from_legacy_domain_models():
         "missing_standard_clauses",
         "message",
     }
+
+
+def test_category_grounding_schema_exposes_explicit_lookup_states():
+    """조회하지 않음·미매핑·검색 결과 없음·통신 실패를 빈 배열 하나로 합치지 않는다."""
+    schema = GetCategoryGroundingResponse.model_json_schema()
+
+    assert set(schema["properties"]) == {
+        "status",
+        "category",
+        "contract_type",
+        "grounding",
+        "message",
+    }
+    assert set(schema["properties"]["status"]["enum"]) == {
+        "OK",
+        "NO_RESULT",
+        "UNMAPPED_CATEGORY",
+        "UPSTREAM_ERROR",
+        "TIMEOUT",
+    }
+    assert "OK일 때만" in schema["properties"]["grounding"]["description"]

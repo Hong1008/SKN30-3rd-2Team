@@ -96,7 +96,20 @@ just run-mcp-ui                      # MCP Inspector
 - 비어 있지 않은 `grounding`: 참고 법령 원문이며 적용 여부나 법률 해석을 확정하지 않음
 
 특정 결과의 법령 원문이 필요하면 `matched_standard.category`와 `contract_type`으로
-`get_grounding`을 별도 호출하세요. `classify_clause`는 법령 조회를 수행하지 않습니다.
+`get_category_grounding`을 별도 호출하세요. `classify_clause`는 법령 조회를 수행하지 않습니다.
+
+`get_category_grounding`은 빈 배열의 원인을 `status`로 구분합니다.
+
+| 상태 | 의미 | `grounding` |
+| --- | --- | --- |
+| `OK` | 조회 성공 | 최소 1건 |
+| `UNMAPPED_CATEGORY` | 현재 정적 정책에 특정 조문 매핑이 없음 | 빈 목록 |
+| `NO_RESULT` | 매핑된 질의를 실행했지만 검색 결과가 없음 | 빈 목록 |
+| `UPSTREAM_ERROR` | 외부 법령 서비스 호출 실패 | 빈 목록 |
+| `TIMEOUT` | 외부 법령 서비스 응답 시간 초과 | 빈 목록 |
+
+지원하지 않는 `category`나 `contract_type` 값은 도구 입력 오류로 반환됩니다. 상태와 배열의 관계는
+공개 DTO에서 강제되므로 `OK`와 빈 배열, 실패 상태와 비어 있지 않은 배열은 생성되지 않습니다.
 
 `results=[]`를 “문제 없음”으로 처리하지 마세요. `EMPTY_DOCUMENT`, `CORPUS_UNAVAILABLE`,
 `INVALID_CONFIG`, `PIPELINE_ERROR` 중 응답 `status`를 먼저 확인해 사용자에게 적절한 다음 행동을
@@ -114,13 +127,15 @@ just run-mcp-ui                      # MCP Inspector
 | `parse_contract` | 계약서 파일을 조항 목록으로 분해 |
 | `match_clause` | 단일 조항과 가까운 표준조항 후보 검색 |
 | `classify_clause` | 단일 조항의 검색·재정렬·표준 대비 상태 판정 |
-| `get_grounding` | 카테고리 또는 법령명이 명시된 질의의 법령 원문 조회 |
+| `get_category_grounding` | 카테고리 기반 법령 조회와 명시적 결과 상태 반환(신규 클라이언트 권장) |
+| `get_grounding` | 카테고리 또는 법령명이 명시된 질의를 받는 기존 호환 조회 도구 |
 
 `MISSING`은 계약서 전체를 비교해야 찾을 수 있으므로 `classify_clause`에서는 반환되지 않습니다.
 `classify_clause`는 주의 문구 검색과 법령 조회를 수행하지 않습니다. 주의 문구 신호까지 필요하면
-`review_contract`를 사용하고, 법령 원문은 `get_grounding`을 별도 호출하세요.
+`review_contract`를 사용하고, 법령 원문은 `get_category_grounding`을 별도 호출하세요.
 
-`get_grounding`에 `category`와 `clause_text`를 함께 주면 `clause_text`가 우선됩니다. 현재
+자유 법령명 질의가 꼭 필요한 기존 흐름에서는 `get_grounding`을 사용할 수 있습니다. 이 도구에
+`category`와 `clause_text`를 함께 주면 `clause_text`가 우선됩니다. 현재
 `clause_text` 경로는 임의 계약 문구의 의미를 분류하지 않으며, 입력 앞부분에 명시된 정확한 법령명과
 조문을 조회하는 결정론적 경로입니다. 일반 계약 조항은 가능하면 검토 결과의 카테고리로 조회하세요.
 

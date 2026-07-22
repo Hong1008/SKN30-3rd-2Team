@@ -17,7 +17,7 @@ async def test_create_app_registers_workshield_and_law_tools_and_resources():
     tool_names = set(tools)
     assert {
         "parse_contract", "match_clause", "get_grounding", "review_contract",
-        "review_contract_candidates",
+        "review_contract_candidates", "get_category_grounding",
         "classify_clause", "list_contract_types", "list_categories",
         "list_toxic_patterns", "list_toxic_pattern_details", "assess_contract_scope",
         "search_law", "get_law_text", "get_annexes", "legal_research",
@@ -68,6 +68,17 @@ async def test_fastmcp_exposes_review_axes_and_partial_review_boundaries():
     ):
         assert phrase in candidates_description
     assert "grounding" not in candidates.outputSchema["properties"]
+
+    category_grounding = tools["get_category_grounding"]
+    category_description = category_grounding.description or ""
+    for phrase in (
+        "UNMAPPED_CATEGORY",
+        "NO_RESULT",
+        "UPSTREAM_ERROR",
+        "TIMEOUT",
+        "OK일 때만",
+    ):
+        assert phrase in category_description
 
 
 @pytest.mark.anyio

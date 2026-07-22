@@ -8,7 +8,7 @@ docs/tasks/O_grounding_contract_type.md — SI/SM(하도급) 은 SW_FREELANCE �
 from unittest.mock import MagicMock, patch
 
 from contracts.enums import Category, ContractType
-from contracts.implement.korean_law_grounder import KoreanLawGrounder
+from contracts.implement.korean_law_grounder import KoreanLawGrounder, get_static_grounding_query
 
 
 def _get_grounding(category, contract_type=None):
@@ -45,6 +45,13 @@ def test_GENERAL은_계약유형_무관_빈리스트():
     with patch("contracts.implement.korean_law_grounder.koreanLaw") as mock_law:
         assert grounder.get_grounding(Category.GENERAL, ContractType.SI_SUBCONTRACT) == []
         mock_law.query.assert_not_called()
+
+
+def test_정적_grounding_매핑_여부를_외부_호출_전에_구분한다():
+    assert get_static_grounding_query(Category.PAYMENT, ContractType.SW_FREELANCE)
+    assert get_static_grounding_query(Category.PAYMENT, ContractType.SI_SUBCONTRACT)
+    assert get_static_grounding_query(Category.GENERAL, ContractType.SW_FREELANCE) is None
+    assert get_static_grounding_query(Category.CONTRACT_PERIOD, ContractType.SW_FREELANCE) is None
 
 
 def test_정확_법령명_불일치는_본문_없이_NO_RESULT용_빈리스트():

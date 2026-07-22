@@ -27,7 +27,8 @@ core    adapter  ← 순수 판정 / DB·검색·문서·법령 I/O
           ├─ clause_results: NONE / EXTRA / NO_MATCH
           └─ missing_standard_clauses: MISSING 표준조항 후보
 
-필요한 경우: category + contract_type → get_grounding → 관련 법령 원문
+필요한 경우: category + contract_type → get_category_grounding
+             → OK / UNMAPPED_CATEGORY / NO_RESULT / UPSTREAM_ERROR / TIMEOUT
 ```
 
 - `NONE`은 표준 조항과의 1차 잠정 매칭이다.
@@ -48,7 +49,9 @@ core    adapter  ← 순수 판정 / DB·검색·문서·법령 I/O
 호환 도구 `review_contract`도 모든 조항의 법령을 조회하지 않는다. 정적 법령 근거는 `MISSING` 중 매핑이
 있는 카테고리에만 조건부로 부착되며, `NONE`·`EXTRA`·`NO_MATCH`는 `grounding=[]`을 반환한다.
 특정 결과의 법령 원문이 필요하면 클라이언트가 `matched_standard.category`와 `contract_type`으로
-`get_grounding`을 별도 호출한다. 표준조항 원문은 두 검토 응답에 이미 포함되므로 일반 검토 흐름에서
+`get_category_grounding`을 별도 호출한다. 새 도구는 정적 매핑 없음, 실제 검색 결과 없음, 외부 오류와
+시간 초과를 분리하며 `OK`일 때만 법령 조문을 반환한다. 기존 `get_grounding`은 자유 법령명 질의가
+필요한 호환 경로로 유지한다. 표준조항 원문은 두 검토 응답에 이미 포함되므로 일반 검토 흐름에서
 `standard://...` 리소스를 다시 읽지 않는다.
 
 ## 데이터와 배포

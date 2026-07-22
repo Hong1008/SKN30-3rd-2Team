@@ -3,15 +3,29 @@
 from collections.abc import Iterable
 
 from contracts.enums import Deviation
-from contracts.models import DeviationResult, StandardClause
+from contracts.models import DeviationResult, GroundingLaw, StandardClause
 from server.public_dto import (
     CandidateSelected,
     ClauseReviewCandidate,
     MissingStandardCandidate,
     NoCandidate,
+    PublicGroundingLaw,
     PublicStandardClause,
     ReviewContractCandidatesResponse,
 )
+
+
+def to_public_grounding_laws(laws: Iterable[GroundingLaw]) -> list[PublicGroundingLaw]:
+    """내부 법령 모델을 독립된 공개 DTO로 복사한다."""
+    return [
+        PublicGroundingLaw(
+            법령명=law.법령명,
+            조번호=law.조번호,
+            본문=law.본문,
+            출처=law.출처,
+        )
+        for law in laws
+    ]
 
 
 def _to_public_standard(standard: StandardClause) -> PublicStandardClause:
