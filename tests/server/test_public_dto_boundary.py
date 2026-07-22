@@ -7,7 +7,7 @@ import pytest
 from pydantic import ValidationError
 
 from contracts.models import Clause
-from server.public_dto import ParseContractClausesResponse
+from server.public_dto import MatchClauseResponse, ParseContractClausesResponse
 from server.server import (
     assess_contract_scope,
     classify_clause_candidate,
@@ -57,6 +57,34 @@ def test_EMPTY_DOCUMENT에는_조항을_포함할_수_없다():
         ParseContractClausesResponse(
             status="EMPTY_DOCUMENT",
             clauses=[{"idx": 1, "num": "제1조", "title": "목적", "text": "본문"}],
+        )
+
+
+@pytest.mark.parametrize(
+    ("status", "candidates"),
+    [
+        ("OK", []),
+        (
+            "NO_RESULT",
+            [
+                {
+                    "clause_id": "standard-1",
+                    "score": 0.5,
+                    "standard_text": "표준조항 본문",
+                    "title": "목적",
+                    "category": "GENERAL",
+                    "source": "표준계약서",
+                }
+            ],
+        ),
+    ],
+)
+def test_표준조항_검색_상태와_후보_배열은_모순될_수_없다(status, candidates):
+    with pytest.raises(ValidationError, match="후보"):
+        MatchClauseResponse(
+            status=status,
+            contract_type="SW_FREELANCE",
+            candidates=candidates,
         )
 
 

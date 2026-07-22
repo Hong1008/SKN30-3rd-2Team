@@ -7,7 +7,7 @@
   "tools": [
     {
       "name": "assess_contract_scope",
-      "description": "계약서가 지원 SW 표준계약서 범위에 속하는지 결정론적으로 판별합니다.\n\n파싱된 조항의 카테고리 앵커와 계약유형 표식을 비교할 뿐 파일명·LLM·법률상\n유효성 판단은 사용하지 않습니다. CONTRACT_TYPE_UNCERTAIN은 검토 차단이 아닌\n경고 상태입니다. 호출자는 사용자가 contract_type을 명시하면 그 값으로\nreview_contract를 계속 호출할 수 있습니다.\n\nArgs:\n    file_path: 지원 형식의 분석할 계약서 절대 경로(로컬 stdio 환경용).\n    file_content: base64 인코딩 계약서 바이트(네트워크 환경용).\n    file_name: file_content와 함께 쓰는 HWP/HWPX/HWPML/PDF/XLS/XLSX/DOCX 원본 파일명.\n",
+      "description": "계약서가 지원 SW 표준계약서 범위에 속하는지 결정론적으로 판별합니다.\n\n파싱된 조항의 카테고리 앵커와 계약유형 표식을 비교할 뿐 파일명·LLM·법률상\n유효성 판단은 사용하지 않습니다. CONTRACT_TYPE_UNCERTAIN은 검토 차단이 아닌\n경고 상태입니다. 호출자는 사용자가 contract_type을 명시하면 그 값으로\nreview_contract_candidates를 계속 호출할 수 있습니다.\n\nArgs:\n    file_path: 지원 형식의 분석할 계약서 절대 경로(로컬 stdio 환경용).\n    file_content: base64 인코딩 계약서 바이트(네트워크 환경용).\n    file_name: file_content와 함께 쓰는 HWP/HWPX/HWPML/PDF/XLS/XLSX/DOCX 원본 파일명.\n",
       "inputSchema": {
         "properties": {
           "file_path": {
@@ -161,6 +161,8 @@
           },
           "match_threshold": {
             "default": 0.5,
+            "maximum": 1.0,
+            "minimum": 0.0,
             "title": "Match Threshold",
             "type": "number"
           }
@@ -375,6 +377,8 @@
           },
           "match_threshold": {
             "default": 0.5,
+            "maximum": 1.0,
+            "minimum": 0.0,
             "title": "Match Threshold",
             "type": "number"
           }
@@ -524,6 +528,7 @@
       "inputSchema": {
         "properties": {
           "intent": {
+            "minLength": 1,
             "title": "Intent",
             "type": "string"
           }
@@ -554,6 +559,7 @@
       "inputSchema": {
         "properties": {
           "tool_name": {
+            "minLength": 1,
             "title": "Tool Name",
             "type": "string"
           },
@@ -590,12 +596,20 @@
       "inputSchema": {
         "properties": {
           "law_name": {
+            "minLength": 1,
             "title": "Law Name",
             "type": "string"
           },
           "knd": {
             "anyOf": [
               {
+                "enum": [
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                  "5"
+                ],
                 "type": "string"
               },
               {
@@ -608,6 +622,7 @@
           "byl_seq": {
             "anyOf": [
               {
+                "pattern": "^\\d{6}$",
                 "type": "string"
               },
               {
@@ -620,6 +635,7 @@
           "annex_no": {
             "anyOf": [
               {
+                "pattern": "^(?:\\d+|별표\\s*\\d+|제\\s*\\d+\\s*호)$",
                 "type": "string"
               },
               {
@@ -784,10 +800,31 @@
       "inputSchema": {
         "properties": {
           "domain": {
+            "enum": [
+              "precedent",
+              "interpretation",
+              "tax_tribunal",
+              "customs",
+              "nts",
+              "constitutional",
+              "admin_appeal",
+              "ftc",
+              "pipc",
+              "nlrc",
+              "acr",
+              "appeal_review",
+              "acr_special",
+              "school",
+              "public_corp",
+              "public_inst",
+              "treaty",
+              "english_law"
+            ],
             "title": "Domain",
             "type": "string"
           },
           "decision_id": {
+            "minLength": 1,
             "title": "Decision Id",
             "type": "string"
           },
@@ -827,7 +864,7 @@
     },
     {
       "name": "get_grounding",
-      "description": "\n카테고리의 정적 매핑 또는 법령명이 명시된 질의로 관련 법령 조문을 조회합니다.\n둘 다 제공되면 clause_text를 우선합니다 (korean-law-mcp는 단일 쿼리만 지원).\n\nclause_text 경로는 임의 계약 문구의 의미를 분류하지 않습니다. 입력 앞부분에서 정확한\n법령명을 식별할 수 있을 때 해당 법령·조문을 결정론적으로 조회합니다. 일반 계약 조항은\nreview_contract 결과의 matched_standard.category와 contract_type을 사용하는 편이 정확합니다.\n\n반환되는 법령 조문은 참고용 근거 자료이며, \"이 조항은 위법이다/유리하다\" 같은 결론은\n포함하지 않습니다. 그런 해석이 필요한 문장은 이 도구의 출력을 그대로 사용자에게\n전달하지 말고, 반드시 \"검토 후보/참고 자료\"로 프레이밍하세요.\n\nArgs:\n    category: 조항 분류 카테고리. 가능한 값은 list_categories 로 조회하세요. 생략 가능.\n    clause_text: 법령명이 명시된 법령 조회 질의. 임의 계약 문구의 의미 검색용이 아님. 생략 가능.\n    contract_type: 계약 유형. SI/SM 하도급 계약은 같은 category라도 적용 법령이 다를 수\n        있어(예: PAYMENT — SW는 민법, SI/SM은 하도급법), category와 함께 제공하면 더\n        정확한 근거를 받습니다. clause_text 단독 조회에는 영향 없습니다. 생략 가능.\n",
+      "description": "\n카테고리의 정적 매핑 또는 법령명이 명시된 질의로 관련 법령 조문을 조회합니다.\n둘 다 제공되면 clause_text를 우선합니다 (korean-law-mcp는 단일 쿼리만 지원).\n\nclause_text 경로는 임의 계약 문구의 의미를 분류하지 않습니다. 입력 앞부분에서 정확한\n법령명을 식별할 수 있을 때 해당 법령·조문을 결정론적으로 조회합니다. 일반 계약 조항은\nreview_contract_candidates 결과의 표준조항 category와 contract_type을 사용하는 편이 정확합니다.\n\n반환되는 법령 조문은 참고용 근거 자료이며, \"이 조항은 위법이다/유리하다\" 같은 결론은\n포함하지 않습니다. 그런 해석이 필요한 문장은 이 도구의 출력을 그대로 사용자에게\n전달하지 말고, 반드시 \"검토 후보/참고 자료\"로 프레이밍하세요.\n\nArgs:\n    category: 조항 분류 카테고리. 가능한 값은 list_categories 로 조회하세요. 생략 가능.\n    clause_text: 법령명이 명시된 법령 조회 질의. 임의 계약 문구의 의미 검색용이 아님. 생략 가능.\n    contract_type: 계약 유형. SI/SM 하도급 계약은 같은 category라도 적용 법령이 다를 수\n        있어(예: PAYMENT — SW는 민법, SI/SM은 하도급법), category와 함께 제공하면 더\n        정확한 근거를 받습니다. clause_text 단독 조회에는 영향 없습니다. 생략 가능.\n",
       "inputSchema": {
         "properties": {
           "category": {
@@ -956,6 +993,7 @@
           "mst": {
             "anyOf": [
               {
+                "pattern": "^\\d{6}$",
                 "type": "string"
               },
               {
@@ -968,6 +1006,7 @@
           "law_id": {
             "anyOf": [
               {
+                "pattern": "^\\d{6}$",
                 "type": "string"
               },
               {
@@ -980,6 +1019,7 @@
           "jo": {
             "anyOf": [
               {
+                "pattern": "^(?:\\d{6}|제\\s*\\d+\\s*조(?:\\s*의\\s*\\d+)?)$",
                 "type": "string"
               },
               {
@@ -992,6 +1032,7 @@
           "ef_yd": {
             "anyOf": [
               {
+                "pattern": "^\\d{8}$",
                 "type": "string"
               },
               {
@@ -1020,11 +1061,141 @@
       }
     },
     {
+      "name": "get_mcp_capabilities",
+      "description": "권장 검토 흐름과 기존 호환 도구의 대체 관계를 구조화해 반환합니다.\n\n신규 클라이언트는 이 결과의 workflows를 기본 호출 순서로 사용하세요. legacy_replacements의\n기존 도구는 삭제되지 않았지만 내부 도메인 결합 또는 모호한 빈 필드를 유지하므로 신규 연동에는\n권장하지 않습니다. 이 도구는 계약서나 법령을 조회하지 않습니다.\n",
+      "inputSchema": {
+        "properties": {},
+        "title": "get_mcp_capabilitiesArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "$defs": {
+          "LegacyToolReplacement": {
+            "additionalProperties": false,
+            "description": "기존 호환 도구와 신규 권장 도구의 대응 관계.",
+            "properties": {
+              "legacy_tool": {
+                "description": "기존 응답 계약을 유지하는 호환 도구.",
+                "minLength": 1,
+                "title": "Legacy Tool",
+                "type": "string"
+              },
+              "recommended_tool": {
+                "description": "신규 클라이언트가 사용할 권장 도구.",
+                "minLength": 1,
+                "title": "Recommended Tool",
+                "type": "string"
+              },
+              "reason": {
+                "description": "신규 도구를 권장하는 계약상 이유.",
+                "minLength": 1,
+                "title": "Reason",
+                "type": "string"
+              }
+            },
+            "required": [
+              "legacy_tool",
+              "recommended_tool",
+              "reason"
+            ],
+            "title": "LegacyToolReplacement",
+            "type": "object"
+          },
+          "ToolWorkflow": {
+            "additionalProperties": false,
+            "description": "클라이언트가 따를 수 있는 권장 도구 호출 흐름.",
+            "properties": {
+              "name": {
+                "description": "워크플로우 식별 이름.",
+                "minLength": 1,
+                "title": "Name",
+                "type": "string"
+              },
+              "description": {
+                "description": "워크플로우의 사용 목적과 경계.",
+                "minLength": 1,
+                "title": "Description",
+                "type": "string"
+              },
+              "steps": {
+                "description": "권장 호출 순서의 도구 이름.",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1,
+                "title": "Steps",
+                "type": "array"
+              }
+            },
+            "required": [
+              "name",
+              "description",
+              "steps"
+            ],
+            "title": "ToolWorkflow",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "description": "WorkShield가 권장하는 MCP 도구 조합과 호환 경로.",
+        "properties": {
+          "schema_version": {
+            "const": "1.0",
+            "description": "이 capability 응답 자체의 스키마 버전.",
+            "title": "Schema Version",
+            "type": "string"
+          },
+          "product_boundary": {
+            "description": "1차 MCP 결과의 해석 범위.",
+            "title": "Product Boundary",
+            "type": "string"
+          },
+          "workflows": {
+            "description": "용도별 권장 도구 호출 흐름.",
+            "items": {
+              "$ref": "#/$defs/ToolWorkflow"
+            },
+            "minItems": 1,
+            "title": "Workflows",
+            "type": "array"
+          },
+          "legacy_replacements": {
+            "description": "호환 도구에서 신규 권장 도구로의 대응표.",
+            "items": {
+              "$ref": "#/$defs/LegacyToolReplacement"
+            },
+            "title": "Legacy Replacements",
+            "type": "array"
+          },
+          "legal_proxy_note": {
+            "description": "외부 법령·판례 프록시 결과의 사용상 주의점.",
+            "title": "Legal Proxy Note",
+            "type": "string"
+          }
+        },
+        "required": [
+          "schema_version",
+          "product_boundary",
+          "workflows",
+          "legacy_replacements",
+          "legal_proxy_note"
+        ],
+        "title": "GetMcpCapabilitiesResponse",
+        "type": "object"
+      }
+    },
+    {
       "name": "legal_analysis",
       "description": "2차 검토에서 인용·판례 상태·행위시법·영향 관계를 검증합니다.\n\nmode별 arguments 필수 키는 verify_citations={text}, cite_check={caseNumber},\napplicable_law={lawName,date}, impact_map={lawName,jo}입니다. applicable_law의 jo는 선택입니다.\n인용 실존 검증은 verify_citations, 판례 변경·폐기 후속 확인은 cite_check,\n특정 날짜의 시행법령은 applicable_law, 조문 인용 그래프는 impact_map을 선택하세요.\n\n반환값은 result 필드의 직렬화된 분석 문자열입니다. 검증 결과도 특정 사안의\n위법·합법, 유불리, 승소 가능성을 단정하지 않습니다. 빈 결과와 연동 오류는\n예외로 반환됩니다.\n",
       "inputSchema": {
         "properties": {
           "mode": {
+            "enum": [
+              "verify_citations",
+              "cite_check",
+              "applicable_law",
+              "impact_map"
+            ],
             "title": "Mode",
             "type": "string"
           },
@@ -1068,11 +1239,21 @@
       "inputSchema": {
         "properties": {
           "query": {
+            "minLength": 1,
             "title": "Query",
             "type": "string"
           },
           "task": {
             "default": "full_research",
+            "enum": [
+              "full_research",
+              "law_system",
+              "action_basis",
+              "dispute_prep",
+              "amendment_track",
+              "ordinance_compare",
+              "procedure_detail"
+            ],
             "title": "Task",
             "type": "string"
           }
@@ -1099,7 +1280,7 @@
     },
     {
       "name": "list_categories",
-      "description": "\n조항 분류 카테고리(category) 전체 목록을 설명·앵커 키워드와 함께 조회합니다.\n\nget_grounding 의 category 인자 값을 확인하거나, 계약서의 어떤 카테고리들이\n검토 대상인지 사람에게 설명할 때 사용하세요.\n\nArgs:\n    contract_type: 계약 유형. 제공하면 그 유형에 유효한 카테고리만 필터링합니다\n        (예: SW_EMPLOYMENT는 WORKING_HOURS/HOLIDAY_LEAVE 포함, SW_FREELANCE는 제외).\n        생략하면 전체 카테고리를 반환합니다.\n",
+      "description": "\n조항 분류 카테고리(category) 전체 목록을 설명·앵커 키워드와 함께 조회합니다.\n\nget_category_grounding의 category 인자 값을 확인하거나, 계약서의 어떤 카테고리들이\n검토 대상인지 사람에게 설명할 때 사용하세요.\n\nArgs:\n    contract_type: 계약 유형. 제공하면 그 유형에 유효한 카테고리만 필터링합니다\n        (예: SW_EMPLOYMENT는 WORKING_HOURS/HOLIDAY_LEAVE 포함, SW_FREELANCE는 제외).\n        생략하면 전체 카테고리를 반환합니다.\n",
       "inputSchema": {
         "properties": {
           "contract_type": {
@@ -1201,7 +1382,7 @@
     },
     {
       "name": "list_toxic_pattern_details",
-      "description": "탐지 대상 독소조항 패턴을 사람이 읽는 대표 제목과 함께 조회합니다 (패턴 enum 1건당 1행).\n\nreview_contract 결과의 toxic_patterns 는 enum 값(예: IP_TOTAL_FREE)만 담고 있어,\n이를 사람이 읽는 제목으로 라벨링할 때 이 도구를 사용하세요. 반환값은 참고용 분류 정보이며\n특정 조항의 위법·불리함을 단정하지 않습니다.\n",
+      "description": "탐지 대상 독소조항 패턴을 사람이 읽는 대표 제목과 함께 조회합니다 (패턴 enum 1건당 1행).\n\nreview_contract_candidates 결과의 toxic_patterns는 enum 값(예: IP_TOTAL_FREE)만 담고 있어,\n이를 사람이 읽는 제목으로 라벨링할 때 이 도구를 사용하세요. 반환값은 참고용 분류 정보이며\n특정 조항의 위법·불리함을 단정하지 않습니다.\n",
       "inputSchema": {
         "properties": {},
         "title": "list_toxic_pattern_detailsArguments",
@@ -1273,7 +1454,7 @@
     },
     {
       "name": "list_toxic_patterns",
-      "description": "\n탐지 대상 독소조항 패턴(toxic_pattern) 전체 목록을 조회합니다.\n\nreview_contract 결과의 toxic_patterns 필드에 어떤 값이 나올 수 있는지 확인할 때 사용하세요.\n",
+      "description": "\n탐지 대상 독소조항 패턴(toxic_pattern) 전체 목록을 조회합니다.\n\nreview_contract_candidates 결과의 toxic_patterns 필드에 어떤 값이 나올 수 있는지 확인할 때 사용하세요.\n",
       "inputSchema": {
         "properties": {},
         "title": "list_toxic_patternsArguments",
@@ -1314,6 +1495,8 @@
           },
           "top_k": {
             "default": 5,
+            "maximum": 10,
+            "minimum": 1,
             "title": "Top K",
             "type": "integer"
           }
@@ -1424,7 +1607,7 @@
     },
     {
       "name": "parse_contract",
-      "description": "\n계약서 파일(HWP/HWPX/HWPML/PDF/XLS/XLSX/DOCX)을 조항 단위로 분해하는 기존 호환 도구입니다.\n응답은 내부 도메인 Clause 스키마를 유지합니다. 신규 클라이언트는 같은 파싱 결과를 독립된\n공개 DTO로 받는 parse_contract_clauses를 사용하세요.\n\n이탈 판정은 하지 않습니다 — 조항 분해만 수행합니다. 판정이 필요하면 review_contract 또는\nclassify_clause_candidate를 이어서 호출하세요.\n\nArgs:\n    file_path: 지원 형식의 분석할 계약서 절대 경로 (서버와 파일시스템을 공유할 때만 사용 가능. 로컬 stdio 배포용)\n    file_content: base64 인코딩된 계약서 파일 바이트 (네트워크 배포용). file_name과 함께 지정해야 함.\n    file_name: 원본 파일명 (HWP/HWPX/HWPML/PDF/XLS/XLSX/DOCX 확장자 판별용). file_content와 함께 지정해야 함.\n    contract_type: 계약 종류 컨텍스트. 생략 가능. 가능한 값은 list_contract_types 로 조회하세요\n        (하드코딩 금지 — 값 집합이 바뀔 수 있음).\n",
+      "description": "\n계약서 파일(HWP/HWPX/HWPML/PDF/XLS/XLSX/DOCX)을 조항 단위로 분해하는 기존 호환 도구입니다.\n응답은 내부 도메인 Clause 스키마를 유지합니다. 신규 클라이언트는 같은 파싱 결과를 독립된\n공개 DTO로 받는 parse_contract_clauses를 사용하세요.\n\n이탈 판정은 하지 않습니다 — 조항 분해만 수행합니다. 신규 전체 검토에는\nreview_contract_candidates를, 선택 조항 검토에는 classify_clause_candidate를 사용하세요.\n\nArgs:\n    file_path: 지원 형식의 분석할 계약서 절대 경로 (서버와 파일시스템을 공유할 때만 사용 가능. 로컬 stdio 배포용)\n    file_content: base64 인코딩된 계약서 파일 바이트 (네트워크 배포용). file_name과 함께 지정해야 함.\n    file_name: 원본 파일명 (HWP/HWPX/HWPML/PDF/XLS/XLSX/DOCX 확장자 판별용). file_content와 함께 지정해야 함.\n    contract_type: 계약 종류 컨텍스트. 생략 가능. 가능한 값은 list_contract_types 로 조회하세요\n        (하드코딩 금지 — 값 집합이 바뀔 수 있음).\n",
       "inputSchema": {
         "properties": {
           "file_path": {
@@ -1717,7 +1900,7 @@
     },
     {
       "name": "review_contract",
-      "description": "\n계약서 파일 전체를 파싱하고 표준 대비 결과와 독소 신호를 함께 반환합니다.\n조항이 많은 계약서는 처리에 시간이 걸릴 수 있습니다(전체 조항을 배치로 검색·재정렬).\n\ncontract_type은 비교할 표준 코퍼스를 선택하는 호출자 지정값입니다. 이 도구는 지원하는\nenum 값인지 확인할 뿐, 첨부 문서의 본문으로 계약 유형 일치 여부를 검증하거나 추천 유형으로\n자동 변경하지 않습니다. 유형이 불명확하거나 첨부 문서와 요청 유형이 다를 가능성이 있으면\n먼저 assess_contract_scope를 호출해 suggested_contract_type과 상태를 확인한 뒤, 사용자가\n최종 contract_type을 선택하세요. 자세한 클라이언트 처리 흐름은 src/server/README.md를\n참고하세요.\n\n각 사용자 조항은 두 독립 축으로 검토합니다.\n\n1. deviation: 표준조항 대비 대응·이탈·누락 신호(NO_MATCH/EXTRA/NONE/MISSING)\n2. toxic_patterns: 매칭 성패와 무관하게 독소 패턴 코퍼스를 역방향 검색한 신호\n\n두 축은 다음처럼 함께 해석합니다.\n\n| 표준 대비 결과 | 독소 신호 | 의미 |\n| --- | --- | --- |\n| EXTRA | 있음 | 표준 대응이 약하고 독소 패턴과도 유사 |\n| EXTRA | 없음 | 비표준 추가·변형이지만 알려진 독소 패턴 신호는 없음 |\n| NONE | 있음 | 표준 주제에는 대응하지만 내부 문구 일부가 독소 패턴과 유사 |\n| NONE | 없음 | 표준 주제 대응, 독소 신호도 없음 |\n\n빈 목록은 다음처럼 해석합니다.\n\n- toxic_patterns=[]: 임계값 이상의 알려진 패턴을 찾지 못했다는 뜻이며 안전·합법 판정이 아닙니다.\n- grounding=[]: 관련 법령이 없다는 뜻이 아닙니다. NONE/EXTRA/NO_MATCH에는 법령 조회를 하지\n  않고, MISSING도 GENERAL·정적 매핑 없음·조회 결과 없음이면 빈 목록입니다.\n- results=[]: \"문제 없음\"이 아니라 status가 EMPTY_DOCUMENT, CORPUS_UNAVAILABLE,\n  INVALID_CONFIG, PIPELINE_ERROR인지 먼저 확인해야 합니다.\n\nMISSING은 계약서 전체에서 표준조항이 누락된 후보이며 user_clause가 빈 문자열입니다.\n모든 결과는 검토 후보이며 위법·합법, 유불리, 승소 가능성을 단정하지 않습니다.\n\n특정 조항 한두 개만 빠르게 보고 싶다면 이 도구 대신 parse_contract 로 조항을 나눈 뒤\nclassify_clause_candidate를 개별 호출하면 빠릅니다. 단, 이 도구는 독소 패턴을 검색하지\n않으므로 독소 신호까지 필요하면 review_contract를 사용하세요.\n\nArgs:\n    contract_type: 비교 기준으로 쓸 계약 종류. 가능한 값은 list_contract_types 로 조회하세요.\n        첨부 문서와의 일치는 자동 검증하지 않으므로, 유형이 불명확하면 먼저\n        assess_contract_scope를 호출하세요.\n    file_path: 지원 형식의 검토할 계약서 절대 경로 (서버와 파일시스템을 공유할 때만 사용 가능. 로컬 stdio 배포용)\n    file_content: base64 인코딩된 계약서 파일 바이트 (네트워크 배포용). file_name과 함께 지정해야 함.\n    file_name: 원본 파일명 (HWP/HWPX/HWPML/PDF/XLS/XLSX/DOCX 확장자 판별용). file_content와 함께 지정해야 함.\n    ctx: MCP 실행 컨텍스트 (실시간 progress 보고용)\n",
+      "description": "\n계약서 파일 전체를 파싱하고 표준 대비 결과와 독소 신호를 함께 반환합니다.\n조항이 많은 계약서는 처리에 시간이 걸릴 수 있습니다(전체 조항을 배치로 검색·재정렬).\n\ncontract_type은 비교할 표준 코퍼스를 선택하는 호출자 지정값입니다. 이 도구는 지원하는\nenum 값인지 확인할 뿐, 첨부 문서의 본문으로 계약 유형 일치 여부를 검증하거나 추천 유형으로\n자동 변경하지 않습니다. 유형이 불명확하거나 첨부 문서와 요청 유형이 다를 가능성이 있으면\n먼저 assess_contract_scope를 호출해 suggested_contract_type과 상태를 확인한 뒤, 사용자가\n최종 contract_type을 선택하세요. 자세한 클라이언트 처리 흐름은 src/server/README.md를\n참고하세요.\n\n각 사용자 조항은 두 독립 축으로 검토합니다.\n\n1. deviation: 표준조항 대비 대응·이탈·누락 신호(NO_MATCH/EXTRA/NONE/MISSING)\n2. toxic_patterns: 매칭 성패와 무관하게 독소 패턴 코퍼스를 역방향 검색한 신호\n\n두 축은 다음처럼 함께 해석합니다.\n\n| 표준 대비 결과 | 독소 신호 | 의미 |\n| --- | --- | --- |\n| EXTRA | 있음 | 표준 대응이 약하고 독소 패턴과도 유사 |\n| EXTRA | 없음 | 비표준 추가·변형이지만 알려진 독소 패턴 신호는 없음 |\n| NONE | 있음 | 표준 주제에는 대응하지만 내부 문구 일부가 독소 패턴과 유사 |\n| NONE | 없음 | 표준 주제 대응, 독소 신호도 없음 |\n\n빈 목록은 다음처럼 해석합니다.\n\n- toxic_patterns=[]: 임계값 이상의 알려진 패턴을 찾지 못했다는 뜻이며 안전·합법 판정이 아닙니다.\n- grounding=[]: 관련 법령이 없다는 뜻이 아닙니다. NONE/EXTRA/NO_MATCH에는 법령 조회를 하지\n  않고, MISSING도 GENERAL·정적 매핑 없음·조회 결과 없음이면 빈 목록입니다.\n- results=[]: \"문제 없음\"이 아니라 status가 EMPTY_DOCUMENT, CORPUS_UNAVAILABLE,\n  INVALID_CONFIG, PIPELINE_ERROR인지 먼저 확인해야 합니다.\n\nMISSING은 계약서 전체에서 표준조항이 누락된 후보이며 user_clause가 빈 문자열입니다.\n모든 결과는 검토 후보이며 위법·합법, 유불리, 승소 가능성을 단정하지 않습니다.\n\n특정 조항 한두 개만 빠르게 보고 싶다면 이 도구 대신 parse_contract_clauses로 조항을 나눈 뒤\nclassify_clause_candidate를 개별 호출하면 빠릅니다. 단, 이 도구는 독소 패턴을 검색하지\n않으므로 독소 신호까지 필요하면 review_contract_candidates를 사용하세요.\n\nArgs:\n    contract_type: 비교 기준으로 쓸 계약 종류. 가능한 값은 list_contract_types 로 조회하세요.\n        첨부 문서와의 일치는 자동 검증하지 않으므로, 유형이 불명확하면 먼저\n        assess_contract_scope를 호출하세요.\n    file_path: 지원 형식의 검토할 계약서 절대 경로 (서버와 파일시스템을 공유할 때만 사용 가능. 로컬 stdio 배포용)\n    file_content: base64 인코딩된 계약서 파일 바이트 (네트워크 배포용). file_name과 함께 지정해야 함.\n    file_name: 원본 파일명 (HWP/HWPX/HWPML/PDF/XLS/XLSX/DOCX 확장자 판별용). file_content와 함께 지정해야 함.\n    ctx: MCP 실행 컨텍스트 (실시간 progress 보고용)\n",
       "inputSchema": {
         "properties": {
           "contract_type": {
@@ -2010,7 +2193,7 @@
     },
     {
       "name": "review_contract_candidates",
-      "description": "계약서를 파싱해 법령 조회 없이 표준 대비 검토 후보와 주의 문구 신호를 반환합니다.\n\n이 도구는 `review_contract`와 같은 결정론적 검색·재정렬·분류·MISSING 탐지·주의 문구 탐지를\n수행하지만 법령 조회를 수행하지 않습니다. 응답에도 grounding 필드가 없습니다. 특정 결과의\n법령 원문이 필요하면 표준조항의 category와 contract_type으로 get_grounding을 별도 호출하세요.\n\n계약서에 실제로 존재하는 조항은 clause_results에 입력 순서대로 반환합니다. 표준계약서에는\n있지만 계약서 전체에서 대응되지 않은 MISSING 후보는 missing_standard_clauses로 분리합니다.\n따라서 MISSING을 표현하기 위한 빈 user_clause나 의미 없는 매칭 점수를 반환하지 않습니다.\n\n모든 결과는 표준 대비 검토 후보이며 위법·합법, 유불리, 승소 가능성을 단정하지 않습니다.\n계약 유형이 불명확하면 먼저 assess_contract_scope로 후보를 확인하세요.\n\nArgs:\n    contract_type: 비교 기준으로 쓸 계약 종류. 가능한 값은 list_contract_types로 조회하세요.\n    file_path: 지원 형식의 계약서 절대 경로(로컬 stdio 환경용).\n    file_content: base64 인코딩된 계약서 파일 바이트(네트워크 환경용).\n    file_name: file_content와 함께 쓰는 원본 파일명.\n    ctx: MCP 실행 컨텍스트(실시간 progress 보고용).\n",
+      "description": "계약서를 파싱해 법령 조회 없이 표준 대비 검토 후보와 주의 문구 신호를 반환합니다.\n\n이 도구는 `review_contract`와 같은 결정론적 검색·재정렬·분류·MISSING 탐지·주의 문구 탐지를\n수행하지만 법령 조회를 수행하지 않습니다. 응답에도 grounding 필드가 없습니다. 특정 결과의\n법령 원문이 필요하면 표준조항의 category와 contract_type으로 get_category_grounding을 별도 호출하세요.\n\n계약서에 실제로 존재하는 조항은 clause_results에 입력 순서대로 반환합니다. 표준계약서에는\n있지만 계약서 전체에서 대응되지 않은 MISSING 후보는 missing_standard_clauses로 분리합니다.\n따라서 MISSING을 표현하기 위한 빈 user_clause나 의미 없는 매칭 점수를 반환하지 않습니다.\n\n모든 결과는 표준 대비 검토 후보이며 위법·합법, 유불리, 승소 가능성을 단정하지 않습니다.\n계약 유형이 불명확하면 먼저 assess_contract_scope로 후보를 확인하세요.\n\nArgs:\n    contract_type: 비교 기준으로 쓸 계약 종류. 가능한 값은 list_contract_types로 조회하세요.\n    file_path: 지원 형식의 계약서 절대 경로(로컬 stdio 환경용).\n    file_content: base64 인코딩된 계약서 파일 바이트(네트워크 환경용).\n    file_name: file_content와 함께 쓰는 원본 파일명.\n    ctx: MCP 실행 컨텍스트(실시간 progress 보고용).\n",
       "inputSchema": {
         "properties": {
           "contract_type": {
@@ -2297,10 +2480,31 @@
       "inputSchema": {
         "properties": {
           "domain": {
+            "enum": [
+              "precedent",
+              "interpretation",
+              "tax_tribunal",
+              "customs",
+              "nts",
+              "constitutional",
+              "admin_appeal",
+              "ftc",
+              "pipc",
+              "nlrc",
+              "acr",
+              "appeal_review",
+              "acr_special",
+              "school",
+              "public_corp",
+              "public_inst",
+              "treaty",
+              "english_law"
+            ],
             "title": "Domain",
             "type": "string"
           },
           "query": {
+            "minLength": 1,
             "title": "Query",
             "type": "string"
           },
@@ -2345,11 +2549,14 @@
       "inputSchema": {
         "properties": {
           "query": {
+            "minLength": 1,
             "title": "Query",
             "type": "string"
           },
           "display": {
             "default": 50,
+            "maximum": 100,
+            "minimum": 1,
             "title": "Display",
             "type": "integer"
           }

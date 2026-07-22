@@ -3,10 +3,11 @@ import binascii
 import logging
 import uuid
 from pathlib import Path
-from typing import Optional
+from typing import Annotated, Optional
 
 import anyio
 from mcp.server.fastmcp import FastMCP, Context
+from pydantic import Field
 
 from config import BASE_DIR
 from contracts.enums import ContractType, Category, Deviation, ToxicPattern, ProgressPhase
@@ -45,6 +46,7 @@ from server.mapper import (
     to_public_grounding_laws,
     to_review_contract_candidates_response,
 )
+from server.capabilities import get_mcp_capabilities
 
 logger = logging.getLogger(__name__)
 
@@ -123,8 +125,8 @@ def parse_contract(
     응답은 내부 도메인 Clause 스키마를 유지합니다. 신규 클라이언트는 같은 파싱 결과를 독립된
     공개 DTO로 받는 parse_contract_clauses를 사용하세요.
 
-    이탈 판정은 하지 않습니다 — 조항 분해만 수행합니다. 판정이 필요하면 review_contract 또는
-    classify_clause_candidate를 이어서 호출하세요.
+    이탈 판정은 하지 않습니다 — 조항 분해만 수행합니다. 신규 전체 검토에는
+    review_contract_candidates를, 선택 조항 검토에는 classify_clause_candidate를 사용하세요.
 
     Args:
         file_path: 지원 형식의 분석할 계약서 절대 경로 (서버와 파일시스템을 공유할 때만 사용 가능. 로컬 stdio 배포용)
@@ -203,7 +205,7 @@ def assess_contract_scope(
     파싱된 조항의 카테고리 앵커와 계약유형 표식을 비교할 뿐 파일명·LLM·법률상
     유효성 판단은 사용하지 않습니다. CONTRACT_TYPE_UNCERTAIN은 검토 차단이 아닌
     경고 상태입니다. 호출자는 사용자가 contract_type을 명시하면 그 값으로
-    review_contract를 계속 호출할 수 있습니다.
+    review_contract_candidates를 계속 호출할 수 있습니다.
 
     Args:
         file_path: 지원 형식의 분석할 계약서 절대 경로(로컬 stdio 환경용).
@@ -231,10 +233,10 @@ def assess_contract_scope(
         )
     ]
     messages = {
-        "IN_SCOPE": "지원 표준계약서와 비교할 후보입니다. suggested_contract_type으로 review_contract를 호출할 수 있습니다.",
+        "IN_SCOPE": "지원 표준계약서와 비교할 후보입니다. suggested_contract_type으로 review_contract_candidates를 호출할 수 있습니다.",
         "CONTRACT_TYPE_UNCERTAIN": (
             "지원 SW 계약과 일부 공통점이 있으나 계약유형 근거가 충분하지 않습니다. "
-            "경고를 확인한 뒤 사용자가 contract_type을 명시하여 review_contract를 호출할 수 있습니다."
+            "경고를 확인한 뒤 사용자가 contract_type을 명시하여 review_contract_candidates를 호출할 수 있습니다."
         ),
         "OUT_OF_SCOPE": "현재 지원 SW 표준계약서 코퍼스와의 공통 근거가 부족한 문서입니다. 표준 대비 검토 대상에서 제외하는 것을 권장합니다.",
     }
@@ -253,6 +255,7 @@ def assess_contract_scope(
 
 _MATCH_TOP_K_MAX = 10
 _STANDARD_CLAUSES_TABLE = "standard_clauses"
+MatchTopK = Annotated[int, Field(ge=1, le=_MATCH_TOP_K_MAX)]
 
 
 def _load_standards(ct: ContractType) -> list[StandardClause]:
@@ -270,7 +273,7 @@ _STANDARD_CLAUSES_COLLECTION = "standard_clauses"
 def match_clause(
     clause_text: str,
     contract_type: str,
-    top_k: int = 5,
+    top_k: MatchTopK = 5,
 ) -> MatchClauseResponse:
     """
     단일 조항 텍스트와 가장 유사한 표준조항 후보를 유사도 순으로 검색합니다 (검색 전용, 이탈 판정 없음).
@@ -295,7 +298,8 @@ def match_clause(
             f"가능한 값: {[e.value for e in ContractType]}"
         )
 
-    top_k = min(top_k, _MATCH_TOP_K_MAX)
+    if not 1 <= top_k <= _MATCH_TOP_K_MAX:
+        raise ValueError(f"top_k는 1 이상 {_MATCH_TOP_K_MAX} 이하이어야 합니다.")
 
     query_vector = embedder.embed_query(clause_text)
     results = vector.hybrid_search(
@@ -344,7 +348,7 @@ def get_grounding(
 
     clause_text 경로는 임의 계약 문구의 의미를 분류하지 않습니다. 입력 앞부분에서 정확한
     법령명을 식별할 수 있을 때 해당 법령·조문을 결정론적으로 조회합니다. 일반 계약 조항은
-    review_contract 결과의 matched_standard.category와 contract_type을 사용하는 편이 정확합니다.
+    review_contract_candidates 결과의 표준조항 category와 contract_type을 사용하는 편이 정확합니다.
 
     반환되는 법령 조문은 참고용 근거 자료이며, "이 조항은 위법이다/유리하다" 같은 결론은
     포함하지 않습니다. 그런 해석이 필요한 문장은 이 도구의 출력을 그대로 사용자에게
@@ -588,10 +592,18 @@ async def _execute_review_contract(
             results=[],
             message="내부 오류가 발생했습니다. 관리자에게 문의하세요.",
         )
-    except (CorpusUnavailableError, EmptyDocumentError) as e:
-        logger.warning("review_pipe 내부 도메인 예외: %s", e)
+    except CorpusUnavailableError as e:
+        logger.warning("review_pipe 코퍼스 사용 불가: %s", e)
         return ReviewContractResponse(
-            status="PIPELINE_ERROR",
+            status="CORPUS_UNAVAILABLE",
+            contract_type=ct.value,
+            results=[],
+            message=str(e),
+        )
+    except EmptyDocumentError as e:
+        logger.warning("review_pipe 빈 문서: %s", e)
+        return ReviewContractResponse(
+            status="EMPTY_DOCUMENT",
             contract_type=ct.value,
             results=[],
             message=str(e),
@@ -601,7 +613,7 @@ async def _execute_review_contract(
             status="PIPELINE_ERROR",
             contract_type=ct.value,
             results=[],
-            message="review_contract 미구현 상태입니다. 담당자(팀원 C)에게 문의하세요.",
+            message="계약 검토 기능을 현재 사용할 수 없습니다. 관리자에게 문의하세요.",
         )
 
     return ReviewContractResponse(
@@ -653,9 +665,9 @@ async def review_contract(
     MISSING은 계약서 전체에서 표준조항이 누락된 후보이며 user_clause가 빈 문자열입니다.
     모든 결과는 검토 후보이며 위법·합법, 유불리, 승소 가능성을 단정하지 않습니다.
 
-    특정 조항 한두 개만 빠르게 보고 싶다면 이 도구 대신 parse_contract 로 조항을 나눈 뒤
+    특정 조항 한두 개만 빠르게 보고 싶다면 이 도구 대신 parse_contract_clauses로 조항을 나눈 뒤
     classify_clause_candidate를 개별 호출하면 빠릅니다. 단, 이 도구는 독소 패턴을 검색하지
-    않으므로 독소 신호까지 필요하면 review_contract를 사용하세요.
+    않으므로 독소 신호까지 필요하면 review_contract_candidates를 사용하세요.
 
     Args:
         contract_type: 비교 기준으로 쓸 계약 종류. 가능한 값은 list_contract_types 로 조회하세요.
@@ -687,7 +699,7 @@ async def review_contract_candidates(
 
     이 도구는 `review_contract`와 같은 결정론적 검색·재정렬·분류·MISSING 탐지·주의 문구 탐지를
     수행하지만 법령 조회를 수행하지 않습니다. 응답에도 grounding 필드가 없습니다. 특정 결과의
-    법령 원문이 필요하면 표준조항의 category와 contract_type으로 get_grounding을 별도 호출하세요.
+    법령 원문이 필요하면 표준조항의 category와 contract_type으로 get_category_grounding을 별도 호출하세요.
 
     계약서에 실제로 존재하는 조항은 clause_results에 입력 순서대로 반환합니다. 표준계약서에는
     있지만 계약서 전체에서 대응되지 않은 MISSING 후보는 missing_standard_clauses로 분리합니다.
@@ -728,14 +740,18 @@ async def review_contract_candidates(
 
 
 _CLASSIFY_TOP_K = 5
+MatchThreshold = Annotated[float, Field(ge=0.0, le=1.0)]
 
 
 def _execute_classify_clause(
     clause_text: str,
     contract_type: str,
-    match_threshold: float = 0.5,
+    match_threshold: MatchThreshold = 0.5,
 ) -> ClassifyClauseResponse:
     """두 공개 단일 조항 도구가 공유하는 결정론적 검색·재정렬·분류를 실행한다."""
+    if not 0.0 <= match_threshold <= 1.0:
+        raise ValueError("match_threshold는 0 이상 1 이하이어야 합니다.")
+
     try:
         ct = ContractType(contract_type)
     except ValueError:
@@ -778,6 +794,22 @@ def _execute_classify_clause(
             score = float(hit["rerank_score"]) if "rerank_score" in hit else 0.0
             candidates.append((standard, score))
 
+    if not candidates:
+        logger.error(
+            "표준조항 검색 인덱스와 DB 코퍼스 결합 실패: contract_type=%s, raw_hits=%d, reranked=%d",
+            ct.value,
+            len(raw_hits),
+            len(reranked),
+        )
+        return ClassifyClauseResponse(
+            status="CORPUS_UNAVAILABLE",
+            contract_type=ct.value,
+            message=(
+                "표준조항 검색 인덱스와 DB 코퍼스가 일치하지 않습니다. "
+                "`just build-db`로 코퍼스를 다시 생성한 뒤 재시도하세요."
+            ),
+        )
+
     matched, score = select_best_match(candidates)
     deviation = classify_clause_deviation(matched, score, match_threshold)
 
@@ -794,7 +826,7 @@ def _execute_classify_clause(
 def classify_clause(
     clause_text: str,
     contract_type: str,
-    match_threshold: float = 0.5,
+    match_threshold: MatchThreshold = 0.5,
 ) -> ClassifyClauseResponse:
     """단일 조항을 표준조항과 비교하는 기존 호환 도구입니다.
 
@@ -814,7 +846,7 @@ def classify_clause(
 def classify_clause_candidate(
     clause_text: str,
     contract_type: str,
-    match_threshold: float = 0.5,
+    match_threshold: MatchThreshold = 0.5,
 ) -> ClassifyClauseCandidateResponse:
     """법령 필드 없이 단일 조항의 표준 대비 검토 후보를 반환합니다.
 
@@ -851,7 +883,7 @@ def list_categories(contract_type: Optional[str] = None) -> ListCategoriesRespon
     """
     조항 분류 카테고리(category) 전체 목록을 설명·앵커 키워드와 함께 조회합니다.
 
-    get_grounding 의 category 인자 값을 확인하거나, 계약서의 어떤 카테고리들이
+    get_category_grounding의 category 인자 값을 확인하거나, 계약서의 어떤 카테고리들이
     검토 대상인지 사람에게 설명할 때 사용하세요.
 
     Args:
@@ -881,7 +913,7 @@ def list_toxic_patterns() -> ListToxicPatternsResponse:
     """
     탐지 대상 독소조항 패턴(toxic_pattern) 전체 목록을 조회합니다.
 
-    review_contract 결과의 toxic_patterns 필드에 어떤 값이 나올 수 있는지 확인할 때 사용하세요.
+    review_contract_candidates 결과의 toxic_patterns 필드에 어떤 값이 나올 수 있는지 확인할 때 사용하세요.
     """
     return ListToxicPatternsResponse(patterns=[p.value for p in ToxicPattern])
 
@@ -889,7 +921,7 @@ def list_toxic_patterns() -> ListToxicPatternsResponse:
 def list_toxic_pattern_details() -> ListToxicPatternDetailsResponse:
     """탐지 대상 독소조항 패턴을 사람이 읽는 대표 제목과 함께 조회합니다 (패턴 enum 1건당 1행).
 
-    review_contract 결과의 toxic_patterns 는 enum 값(예: IP_TOTAL_FREE)만 담고 있어,
+    review_contract_candidates 결과의 toxic_patterns는 enum 값(예: IP_TOTAL_FREE)만 담고 있어,
     이를 사람이 읽는 제목으로 라벨링할 때 이 도구를 사용하세요. 반환값은 참고용 분류 정보이며
     특정 조항의 위법·불리함을 단정하지 않습니다.
     """
@@ -962,6 +994,7 @@ class WorkShieldTools:
     list_categories = staticmethod(list_categories)
     list_toxic_patterns = staticmethod(list_toxic_patterns)
     list_toxic_pattern_details = staticmethod(list_toxic_pattern_details)
+    get_mcp_capabilities = staticmethod(get_mcp_capabilities)
 
     def __init__(self, mcp: FastMCP) -> None:
         for name in (
@@ -979,6 +1012,7 @@ class WorkShieldTools:
             "list_categories",
             "list_toxic_patterns",
             "list_toxic_pattern_details",
+            "get_mcp_capabilities",
         ):
             mcp.add_tool(getattr(self, name), name=name)
 

@@ -75,6 +75,15 @@ class MatchClauseResponse(_PublicModel):
     )
     message: str | None = Field(default=None, description="빈 검색 결과의 이유를 설명하는 메시지.")
 
+    @model_validator(mode="after")
+    def validate_status_and_candidates(self) -> "MatchClauseResponse":
+        """검색 상태와 후보 배열의 관계를 강제한다."""
+        if self.status == "OK" and not self.candidates:
+            raise ValueError("OK 상태에는 최소 한 건의 후보가 필요합니다.")
+        if self.status == "NO_RESULT" and self.candidates:
+            raise ValueError("NO_RESULT 상태에는 후보를 포함할 수 없습니다.")
+        return self
+
 
 class ListContractTypesResponse(_PublicModel):
     """지원하는 표준계약서 유형 목록."""

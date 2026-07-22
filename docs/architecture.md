@@ -20,15 +20,17 @@ core    adapter  ← 순수 판정 / DB·검색·문서·법령 I/O
 ## 1차 흐름
 
 ```text
-계약서 → kordoc 파싱 → 조항 분리 → hybrid 검색 → rerank
+계약서 → assess_contract_scope → 사용자가 비교 유형 확인
+       → review_contract_candidates: kordoc 파싱 → 조항 분리 → hybrid 검색 → rerank
        ├─ 표준조항 경로 → NONE / EXTRA / NO_MATCH → 전체 표준과 대조 → MISSING
        └─ 독소패턴 경로 → ToxicPattern 0개 이상
-       → review_contract_candidates
-          ├─ clause_results: NONE / EXTRA / NO_MATCH
-          └─ missing_standard_clauses: MISSING 표준조항 후보
+       ├─ clause_results: NONE / EXTRA / NO_MATCH
+       └─ missing_standard_clauses: MISSING 표준조항 후보
 
 필요한 경우: category + contract_type → get_category_grounding
              → OK / UNMAPPED_CATEGORY / NO_RESULT / UPSTREAM_ERROR / TIMEOUT
+
+부분 검토: parse_contract_clauses → classify_clause_candidate
 ```
 
 - `NONE`은 표준 조항과의 1차 잠정 매칭이다.
@@ -57,7 +59,13 @@ MCP DTO는 `server/public_dto.py`에 모은다. 파서의 도메인 `Clause`는 
 `get_category_grounding`을 별도 호출한다. 새 도구는 정적 매핑 없음, 실제 검색 결과 없음, 외부 오류와
 시간 초과를 분리하며 `OK`일 때만 법령 조문을 반환한다. 기존 `get_grounding`은 자유 법령명 질의가
 필요한 호환 경로로 유지한다. 표준조항 원문은 두 검토 응답에 이미 포함되므로 일반 검토 흐름에서
-`standard://...` 리소스를 다시 읽지 않는다.
+`standard://...` 리소스를 다시 읽지 않는다. 이 리소스는 표준조항 독립 탐색과
+저장한 `clause_id`로의 재조회에 사용한다.
+
+`src/app.py`는 외부 `korean-law-mcp`의 법령·판례 조회와 `legal_research`, `legal_analysis`
+등을 같은 MCP 표면에 선택적 프록시로 등록한다. 이들은 `review_contract_candidates`의
+내부 단계가 아니며, 프록시가 반환한 내용은 외부 MCP의 참고 자료다. WorkShield의 결정론적
+표준 대비 판정을 변경하거나 법률적 결론을 확정하지 않는다.
 
 ## 데이터와 배포
 

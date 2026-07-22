@@ -27,6 +27,10 @@ just run-mcp-ui                      # MCP Inspector
 않습니다. 기존 `review_contract`는 `grounding` 필드가 필요한 호환 경로로 유지됩니다. 계약 유형이
 확실하면 전체 검토 도구를 바로 호출하고, 확실하지 않으면 먼저 `assess_contract_scope`를 호출하세요.
 
+권장 전체 흐름은 `assess_contract_scope` → `review_contract_candidates` → 필요한 결과만
+`get_category_grounding`입니다. 조항 단위 부분 흐름은 `parse_contract_clauses` →
+`classify_clause_candidate`입니다.
+
 ### 1. 비교할 계약 유형 선택
 
 `contract_type`은 파일에서 자동으로 확정되는 값이 아닙니다. 이 값이 어떤 표준조항 모음과 비교할지를
@@ -121,9 +125,10 @@ just run-mcp-ui                      # MCP Inspector
 
 | 도구 | 용도 |
 | --- | --- |
+| `get_mcp_capabilities` | 권장 전체·부분 검토 흐름과 호환 도구 대체 관계 조회 |
 | `assess_contract_scope` | 지원 범위와 계약 유형 후보 사전 점검 |
 | `review_contract_candidates` | 법령 조회 없이 사용자 조항 결과와 `MISSING` 표준조항을 분리해 반환하는 권장 전체 검토 도구 |
-| `review_contract` | 계약서 전체 파싱·비교·누락 후보·주의 문구와 일부 `MISSING`의 조건부 법령 조회 |
+| `review_contract` | 계약서 전체 파싱·비교·누락 후보·주의 문구와 일부 `MISSING`의 조건부 법령 조회를 유지하는 호환 도구 |
 | `parse_contract_clauses` | 계약서 파일을 도메인 모델과 분리된 공개 조항 목록으로 분해(신규 클라이언트 권장) |
 | `parse_contract` | 내부 `Clause` 응답을 유지하는 기존 파싱 호환 도구 |
 | `match_clause` | 단일 조항과 가까운 표준조항 후보 검색 |
@@ -134,7 +139,7 @@ just run-mcp-ui                      # MCP Inspector
 
 `MISSING`은 계약서 전체를 비교해야 찾을 수 있으므로 두 단일 조항 분류 도구에서는 반환되지 않습니다.
 `classify_clause_candidate`는 주의 문구 검색과 법령 조회를 수행하지 않습니다. 주의 문구 신호까지 필요하면
-`review_contract`를 사용하고, 법령 원문은 `get_category_grounding`을 별도 호출하세요.
+`review_contract_candidates`를 사용하고, 법령 원문은 `get_category_grounding`을 별도 호출하세요.
 
 자유 법령명 질의가 꼭 필요한 기존 흐름에서는 `get_grounding`을 사용할 수 있습니다. 이 도구에
 `category`와 `clause_text`를 함께 주면 `clause_text`가 우선됩니다. 현재
@@ -160,7 +165,11 @@ just run-mcp-ui                      # MCP Inspector
 ### 법령·판례 프록시 도구
 
 동일 MCP 앱에는 외부 `korean-law-mcp`를 통해 법령과 판례 원문을 조회하는 도구도 등록됩니다.
-이 도구들은 원문·검색 기능을 전달할 뿐 WorkShield가 법률 해석을 생성하지는 않습니다.
+이 도구들은 계약 검토 파이프라인의 필수 단계가 아니며, 외부 MCP 기능을 같은 서버 표면에서
+호출할 수 있게 한 선택적 프록시입니다. `legal_research`와 `legal_analysis`의 응답을 포함한
+프록시 결과는 외부 법률 MCP가 반환한 참고 자료이며, WorkShield의 위법·합법, 적용 법령 또는
+승소 가능성 판정을 의미하지 않습니다. WorkShield 서버 코드가 이 결과를 추가로 해석해
+계약 검토 판정을 바꾸지도 않습니다.
 
 | 도구 | 용도 |
 | --- | --- |
@@ -195,7 +204,7 @@ core / pipe / adapter        판정 규칙 / 검토 조립 / 외부 I/O
 
 [`src/app.py`](../app.py)의 `create_app()`이 `FastMCP("WorkShield")` 인스턴스를 만들고,
 `WorkShieldTools`와 `KoreanLawWrapper`를 등록합니다. 또한 앱 lifespan에서 공용
-`KoreanLawMCPClient` 세션을 열고 종료 시 닫습니다. `get_grounding`과 법령 프록시 도구는 이
+`KoreanLawMCPClient` 세션을 열고 종료 시 닫습니다. 법령 근거 조회와 법령 프록시 도구는 이
 클라이언트의 세션과 TTL 캐시를 공유합니다.
 
 모듈 수준의 함수는 직접 단위 테스트와 하위호환을 위해 유지하지만, MCP에는

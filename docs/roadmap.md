@@ -2,8 +2,10 @@
 
 ## 현재 활성 개발 작업 없음
 
-1차 MCP 구현과 v5 기준선 검증이 완료됐다. 서버는 외부 클라이언트가 `review_contract`,
-`get_category_grounding`, 호환용 `get_grounding`, 표준조항 리소스를 독립적으로 조합할 수 있도록 제공하며, 특정 2차 LLM 클라이언트의
+1차 MCP 구현과 v5 기준선 검증이 완료됐다. 서버는 외부 클라이언트가
+`assess_contract_scope` → `review_contract_candidates` → 필요 시 `get_category_grounding`으로 이어지는
+권장 흐름을 사용하도록 제공한다. `review_contract`와 `get_grounding`은 기존 응답 호환용이고,
+표준조항 리소스는 독립 탐색·재조회용이다. 특정 2차 LLM 클라이언트의
 구현은 현 프로젝트 범위에 포함하지 않는다.
 
 LLM 기반 의미 비교·설명 기능이 별도 제품에서 필요해질 경우에는
