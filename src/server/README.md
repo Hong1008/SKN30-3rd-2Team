@@ -73,8 +73,18 @@ just run-mcp-ui                      # MCP Inspector
 결과는 `user_clause`가 빈 문자열일 수 있습니다.
 
 `toxic_patterns`는 표준 대비 상태와 별개로, 알려진 주의 문구와 유사한 표현을 찾은 보조 신호입니다.
-빈 목록은 해당 문구가 안전하거나 문제가 없다는 뜻이 아닙니다. `grounding`은 관련 법령 원문
-참고자료이며 적용 여부나 법률 해석을 확정하지 않습니다.
+빈 목록은 해당 문구가 안전하거나 문제가 없다는 뜻이 아닙니다.
+
+`review_contract`의 `grounding`은 모든 결과에 일관되게 조회되는 필드가 아닙니다. 현재 1차는
+`MISSING` 표준조항 중 정적 카테고리 매핑이 있는 경우에만 법령 조회를 수행합니다. 따라서 다음처럼
+해석해야 합니다.
+
+- `NONE` / `EXTRA` / `NO_MATCH`의 `grounding=[]`: 이 검토에서 법령을 조회하지 않음
+- `MISSING`의 `grounding=[]`: 정책상 조회 대상이 아니거나, 정적 매핑이 없거나, 조회 결과가 없음
+- 비어 있지 않은 `grounding`: 참고 법령 원문이며 적용 여부나 법률 해석을 확정하지 않음
+
+특정 결과의 법령 원문이 필요하면 `matched_standard.category`와 `contract_type`으로
+`get_grounding`을 별도 호출하세요. `classify_clause`는 법령 조회를 수행하지 않습니다.
 
 `results=[]`를 “문제 없음”으로 처리하지 마세요. `EMPTY_DOCUMENT`, `CORPUS_UNAVAILABLE`,
 `INVALID_CONFIG`, `PIPELINE_ERROR` 중 응답 `status`를 먼저 확인해 사용자에게 적절한 다음 행동을
@@ -87,15 +97,19 @@ just run-mcp-ui                      # MCP Inspector
 | 도구 | 용도 |
 | --- | --- |
 | `assess_contract_scope` | 지원 범위와 계약 유형 후보 사전 점검 |
-| `review_contract` | 계약서 전체 파싱·비교·누락 후보·주의 문구·참고자료 조회 |
+| `review_contract` | 계약서 전체 파싱·비교·누락 후보·주의 문구와 일부 `MISSING`의 조건부 법령 조회 |
 | `parse_contract` | 계약서 파일을 조항 목록으로 분해 |
 | `match_clause` | 단일 조항과 가까운 표준조항 후보 검색 |
 | `classify_clause` | 단일 조항의 검색·재정렬·표준 대비 상태 판정 |
-| `get_grounding` | 카테고리 또는 조항에 관련된 법령 원문 조회 |
+| `get_grounding` | 카테고리 또는 법령명이 명시된 질의의 법령 원문 조회 |
 
 `MISSING`은 계약서 전체를 비교해야 찾을 수 있으므로 `classify_clause`에서는 반환되지 않습니다.
-`classify_clause`는 주의 문구 검색과 법령 조회를 수행하지 않습니다. 해당 정보가 필요하면
-`review_contract`를 사용하세요.
+`classify_clause`는 주의 문구 검색과 법령 조회를 수행하지 않습니다. 주의 문구 신호까지 필요하면
+`review_contract`를 사용하고, 법령 원문은 `get_grounding`을 별도 호출하세요.
+
+`get_grounding`에 `category`와 `clause_text`를 함께 주면 `clause_text`가 우선됩니다. 현재
+`clause_text` 경로는 임의 계약 문구의 의미를 분류하지 않으며, 입력 앞부분에 명시된 정확한 법령명과
+조문을 조회하는 결정론적 경로입니다. 일반 계약 조항은 가능하면 검토 결과의 카테고리로 조회하세요.
 
 ### 조회 도구와 표준조항 리소스
 
@@ -108,6 +122,10 @@ just run-mcp-ui                      # MCP Inspector
 
 - `standard://{contract_type}` — 계약 유형별 표준조항 목록
 - `standard://{contract_type}/{clause_id}` — 특정 표준조항 원문
+
+`review_contract`와 `match_clause`는 이미 대응 표준조항 본문을 반환하므로 일반 검토 흐름에서 같은
+원문을 리소스로 다시 읽을 필요는 없습니다. 리소스는 표준조항을 독립적으로 탐색하거나 저장된
+`clause_id`만으로 원문을 다시 열 때 사용합니다.
 
 ### 법령·판례 프록시 도구
 

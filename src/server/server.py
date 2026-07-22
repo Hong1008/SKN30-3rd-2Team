@@ -295,8 +295,12 @@ def get_grounding(
     contract_type: Optional[str] = None,
 ) -> GetGroundingResponse:
     """
-    카테고리 또는 조항 본문에 해당하는 관련 법령 조문을 조회합니다.
+    카테고리의 정적 매핑 또는 법령명이 명시된 질의로 관련 법령 조문을 조회합니다.
     둘 다 제공되면 clause_text를 우선합니다 (korean-law-mcp는 단일 쿼리만 지원).
+
+    clause_text 경로는 임의 계약 문구의 의미를 분류하지 않습니다. 입력 앞부분에서 정확한
+    법령명을 식별할 수 있을 때 해당 법령·조문을 결정론적으로 조회합니다. 일반 계약 조항은
+    review_contract 결과의 matched_standard.category와 contract_type을 사용하는 편이 정확합니다.
 
     반환되는 법령 조문은 참고용 근거 자료이며, "이 조항은 위법이다/유리하다" 같은 결론은
     포함하지 않습니다. 그런 해석이 필요한 문장은 이 도구의 출력을 그대로 사용자에게
@@ -304,7 +308,7 @@ def get_grounding(
 
     Args:
         category: 조항 분류 카테고리. 가능한 값은 list_categories 로 조회하세요. 생략 가능.
-        clause_text: 법령 조문을 조회할 조항 본문 텍스트. 생략 가능.
+        clause_text: 법령명이 명시된 법령 조회 질의. 임의 계약 문구의 의미 검색용이 아님. 생략 가능.
         contract_type: 계약 유형. SI/SM 하도급 계약은 같은 category라도 적용 법령이 다를 수
             있어(예: PAYMENT — SW는 민법, SI/SM은 하도급법), category와 함께 제공하면 더
             정확한 근거를 받습니다. clause_text 단독 조회에는 영향 없습니다. 생략 가능.
@@ -391,7 +395,8 @@ async def review_contract(
     빈 목록은 다음처럼 해석합니다.
 
     - toxic_patterns=[]: 임계값 이상의 알려진 패턴을 찾지 못했다는 뜻이며 안전·합법 판정이 아닙니다.
-    - grounding=[]: 관련 법령이 없다는 뜻이 아닙니다. 1차는 주로 MISSING에만 정적 근거를 부착합니다.
+    - grounding=[]: 관련 법령이 없다는 뜻이 아닙니다. NONE/EXTRA/NO_MATCH에는 법령 조회를 하지
+      않고, MISSING도 GENERAL·정적 매핑 없음·조회 결과 없음이면 빈 목록입니다.
     - results=[]: "문제 없음"이 아니라 status가 EMPTY_DOCUMENT, CORPUS_UNAVAILABLE,
       INVALID_CONFIG, PIPELINE_ERROR인지 먼저 확인해야 합니다.
 
@@ -523,7 +528,8 @@ def classify_clause(
     MISSING은 이 도구로 나오지 않습니다. MISSING은 "표준조항이 계약서 전체에 없다"는 뜻이라
     조항 하나만으로는 판정할 수 없고, review_contract 로 전체를 봐야 발견됩니다.
     또한 이 도구는 독소 패턴 검색을 수행하지 않습니다. toxic_patterns가 필요하면
-    review_contract를 사용하세요. 법령 조회도 수행하지 않아 grounding은 항상 빈 목록입니다.
+    review_contract를 사용하세요. 법령 조회도 수행하지 않아 grounding은 항상 빈 목록이며,
+    법령 원문이 필요하면 matched_standard.category와 contract_type으로 get_grounding을 별도 호출하세요.
     반환되는 deviation은 표준 대비 기계적 차이를 나타내는 "검토 후보" 표식이며, 위법 여부나
     유불리를 단정하지 않습니다. grounding=[]도 관련 법령이 없다는 뜻이 아닙니다.
 
