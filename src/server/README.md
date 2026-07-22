@@ -96,7 +96,7 @@ just run-mcp-ui                      # MCP Inspector
 - 비어 있지 않은 `grounding`: 참고 법령 원문이며 적용 여부나 법률 해석을 확정하지 않음
 
 특정 결과의 법령 원문이 필요하면 `matched_standard.category`와 `contract_type`으로
-`get_category_grounding`을 별도 호출하세요. `classify_clause`는 법령 조회를 수행하지 않습니다.
+`get_category_grounding`을 별도 호출하세요. `classify_clause_candidate`는 법령 조회를 수행하지 않습니다.
 
 `get_category_grounding`은 빈 배열의 원인을 `status`로 구분합니다.
 
@@ -126,12 +126,13 @@ just run-mcp-ui                      # MCP Inspector
 | `review_contract` | 계약서 전체 파싱·비교·누락 후보·주의 문구와 일부 `MISSING`의 조건부 법령 조회 |
 | `parse_contract` | 계약서 파일을 조항 목록으로 분해 |
 | `match_clause` | 단일 조항과 가까운 표준조항 후보 검색 |
-| `classify_clause` | 단일 조항의 검색·재정렬·표준 대비 상태 판정 |
+| `classify_clause_candidate` | 법령 필드 없이 단일 조항의 검색·재정렬·표준 대비 상태 판정(신규 클라이언트 권장) |
+| `classify_clause` | 항상 빈 `grounding` 필드를 유지하는 기존 단일 조항 호환 도구 |
 | `get_category_grounding` | 카테고리 기반 법령 조회와 명시적 결과 상태 반환(신규 클라이언트 권장) |
 | `get_grounding` | 카테고리 또는 법령명이 명시된 질의를 받는 기존 호환 조회 도구 |
 
-`MISSING`은 계약서 전체를 비교해야 찾을 수 있으므로 `classify_clause`에서는 반환되지 않습니다.
-`classify_clause`는 주의 문구 검색과 법령 조회를 수행하지 않습니다. 주의 문구 신호까지 필요하면
+`MISSING`은 계약서 전체를 비교해야 찾을 수 있으므로 두 단일 조항 분류 도구에서는 반환되지 않습니다.
+`classify_clause_candidate`는 주의 문구 검색과 법령 조회를 수행하지 않습니다. 주의 문구 신호까지 필요하면
 `review_contract`를 사용하고, 법령 원문은 `get_category_grounding`을 별도 호출하세요.
 
 자유 법령명 질의가 꼭 필요한 기존 흐름에서는 `get_grounding`을 사용할 수 있습니다. 이 도구에

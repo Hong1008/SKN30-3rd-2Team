@@ -4,8 +4,10 @@ from collections.abc import Iterable
 
 from contracts.enums import Deviation
 from contracts.models import DeviationResult, GroundingLaw, StandardClause
+from server.dto import ClassifyClauseResponse
 from server.public_dto import (
     CandidateSelected,
+    ClassifyClauseCandidateResponse,
     ClauseReviewCandidate,
     MissingStandardCandidate,
     NoCandidate,
@@ -38,6 +40,24 @@ def _to_public_standard(standard: StandardClause) -> PublicStandardClause:
         text=standard.text,
         source=standard.source,
         version=standard.version,
+    )
+
+
+def to_classify_clause_candidate_response(
+    response: ClassifyClauseResponse,
+) -> ClassifyClauseCandidateResponse:
+    """기존 내부 단일 조항 결과에서 법령 필드를 제거한 공개 DTO를 만든다."""
+    return ClassifyClauseCandidateResponse(
+        status=response.status,
+        contract_type=response.contract_type,
+        deviation=response.deviation,
+        confidence=response.confidence,
+        matched_standard=(
+            _to_public_standard(response.matched_standard)
+            if response.matched_standard is not None
+            else None
+        ),
+        message=response.message,
     )
 
 

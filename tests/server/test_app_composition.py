@@ -18,7 +18,7 @@ async def test_create_app_registers_workshield_and_law_tools_and_resources():
     assert {
         "parse_contract", "match_clause", "get_grounding", "review_contract",
         "review_contract_candidates", "get_category_grounding",
-        "classify_clause", "list_contract_types", "list_categories",
+        "classify_clause", "classify_clause_candidate", "list_contract_types", "list_categories",
         "list_toxic_patterns", "list_toxic_pattern_details", "assess_contract_scope",
         "search_law", "get_law_text", "get_annexes", "legal_research",
         "legal_analysis", "discover_tools", "execute_tool", "search_decisions",
@@ -68,6 +68,17 @@ async def test_fastmcp_exposes_review_axes_and_partial_review_boundaries():
     ):
         assert phrase in candidates_description
     assert "grounding" not in candidates.outputSchema["properties"]
+
+    classify_candidate = tools["classify_clause_candidate"]
+    classify_candidate_description = classify_candidate.description or ""
+    for phrase in (
+        "법령 조회를 수행하지 않습니다",
+        "grounding 필드가 없습니다",
+        "get_category_grounding",
+        "MISSING",
+    ):
+        assert phrase in classify_candidate_description
+    assert "grounding" not in str(classify_candidate.outputSchema)
 
     category_grounding = tools["get_category_grounding"]
     category_description = category_grounding.description or ""

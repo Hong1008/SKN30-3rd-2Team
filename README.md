@@ -236,7 +236,8 @@ Docker 배포는 MCP 서버 단일 컨테이너만 지원하며, streamable HTTP
 | `review_contract_candidates` | 법령 조회 없이 사용자 조항 결과와 `MISSING` 표준조항을 분리해 반환하는 권장 전체 검토 도구 |
 | `review_contract` | 계약서 전체의 조항 대응·누락·주의 문구 검토와 일부 `MISSING`의 조건부 근거 조회 |
 | `parse_contract` | 계약서를 조항 목록으로 분리 |
-| `match_clause` / `classify_clause` | 단일 조항 검색·분류 |
+| `match_clause` / `classify_clause_candidate` | 단일 조항 검색·분류. 신규 분류 응답에는 `grounding` 필드가 없음 |
+| `classify_clause` | 항상 빈 `grounding`을 유지하는 기존 단일 조항 호환 도구 |
 | `get_category_grounding` | 카테고리 기반 법령 조회. 미매핑·결과 없음·외부 오류·시간 초과를 명시 상태로 구분 |
 | `get_grounding` | 카테고리·법령명 질의를 모두 받는 기존 호환 조회 도구 |
 | `list_*` | 지원 계약 유형·카테고리·주의 문구 유형 조회 |

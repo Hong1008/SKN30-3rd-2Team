@@ -33,8 +33,16 @@ from server.dto import (
     AssessContractScopeResponse,
     ContractTypeScopeScore,
 )
-from server.mapper import to_public_grounding_laws, to_review_contract_candidates_response
-from server.public_dto import GetCategoryGroundingResponse, ReviewContractCandidatesResponse
+from server.mapper import (
+    to_classify_clause_candidate_response,
+    to_public_grounding_laws,
+    to_review_contract_candidates_response,
+)
+from server.public_dto import (
+    ClassifyClauseCandidateResponse,
+    GetCategoryGroundingResponse,
+    ReviewContractCandidatesResponse,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -109,10 +117,10 @@ def parse_contract(
 ) -> ParseContractResponse:
     """
     계약서 파일(HWP/HWPX/HWPML/PDF/XLS/XLSX/DOCX)을 조항 단위로 분해하여 반환합니다. 검토 파이프라인의 1단계이며,
-    이 결과를 사람이 조항을 골라 match_clause/classify_clause 로 부분 검토하는 데도 쓸 수 있습니다.
+    이 결과를 사람이 조항을 골라 match_clause/classify_clause_candidate로 부분 검토하는 데도 쓸 수 있습니다.
 
     이탈 판정은 하지 않습니다 — 조항 분해만 수행합니다. 판정이 필요하면 review_contract 또는
-    classify_clause 를 이어서 호출하세요.
+    classify_clause_candidate를 이어서 호출하세요.
 
     Args:
         file_path: 지원 형식의 분석할 계약서 절대 경로 (서버와 파일시스템을 공유할 때만 사용 가능. 로컬 stdio 배포용)
@@ -238,7 +246,7 @@ def match_clause(
 
     이 도구는 "비슷한 표준조항이 뭐가 있나"만 답합니다. score는 검색 융합 점수(RRF/BM25 등)이며
     match_threshold 같은 판정 임계치와 스케일이 다르므로 "매칭 성공/실패"를 이 점수로 판단하지 마세요.
-    "이 조항이 표준 대비 이탈(EXTRA/NONE)인가?"가 필요하면 classify_clause 를 쓰세요.
+    "이 조항이 표준 대비 이탈(EXTRA/NONE)인가?"가 필요하면 classify_clause_candidate를 쓰세요.
     이 도구가 반환하는 것은 "검토 후보" 목록일 뿐 최종 판정이 아닙니다.
 
     사용 예: 계약서 전체가 아니라 특정 조항 하나에 대해 어떤 표준조항이 대응되는지만 빠르게 훑어볼 때.
@@ -615,7 +623,7 @@ async def review_contract(
     모든 결과는 검토 후보이며 위법·합법, 유불리, 승소 가능성을 단정하지 않습니다.
 
     특정 조항 한두 개만 빠르게 보고 싶다면 이 도구 대신 parse_contract 로 조항을 나눈 뒤
-    classify_clause 를 개별 호출하면 빠릅니다. 단, classify_clause는 독소 패턴을 검색하지
+    classify_clause_candidate를 개별 호출하면 빠릅니다. 단, 이 도구는 독소 패턴을 검색하지
     않으므로 독소 신호까지 필요하면 review_contract를 사용하세요.
 
     Args:
@@ -691,31 +699,12 @@ async def review_contract_candidates(
 _CLASSIFY_TOP_K = 5
 
 
-def classify_clause(
+def _execute_classify_clause(
     clause_text: str,
     contract_type: str,
     match_threshold: float = 0.5,
 ) -> ClassifyClauseResponse:
-    """
-    단일 조항 텍스트 하나를 표준조항과 비교해 이탈 여부를 판정합니다 (부분 검토 워크플로우용).
-
-    review_contract 전체를 돌리지 않고 "이 조항 하나만" 표준 대비 어떤지 알고 싶을 때 씁니다.
-    match_clause 가 후보 나열까지만 하는 것과 달리, 이 도구는 재정렬(reranker) → 최적 매칭 선택
-    → 이탈 분류까지 끝내 deviation(NO_MATCH/EXTRA/NONE) 하나를 확정해 반환합니다.
-
-    MISSING은 이 도구로 나오지 않습니다. MISSING은 "표준조항이 계약서 전체에 없다"는 뜻이라
-    조항 하나만으로는 판정할 수 없고, review_contract 로 전체를 봐야 발견됩니다.
-    또한 이 도구는 독소 패턴 검색을 수행하지 않습니다. toxic_patterns가 필요하면
-    review_contract를 사용하세요. 법령 조회도 수행하지 않아 grounding은 항상 빈 목록이며,
-    법령 원문이 필요하면 matched_standard.category와 contract_type으로 get_grounding을 별도 호출하세요.
-    반환되는 deviation은 표준 대비 기계적 차이를 나타내는 "검토 후보" 표식이며, 위법 여부나
-    유불리를 단정하지 않습니다. grounding=[]도 관련 법령이 없다는 뜻이 아닙니다.
-
-    Args:
-        clause_text: 판정할 사용자 조항 본문 텍스트
-        contract_type: 계약 종류. 가능한 값은 list_contract_types 로 조회하세요.
-        match_threshold: 대응 표준조항으로 인정할 최소 정규화 점수(0~1). 기본값 0.5.
-    """
+    """두 공개 단일 조항 도구가 공유하는 결정론적 검색·재정렬·분류를 실행한다."""
     try:
         ct = ContractType(contract_type)
     except ValueError:
@@ -771,11 +760,56 @@ def classify_clause(
     )
 
 
+def classify_clause(
+    clause_text: str,
+    contract_type: str,
+    match_threshold: float = 0.5,
+) -> ClassifyClauseResponse:
+    """단일 조항을 표준조항과 비교하는 기존 호환 도구입니다.
+
+    검색·재정렬 후 deviation(NO_MATCH/EXTRA/NONE)을 반환합니다. MISSING은 계약서 전체를
+    비교하는 review_contract에서만 판단합니다. 독소 패턴 검색을 수행하지 않습니다.
+    법령 조회도 수행하지 않아 grounding은 항상 빈 목록입니다. 신규 클라이언트는 동일 판정에서
+    이 모호한 필드를 제거한 classify_clause_candidate를 사용하세요.
+
+    Args:
+        clause_text: 판정할 사용자 조항 본문 텍스트.
+        contract_type: list_contract_types가 반환한 계약 유형.
+        match_threshold: 대응 표준조항으로 인정할 최소 정규화 점수(0~1).
+    """
+    return _execute_classify_clause(clause_text, contract_type, match_threshold)
+
+
+def classify_clause_candidate(
+    clause_text: str,
+    contract_type: str,
+    match_threshold: float = 0.5,
+) -> ClassifyClauseCandidateResponse:
+    """법령 필드 없이 단일 조항의 표준 대비 검토 후보를 반환합니다.
+
+    검색·재정렬·분류 결과로 deviation(NO_MATCH/EXTRA/NONE), confidence와 선택된 표준조항을
+    반환합니다. 법령 조회를 수행하지 않습니다. 따라서 응답에 grounding 필드가 없습니다.
+    법령 원문이 필요하면 matched_standard.category와 contract_type으로
+    get_category_grounding을 별도 호출하세요.
+
+    MISSING은 계약서 전체에서 대응 조항이 없는지를 판단해야 하므로 이 도구에서는 나오지
+    않습니다. 주의 문구 탐지도 수행하지 않습니다. 모든 결과는 표준 대비 검토 후보이며
+    위법·합법 또는 계약상 유불리를 단정하지 않습니다.
+
+    Args:
+        clause_text: 판정할 사용자 조항 본문 텍스트.
+        contract_type: list_contract_types가 반환한 계약 유형.
+        match_threshold: 대응 표준조항으로 인정할 최소 정규화 점수(0~1).
+    """
+    internal_response = _execute_classify_clause(clause_text, contract_type, match_threshold)
+    return to_classify_clause_candidate_response(internal_response)
+
+
 def list_contract_types() -> ListContractTypesResponse:
     """
     지원하는 계약 종류(contract_type) 전체 목록을 조회합니다.
 
-    parse_contract / match_clause / review_contract / classify_clause 의 contract_type
+    parse_contract / match_clause / review_contract_candidates / classify_clause_candidate의 contract_type
     인자에 어떤 값을 넣을 수 있는지 하드코딩하지 말고 이 도구로 런타임에 확인하세요
     (지원 목록은 버전에 따라 추가/제거될 수 있습니다).
     """
@@ -891,6 +925,7 @@ class WorkShieldTools:
     review_contract = staticmethod(review_contract)
     review_contract_candidates = staticmethod(review_contract_candidates)
     classify_clause = staticmethod(classify_clause)
+    classify_clause_candidate = staticmethod(classify_clause_candidate)
     list_contract_types = staticmethod(list_contract_types)
     list_categories = staticmethod(list_categories)
     list_toxic_patterns = staticmethod(list_toxic_patterns)
@@ -906,6 +941,7 @@ class WorkShieldTools:
             "review_contract",
             "review_contract_candidates",
             "classify_clause",
+            "classify_clause_candidate",
             "list_contract_types",
             "list_categories",
             "list_toxic_patterns",

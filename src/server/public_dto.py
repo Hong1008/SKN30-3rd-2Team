@@ -107,6 +107,49 @@ class ReviewContractCandidatesResponse(_PublicModel):
         return self
 
 
+class ClassifyClauseCandidateResponse(_PublicModel):
+    """법령 필드가 없는 단일 조항의 표준 대비 검토 후보 결과."""
+
+    status: Literal["OK", "CORPUS_UNAVAILABLE"] = Field(
+        ...,
+        description="도구 실행 상태. CORPUS_UNAVAILABLE이면 판정 필드는 비어 있다.",
+    )
+    contract_type: str = Field(..., description="비교 기준으로 사용한 표준계약서 유형.")
+    deviation: Literal["NONE", "EXTRA", "NO_MATCH"] | None = Field(
+        default=None,
+        description="표준 대비 검토 후보 표식. MISSING은 계약서 전체 비교에서만 판단한다.",
+    )
+    confidence: float = Field(
+        default=0.0,
+        ge=0.0,
+        le=1.0,
+        description="선택된 표준조항의 정규화 재정렬 점수. 법률적 결론을 의미하지 않는다.",
+    )
+    matched_standard: PublicStandardClause | None = Field(
+        default=None,
+        description="선택된 대응 표준조항. 대응 후보가 없으면 null이다.",
+    )
+    message: str | None = Field(default=None, description="실패 원인 또는 다음 조치를 설명하는 메시지.")
+
+    @model_validator(mode="after")
+    def validate_status_and_classification(self) -> "ClassifyClauseCandidateResponse":
+        """실행 상태와 단일 조항 판정 결과의 모순을 차단한다."""
+        if self.status != "OK":
+            if self.deviation is not None or self.confidence != 0.0 or self.matched_standard is not None:
+                raise ValueError("실패 상태에는 부분 판정 결과를 포함할 수 없습니다.")
+            return self
+
+        if self.deviation is None:
+            raise ValueError("OK 상태에는 deviation이 필요합니다.")
+        if self.deviation == "NONE" and self.matched_standard is None:
+            raise ValueError("NONE에는 선택된 표준조항이 필요합니다.")
+        if self.deviation == "NO_MATCH" and (
+            self.matched_standard is not None or self.confidence != 0.0
+        ):
+            raise ValueError("NO_MATCH에는 표준조항이나 매칭 점수를 포함할 수 없습니다.")
+        return self
+
+
 class PublicGroundingLaw(_PublicModel):
     """카테고리 조회로 얻은 법령 조문 공개 모델."""
 

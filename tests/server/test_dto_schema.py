@@ -1,7 +1,11 @@
 """MCP 출력 스키마에 DTO 의미가 노출되는지 검증한다."""
 
 from server.dto import ClassifyClauseResponse, MatchCandidate, ReviewContractResponse
-from server.public_dto import GetCategoryGroundingResponse, ReviewContractCandidatesResponse
+from server.public_dto import (
+    ClassifyClauseCandidateResponse,
+    GetCategoryGroundingResponse,
+    ReviewContractCandidatesResponse,
+)
 
 
 def test_response_fields_expose_descriptions_in_json_schema():
@@ -58,3 +62,20 @@ def test_category_grounding_schema_exposes_explicit_lookup_states():
         "TIMEOUT",
     }
     assert "OK일 때만" in schema["properties"]["grounding"]["description"]
+
+
+def test_classify_candidate_schema_has_no_grounding_or_internal_standard_model():
+    """신규 단일 조항 계약은 빈 법령 필드와 내부 도메인 모델을 노출하지 않는다."""
+    schema = ClassifyClauseCandidateResponse.model_json_schema()
+
+    assert "grounding" not in str(schema)
+    assert "StandardClause" not in schema.get("$defs", {})
+    assert "PublicStandardClause" in schema.get("$defs", {})
+    assert set(schema["properties"]) == {
+        "status",
+        "contract_type",
+        "deviation",
+        "confidence",
+        "matched_standard",
+        "message",
+    }
