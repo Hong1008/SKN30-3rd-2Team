@@ -22,9 +22,10 @@ just run-mcp-ui                      # MCP Inspector
 
 ## 계약서 전체 검토
 
-`review_contract`는 계약서를 조항별로 비교하고, 계약서 전체에서 찾지 못한 표준조항도 함께
-반환합니다. 계약 유형이 확실하면 바로 호출하고, 확실하지 않으면 먼저 `assess_contract_scope`를
-호출하세요.
+새 클라이언트는 `review_contract_candidates`를 기본 전체 검토 도구로 사용합니다. 이 도구는
+계약서를 조항별로 비교하고 계약서 전체에서 찾지 못한 표준조항도 반환하지만, 법령 조회는 수행하지
+않습니다. 기존 `review_contract`는 `grounding` 필드가 필요한 호환 경로로 유지됩니다. 계약 유형이
+확실하면 전체 검토 도구를 바로 호출하고, 확실하지 않으면 먼저 `assess_contract_scope`를 호출하세요.
 
 ### 1. 비교할 계약 유형 선택
 
@@ -36,7 +37,7 @@ just run-mcp-ui                      # MCP Inspector
 
 1. `assess_contract_scope`에 파일을 전달합니다.
 2. 응답의 `status`, `suggested_contract_type`, `candidates`를 사용자에게 보여 줍니다.
-3. 사용자가 확인하거나 선택한 `contract_type`으로 `review_contract`를 호출합니다.
+3. 사용자가 확인하거나 선택한 `contract_type`으로 `review_contract_candidates`를 호출합니다.
 
 | `assess_contract_scope.status` | 클라이언트 처리 |
 | --- | --- |
@@ -45,8 +46,8 @@ just run-mcp-ui                      # MCP Inspector
 | `OUT_OF_SCOPE` | 현재 표준 코퍼스와의 공통 근거가 부족하다고 알립니다. 계속 진행한다면 사용자의 명시적 재확인을 받습니다. |
 | `EMPTY_DOCUMENT` | 조항을 찾지 못한 상태입니다. 전체 검토를 호출하지 말고 파일 형식·스캔 상태를 확인하게 합니다. |
 
-`assess_contract_scope`와 `review_contract`는 각각 파일을 파싱합니다. 유형이 이미 확실한
-워크플로우에서는 `review_contract`를 직접 호출해 파일 전송과 파싱을 한 번 줄일 수 있습니다.
+`assess_contract_scope`와 전체 검토 도구는 각각 파일을 파싱합니다. 유형이 이미 확실한
+워크플로우에서는 `review_contract_candidates`를 직접 호출해 파일 전송과 파싱을 한 번 줄일 수 있습니다.
 
 ### 2. 파일 전달
 
@@ -57,6 +58,17 @@ just run-mcp-ui                      # MCP Inspector
   대소문자를 구분하지 않으며, 지원하지 않는 형식과 확장자 없는 파일은 파싱 전에 거절됩니다.
 
 ### 3. 결과 표시와 상태 해석
+
+`review_contract_candidates`는 결과 방향을 응답 구조로 분리합니다.
+
+- `clause_results`: 계약서에 실제로 존재하는 조항의 `NONE` / `EXTRA` / `NO_MATCH` 결과
+- `missing_standard_clauses`: 계약서 전체에서 대응되지 않은 `MISSING` 표준조항 후보
+
+`clause_results[].match.status`가 `CANDIDATE_SELECTED`이면 `standard`와 정규화 `score`가 있고,
+`NO_CANDIDATE`이면 비교할 표준조항 후보가 없습니다. 이 응답에는 `grounding`과 현재 전체 검토에서
+활성화되지 않은 연관위험 필드가 없습니다.
+
+다음 설명은 기존 호환 도구인 `review_contract.results`의 평면 결과를 해석할 때 적용합니다.
 
 `review_contract.results`의 각 항목은 표준 대비 검토 후보입니다. 아래 상태를 법적 결론처럼
 표시하거나 자동으로 계약서 내용을 변경해서는 안 됩니다.
@@ -97,6 +109,7 @@ just run-mcp-ui                      # MCP Inspector
 | 도구 | 용도 |
 | --- | --- |
 | `assess_contract_scope` | 지원 범위와 계약 유형 후보 사전 점검 |
+| `review_contract_candidates` | 법령 조회 없이 사용자 조항 결과와 `MISSING` 표준조항을 분리해 반환하는 권장 전체 검토 도구 |
 | `review_contract` | 계약서 전체 파싱·비교·누락 후보·주의 문구와 일부 `MISSING`의 조건부 법령 조회 |
 | `parse_contract` | 계약서 파일을 조항 목록으로 분해 |
 | `match_clause` | 단일 조항과 가까운 표준조항 후보 검색 |
@@ -123,9 +136,9 @@ just run-mcp-ui                      # MCP Inspector
 - `standard://{contract_type}` — 계약 유형별 표준조항 목록
 - `standard://{contract_type}/{clause_id}` — 특정 표준조항 원문
 
-`review_contract`와 `match_clause`는 이미 대응 표준조항 본문을 반환하므로 일반 검토 흐름에서 같은
-원문을 리소스로 다시 읽을 필요는 없습니다. 리소스는 표준조항을 독립적으로 탐색하거나 저장된
-`clause_id`만으로 원문을 다시 열 때 사용합니다.
+`review_contract_candidates`, `review_contract`, `match_clause`는 이미 대응 표준조항 본문을
+반환하므로 일반 검토 흐름에서 같은 원문을 리소스로 다시 읽을 필요는 없습니다. 리소스는
+표준조항을 독립적으로 탐색하거나 저장된 `clause_id`만으로 원문을 다시 열 때 사용합니다.
 
 ### 법령·판례 프록시 도구
 

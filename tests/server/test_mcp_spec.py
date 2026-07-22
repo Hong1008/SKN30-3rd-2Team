@@ -34,6 +34,7 @@ async def test_mcp_spec_includes_registered_tools_and_resource_templates(tmp_pat
     assert {tool["name"] for tool in spec["tools"]} >= {
         "parse_contract",
         "review_contract",
+        "review_contract_candidates",
         "search_law",
     }
     templates = {template["uriTemplate"]: template for template in spec["resourceTemplates"]}

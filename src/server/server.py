@@ -10,7 +10,8 @@ from mcp.server.fastmcp import FastMCP, Context
 
 from config import BASE_DIR
 from contracts.enums import ContractType, Category, Deviation, ToxicPattern, ProgressPhase
-from contracts.models import StandardClause, StandardSubChunk
+from contracts.models import GroundingLaw, StandardClause, StandardSubChunk
+from contracts.ports import Grounder
 from adapter import vector, db, reranker, embedder
 from server.deps import get_parser, get_grounder
 from core import classify_clause_deviation, select_best_match, assess_contract_scope as assess_scope_rules
@@ -32,6 +33,8 @@ from server.dto import (
     AssessContractScopeResponse,
     ContractTypeScopeScore,
 )
+from server.mapper import to_review_contract_candidates_response
+from server.public_dto import ReviewContractCandidatesResponse
 
 logger = logging.getLogger(__name__)
 
@@ -360,6 +363,125 @@ PHASE_MESSAGES = {
     ProgressPhase.MISSING_DETECTION: "누락 표준조항 분석 중..."
 }
 
+
+class _NoGroundingGrounder:
+    """법령 조회가 없는 검토 경로에 주입하는 명시적 no-op 구현."""
+
+    def get_grounding(
+        self, category: Category, contract_type: Optional[ContractType] = None
+    ) -> list[GroundingLaw]:
+        """법령을 조회하지 않고 빈 내부 결과를 반환한다."""
+        return []
+
+    def query_law(self, clause_text: str) -> list[GroundingLaw]:
+        """자유 질의를 수행하지 않고 빈 내부 결과를 반환한다."""
+        return []
+
+
+_NO_GROUNDING_GROUNDER: Grounder = _NoGroundingGrounder()
+
+
+async def _execute_review_contract(
+    contract_type: str,
+    file_path: Optional[str],
+    file_content: Optional[str],
+    file_name: Optional[str],
+    ctx: Optional[Context],
+    grounder: Optional[Grounder],
+) -> ReviewContractResponse:
+    """공개 검토 도구들이 공유하는 파싱·검색·분류 실행부."""
+    try:
+        ct = ContractType(contract_type)
+    except ValueError:
+        raise ValueError(
+            f"지원하지 않는 계약 종류: '{contract_type}'. "
+            f"가능한 값: {[e.value for e in ContractType]}"
+        )
+
+    resolved_path, temp_path = _resolve_contract_file(file_path, file_content, file_name)
+    try:
+        # FileNotFoundError · RuntimeError(kordoc 실패) → 그대로 raise → FastMCP error 응답
+        clauses = get_parser().parse(resolved_path)
+    finally:
+        if temp_path is not None:
+            temp_path.unlink(missing_ok=True)
+    if not clauses:
+        return ReviewContractResponse(
+            status="EMPTY_DOCUMENT",
+            contract_type=ct.value,
+            results=[],
+            message="조항을 찾을 수 없습니다. 스캔 PDF이거나 '제N조' 형식이 없는 문서일 가능성이 있습니다.",
+        )
+
+    standards = _load_standards(ct)
+    if not standards:
+        return ReviewContractResponse(
+            status="CORPUS_UNAVAILABLE",
+            contract_type=ct.value,
+            results=[],
+            message=f"{ct.value} 표준 코퍼스가 DB에 없습니다. `just build-db`를 먼저 실행하세요.",
+        )
+
+    def progress_callback(done: int, total: int, phase: ProgressPhase) -> None:
+        """작업 스레드의 진행률을 MCP 실행 컨텍스트로 전달한다."""
+        if ctx:
+            base_msg = PHASE_MESSAGES.get(phase, "검토 진행 중...")
+            if phase == ProgressPhase.CLAUSE_REVIEW:
+                msg = f"{base_msg} ({done}/{total})"
+            else:
+                msg = base_msg
+            anyio.from_thread.run(ctx.report_progress, done, total, msg)
+
+    try:
+        results = await anyio.to_thread.run_sync(
+            lambda: review_contract_pipe(
+                clauses=clauses,
+                contract_type=ct,
+                retriever=vector,
+                embedder=embedder,
+                reranker=reranker,
+                grounder=grounder if grounder is not None else get_grounder(),
+                all_standard_clauses=standards,
+                progress_callback=progress_callback,
+            )
+        )
+    except InvalidConfigError as e:
+        return ReviewContractResponse(
+            status="INVALID_CONFIG",
+            contract_type=ct.value,
+            results=[],
+            message=str(e),
+        )
+    except PipelineIntegrityError as e:
+        logger.error("[CRITICAL] 파이프라인 무결성 오류: %s", e)
+        return ReviewContractResponse(
+            status="PIPELINE_ERROR",
+            contract_type=ct.value,
+            results=[],
+            message="내부 오류가 발생했습니다. 관리자에게 문의하세요.",
+        )
+    except (CorpusUnavailableError, EmptyDocumentError) as e:
+        logger.warning("review_pipe 내부 도메인 예외: %s", e)
+        return ReviewContractResponse(
+            status="PIPELINE_ERROR",
+            contract_type=ct.value,
+            results=[],
+            message=str(e),
+        )
+    except NotImplementedError:
+        return ReviewContractResponse(
+            status="PIPELINE_ERROR",
+            contract_type=ct.value,
+            results=[],
+            message="review_contract 미구현 상태입니다. 담당자(팀원 C)에게 문의하세요.",
+        )
+
+    return ReviewContractResponse(
+        status="OK",
+        contract_type=ct.value,
+        results=results,
+    )
+
 async def review_contract(
     contract_type: str,
     file_path: Optional[str] = None,
@@ -416,98 +538,65 @@ async def review_contract(
         file_name: 원본 파일명 (HWP/HWPX/HWPML/PDF/XLS/XLSX/DOCX 확장자 판별용). file_content와 함께 지정해야 함.
         ctx: MCP 실행 컨텍스트 (실시간 progress 보고용)
     """
-    try:
-        ct = ContractType(contract_type)
-    except ValueError:
-        raise ValueError(
-            f"지원하지 않는 계약 종류: '{contract_type}'. "
-            f"가능한 값: {[e.value for e in ContractType]}"
-        )
-
-    resolved_path, temp_path = _resolve_contract_file(file_path, file_content, file_name)
-    try:
-        # FileNotFoundError · RuntimeError(kordoc 실패) → 그대로 raise → FastMCP error 응답
-        clauses = get_parser().parse(resolved_path)
-    finally:
-        if temp_path is not None:
-            temp_path.unlink(missing_ok=True)
-    if not clauses:
-        return ReviewContractResponse(
-            status="EMPTY_DOCUMENT",
-            contract_type=ct.value,
-            results=[],
-            message="조항을 찾을 수 없습니다. 스캔 PDF이거나 '제N조' 형식이 없는 문서일 가능성이 있습니다.",
-        )
-
-    standards = _load_standards(ct)
-    if not standards:
-        return ReviewContractResponse(
-            status="CORPUS_UNAVAILABLE",
-            contract_type=ct.value,
-            results=[],
-            message=f"{ct.value} 표준 코퍼스가 DB에 없습니다. `just build-db`를 먼저 실행하세요.",
-        )
-
-    # 1. 스레드 안전한 진행률 전달 콜백 정의
-    def progress_callback(done: int, total: int, phase: ProgressPhase):
-        if ctx:
-            base_msg = PHASE_MESSAGES.get(phase, "검토 진행 중...")
-            if phase == ProgressPhase.CLAUSE_REVIEW:
-                msg = f"{base_msg} ({done}/{total})"
-            else:
-                msg = base_msg
-            anyio.from_thread.run(ctx.report_progress, done, total, msg)
-
-    try:
-        results = await anyio.to_thread.run_sync(
-            lambda: review_contract_pipe(
-                clauses=clauses,
-                contract_type=ct,
-                retriever=vector,
-                embedder=embedder,
-                reranker=reranker,
-                grounder=get_grounder(),
-                all_standard_clauses=standards,
-                progress_callback=progress_callback,
-            )
-        )
-    except InvalidConfigError as e:
-        return ReviewContractResponse(
-            status="INVALID_CONFIG",
-            contract_type=ct.value,
-            results=[],
-            message=str(e),
-        )
-    except PipelineIntegrityError as e:
-        logger.error(f"[CRITICAL] 파이프라인 무결성 오류: {e}")
-        return ReviewContractResponse(
-            status="PIPELINE_ERROR",
-            contract_type=ct.value,
-            results=[],
-            message="내부 오류가 발생했습니다. 관리자에게 문의하세요.",
-        )
-    except (CorpusUnavailableError, EmptyDocumentError) as e:
-        # review_pipe 내부에서 raise된 경우 (이중 방어)
-        logger.warning(f"review_pipe 내부 도메인 예외: {e}")
-        return ReviewContractResponse(
-            status="PIPELINE_ERROR",
-            contract_type=ct.value,
-            results=[],
-            message=str(e),
-        )
-    except NotImplementedError:
-        return ReviewContractResponse(
-            status="PIPELINE_ERROR",
-            contract_type=ct.value,
-            results=[],
-            message="review_contract 미구현 상태입니다. 담당자(팀원 C)에게 문의하세요.",
-        )
-
-    return ReviewContractResponse(
-        status="OK",
-        contract_type=ct.value,
-        results=results,
+    return await _execute_review_contract(
+        contract_type=contract_type,
+        file_path=file_path,
+        file_content=file_content,
+        file_name=file_name,
+        ctx=ctx,
+        grounder=None,
     )
+
+
+async def review_contract_candidates(
+    contract_type: str,
+    file_path: Optional[str] = None,
+    file_content: Optional[str] = None,
+    file_name: Optional[str] = None,
+    ctx: Context = None,
+) -> ReviewContractCandidatesResponse:
+    """계약서를 파싱해 법령 조회 없이 표준 대비 검토 후보와 주의 문구 신호를 반환합니다.
+
+    이 도구는 `review_contract`와 같은 결정론적 검색·재정렬·분류·MISSING 탐지·주의 문구 탐지를
+    수행하지만 법령 조회를 수행하지 않습니다. 응답에도 grounding 필드가 없습니다. 특정 결과의
+    법령 원문이 필요하면 표준조항의 category와 contract_type으로 get_grounding을 별도 호출하세요.
+
+    계약서에 실제로 존재하는 조항은 clause_results에 입력 순서대로 반환합니다. 표준계약서에는
+    있지만 계약서 전체에서 대응되지 않은 MISSING 후보는 missing_standard_clauses로 분리합니다.
+    따라서 MISSING을 표현하기 위한 빈 user_clause나 의미 없는 매칭 점수를 반환하지 않습니다.
+
+    모든 결과는 표준 대비 검토 후보이며 위법·합법, 유불리, 승소 가능성을 단정하지 않습니다.
+    계약 유형이 불명확하면 먼저 assess_contract_scope로 후보를 확인하세요.
+
+    Args:
+        contract_type: 비교 기준으로 쓸 계약 종류. 가능한 값은 list_contract_types로 조회하세요.
+        file_path: 지원 형식의 계약서 절대 경로(로컬 stdio 환경용).
+        file_content: base64 인코딩된 계약서 파일 바이트(네트워크 환경용).
+        file_name: file_content와 함께 쓰는 원본 파일명.
+        ctx: MCP 실행 컨텍스트(실시간 progress 보고용).
+    """
+    internal_response = await _execute_review_contract(
+        contract_type=contract_type,
+        file_path=file_path,
+        file_content=file_content,
+        file_name=file_name,
+        ctx=ctx,
+        grounder=_NO_GROUNDING_GROUNDER,
+    )
+    try:
+        return to_review_contract_candidates_response(
+            status=internal_response.status,
+            contract_type=internal_response.contract_type,
+            results=internal_response.results,
+            message=internal_response.message,
+        )
+    except ValueError as e:
+        logger.error("신규 공개 검토 DTO 변환 오류: %s", e)
+        return ReviewContractCandidatesResponse(
+            status="PIPELINE_ERROR",
+            contract_type=internal_response.contract_type,
+            message="내부 결과 계약이 올바르지 않습니다. 관리자에게 문의하세요.",
+        )
 
 
 _CLASSIFY_TOP_K = 5
@@ -710,6 +799,7 @@ class WorkShieldTools:
     match_clause = staticmethod(match_clause)
     get_grounding = staticmethod(get_grounding)
     review_contract = staticmethod(review_contract)
+    review_contract_candidates = staticmethod(review_contract_candidates)
     classify_clause = staticmethod(classify_clause)
     list_contract_types = staticmethod(list_contract_types)
     list_categories = staticmethod(list_categories)
@@ -723,6 +813,7 @@ class WorkShieldTools:
             "match_clause",
             "get_grounding",
             "review_contract",
+            "review_contract_candidates",
             "classify_clause",
             "list_contract_types",
             "list_categories",

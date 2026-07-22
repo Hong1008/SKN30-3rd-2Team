@@ -23,7 +23,9 @@ core    adapter  ← 순수 판정 / DB·검색·문서·법령 I/O
 계약서 → kordoc 파싱 → 조항 분리 → hybrid 검색 → rerank
        ├─ 표준조항 경로 → NONE / EXTRA / NO_MATCH → 전체 표준과 대조 → MISSING
        └─ 독소패턴 경로 → ToxicPattern 0개 이상
-       → 사용자 조항·대응 표준조항·검토 신호를 MCP 응답으로 반환
+       → review_contract_candidates
+          ├─ clause_results: NONE / EXTRA / NO_MATCH
+          └─ missing_standard_clauses: MISSING 표준조항 후보
 
 필요한 경우: category + contract_type → get_grounding → 관련 법령 원문
 ```
@@ -39,10 +41,14 @@ core    adapter  ← 순수 판정 / DB·검색·문서·법령 I/O
 독소가 없다는 결론이 아니라 현재 검색에서 임계값 이상의 신호를 찾지 못했다는 뜻이다. MCP를 사용하는
 2차 LLM 클라이언트는 이 두 축을 합치거나 `EXTRA`를 독소로 간주하지 않고 각각의 근거로 설명해야 한다.
 
-현재 `review_contract`는 모든 조항의 법령을 조회하지 않는다. 정적 법령 근거는 `MISSING` 중 매핑이
+신규 클라이언트의 기본 경로인 `review_contract_candidates`는 법령을 조회하거나 `grounding`을
+노출하지 않는다. 내부 `DeviationResult`는 서버 전용 mapper에서 공개 DTO로 변환하며, 사용자 조항
+결과와 `MISSING` 표준조항을 서로 다른 배열로 반환한다.
+
+호환 도구 `review_contract`도 모든 조항의 법령을 조회하지 않는다. 정적 법령 근거는 `MISSING` 중 매핑이
 있는 카테고리에만 조건부로 부착되며, `NONE`·`EXTRA`·`NO_MATCH`는 `grounding=[]`을 반환한다.
 특정 결과의 법령 원문이 필요하면 클라이언트가 `matched_standard.category`와 `contract_type`으로
-`get_grounding`을 별도 호출한다. 표준조항 원문은 검토 응답에 이미 포함되므로 일반 검토 흐름에서
+`get_grounding`을 별도 호출한다. 표준조항 원문은 두 검토 응답에 이미 포함되므로 일반 검토 흐름에서
 `standard://...` 리소스를 다시 읽지 않는다.
 
 ## 데이터와 배포

@@ -17,6 +17,7 @@ async def test_create_app_registers_workshield_and_law_tools_and_resources():
     tool_names = set(tools)
     assert {
         "parse_contract", "match_clause", "get_grounding", "review_contract",
+        "review_contract_candidates",
         "classify_clause", "list_contract_types", "list_categories",
         "list_toxic_patterns", "list_toxic_pattern_details", "assess_contract_scope",
         "search_law", "get_law_text", "get_annexes", "legal_research",
@@ -56,6 +57,17 @@ async def test_fastmcp_exposes_review_axes_and_partial_review_boundaries():
         "review_contract",
     ):
         assert phrase in classify_description
+
+    candidates = tools["review_contract_candidates"]
+    candidates_description = candidates.description or ""
+    for phrase in (
+        "법령 조회를 수행하지 않습니다",
+        "clause_results",
+        "missing_standard_clauses",
+        "표준 대비 검토 후보",
+    ):
+        assert phrase in candidates_description
+    assert "grounding" not in candidates.outputSchema["properties"]
 
 
 @pytest.mark.anyio

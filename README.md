@@ -29,7 +29,7 @@ WorkShield는 계약서에서 **표준과 대응하는 조항**, **별도 확인
 ## 어떻게 사용하나요?
 
 1. `assess_contract_scope`가 문서의 지원 범위와 비교할 계약 유형 후보를 점검합니다.
-2. 사용자가 비교 기준을 확인하면 `review_contract`가 전체 계약서를 조항별로 검토합니다.
+2. 사용자가 비교 기준을 확인하면 `review_contract_candidates`가 법령 조회 없이 전체 계약서를 조항별로 검토합니다.
 3. 클라이언트는 사용자 조항, 표준조항과 주의 문구 신호를 사용하고, 필요한 조항의 법령 원문은 별도로 조회합니다.
 
 ```text
@@ -233,11 +233,15 @@ Docker 배포는 MCP 서버 단일 컨테이너만 지원하며, streamable HTTP
 | 도구 | 역할 |
 | --- | --- |
 | `assess_contract_scope` | 지원 범위와 계약 유형 후보 점검 |
+| `review_contract_candidates` | 법령 조회 없이 사용자 조항 결과와 `MISSING` 표준조항을 분리해 반환하는 권장 전체 검토 도구 |
 | `review_contract` | 계약서 전체의 조항 대응·누락·주의 문구 검토와 일부 `MISSING`의 조건부 근거 조회 |
 | `parse_contract` | 계약서를 조항 목록으로 분리 |
 | `match_clause` / `classify_clause` | 단일 조항 검색·분류 |
 | `get_grounding` | 카테고리 또는 법령명이 명시된 질의의 법령 원문 조회 |
 | `list_*` | 지원 계약 유형·카테고리·주의 문구 유형 조회 |
+
+새 클라이언트는 `review_contract_candidates`를 기본 전체 검토 도구로 사용하세요. 기존
+`review_contract`는 `grounding`을 포함하는 호환 경로로 유지됩니다.
 
 계약 유형 확인 순서, 상태별 클라이언트 처리와 전체 도구·리소스 목록은
 [MCP 통합 가이드](src/server/README.md)를 참고하세요.

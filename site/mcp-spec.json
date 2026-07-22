@@ -1561,6 +1561,289 @@
       }
     },
     {
+      "name": "review_contract_candidates",
+      "description": "계약서를 파싱해 법령 조회 없이 표준 대비 검토 후보와 주의 문구 신호를 반환합니다.\n\n이 도구는 `review_contract`와 같은 결정론적 검색·재정렬·분류·MISSING 탐지·주의 문구 탐지를\n수행하지만 법령 조회를 수행하지 않습니다. 응답에도 grounding 필드가 없습니다. 특정 결과의\n법령 원문이 필요하면 표준조항의 category와 contract_type으로 get_grounding을 별도 호출하세요.\n\n계약서에 실제로 존재하는 조항은 clause_results에 입력 순서대로 반환합니다. 표준계약서에는\n있지만 계약서 전체에서 대응되지 않은 MISSING 후보는 missing_standard_clauses로 분리합니다.\n따라서 MISSING을 표현하기 위한 빈 user_clause나 의미 없는 매칭 점수를 반환하지 않습니다.\n\n모든 결과는 표준 대비 검토 후보이며 위법·합법, 유불리, 승소 가능성을 단정하지 않습니다.\n계약 유형이 불명확하면 먼저 assess_contract_scope로 후보를 확인하세요.\n\nArgs:\n    contract_type: 비교 기준으로 쓸 계약 종류. 가능한 값은 list_contract_types로 조회하세요.\n    file_path: 지원 형식의 계약서 절대 경로(로컬 stdio 환경용).\n    file_content: base64 인코딩된 계약서 파일 바이트(네트워크 환경용).\n    file_name: file_content와 함께 쓰는 원본 파일명.\n    ctx: MCP 실행 컨텍스트(실시간 progress 보고용).\n",
+      "inputSchema": {
+        "properties": {
+          "contract_type": {
+            "title": "Contract Type",
+            "type": "string"
+          },
+          "file_path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "File Path"
+          },
+          "file_content": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "File Content"
+          },
+          "file_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "File Name"
+          }
+        },
+        "required": [
+          "contract_type"
+        ],
+        "title": "review_contract_candidatesArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "$defs": {
+          "CandidateSelected": {
+            "additionalProperties": false,
+            "description": "재정렬 결과에서 비교할 표준조항 후보를 선택한 상태.",
+            "properties": {
+              "status": {
+                "const": "CANDIDATE_SELECTED",
+                "description": "비교할 표준조항 후보와 정규화 점수가 있음을 뜻한다.",
+                "title": "Status",
+                "type": "string"
+              },
+              "standard": {
+                "$ref": "#/$defs/PublicStandardClause",
+                "description": "선택된 비교용 표준조항 후보."
+              },
+              "score": {
+                "description": "선택된 표준조항 후보의 정규화 재정렬 점수(0.0~1.0).",
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "title": "Score",
+                "type": "number"
+              }
+            },
+            "required": [
+              "status",
+              "standard",
+              "score"
+            ],
+            "title": "CandidateSelected",
+            "type": "object"
+          },
+          "ClauseReviewCandidate": {
+            "additionalProperties": false,
+            "description": "계약서에 실제로 존재하는 사용자 조항의 표준 대비 검토 후보.",
+            "properties": {
+              "user_clause": {
+                "description": "분석한 사용자 계약서 조항 원문.",
+                "minLength": 1,
+                "title": "User Clause",
+                "type": "string"
+              },
+              "deviation": {
+                "description": "사용자 조항에서 표준조항 방향으로 계산한 검토 후보 표식. MISSING은 이 배열에 포함하지 않는다.",
+                "enum": [
+                  "NONE",
+                  "EXTRA",
+                  "NO_MATCH"
+                ],
+                "title": "Deviation",
+                "type": "string"
+              },
+              "match": {
+                "description": "비교용 표준조항 후보 선택 여부와, 선택된 경우 그 근거.",
+                "discriminator": {
+                  "mapping": {
+                    "CANDIDATE_SELECTED": "#/$defs/CandidateSelected",
+                    "NO_CANDIDATE": "#/$defs/NoCandidate"
+                  },
+                  "propertyName": "status"
+                },
+                "oneOf": [
+                  {
+                    "$ref": "#/$defs/CandidateSelected"
+                  },
+                  {
+                    "$ref": "#/$defs/NoCandidate"
+                  }
+                ],
+                "title": "Match"
+              },
+              "toxic_patterns": {
+                "description": "알려진 주의 문구와의 유사 신호. 빈 목록은 안전·합법 판정이 아니다.",
+                "items": {
+                  "type": "string"
+                },
+                "title": "Toxic Patterns",
+                "type": "array"
+              }
+            },
+            "required": [
+              "user_clause",
+              "deviation",
+              "match"
+            ],
+            "title": "ClauseReviewCandidate",
+            "type": "object"
+          },
+          "MissingStandardCandidate": {
+            "additionalProperties": false,
+            "description": "계약서 전체에서 대응 조항을 찾지 못한 표준조항 후보.",
+            "properties": {
+              "standard": {
+                "$ref": "#/$defs/PublicStandardClause",
+                "description": "사용자 계약서 전체에서 대응되지 않은 표준조항. 누락의 법률적 의미를 확정하지 않는다."
+              }
+            },
+            "required": [
+              "standard"
+            ],
+            "title": "MissingStandardCandidate",
+            "type": "object"
+          },
+          "NoCandidate": {
+            "additionalProperties": false,
+            "description": "비교할 표준조항 후보를 선택하지 못한 상태.",
+            "properties": {
+              "status": {
+                "const": "NO_CANDIDATE",
+                "description": "검색·재정렬 후 선택할 표준조항 후보가 없음을 뜻한다.",
+                "title": "Status",
+                "type": "string"
+              }
+            },
+            "required": [
+              "status"
+            ],
+            "title": "NoCandidate",
+            "type": "object"
+          },
+          "PublicStandardClause": {
+            "additionalProperties": false,
+            "description": "클라이언트에 노출하는 표준조항 원문과 출처.",
+            "properties": {
+              "clause_id": {
+                "description": "표준조항의 고유 식별자.",
+                "title": "Clause Id",
+                "type": "string"
+              },
+              "contract_type": {
+                "description": "표준조항이 속한 계약 유형.",
+                "title": "Contract Type",
+                "type": "string"
+              },
+              "category": {
+                "description": "후속 카테고리 기반 법령 조회에 사용할 분류 값.",
+                "title": "Category",
+                "type": "string"
+              },
+              "title": {
+                "description": "표준조항 제목.",
+                "title": "Title",
+                "type": "string"
+              },
+              "text": {
+                "description": "표준조항 전체 본문.",
+                "title": "Text",
+                "type": "string"
+              },
+              "source": {
+                "description": "표준조항의 원문 출처.",
+                "title": "Source",
+                "type": "string"
+              },
+              "version": {
+                "description": "표준계약서의 배포 또는 개정 버전.",
+                "title": "Version",
+                "type": "string"
+              }
+            },
+            "required": [
+              "clause_id",
+              "contract_type",
+              "category",
+              "title",
+              "text",
+              "source",
+              "version"
+            ],
+            "title": "PublicStandardClause",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "description": "법령 조회와 분리된 계약서 전체의 표준 대비 검토 후보 결과.",
+        "properties": {
+          "status": {
+            "description": "도구 실행 상태. OK가 아니면 두 결과 배열은 비어 있다.",
+            "enum": [
+              "OK",
+              "EMPTY_DOCUMENT",
+              "CORPUS_UNAVAILABLE",
+              "INVALID_CONFIG",
+              "PIPELINE_ERROR"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "contract_type": {
+            "description": "비교 기준으로 사용한 표준계약서 유형.",
+            "title": "Contract Type",
+            "type": "string"
+          },
+          "clause_results": {
+            "description": "계약서에 실제로 존재하는 사용자 조항의 검토 후보. 입력 조항 순서를 유지한다.",
+            "items": {
+              "$ref": "#/$defs/ClauseReviewCandidate"
+            },
+            "title": "Clause Results",
+            "type": "array"
+          },
+          "missing_standard_clauses": {
+            "description": "계약서 전체에서 대응되지 않은 표준조항 후보. user_clause나 매칭 점수를 사용하지 않는다.",
+            "items": {
+              "$ref": "#/$defs/MissingStandardCandidate"
+            },
+            "title": "Missing Standard Clauses",
+            "type": "array"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "처리 실패 원인 또는 다음 조치를 설명하는 메시지.",
+            "title": "Message"
+          }
+        },
+        "required": [
+          "status",
+          "contract_type"
+        ],
+        "title": "ReviewContractCandidatesResponse",
+        "type": "object"
+      }
+    },
+    {
       "name": "search_decisions",
       "description": "판례·해석례·헌재·행심 등 18개 도메인의 결정 목록을 검색합니다.\n\ndomain은 precedent, interpretation, tax_tribunal, customs, nts, constitutional,\nadmin_appeal, ftc, pipc, nlrc, acr, appeal_review, acr_special, school, public_corp,\npublic_inst, treaty, english_law 중 하나입니다. 일반 판례는 precedent, 국세청\n직접 회신은 nts를 사용하세요. query는 검색어입니다.\n\noptions는 외부 도구에 펼쳐 전달할 display, page, sort, options 키를 담습니다.\n예를 들어 판례 본문을 함께 받으려면\n{\"display\": 10, \"options\": {\"includeText\": true, \"detailLimit\": 3}}을 사용합니다.\n검색 결과는 목록이므로 전문이 필요하면 결과 ID를 get_decision_text에 넘기세요.\n\n반환값은 result 필드의 직렬화된 검색 문자열입니다. 검색 결과는 법률 판단이 아니며\n위법·합법, 유불리, 승소 가능성을 단정하지 않습니다. 빈 결과와 연동 오류는\n예외로 반환됩니다.\n",
       "inputSchema": {

@@ -1,6 +1,7 @@
 """MCP 출력 스키마에 DTO 의미가 노출되는지 검증한다."""
 
 from server.dto import ClassifyClauseResponse, MatchCandidate, ReviewContractResponse
+from server.public_dto import ReviewContractCandidatesResponse
 
 
 def test_response_fields_expose_descriptions_in_json_schema():
@@ -19,3 +20,20 @@ def test_nested_response_dto_fields_expose_descriptions_in_json_schema():
 
     assert "판정 임계값" in candidate_schema["properties"]["score"]["description"]
     assert "status와 함께 해석" in review_schema["properties"]["results"]["description"]
+
+
+def test_review_candidates_schema_is_independent_from_legacy_domain_models():
+    """신규 공개 계약은 내부 DeviationResult와 grounding 필드를 노출하지 않는다."""
+    schema = ReviewContractCandidatesResponse.model_json_schema()
+
+    assert "DeviationResult" not in schema.get("$defs", {})
+    assert "GroundingLaw" not in schema.get("$defs", {})
+    assert "grounding" not in str(schema)
+    assert "related_risk_clauses" not in str(schema)
+    assert set(schema["properties"]) == {
+        "status",
+        "contract_type",
+        "clause_results",
+        "missing_standard_clauses",
+        "message",
+    }
