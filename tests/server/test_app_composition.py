@@ -16,7 +16,7 @@ async def test_create_app_registers_workshield_and_law_tools_and_resources():
     tools = {tool.name: tool for tool in await app.list_tools()}
     tool_names = set(tools)
     assert {
-        "parse_contract", "match_clause", "get_grounding", "review_contract",
+        "parse_contract", "parse_contract_clauses", "match_clause", "get_grounding", "review_contract",
         "review_contract_candidates", "get_category_grounding",
         "classify_clause", "classify_clause_candidate", "list_contract_types", "list_categories",
         "list_toxic_patterns", "list_toxic_pattern_details", "assess_contract_scope",
@@ -68,6 +68,17 @@ async def test_fastmcp_exposes_review_axes_and_partial_review_boundaries():
     ):
         assert phrase in candidates_description
     assert "grounding" not in candidates.outputSchema["properties"]
+
+    parse_clauses = tools["parse_contract_clauses"]
+    parse_description = parse_clauses.description or ""
+    for phrase in (
+        "공개 DTO",
+        "도메인 Clause",
+        "classify_clause_candidate",
+    ):
+        assert phrase in parse_description
+    assert "Clause" not in parse_clauses.outputSchema.get("$defs", {})
+    assert "PublicClause" in parse_clauses.outputSchema.get("$defs", {})
 
     classify_candidate = tools["classify_clause_candidate"]
     classify_candidate_description = classify_candidate.description or ""

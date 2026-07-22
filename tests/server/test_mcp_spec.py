@@ -33,6 +33,7 @@ async def test_mcp_spec_includes_registered_tools_and_resource_templates(tmp_pat
     assert spec["server"] == {"name": "WorkShield"}
     assert {tool["name"] for tool in spec["tools"]} >= {
         "parse_contract",
+        "parse_contract_clauses",
         "review_contract",
         "review_contract_candidates",
         "classify_clause_candidate",

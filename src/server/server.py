@@ -17,31 +17,33 @@ from server.deps import get_parser, get_grounder, supports_static_grounding
 from core import classify_clause_deviation, select_best_match, assess_contract_scope as assess_scope_rules
 from pipe.review_pipe import review_contract as review_contract_pipe
 from pipe.exceptions import EmptyDocumentError, CorpusUnavailableError, InvalidConfigError, PipelineIntegrityError
-from server.dto import (
+from server.legacy_dto import (
     ParseContractResponse,
     GetGroundingResponse,
-    MatchClauseResponse,
-    MatchCandidate,
     ReviewContractResponse,
     ClassifyClauseResponse,
-    ListContractTypesResponse,
-    CategoryInfo,
-    ListCategoriesResponse,
-    ListToxicPatternsResponse,
-    ToxicPatternDetail,
-    ListToxicPatternDetailsResponse,
+)
+from server.public_dto import (
     AssessContractScopeResponse,
+    CategoryInfo,
+    ClassifyClauseCandidateResponse,
     ContractTypeScopeScore,
+    GetCategoryGroundingResponse,
+    ListCategoriesResponse,
+    ListContractTypesResponse,
+    ListToxicPatternDetailsResponse,
+    ListToxicPatternsResponse,
+    MatchCandidate,
+    MatchClauseResponse,
+    ParseContractClausesResponse,
+    ReviewContractCandidatesResponse,
+    ToxicPatternDetail,
 )
 from server.mapper import (
     to_classify_clause_candidate_response,
+    to_parse_contract_clauses_response,
     to_public_grounding_laws,
     to_review_contract_candidates_response,
-)
-from server.public_dto import (
-    ClassifyClauseCandidateResponse,
-    GetCategoryGroundingResponse,
-    ReviewContractCandidatesResponse,
 )
 
 logger = logging.getLogger(__name__)
@@ -109,6 +111,7 @@ def _resolve_contract_file(
     temp_path.write_bytes(raw)
     return str(temp_path), temp_path
 
+
 def parse_contract(
     file_path: Optional[str] = None,
     file_content: Optional[str] = None,
@@ -116,8 +119,9 @@ def parse_contract(
     contract_type: Optional[str] = None,
 ) -> ParseContractResponse:
     """
-    계약서 파일(HWP/HWPX/HWPML/PDF/XLS/XLSX/DOCX)을 조항 단위로 분해하여 반환합니다. 검토 파이프라인의 1단계이며,
-    이 결과를 사람이 조항을 골라 match_clause/classify_clause_candidate로 부분 검토하는 데도 쓸 수 있습니다.
+    계약서 파일(HWP/HWPX/HWPML/PDF/XLS/XLSX/DOCX)을 조항 단위로 분해하는 기존 호환 도구입니다.
+    응답은 내부 도메인 Clause 스키마를 유지합니다. 신규 클라이언트는 같은 파싱 결과를 독립된
+    공개 DTO로 받는 parse_contract_clauses를 사용하세요.
 
     이탈 판정은 하지 않습니다 — 조항 분해만 수행합니다. 판정이 필요하면 review_contract 또는
     classify_clause_candidate를 이어서 호출하세요.
@@ -160,6 +164,33 @@ def parse_contract(
         contract_type=ct.value if ct else None,
         clauses=clauses,
     )
+
+
+def parse_contract_clauses(
+    file_path: Optional[str] = None,
+    file_content: Optional[str] = None,
+    file_name: Optional[str] = None,
+    contract_type: Optional[str] = None,
+) -> ParseContractClausesResponse:
+    """계약서를 조항 단위로 파싱해 도메인 모델과 분리된 공개 DTO로 반환합니다.
+
+    기존 parse_contract와 같은 결정론적 파서를 사용하지만 응답에는 내부 도메인 Clause를
+    직접 노출하지 않고 PublicClause로 복사합니다. 신규 부분 검토 클라이언트는 이 도구로
+    조항을 선택한 뒤 match_clause 또는 classify_clause_candidate를 호출하세요.
+
+    Args:
+        file_path: 지원 형식의 계약서 절대 경로(로컬 stdio 환경용).
+        file_content: base64 인코딩된 계약서 파일 바이트(네트워크 환경용).
+        file_name: file_content와 함께 사용하는 원본 파일명.
+        contract_type: 선택적 계약 유형. list_contract_types가 반환한 값을 사용합니다.
+    """
+    internal_response = parse_contract(
+        file_path=file_path,
+        file_content=file_content,
+        file_name=file_name,
+        contract_type=contract_type,
+    )
+    return to_parse_contract_clauses_response(internal_response)
 
 
 def assess_contract_scope(
@@ -918,6 +949,7 @@ class WorkShieldTools:
     """
 
     parse_contract = staticmethod(parse_contract)
+    parse_contract_clauses = staticmethod(parse_contract_clauses)
     assess_contract_scope = staticmethod(assess_contract_scope)
     match_clause = staticmethod(match_clause)
     get_grounding = staticmethod(get_grounding)
@@ -934,6 +966,7 @@ class WorkShieldTools:
     def __init__(self, mcp: FastMCP) -> None:
         for name in (
             "parse_contract",
+            "parse_contract_clauses",
             "assess_contract_scope",
             "match_clause",
             "get_grounding",

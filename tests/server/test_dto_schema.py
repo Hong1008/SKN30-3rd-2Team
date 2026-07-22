@@ -4,6 +4,7 @@ from server.dto import ClassifyClauseResponse, MatchCandidate, ReviewContractRes
 from server.public_dto import (
     ClassifyClauseCandidateResponse,
     GetCategoryGroundingResponse,
+    ParseContractClausesResponse,
     ReviewContractCandidatesResponse,
 )
 
@@ -79,3 +80,11 @@ def test_classify_candidate_schema_has_no_grounding_or_internal_standard_model()
         "matched_standard",
         "message",
     }
+
+
+def test_parse_contract_clauses_schema_uses_public_clause():
+    """신규 파싱 도구는 contracts.models.Clause 대신 공개 조항 DTO를 사용한다."""
+    schema = ParseContractClausesResponse.model_json_schema()
+
+    assert "Clause" not in schema.get("$defs", {})
+    assert "PublicClause" in schema.get("$defs", {})

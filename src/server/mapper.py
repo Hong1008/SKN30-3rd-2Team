@@ -4,13 +4,15 @@ from collections.abc import Iterable
 
 from contracts.enums import Deviation
 from contracts.models import DeviationResult, GroundingLaw, StandardClause
-from server.dto import ClassifyClauseResponse
+from server.legacy_dto import ClassifyClauseResponse, ParseContractResponse
 from server.public_dto import (
     CandidateSelected,
     ClassifyClauseCandidateResponse,
     ClauseReviewCandidate,
     MissingStandardCandidate,
     NoCandidate,
+    ParseContractClausesResponse,
+    PublicClause,
     PublicGroundingLaw,
     PublicStandardClause,
     ReviewContractCandidatesResponse,
@@ -28,6 +30,21 @@ def to_public_grounding_laws(laws: Iterable[GroundingLaw]) -> list[PublicGroundi
         )
         for law in laws
     ]
+
+
+def to_parse_contract_clauses_response(
+    response: ParseContractResponse,
+) -> ParseContractClausesResponse:
+    """도메인 Clause를 공개 조항 DTO로 복사한다."""
+    return ParseContractClausesResponse(
+        status=response.status,
+        contract_type=response.contract_type,
+        clauses=[
+            PublicClause(idx=clause.idx, num=clause.num, title=clause.title, text=clause.text)
+            for clause in response.clauses
+        ],
+        message=response.message,
+    )
 
 
 def _to_public_standard(standard: StandardClause) -> PublicStandardClause:

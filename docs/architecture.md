@@ -46,6 +46,11 @@ core    adapter  ← 순수 판정 / DB·검색·문서·법령 I/O
 노출하지 않는다. 내부 `DeviationResult`는 서버 전용 mapper에서 공개 DTO로 변환하며, 사용자 조항
 결과와 `MISSING` 표준조항을 서로 다른 배열로 반환한다.
 
+MCP DTO는 `server/public_dto.py`에 모은다. 파서의 도메인 `Clause`는 `parse_contract_clauses`에서
+`PublicClause`로 복사한다. 도메인 모델을 직접 반환하는 기존 `parse_contract`, `review_contract`,
+`get_grounding`, `classify_clause`의 계약만 `server/legacy_dto.py`에 격리한다. `server/dto.py`는
+기존 Python import 호환을 위한 재노출 모듈이며 실제 도구 조립에서는 사용하지 않는다.
+
 호환 도구 `review_contract`도 모든 조항의 법령을 조회하지 않는다. 정적 법령 근거는 `MISSING` 중 매핑이
 있는 카테고리에만 조건부로 부착되며, `NONE`·`EXTRA`·`NO_MATCH`는 `grounding=[]`을 반환한다.
 특정 결과의 법령 원문이 필요하면 클라이언트가 `matched_standard.category`와 `contract_type`으로

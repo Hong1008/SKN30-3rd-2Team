@@ -124,7 +124,8 @@ just run-mcp-ui                      # MCP Inspector
 | `assess_contract_scope` | 지원 범위와 계약 유형 후보 사전 점검 |
 | `review_contract_candidates` | 법령 조회 없이 사용자 조항 결과와 `MISSING` 표준조항을 분리해 반환하는 권장 전체 검토 도구 |
 | `review_contract` | 계약서 전체 파싱·비교·누락 후보·주의 문구와 일부 `MISSING`의 조건부 법령 조회 |
-| `parse_contract` | 계약서 파일을 조항 목록으로 분해 |
+| `parse_contract_clauses` | 계약서 파일을 도메인 모델과 분리된 공개 조항 목록으로 분해(신규 클라이언트 권장) |
+| `parse_contract` | 내부 `Clause` 응답을 유지하는 기존 파싱 호환 도구 |
 | `match_clause` | 단일 조항과 가까운 표준조항 후보 검색 |
 | `classify_clause_candidate` | 법령 필드 없이 단일 조항의 검색·재정렬·표준 대비 상태 판정(신규 클라이언트 권장) |
 | `classify_clause` | 항상 빈 `grounding` 필드를 유지하는 기존 단일 조항 호환 도구 |
@@ -173,6 +174,11 @@ just run-mcp-ui                      # MCP Inspector
 `src/server/`는 MCP 입출력 변환과 도구·리소스 등록만 담당합니다. 검색과 판정 규칙은 `core`,
 런타임 검토 흐름은 `pipe`, DB·문서·모델·법령 I/O는 `adapter`에 있습니다.
 
+- `public_dto.py`: 신규 권장 도구와 도메인 비의존 기존 도구의 실제 MCP 공개 계약
+- `legacy_dto.py`: `Clause`, `DeviationResult`, `GroundingLaw`, `StandardClause`를 직접 사용하는 호환 계약
+- `mapper.py`: 동결 도메인 결과를 공개 DTO로 복사하는 단방향 변환
+- `dto.py`: 기존 Python import 경로만 보존하는 재노출 모듈이며 MCP 도구는 직접 import하지 않음
+
 ```text
 외부 MCP 클라이언트
         ↓
@@ -180,6 +186,8 @@ src/app.py                   FastMCP 앱 생성·실행·공용 세션 관리
         ↓
 src/server/
   ├─ WorkShieldTools         계약서 검토 도구·표준조항 리소스 등록
+  ├─ public_dto / mapper     공개 계약 / 도메인→공개 변환
+  ├─ legacy_dto              기존 도메인 결합 응답 격리
   └─ KoreanLawWrapper        외부 법령 MCP 프록시 도구 등록
         ↓
 core / pipe / adapter        판정 규칙 / 검토 조립 / 외부 I/O
