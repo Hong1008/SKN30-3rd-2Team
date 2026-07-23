@@ -2,6 +2,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 from contracts.enums import ContractType, ProgressPhase, Deviation
 from contracts.models import DeviationResult
+from pipe.exceptions import CorpusUnavailableError, EmptyDocumentError
 from server.dto import ReviewContractResponse
 from server.server import review_contract
 
@@ -76,3 +77,50 @@ async def test_review_contract_async_progress(
         (2, 2, "누락 표준조항 분석 중..."),
     ]
 
+
+@pytest.mark.anyio
+@pytest.mark.parametrize(
+    ("error", "expected_status"),
+    [
+        (CorpusUnavailableError("코퍼스 없음"), "CORPUS_UNAVAILABLE"),
+        (EmptyDocumentError("빈 문서"), "EMPTY_DOCUMENT"),
+    ],
+)
+async def test_review_pipe_도메인_예외는_선언된_상태로_보존된다(error, expected_status):
+    parser = MagicMock()
+    parser.parse.return_value = ["fake_clause"]
+
+    with (
+        patch("server.server.get_parser", return_value=parser),
+        patch("server.server._load_standards", return_value=["fake_standard"]),
+        patch("server.server.review_contract_pipe", side_effect=error),
+    ):
+        response = await review_contract(
+            contract_type="SW_FREELANCE",
+            file_path="/dummy/path.pdf",
+        )
+
+    assert response.status == expected_status
+    assert response.results == []
+    assert response.message == str(error)
+
+
+@pytest.mark.anyio
+async def test_review_pipe_미구현_오류는_내부_담당자_정보를_노출하지_않는다():
+    parser = MagicMock()
+    parser.parse.return_value = ["fake_clause"]
+
+    with (
+        patch("server.server.get_parser", return_value=parser),
+        patch("server.server._load_standards", return_value=["fake_standard"]),
+        patch("server.server.review_contract_pipe", side_effect=NotImplementedError),
+    ):
+        response = await review_contract(
+            contract_type="SW_FREELANCE",
+            file_path="/dummy/path.pdf",
+        )
+
+    assert response.status == "PIPELINE_ERROR"
+    assert response.message is not None
+    assert "팀원" not in response.message
+    assert "관리자" in response.message

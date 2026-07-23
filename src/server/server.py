@@ -3,35 +3,50 @@ import binascii
 import logging
 import uuid
 from pathlib import Path
-from typing import Optional
+from typing import Annotated, Optional
 
 import anyio
 from mcp.server.fastmcp import FastMCP, Context
+from pydantic import Field
 
 from config import BASE_DIR
 from contracts.enums import ContractType, Category, Deviation, ToxicPattern, ProgressPhase
-from contracts.models import StandardClause, StandardSubChunk
+from contracts.models import GroundingLaw, StandardClause, StandardSubChunk
+from contracts.ports import Grounder
 from adapter import vector, db, reranker, embedder
-from server.deps import get_parser, get_grounder
+from server.deps import get_parser, get_grounder, supports_static_grounding
 from core import classify_clause_deviation, select_best_match, assess_contract_scope as assess_scope_rules
 from pipe.review_pipe import review_contract as review_contract_pipe
 from pipe.exceptions import EmptyDocumentError, CorpusUnavailableError, InvalidConfigError, PipelineIntegrityError
-from server.dto import (
+from server.legacy_dto import (
     ParseContractResponse,
     GetGroundingResponse,
-    MatchClauseResponse,
-    MatchCandidate,
     ReviewContractResponse,
     ClassifyClauseResponse,
-    ListContractTypesResponse,
-    CategoryInfo,
-    ListCategoriesResponse,
-    ListToxicPatternsResponse,
-    ToxicPatternDetail,
-    ListToxicPatternDetailsResponse,
-    AssessContractScopeResponse,
-    ContractTypeScopeScore,
 )
+from server.public_dto import (
+    AssessContractScopeResponse,
+    CategoryInfo,
+    ClassifyClauseCandidateResponse,
+    ContractTypeScopeScore,
+    GetCategoryGroundingResponse,
+    ListCategoriesResponse,
+    ListContractTypesResponse,
+    ListToxicPatternDetailsResponse,
+    ListToxicPatternsResponse,
+    MatchCandidate,
+    MatchClauseResponse,
+    ParseContractClausesResponse,
+    ReviewContractCandidatesResponse,
+    ToxicPatternDetail,
+)
+from server.mapper import (
+    to_classify_clause_candidate_response,
+    to_parse_contract_clauses_response,
+    to_public_grounding_laws,
+    to_review_contract_candidates_response,
+)
+from server.capabilities import get_mcp_capabilities
 
 logger = logging.getLogger(__name__)
 
@@ -50,6 +65,8 @@ _SUPPORTED_CONTRACT_FILE_SUFFIXES = frozenset({
     ".xlsx",
     ".docx",
 })
+
+_CATEGORY_GROUNDING_TIMEOUT_SECONDS = 30.0
 
 
 def _validate_contract_file_suffix(file_name: str) -> None:
@@ -96,6 +113,7 @@ def _resolve_contract_file(
     temp_path.write_bytes(raw)
     return str(temp_path), temp_path
 
+
 def parse_contract(
     file_path: Optional[str] = None,
     file_content: Optional[str] = None,
@@ -103,11 +121,12 @@ def parse_contract(
     contract_type: Optional[str] = None,
 ) -> ParseContractResponse:
     """
-    계약서 파일(HWP/HWPX/HWPML/PDF/XLS/XLSX/DOCX)을 조항 단위로 분해하여 반환합니다. 검토 파이프라인의 1단계이며,
-    이 결과를 사람이 조항을 골라 match_clause/classify_clause 로 부분 검토하는 데도 쓸 수 있습니다.
+    계약서 파일(HWP/HWPX/HWPML/PDF/XLS/XLSX/DOCX)을 조항 단위로 분해하는 기존 호환 도구입니다.
+    응답은 내부 도메인 Clause 스키마를 유지합니다. 신규 클라이언트는 같은 파싱 결과를 독립된
+    공개 DTO로 받는 parse_contract_clauses를 사용하세요.
 
-    이탈 판정은 하지 않습니다 — 조항 분해만 수행합니다. 판정이 필요하면 review_contract 또는
-    classify_clause 를 이어서 호출하세요.
+    이탈 판정은 하지 않습니다 — 조항 분해만 수행합니다. 신규 전체 검토에는
+    review_contract_candidates를, 선택 조항 검토에는 classify_clause_candidate를 사용하세요.
 
     Args:
         file_path: 지원 형식의 분석할 계약서 절대 경로 (서버와 파일시스템을 공유할 때만 사용 가능. 로컬 stdio 배포용)
@@ -149,6 +168,33 @@ def parse_contract(
     )
 
 
+def parse_contract_clauses(
+    file_path: Optional[str] = None,
+    file_content: Optional[str] = None,
+    file_name: Optional[str] = None,
+    contract_type: Optional[str] = None,
+) -> ParseContractClausesResponse:
+    """계약서를 조항 단위로 파싱해 도메인 모델과 분리된 공개 DTO로 반환합니다.
+
+    기존 parse_contract와 같은 결정론적 파서를 사용하지만 응답에는 내부 도메인 Clause를
+    직접 노출하지 않고 PublicClause로 복사합니다. 신규 부분 검토 클라이언트는 이 도구로
+    조항을 선택한 뒤 match_clause 또는 classify_clause_candidate를 호출하세요.
+
+    Args:
+        file_path: 지원 형식의 계약서 절대 경로(로컬 stdio 환경용).
+        file_content: base64 인코딩된 계약서 파일 바이트(네트워크 환경용).
+        file_name: file_content와 함께 사용하는 원본 파일명.
+        contract_type: 선택적 계약 유형. list_contract_types가 반환한 값을 사용합니다.
+    """
+    internal_response = parse_contract(
+        file_path=file_path,
+        file_content=file_content,
+        file_name=file_name,
+        contract_type=contract_type,
+    )
+    return to_parse_contract_clauses_response(internal_response)
+
+
 def assess_contract_scope(
     file_path: Optional[str] = None,
     file_content: Optional[str] = None,
@@ -159,7 +205,7 @@ def assess_contract_scope(
     파싱된 조항의 카테고리 앵커와 계약유형 표식을 비교할 뿐 파일명·LLM·법률상
     유효성 판단은 사용하지 않습니다. CONTRACT_TYPE_UNCERTAIN은 검토 차단이 아닌
     경고 상태입니다. 호출자는 사용자가 contract_type을 명시하면 그 값으로
-    review_contract를 계속 호출할 수 있습니다.
+    review_contract_candidates를 계속 호출할 수 있습니다.
 
     Args:
         file_path: 지원 형식의 분석할 계약서 절대 경로(로컬 stdio 환경용).
@@ -187,10 +233,10 @@ def assess_contract_scope(
         )
     ]
     messages = {
-        "IN_SCOPE": "지원 표준계약서와 비교할 후보입니다. suggested_contract_type으로 review_contract를 호출할 수 있습니다.",
+        "IN_SCOPE": "지원 표준계약서와 비교할 후보입니다. suggested_contract_type으로 review_contract_candidates를 호출할 수 있습니다.",
         "CONTRACT_TYPE_UNCERTAIN": (
             "지원 SW 계약과 일부 공통점이 있으나 계약유형 근거가 충분하지 않습니다. "
-            "경고를 확인한 뒤 사용자가 contract_type을 명시하여 review_contract를 호출할 수 있습니다."
+            "경고를 확인한 뒤 사용자가 contract_type을 명시하여 review_contract_candidates를 호출할 수 있습니다."
         ),
         "OUT_OF_SCOPE": "현재 지원 SW 표준계약서 코퍼스와의 공통 근거가 부족한 문서입니다. 표준 대비 검토 대상에서 제외하는 것을 권장합니다.",
     }
@@ -209,6 +255,7 @@ def assess_contract_scope(
 
 _MATCH_TOP_K_MAX = 10
 _STANDARD_CLAUSES_TABLE = "standard_clauses"
+MatchTopK = Annotated[int, Field(ge=1, le=_MATCH_TOP_K_MAX)]
 
 
 def _load_standards(ct: ContractType) -> list[StandardClause]:
@@ -226,14 +273,14 @@ _STANDARD_CLAUSES_COLLECTION = "standard_clauses"
 def match_clause(
     clause_text: str,
     contract_type: str,
-    top_k: int = 5,
+    top_k: MatchTopK = 5,
 ) -> MatchClauseResponse:
     """
     단일 조항 텍스트와 가장 유사한 표준조항 후보를 유사도 순으로 검색합니다 (검색 전용, 이탈 판정 없음).
 
     이 도구는 "비슷한 표준조항이 뭐가 있나"만 답합니다. score는 검색 융합 점수(RRF/BM25 등)이며
     match_threshold 같은 판정 임계치와 스케일이 다르므로 "매칭 성공/실패"를 이 점수로 판단하지 마세요.
-    "이 조항이 표준 대비 이탈(EXTRA/NONE)인가?"가 필요하면 classify_clause 를 쓰세요.
+    "이 조항이 표준 대비 이탈(EXTRA/NONE)인가?"가 필요하면 classify_clause_candidate를 쓰세요.
     이 도구가 반환하는 것은 "검토 후보" 목록일 뿐 최종 판정이 아닙니다.
 
     사용 예: 계약서 전체가 아니라 특정 조항 하나에 대해 어떤 표준조항이 대응되는지만 빠르게 훑어볼 때.
@@ -251,7 +298,8 @@ def match_clause(
             f"가능한 값: {[e.value for e in ContractType]}"
         )
 
-    top_k = min(top_k, _MATCH_TOP_K_MAX)
+    if not 1 <= top_k <= _MATCH_TOP_K_MAX:
+        raise ValueError(f"top_k는 1 이상 {_MATCH_TOP_K_MAX} 이하이어야 합니다.")
 
     query_vector = embedder.embed_query(clause_text)
     results = vector.hybrid_search(
@@ -295,8 +343,12 @@ def get_grounding(
     contract_type: Optional[str] = None,
 ) -> GetGroundingResponse:
     """
-    카테고리 또는 조항 본문에 해당하는 관련 법령 조문을 조회합니다.
+    카테고리의 정적 매핑 또는 법령명이 명시된 질의로 관련 법령 조문을 조회합니다.
     둘 다 제공되면 clause_text를 우선합니다 (korean-law-mcp는 단일 쿼리만 지원).
+
+    clause_text 경로는 임의 계약 문구의 의미를 분류하지 않습니다. 입력 앞부분에서 정확한
+    법령명을 식별할 수 있을 때 해당 법령·조문을 결정론적으로 조회합니다. 일반 계약 조항은
+    review_contract_candidates 결과의 표준조항 category와 contract_type을 사용하는 편이 정확합니다.
 
     반환되는 법령 조문은 참고용 근거 자료이며, "이 조항은 위법이다/유리하다" 같은 결론은
     포함하지 않습니다. 그런 해석이 필요한 문장은 이 도구의 출력을 그대로 사용자에게
@@ -304,7 +356,7 @@ def get_grounding(
 
     Args:
         category: 조항 분류 카테고리. 가능한 값은 list_categories 로 조회하세요. 생략 가능.
-        clause_text: 법령 조문을 조회할 조항 본문 텍스트. 생략 가능.
+        clause_text: 법령명이 명시된 법령 조회 질의. 임의 계약 문구의 의미 검색용이 아님. 생략 가능.
         contract_type: 계약 유형. SI/SM 하도급 계약은 같은 category라도 적용 법령이 다를 수
             있어(예: PAYMENT — SW는 민법, SI/SM은 하도급법), category와 함께 제공하면 더
             정확한 근거를 받습니다. clause_text 단독 조회에는 영향 없습니다. 생략 가능.
@@ -347,6 +399,93 @@ def get_grounding(
     return GetGroundingResponse(status="OK", grounding=grounding)
 
 
+async def get_category_grounding(
+    category: str,
+    contract_type: Optional[str] = None,
+) -> GetCategoryGroundingResponse:
+    """카테고리 정적 매핑으로 관련 법령을 조회하고 상태를 명시적으로 반환합니다.
+
+    기존 get_grounding의 동작은 유지합니다. 이 도구는 카테고리 조회만 담당하며,
+    UNMAPPED_CATEGORY(정적 매핑 없음), NO_RESULT(조회했으나 결과 없음),
+    UPSTREAM_ERROR(외부 서비스 실패), TIMEOUT(응답 시간 초과)을 구분합니다.
+    grounding은 OK일 때만 최소 1건이고, 그 외 상태에서는 항상 빈 목록입니다.
+    반환 내용은 참고 자료이며 위법·합법 또는 유불리 판단이 아닙니다.
+
+    Args:
+        category: list_categories가 반환한 조항 카테고리 값.
+        contract_type: 선택적 계약 유형. SI/SM 하도급의 전용 매핑 선택에 사용합니다.
+    """
+    try:
+        cat = Category(category)
+    except ValueError:
+        raise ValueError(
+            f"지원하지 않는 카테고리: '{category}'. "
+            f"가능한 값: {[item.value for item in Category]}"
+        )
+
+    ct = None
+    if contract_type is not None:
+        try:
+            ct = ContractType(contract_type)
+        except ValueError:
+            raise ValueError(
+                f"지원하지 않는 계약 종류: '{contract_type}'. "
+                f"가능한 값: {[item.value for item in ContractType]}"
+            )
+
+    if not supports_static_grounding(cat, ct):
+        return GetCategoryGroundingResponse(
+            status="UNMAPPED_CATEGORY",
+            category=cat.value,
+            contract_type=ct.value if ct is not None else None,
+            grounding=[],
+            message="현재 정적 정책에 이 카테고리와 연결된 특정 법령 조문이 없습니다.",
+        )
+
+    try:
+        with anyio.fail_after(_CATEGORY_GROUNDING_TIMEOUT_SECONDS):
+            grounding = await anyio.to_thread.run_sync(
+                get_grounder().get_grounding,
+                cat,
+                ct,
+                abandon_on_cancel=True,
+            )
+    except TimeoutError:
+        logger.warning("카테고리 법령 조회 시간 초과: category=%s", cat.value)
+        return GetCategoryGroundingResponse(
+            status="TIMEOUT",
+            category=cat.value,
+            contract_type=ct.value if ct is not None else None,
+            grounding=[],
+            message="법령 서비스 응답 시간이 초과되었습니다. 잠시 후 다시 시도하세요.",
+        )
+    except Exception:
+        logger.exception("카테고리 법령 조회 실패: category=%s", cat.value)
+        return GetCategoryGroundingResponse(
+            status="UPSTREAM_ERROR",
+            category=cat.value,
+            contract_type=ct.value if ct is not None else None,
+            grounding=[],
+            message="법령 서비스 호출에 실패했습니다. 잠시 후 다시 시도하세요.",
+        )
+
+    if not grounding:
+        return GetCategoryGroundingResponse(
+            status="NO_RESULT",
+            category=cat.value,
+            contract_type=ct.value if ct is not None else None,
+            grounding=[],
+            message="현재 조회 조건으로 관련 법령 조문을 찾지 못했습니다.",
+        )
+
+    return GetCategoryGroundingResponse(
+        status="OK",
+        category=cat.value,
+        contract_type=ct.value if ct is not None else None,
+        grounding=to_public_grounding_laws(grounding),
+    )
+
+
 # 상태별 한글 메시지 템플릿
 PHASE_MESSAGES = {
     ProgressPhase.PREPARE: "검토 준비 중...",
@@ -355,6 +494,133 @@ PHASE_MESSAGES = {
     ProgressPhase.CLAUSE_REVIEW: "조항별 이탈 분류 중...",
     ProgressPhase.MISSING_DETECTION: "누락 표준조항 분석 중..."
 }
+
+
+class _NoGroundingGrounder:
+    """법령 조회가 없는 검토 경로에 주입하는 명시적 no-op 구현."""
+
+    def get_grounding(
+        self, category: Category, contract_type: Optional[ContractType] = None
+    ) -> list[GroundingLaw]:
+        """법령을 조회하지 않고 빈 내부 결과를 반환한다."""
+        return []
+
+    def query_law(self, clause_text: str) -> list[GroundingLaw]:
+        """자유 질의를 수행하지 않고 빈 내부 결과를 반환한다."""
+        return []
+
+
+_NO_GROUNDING_GROUNDER: Grounder = _NoGroundingGrounder()
+
+
+async def _execute_review_contract(
+    contract_type: str,
+    file_path: Optional[str],
+    file_content: Optional[str],
+    file_name: Optional[str],
+    ctx: Optional[Context],
+    grounder: Optional[Grounder],
+) -> ReviewContractResponse:
+    """공개 검토 도구들이 공유하는 파싱·검색·분류 실행부."""
+    try:
+        ct = ContractType(contract_type)
+    except ValueError:
+        raise ValueError(
+            f"지원하지 않는 계약 종류: '{contract_type}'. "
+            f"가능한 값: {[e.value for e in ContractType]}"
+        )
+
+    resolved_path, temp_path = _resolve_contract_file(file_path, file_content, file_name)
+    try:
+        # FileNotFoundError · RuntimeError(kordoc 실패) → 그대로 raise → FastMCP error 응답
+        clauses = get_parser().parse(resolved_path)
+    finally:
+        if temp_path is not None:
+            temp_path.unlink(missing_ok=True)
+    if not clauses:
+        return ReviewContractResponse(
+            status="EMPTY_DOCUMENT",
+            contract_type=ct.value,
+            results=[],
+            message="조항을 찾을 수 없습니다. 스캔 PDF이거나 '제N조' 형식이 없는 문서일 가능성이 있습니다.",
+        )
+
+    standards = _load_standards(ct)
+    if not standards:
+        return ReviewContractResponse(
+            status="CORPUS_UNAVAILABLE",
+            contract_type=ct.value,
+            results=[],
+            message=f"{ct.value} 표준 코퍼스가 DB에 없습니다. `just build-db`를 먼저 실행하세요.",
+        )
+
+    def progress_callback(done: int, total: int, phase: ProgressPhase) -> None:
+        """작업 스레드의 진행률을 MCP 실행 컨텍스트로 전달한다."""
+        if ctx:
+            base_msg = PHASE_MESSAGES.get(phase, "검토 진행 중...")
+            if phase == ProgressPhase.CLAUSE_REVIEW:
+                msg = f"{base_msg} ({done}/{total})"
+            else:
+                msg = base_msg
+            anyio.from_thread.run(ctx.report_progress, done, total, msg)
+
+    try:
+        results = await anyio.to_thread.run_sync(
+            lambda: review_contract_pipe(
+                clauses=clauses,
+                contract_type=ct,
+                retriever=vector,
+                embedder=embedder,
+                reranker=reranker,
+                grounder=grounder if grounder is not None else get_grounder(),
+                all_standard_clauses=standards,
+                progress_callback=progress_callback,
+            )
+        )
+    except InvalidConfigError as e:
+        return ReviewContractResponse(
+            status="INVALID_CONFIG",
+            contract_type=ct.value,
+            results=[],
+            message=str(e),
+        )
+    except PipelineIntegrityError as e:
+        logger.error("[CRITICAL] 파이프라인 무결성 오류: %s", e)
+        return ReviewContractResponse(
+            status="PIPELINE_ERROR",
+            contract_type=ct.value,
+            results=[],
+            message="내부 오류가 발생했습니다. 관리자에게 문의하세요.",
+        )
+    except CorpusUnavailableError as e:
+        logger.warning("review_pipe 코퍼스 사용 불가: %s", e)
+        return ReviewContractResponse(
+            status="CORPUS_UNAVAILABLE",
+            contract_type=ct.value,
+            results=[],
+            message=str(e),
+        )
+    except EmptyDocumentError as e:
+        logger.warning("review_pipe 빈 문서: %s", e)
+        return ReviewContractResponse(
+            status="EMPTY_DOCUMENT",
+            contract_type=ct.value,
+            results=[],
+            message=str(e),
+        )
+    except NotImplementedError:
+        return ReviewContractResponse(
+            status="PIPELINE_ERROR",
+            contract_type=ct.value,
+            results=[],
+            message="계약 검토 기능을 현재 사용할 수 없습니다. 관리자에게 문의하세요.",
+        )
+
+    return ReviewContractResponse(
+        status="OK",
+        contract_type=ct.value,
+        results=results,
+    )
 
 async def review_contract(
     contract_type: str,
@@ -391,16 +657,17 @@ async def review_contract(
     빈 목록은 다음처럼 해석합니다.
 
     - toxic_patterns=[]: 임계값 이상의 알려진 패턴을 찾지 못했다는 뜻이며 안전·합법 판정이 아닙니다.
-    - grounding=[]: 관련 법령이 없다는 뜻이 아닙니다. 1차는 주로 MISSING에만 정적 근거를 부착합니다.
+    - grounding=[]: 관련 법령이 없다는 뜻이 아닙니다. NONE/EXTRA/NO_MATCH에는 법령 조회를 하지
+      않고, MISSING도 GENERAL·정적 매핑 없음·조회 결과 없음이면 빈 목록입니다.
     - results=[]: "문제 없음"이 아니라 status가 EMPTY_DOCUMENT, CORPUS_UNAVAILABLE,
       INVALID_CONFIG, PIPELINE_ERROR인지 먼저 확인해야 합니다.
 
     MISSING은 계약서 전체에서 표준조항이 누락된 후보이며 user_clause가 빈 문자열입니다.
     모든 결과는 검토 후보이며 위법·합법, 유불리, 승소 가능성을 단정하지 않습니다.
 
-    특정 조항 한두 개만 빠르게 보고 싶다면 이 도구 대신 parse_contract 로 조항을 나눈 뒤
-    classify_clause 를 개별 호출하면 빠릅니다. 단, classify_clause는 독소 패턴을 검색하지
-    않으므로 독소 신호까지 필요하면 review_contract를 사용하세요.
+    특정 조항 한두 개만 빠르게 보고 싶다면 이 도구 대신 parse_contract_clauses로 조항을 나눈 뒤
+    classify_clause_candidate를 개별 호출하면 빠릅니다. 단, 이 도구는 독소 패턴을 검색하지
+    않으므로 독소 신호까지 필요하면 review_contract_candidates를 사용하세요.
 
     Args:
         contract_type: 비교 기준으로 쓸 계약 종류. 가능한 값은 list_contract_types 로 조회하세요.
@@ -411,127 +678,80 @@ async def review_contract(
         file_name: 원본 파일명 (HWP/HWPX/HWPML/PDF/XLS/XLSX/DOCX 확장자 판별용). file_content와 함께 지정해야 함.
         ctx: MCP 실행 컨텍스트 (실시간 progress 보고용)
     """
-    try:
-        ct = ContractType(contract_type)
-    except ValueError:
-        raise ValueError(
-            f"지원하지 않는 계약 종류: '{contract_type}'. "
-            f"가능한 값: {[e.value for e in ContractType]}"
-        )
-
-    resolved_path, temp_path = _resolve_contract_file(file_path, file_content, file_name)
-    try:
-        # FileNotFoundError · RuntimeError(kordoc 실패) → 그대로 raise → FastMCP error 응답
-        clauses = get_parser().parse(resolved_path)
-    finally:
-        if temp_path is not None:
-            temp_path.unlink(missing_ok=True)
-    if not clauses:
-        return ReviewContractResponse(
-            status="EMPTY_DOCUMENT",
-            contract_type=ct.value,
-            results=[],
-            message="조항을 찾을 수 없습니다. 스캔 PDF이거나 '제N조' 형식이 없는 문서일 가능성이 있습니다.",
-        )
-
-    standards = _load_standards(ct)
-    if not standards:
-        return ReviewContractResponse(
-            status="CORPUS_UNAVAILABLE",
-            contract_type=ct.value,
-            results=[],
-            message=f"{ct.value} 표준 코퍼스가 DB에 없습니다. `just build-db`를 먼저 실행하세요.",
-        )
-
-    # 1. 스레드 안전한 진행률 전달 콜백 정의
-    def progress_callback(done: int, total: int, phase: ProgressPhase):
-        if ctx:
-            base_msg = PHASE_MESSAGES.get(phase, "검토 진행 중...")
-            if phase == ProgressPhase.CLAUSE_REVIEW:
-                msg = f"{base_msg} ({done}/{total})"
-            else:
-                msg = base_msg
-            anyio.from_thread.run(ctx.report_progress, done, total, msg)
-
-    try:
-        results = await anyio.to_thread.run_sync(
-            lambda: review_contract_pipe(
-                clauses=clauses,
-                contract_type=ct,
-                retriever=vector,
-                embedder=embedder,
-                reranker=reranker,
-                grounder=get_grounder(),
-                all_standard_clauses=standards,
-                progress_callback=progress_callback,
-            )
-        )
-    except InvalidConfigError as e:
-        return ReviewContractResponse(
-            status="INVALID_CONFIG",
-            contract_type=ct.value,
-            results=[],
-            message=str(e),
-        )
-    except PipelineIntegrityError as e:
-        logger.error(f"[CRITICAL] 파이프라인 무결성 오류: {e}")
-        return ReviewContractResponse(
-            status="PIPELINE_ERROR",
-            contract_type=ct.value,
-            results=[],
-            message="내부 오류가 발생했습니다. 관리자에게 문의하세요.",
-        )
-    except (CorpusUnavailableError, EmptyDocumentError) as e:
-        # review_pipe 내부에서 raise된 경우 (이중 방어)
-        logger.warning(f"review_pipe 내부 도메인 예외: {e}")
-        return ReviewContractResponse(
-            status="PIPELINE_ERROR",
-            contract_type=ct.value,
-            results=[],
-            message=str(e),
-        )
-    except NotImplementedError:
-        return ReviewContractResponse(
-            status="PIPELINE_ERROR",
-            contract_type=ct.value,
-            results=[],
-            message="review_contract 미구현 상태입니다. 담당자(팀원 C)에게 문의하세요.",
-        )
-
-    return ReviewContractResponse(
-        status="OK",
-        contract_type=ct.value,
-        results=results,
+    return await _execute_review_contract(
+        contract_type=contract_type,
+        file_path=file_path,
+        file_content=file_content,
+        file_name=file_name,
+        ctx=ctx,
+        grounder=None,
     )
 
 
-_CLASSIFY_TOP_K = 5
-
-
-def classify_clause(
-    clause_text: str,
+async def review_contract_candidates(
     contract_type: str,
-    match_threshold: float = 0.5,
-) -> ClassifyClauseResponse:
-    """
-    단일 조항 텍스트 하나를 표준조항과 비교해 이탈 여부를 판정합니다 (부분 검토 워크플로우용).
+    file_path: Optional[str] = None,
+    file_content: Optional[str] = None,
+    file_name: Optional[str] = None,
+    ctx: Context = None,
+) -> ReviewContractCandidatesResponse:
+    """계약서를 파싱해 법령 조회 없이 표준 대비 검토 후보와 주의 문구 신호를 반환합니다.
 
-    review_contract 전체를 돌리지 않고 "이 조항 하나만" 표준 대비 어떤지 알고 싶을 때 씁니다.
-    match_clause 가 후보 나열까지만 하는 것과 달리, 이 도구는 재정렬(reranker) → 최적 매칭 선택
-    → 이탈 분류까지 끝내 deviation(NO_MATCH/EXTRA/NONE) 하나를 확정해 반환합니다.
+    이 도구는 `review_contract`와 같은 결정론적 검색·재정렬·분류·MISSING 탐지·주의 문구 탐지를
+    수행하지만 법령 조회를 수행하지 않습니다. 응답에도 grounding 필드가 없습니다. 특정 결과의
+    법령 원문이 필요하면 표준조항의 category와 contract_type으로 get_category_grounding을 별도 호출하세요.
 
-    MISSING은 이 도구로 나오지 않습니다. MISSING은 "표준조항이 계약서 전체에 없다"는 뜻이라
-    조항 하나만으로는 판정할 수 없고, review_contract 로 전체를 봐야 발견됩니다.
-    또한 이 도구는 독소 패턴 검색을 수행하지 않습니다. toxic_patterns가 필요하면
-    review_contract를 사용하세요. 법령 조회도 수행하지 않아 grounding은 항상 빈 목록입니다.
-    반환되는 deviation은 표준 대비 기계적 차이를 나타내는 "검토 후보" 표식이며, 위법 여부나
-    유불리를 단정하지 않습니다. grounding=[]도 관련 법령이 없다는 뜻이 아닙니다.
+    계약서에 실제로 존재하는 조항은 clause_results에 입력 순서대로 반환합니다. 표준계약서에는
+    있지만 계약서 전체에서 대응되지 않은 MISSING 후보는 missing_standard_clauses로 분리합니다.
+    따라서 MISSING을 표현하기 위한 빈 user_clause나 의미 없는 매칭 점수를 반환하지 않습니다.
+
+    모든 결과는 표준 대비 검토 후보이며 위법·합법, 유불리, 승소 가능성을 단정하지 않습니다.
+    계약 유형이 불명확하면 먼저 assess_contract_scope로 후보를 확인하세요.
 
     Args:
-        clause_text: 판정할 사용자 조항 본문 텍스트
-        contract_type: 계약 종류. 가능한 값은 list_contract_types 로 조회하세요.
-        match_threshold: 대응 표준조항으로 인정할 최소 정규화 점수(0~1). 기본값 0.5.
+        contract_type: 비교 기준으로 쓸 계약 종류. 가능한 값은 list_contract_types로 조회하세요.
+        file_path: 지원 형식의 계약서 절대 경로(로컬 stdio 환경용).
+        file_content: base64 인코딩된 계약서 파일 바이트(네트워크 환경용).
+        file_name: file_content와 함께 쓰는 원본 파일명.
+        ctx: MCP 실행 컨텍스트(실시간 progress 보고용).
     """
+    internal_response = await _execute_review_contract(
+        contract_type=contract_type,
+        file_path=file_path,
+        file_content=file_content,
+        file_name=file_name,
+        ctx=ctx,
+        grounder=_NO_GROUNDING_GROUNDER,
+    )
+    try:
+        return to_review_contract_candidates_response(
+            status=internal_response.status,
+            contract_type=internal_response.contract_type,
+            results=internal_response.results,
+            message=internal_response.message,
+        )
+    except ValueError as e:
+        logger.error("신규 공개 검토 DTO 변환 오류: %s", e)
+        return ReviewContractCandidatesResponse(
+            status="PIPELINE_ERROR",
+            contract_type=internal_response.contract_type,
+            message="내부 결과 계약이 올바르지 않습니다. 관리자에게 문의하세요.",
+        )
+
+
+_CLASSIFY_TOP_K = 5
+MatchThreshold = Annotated[float, Field(ge=0.0, le=1.0)]
+
+
+def _execute_classify_clause(
+    clause_text: str,
+    contract_type: str,
+    match_threshold: MatchThreshold = 0.5,
+) -> ClassifyClauseResponse:
+    """두 공개 단일 조항 도구가 공유하는 결정론적 검색·재정렬·분류를 실행한다."""
+    if not 0.0 <= match_threshold <= 1.0:
+        raise ValueError("match_threshold는 0 이상 1 이하이어야 합니다.")
+
     try:
         ct = ContractType(contract_type)
     except ValueError:
@@ -574,6 +794,22 @@ def classify_clause(
             score = float(hit["rerank_score"]) if "rerank_score" in hit else 0.0
             candidates.append((standard, score))
 
+    if not candidates:
+        logger.error(
+            "표준조항 검색 인덱스와 DB 코퍼스 결합 실패: contract_type=%s, raw_hits=%d, reranked=%d",
+            ct.value,
+            len(raw_hits),
+            len(reranked),
+        )
+        return ClassifyClauseResponse(
+            status="CORPUS_UNAVAILABLE",
+            contract_type=ct.value,
+            message=(
+                "표준조항 검색 인덱스와 DB 코퍼스가 일치하지 않습니다. "
+                "`just build-db`로 코퍼스를 다시 생성한 뒤 재시도하세요."
+            ),
+        )
+
     matched, score = select_best_match(candidates)
     deviation = classify_clause_deviation(matched, score, match_threshold)
 
@@ -587,11 +823,56 @@ def classify_clause(
     )
 
 
+def classify_clause(
+    clause_text: str,
+    contract_type: str,
+    match_threshold: MatchThreshold = 0.5,
+) -> ClassifyClauseResponse:
+    """단일 조항을 표준조항과 비교하는 기존 호환 도구입니다.
+
+    검색·재정렬 후 deviation(NO_MATCH/EXTRA/NONE)을 반환합니다. MISSING은 계약서 전체를
+    비교하는 review_contract에서만 판단합니다. 독소 패턴 검색을 수행하지 않습니다.
+    법령 조회도 수행하지 않아 grounding은 항상 빈 목록입니다. 신규 클라이언트는 동일 판정에서
+    이 모호한 필드를 제거한 classify_clause_candidate를 사용하세요.
+
+    Args:
+        clause_text: 판정할 사용자 조항 본문 텍스트.
+        contract_type: list_contract_types가 반환한 계약 유형.
+        match_threshold: 대응 표준조항으로 인정할 최소 정규화 점수(0~1).
+    """
+    return _execute_classify_clause(clause_text, contract_type, match_threshold)
+
+
+def classify_clause_candidate(
+    clause_text: str,
+    contract_type: str,
+    match_threshold: MatchThreshold = 0.5,
+) -> ClassifyClauseCandidateResponse:
+    """법령 필드 없이 단일 조항의 표준 대비 검토 후보를 반환합니다.
+
+    검색·재정렬·분류 결과로 deviation(NO_MATCH/EXTRA/NONE), confidence와 선택된 표준조항을
+    반환합니다. 법령 조회를 수행하지 않습니다. 따라서 응답에 grounding 필드가 없습니다.
+    법령 원문이 필요하면 matched_standard.category와 contract_type으로
+    get_category_grounding을 별도 호출하세요.
+
+    MISSING은 계약서 전체에서 대응 조항이 없는지를 판단해야 하므로 이 도구에서는 나오지
+    않습니다. 주의 문구 탐지도 수행하지 않습니다. 모든 결과는 표준 대비 검토 후보이며
+    위법·합법 또는 계약상 유불리를 단정하지 않습니다.
+
+    Args:
+        clause_text: 판정할 사용자 조항 본문 텍스트.
+        contract_type: list_contract_types가 반환한 계약 유형.
+        match_threshold: 대응 표준조항으로 인정할 최소 정규화 점수(0~1).
+    """
+    internal_response = _execute_classify_clause(clause_text, contract_type, match_threshold)
+    return to_classify_clause_candidate_response(internal_response)
+
+
 def list_contract_types() -> ListContractTypesResponse:
     """
     지원하는 계약 종류(contract_type) 전체 목록을 조회합니다.
 
-    parse_contract / match_clause / review_contract / classify_clause 의 contract_type
+    parse_contract / match_clause / review_contract_candidates / classify_clause_candidate의 contract_type
     인자에 어떤 값을 넣을 수 있는지 하드코딩하지 말고 이 도구로 런타임에 확인하세요
     (지원 목록은 버전에 따라 추가/제거될 수 있습니다).
     """
@@ -602,7 +883,7 @@ def list_categories(contract_type: Optional[str] = None) -> ListCategoriesRespon
     """
     조항 분류 카테고리(category) 전체 목록을 설명·앵커 키워드와 함께 조회합니다.
 
-    get_grounding 의 category 인자 값을 확인하거나, 계약서의 어떤 카테고리들이
+    get_category_grounding의 category 인자 값을 확인하거나, 계약서의 어떤 카테고리들이
     검토 대상인지 사람에게 설명할 때 사용하세요.
 
     Args:
@@ -632,7 +913,7 @@ def list_toxic_patterns() -> ListToxicPatternsResponse:
     """
     탐지 대상 독소조항 패턴(toxic_pattern) 전체 목록을 조회합니다.
 
-    review_contract 결과의 toxic_patterns 필드에 어떤 값이 나올 수 있는지 확인할 때 사용하세요.
+    review_contract_candidates 결과의 toxic_patterns 필드에 어떤 값이 나올 수 있는지 확인할 때 사용하세요.
     """
     return ListToxicPatternsResponse(patterns=[p.value for p in ToxicPattern])
 
@@ -640,7 +921,7 @@ def list_toxic_patterns() -> ListToxicPatternsResponse:
 def list_toxic_pattern_details() -> ListToxicPatternDetailsResponse:
     """탐지 대상 독소조항 패턴을 사람이 읽는 대표 제목과 함께 조회합니다 (패턴 enum 1건당 1행).
 
-    review_contract 결과의 toxic_patterns 는 enum 값(예: IP_TOTAL_FREE)만 담고 있어,
+    review_contract_candidates 결과의 toxic_patterns는 enum 값(예: IP_TOTAL_FREE)만 담고 있어,
     이를 사람이 읽는 제목으로 라벨링할 때 이 도구를 사용하세요. 반환값은 참고용 분류 정보이며
     특정 조항의 위법·불리함을 단정하지 않습니다.
     """
@@ -700,28 +981,38 @@ class WorkShieldTools:
     """
 
     parse_contract = staticmethod(parse_contract)
+    parse_contract_clauses = staticmethod(parse_contract_clauses)
     assess_contract_scope = staticmethod(assess_contract_scope)
     match_clause = staticmethod(match_clause)
     get_grounding = staticmethod(get_grounding)
+    get_category_grounding = staticmethod(get_category_grounding)
     review_contract = staticmethod(review_contract)
+    review_contract_candidates = staticmethod(review_contract_candidates)
     classify_clause = staticmethod(classify_clause)
+    classify_clause_candidate = staticmethod(classify_clause_candidate)
     list_contract_types = staticmethod(list_contract_types)
     list_categories = staticmethod(list_categories)
     list_toxic_patterns = staticmethod(list_toxic_patterns)
     list_toxic_pattern_details = staticmethod(list_toxic_pattern_details)
+    get_mcp_capabilities = staticmethod(get_mcp_capabilities)
 
     def __init__(self, mcp: FastMCP) -> None:
         for name in (
             "parse_contract",
+            "parse_contract_clauses",
             "assess_contract_scope",
             "match_clause",
             "get_grounding",
+            "get_category_grounding",
             "review_contract",
+            "review_contract_candidates",
             "classify_clause",
+            "classify_clause_candidate",
             "list_contract_types",
             "list_categories",
             "list_toxic_patterns",
             "list_toxic_pattern_details",
+            "get_mcp_capabilities",
         ):
             mcp.add_tool(getattr(self, name), name=name)
 

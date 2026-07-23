@@ -20,10 +20,17 @@ core    adapter  ← 순수 판정 / DB·검색·문서·법령 I/O
 ## 1차 흐름
 
 ```text
-계약서 → kordoc 파싱 → 조항 분리 → hybrid 검색 → rerank
+계약서 → assess_contract_scope → 사용자가 비교 유형 확인
+       → review_contract_candidates: kordoc 파싱 → 조항 분리 → hybrid 검색 → rerank
        ├─ 표준조항 경로 → NONE / EXTRA / NO_MATCH → 전체 표준과 대조 → MISSING
        └─ 독소패턴 경로 → ToxicPattern 0개 이상
-       → 법령 근거와 함께 MCP 응답
+       ├─ clause_results: NONE / EXTRA / NO_MATCH
+       └─ missing_standard_clauses: MISSING 표준조항 후보
+
+필요한 경우: category + contract_type → get_category_grounding
+             → OK / UNMAPPED_CATEGORY / NO_RESULT / UPSTREAM_ERROR / TIMEOUT
+
+부분 검토: parse_contract_clauses → classify_clause_candidate
 ```
 
 - `NONE`은 표준 조항과의 1차 잠정 매칭이다.
@@ -36,6 +43,29 @@ core    adapter  ← 순수 판정 / DB·검색·문서·법령 I/O
 예문과의 유사성을 이용한 보조 검토 신호이며 위법·불공정 여부를 확정하지 않는다. `toxic_patterns=[]`도
 독소가 없다는 결론이 아니라 현재 검색에서 임계값 이상의 신호를 찾지 못했다는 뜻이다. MCP를 사용하는
 2차 LLM 클라이언트는 이 두 축을 합치거나 `EXTRA`를 독소로 간주하지 않고 각각의 근거로 설명해야 한다.
+
+신규 클라이언트의 기본 경로인 `review_contract_candidates`는 법령을 조회하거나 `grounding`을
+노출하지 않는다. 내부 `DeviationResult`는 서버 전용 mapper에서 공개 DTO로 변환하며, 사용자 조항
+결과와 `MISSING` 표준조항을 서로 다른 배열로 반환한다.
+
+MCP DTO는 `server/public_dto.py`에 모은다. 파서의 도메인 `Clause`는 `parse_contract_clauses`에서
+`PublicClause`로 복사한다. 도메인 모델을 직접 반환하는 기존 `parse_contract`, `review_contract`,
+`get_grounding`, `classify_clause`의 계약만 `server/legacy_dto.py`에 격리한다. `server/dto.py`는
+기존 Python import 호환을 위한 재노출 모듈이며 실제 도구 조립에서는 사용하지 않는다.
+
+호환 도구 `review_contract`도 모든 조항의 법령을 조회하지 않는다. 정적 법령 근거는 `MISSING` 중 매핑이
+있는 카테고리에만 조건부로 부착되며, `NONE`·`EXTRA`·`NO_MATCH`는 `grounding=[]`을 반환한다.
+특정 결과의 법령 원문이 필요하면 클라이언트가 `matched_standard.category`와 `contract_type`으로
+`get_category_grounding`을 별도 호출한다. 새 도구는 정적 매핑 없음, 실제 검색 결과 없음, 외부 오류와
+시간 초과를 분리하며 `OK`일 때만 법령 조문을 반환한다. 기존 `get_grounding`은 자유 법령명 질의가
+필요한 호환 경로로 유지한다. 표준조항 원문은 두 검토 응답에 이미 포함되므로 일반 검토 흐름에서
+`standard://...` 리소스를 다시 읽지 않는다. 이 리소스는 표준조항 독립 탐색과
+저장한 `clause_id`로의 재조회에 사용한다.
+
+`src/app.py`는 외부 `korean-law-mcp`의 법령·판례 조회와 `legal_research`, `legal_analysis`
+등을 같은 MCP 표면에 선택적 프록시로 등록한다. 이들은 `review_contract_candidates`의
+내부 단계가 아니며, 프록시가 반환한 내용은 외부 MCP의 참고 자료다. WorkShield의 결정론적
+표준 대비 판정을 변경하거나 법률적 결론을 확정하지 않는다.
 
 ## 데이터와 배포
 

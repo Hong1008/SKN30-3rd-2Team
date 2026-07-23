@@ -22,9 +22,14 @@ just run-mcp-ui                      # MCP Inspector
 
 ## 계약서 전체 검토
 
-`review_contract`는 계약서를 조항별로 비교하고, 계약서 전체에서 찾지 못한 표준조항도 함께
-반환합니다. 계약 유형이 확실하면 바로 호출하고, 확실하지 않으면 먼저 `assess_contract_scope`를
-호출하세요.
+새 클라이언트는 `review_contract_candidates`를 기본 전체 검토 도구로 사용합니다. 이 도구는
+계약서를 조항별로 비교하고 계약서 전체에서 찾지 못한 표준조항도 반환하지만, 법령 조회는 수행하지
+않습니다. 기존 `review_contract`는 `grounding` 필드가 필요한 호환 경로로 유지됩니다. 계약 유형이
+확실하면 전체 검토 도구를 바로 호출하고, 확실하지 않으면 먼저 `assess_contract_scope`를 호출하세요.
+
+권장 전체 흐름은 `assess_contract_scope` → `review_contract_candidates` → 필요한 결과만
+`get_category_grounding`입니다. 조항 단위 부분 흐름은 `parse_contract_clauses` →
+`classify_clause_candidate`입니다.
 
 ### 1. 비교할 계약 유형 선택
 
@@ -36,7 +41,7 @@ just run-mcp-ui                      # MCP Inspector
 
 1. `assess_contract_scope`에 파일을 전달합니다.
 2. 응답의 `status`, `suggested_contract_type`, `candidates`를 사용자에게 보여 줍니다.
-3. 사용자가 확인하거나 선택한 `contract_type`으로 `review_contract`를 호출합니다.
+3. 사용자가 확인하거나 선택한 `contract_type`으로 `review_contract_candidates`를 호출합니다.
 
 | `assess_contract_scope.status` | 클라이언트 처리 |
 | --- | --- |
@@ -45,8 +50,8 @@ just run-mcp-ui                      # MCP Inspector
 | `OUT_OF_SCOPE` | 현재 표준 코퍼스와의 공통 근거가 부족하다고 알립니다. 계속 진행한다면 사용자의 명시적 재확인을 받습니다. |
 | `EMPTY_DOCUMENT` | 조항을 찾지 못한 상태입니다. 전체 검토를 호출하지 말고 파일 형식·스캔 상태를 확인하게 합니다. |
 
-`assess_contract_scope`와 `review_contract`는 각각 파일을 파싱합니다. 유형이 이미 확실한
-워크플로우에서는 `review_contract`를 직접 호출해 파일 전송과 파싱을 한 번 줄일 수 있습니다.
+`assess_contract_scope`와 전체 검토 도구는 각각 파일을 파싱합니다. 유형이 이미 확실한
+워크플로우에서는 `review_contract_candidates`를 직접 호출해 파일 전송과 파싱을 한 번 줄일 수 있습니다.
 
 ### 2. 파일 전달
 
@@ -57,6 +62,17 @@ just run-mcp-ui                      # MCP Inspector
   대소문자를 구분하지 않으며, 지원하지 않는 형식과 확장자 없는 파일은 파싱 전에 거절됩니다.
 
 ### 3. 결과 표시와 상태 해석
+
+`review_contract_candidates`는 결과 방향을 응답 구조로 분리합니다.
+
+- `clause_results`: 계약서에 실제로 존재하는 조항의 `NONE` / `EXTRA` / `NO_MATCH` 결과
+- `missing_standard_clauses`: 계약서 전체에서 대응되지 않은 `MISSING` 표준조항 후보
+
+`clause_results[].match.status`가 `CANDIDATE_SELECTED`이면 `standard`와 정규화 `score`가 있고,
+`NO_CANDIDATE`이면 비교할 표준조항 후보가 없습니다. 이 응답에는 `grounding`과 현재 전체 검토에서
+활성화되지 않은 연관위험 필드가 없습니다.
+
+다음 설명은 기존 호환 도구인 `review_contract.results`의 평면 결과를 해석할 때 적용합니다.
 
 `review_contract.results`의 각 항목은 표준 대비 검토 후보입니다. 아래 상태를 법적 결론처럼
 표시하거나 자동으로 계약서 내용을 변경해서는 안 됩니다.
@@ -73,8 +89,31 @@ just run-mcp-ui                      # MCP Inspector
 결과는 `user_clause`가 빈 문자열일 수 있습니다.
 
 `toxic_patterns`는 표준 대비 상태와 별개로, 알려진 주의 문구와 유사한 표현을 찾은 보조 신호입니다.
-빈 목록은 해당 문구가 안전하거나 문제가 없다는 뜻이 아닙니다. `grounding`은 관련 법령 원문
-참고자료이며 적용 여부나 법률 해석을 확정하지 않습니다.
+빈 목록은 해당 문구가 안전하거나 문제가 없다는 뜻이 아닙니다.
+
+`review_contract`의 `grounding`은 모든 결과에 일관되게 조회되는 필드가 아닙니다. 현재 1차는
+`MISSING` 표준조항 중 정적 카테고리 매핑이 있는 경우에만 법령 조회를 수행합니다. 따라서 다음처럼
+해석해야 합니다.
+
+- `NONE` / `EXTRA` / `NO_MATCH`의 `grounding=[]`: 이 검토에서 법령을 조회하지 않음
+- `MISSING`의 `grounding=[]`: 정책상 조회 대상이 아니거나, 정적 매핑이 없거나, 조회 결과가 없음
+- 비어 있지 않은 `grounding`: 참고 법령 원문이며 적용 여부나 법률 해석을 확정하지 않음
+
+특정 결과의 법령 원문이 필요하면 `matched_standard.category`와 `contract_type`으로
+`get_category_grounding`을 별도 호출하세요. `classify_clause_candidate`는 법령 조회를 수행하지 않습니다.
+
+`get_category_grounding`은 빈 배열의 원인을 `status`로 구분합니다.
+
+| 상태 | 의미 | `grounding` |
+| --- | --- | --- |
+| `OK` | 조회 성공 | 최소 1건 |
+| `UNMAPPED_CATEGORY` | 현재 정적 정책에 특정 조문 매핑이 없음 | 빈 목록 |
+| `NO_RESULT` | 매핑된 질의를 실행했지만 검색 결과가 없음 | 빈 목록 |
+| `UPSTREAM_ERROR` | 외부 법령 서비스 호출 실패 | 빈 목록 |
+| `TIMEOUT` | 외부 법령 서비스 응답 시간 초과 | 빈 목록 |
+
+지원하지 않는 `category`나 `contract_type` 값은 도구 입력 오류로 반환됩니다. 상태와 배열의 관계는
+공개 DTO에서 강제되므로 `OK`와 빈 배열, 실패 상태와 비어 있지 않은 배열은 생성되지 않습니다.
 
 `results=[]`를 “문제 없음”으로 처리하지 마세요. `EMPTY_DOCUMENT`, `CORPUS_UNAVAILABLE`,
 `INVALID_CONFIG`, `PIPELINE_ERROR` 중 응답 `status`를 먼저 확인해 사용자에게 적절한 다음 행동을
@@ -86,16 +125,26 @@ just run-mcp-ui                      # MCP Inspector
 
 | 도구 | 용도 |
 | --- | --- |
+| `get_mcp_capabilities` | 권장 전체·부분 검토 흐름과 호환 도구 대체 관계 조회 |
 | `assess_contract_scope` | 지원 범위와 계약 유형 후보 사전 점검 |
-| `review_contract` | 계약서 전체 파싱·비교·누락 후보·주의 문구·참고자료 조회 |
-| `parse_contract` | 계약서 파일을 조항 목록으로 분해 |
+| `review_contract_candidates` | 법령 조회 없이 사용자 조항 결과와 `MISSING` 표준조항을 분리해 반환하는 권장 전체 검토 도구 |
+| `review_contract` | 계약서 전체 파싱·비교·누락 후보·주의 문구와 일부 `MISSING`의 조건부 법령 조회를 유지하는 호환 도구 |
+| `parse_contract_clauses` | 계약서 파일을 도메인 모델과 분리된 공개 조항 목록으로 분해(신규 클라이언트 권장) |
+| `parse_contract` | 내부 `Clause` 응답을 유지하는 기존 파싱 호환 도구 |
 | `match_clause` | 단일 조항과 가까운 표준조항 후보 검색 |
-| `classify_clause` | 단일 조항의 검색·재정렬·표준 대비 상태 판정 |
-| `get_grounding` | 카테고리 또는 조항에 관련된 법령 원문 조회 |
+| `classify_clause_candidate` | 법령 필드 없이 단일 조항의 검색·재정렬·표준 대비 상태 판정(신규 클라이언트 권장) |
+| `classify_clause` | 항상 빈 `grounding` 필드를 유지하는 기존 단일 조항 호환 도구 |
+| `get_category_grounding` | 카테고리 기반 법령 조회와 명시적 결과 상태 반환(신규 클라이언트 권장) |
+| `get_grounding` | 카테고리 또는 법령명이 명시된 질의를 받는 기존 호환 조회 도구 |
 
-`MISSING`은 계약서 전체를 비교해야 찾을 수 있으므로 `classify_clause`에서는 반환되지 않습니다.
-`classify_clause`는 주의 문구 검색과 법령 조회를 수행하지 않습니다. 해당 정보가 필요하면
-`review_contract`를 사용하세요.
+`MISSING`은 계약서 전체를 비교해야 찾을 수 있으므로 두 단일 조항 분류 도구에서는 반환되지 않습니다.
+`classify_clause_candidate`는 주의 문구 검색과 법령 조회를 수행하지 않습니다. 주의 문구 신호까지 필요하면
+`review_contract_candidates`를 사용하고, 법령 원문은 `get_category_grounding`을 별도 호출하세요.
+
+자유 법령명 질의가 꼭 필요한 기존 흐름에서는 `get_grounding`을 사용할 수 있습니다. 이 도구에
+`category`와 `clause_text`를 함께 주면 `clause_text`가 우선됩니다. 현재
+`clause_text` 경로는 임의 계약 문구의 의미를 분류하지 않으며, 입력 앞부분에 명시된 정확한 법령명과
+조문을 조회하는 결정론적 경로입니다. 일반 계약 조항은 가능하면 검토 결과의 카테고리로 조회하세요.
 
 ### 조회 도구와 표준조항 리소스
 
@@ -109,10 +158,18 @@ just run-mcp-ui                      # MCP Inspector
 - `standard://{contract_type}` — 계약 유형별 표준조항 목록
 - `standard://{contract_type}/{clause_id}` — 특정 표준조항 원문
 
+`review_contract_candidates`, `review_contract`, `match_clause`는 이미 대응 표준조항 본문을
+반환하므로 일반 검토 흐름에서 같은 원문을 리소스로 다시 읽을 필요는 없습니다. 리소스는
+표준조항을 독립적으로 탐색하거나 저장된 `clause_id`만으로 원문을 다시 열 때 사용합니다.
+
 ### 법령·판례 프록시 도구
 
 동일 MCP 앱에는 외부 `korean-law-mcp`를 통해 법령과 판례 원문을 조회하는 도구도 등록됩니다.
-이 도구들은 원문·검색 기능을 전달할 뿐 WorkShield가 법률 해석을 생성하지는 않습니다.
+이 도구들은 계약 검토 파이프라인의 필수 단계가 아니며, 외부 MCP 기능을 같은 서버 표면에서
+호출할 수 있게 한 선택적 프록시입니다. `legal_research`와 `legal_analysis`의 응답을 포함한
+프록시 결과는 외부 법률 MCP가 반환한 참고 자료이며, WorkShield의 위법·합법, 적용 법령 또는
+승소 가능성 판정을 의미하지 않습니다. WorkShield 서버 코드가 이 결과를 추가로 해석해
+계약 검토 판정을 바꾸지도 않습니다.
 
 | 도구 | 용도 |
 | --- | --- |
@@ -126,6 +183,11 @@ just run-mcp-ui                      # MCP Inspector
 `src/server/`는 MCP 입출력 변환과 도구·리소스 등록만 담당합니다. 검색과 판정 규칙은 `core`,
 런타임 검토 흐름은 `pipe`, DB·문서·모델·법령 I/O는 `adapter`에 있습니다.
 
+- `public_dto.py`: 신규 권장 도구와 도메인 비의존 기존 도구의 실제 MCP 공개 계약
+- `legacy_dto.py`: `Clause`, `DeviationResult`, `GroundingLaw`, `StandardClause`를 직접 사용하는 호환 계약
+- `mapper.py`: 동결 도메인 결과를 공개 DTO로 복사하는 단방향 변환
+- `dto.py`: 기존 Python import 경로만 보존하는 재노출 모듈이며 MCP 도구는 직접 import하지 않음
+
 ```text
 외부 MCP 클라이언트
         ↓
@@ -133,6 +195,8 @@ src/app.py                   FastMCP 앱 생성·실행·공용 세션 관리
         ↓
 src/server/
   ├─ WorkShieldTools         계약서 검토 도구·표준조항 리소스 등록
+  ├─ public_dto / mapper     공개 계약 / 도메인→공개 변환
+  ├─ legacy_dto              기존 도메인 결합 응답 격리
   └─ KoreanLawWrapper        외부 법령 MCP 프록시 도구 등록
         ↓
 core / pipe / adapter        판정 규칙 / 검토 조립 / 외부 I/O
@@ -140,7 +204,7 @@ core / pipe / adapter        판정 규칙 / 검토 조립 / 외부 I/O
 
 [`src/app.py`](../app.py)의 `create_app()`이 `FastMCP("WorkShield")` 인스턴스를 만들고,
 `WorkShieldTools`와 `KoreanLawWrapper`를 등록합니다. 또한 앱 lifespan에서 공용
-`KoreanLawMCPClient` 세션을 열고 종료 시 닫습니다. `get_grounding`과 법령 프록시 도구는 이
+`KoreanLawMCPClient` 세션을 열고 종료 시 닫습니다. 법령 근거 조회와 법령 프록시 도구는 이
 클라이언트의 세션과 TTL 캐시를 공유합니다.
 
 모듈 수준의 함수는 직접 단위 테스트와 하위호환을 위해 유지하지만, MCP에는

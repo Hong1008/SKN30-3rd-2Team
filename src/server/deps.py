@@ -15,7 +15,9 @@ import threading
 from typing import Optional
 
 from contracts.ports import Parser, Grounder
+from contracts.enums import Category, ContractType
 from contracts.implement import KordocParser, KoreanLawGrounder
+from contracts.implement.korean_law_grounder import get_static_grounding_query
 
 _lock = threading.Lock()
 _parser: Optional[Parser] = None
@@ -40,6 +42,14 @@ def get_grounder() -> Grounder:
             if _grounder is None:
                 _grounder = KoreanLawGrounder()
     return _grounder
+
+
+def supports_static_grounding(
+    category: Category,
+    contract_type: Optional[ContractType] = None,
+) -> bool:
+    """기본 정적 법령 정책이 카테고리를 지원하는지 외부 호출 없이 판별한다."""
+    return get_static_grounding_query(category, contract_type) is not None
 
 
 def set_parser(parser: Optional[Parser]) -> None:

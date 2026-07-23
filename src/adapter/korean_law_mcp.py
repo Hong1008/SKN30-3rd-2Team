@@ -4,10 +4,10 @@
 2차 MCP 표면에서만 별도로 노출한다.
 """
 
+import asyncio
 import json
 import logging
 import re
-import asyncio
 import threading
 from collections.abc import Coroutine
 from contextlib import AsyncExitStack
@@ -15,6 +15,7 @@ from typing import Any
 
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
+
 
 class KoreanLawMCPClient:
     """외부 korean-law MCP의 도구를 동기식 Python 메서드로 매핑한다.
@@ -25,7 +26,10 @@ class KoreanLawMCPClient:
     FastMCP의 이벤트 루프를 재진입하거나 막지 않는다.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, call_timeout_seconds: float = 30.0) -> None:
+        if call_timeout_seconds <= 0:
+            raise ValueError("call_timeout_seconds는 0보다 커야 합니다.")
+        self._call_timeout_seconds = call_timeout_seconds
         self._state_lock = threading.RLock()
         self._ready = threading.Event()
         self._connected = threading.Event()
@@ -142,9 +146,13 @@ class KoreanLawMCPClient:
         """이미 연결된 stdio MCP 서버의 도구를 호출하고 텍스트 결과를 반환한다."""
         if self._session is None or self._call_lock is None:
             raise RuntimeError("korean-law MCP 세션이 연결되지 않았습니다.")
-        # ClientSession의 요청/응답 스트림을 한 세션에서 안전하게 재사용한다.
-        async with self._call_lock:
-            result = await self._session.call_tool(tool_name, arguments)
+        # 락 대기와 실제 읽기를 모두 제한해 한 요청이 후속 호출을 무기한 막지 않게 한다.
+        async with asyncio.timeout(self._call_timeout_seconds):
+            # ClientSession의 요청/응답 스트림을 한 세션에서 안전하게 재사용한다.
+            async with self._call_lock:
+                result = await self._session.call_tool(tool_name, arguments)
+        if getattr(result, "isError", False):
+            raise RuntimeError(f"korean-law MCP 도구 '{tool_name}'가 오류 응답을 반환했습니다.")
         if not result.content:
             raise RuntimeError(f"korean-law MCP 도구 '{tool_name}'의 결과가 비어 있습니다.")
         texts = [item.text for item in result.content if hasattr(item, "text")]
@@ -158,8 +166,8 @@ class KoreanLawMCPClient:
             self.start()
             return self._submit(self._call_mcp_tool(tool_name, arguments)).result()
         except Exception as e:
-            logging.error("korean-law MCP 도구 '%s' 호출 실패: %s", tool_name, e)
-            raise RuntimeError(f"korean-law MCP 연동 오류 ({tool_name}): {e}") from e
+            logging.exception("korean-law MCP 도구 '%s' 호출 실패", tool_name)
+            raise RuntimeError(f"korean-law MCP 연동 오류 ({tool_name})") from e
 
     # 외부 서버에 공개된 9개 도구의 직접 매핑
     def search_law(self, query: str, display: int = 50) -> str:
