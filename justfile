@@ -430,3 +430,144 @@ docker-up: docker-build
 # 백그라운드 컨테이너 중지 및 제거
 docker-down:
     docker rm -f {{docker_image}}
+
+# ----------------------------------------------------
+# GCP Cloud Run 배포 관련 레시피
+# ----------------------------------------------------
+
+# gcloud CLI 설치 상태 확인, 자동 설치 및 ~/.bashrc PATH 등록 (Unix)
+[unix]
+check-gcloud:
+    #!/usr/bin/env bash
+    set -e
+    GCLOUD_BIN=""
+    if command -v gcloud &> /dev/null; then
+        GCLOUD_BIN="$(command -v gcloud)"
+    elif [ -f "$HOME/.google-cloud-sdk/google-cloud-sdk/bin/gcloud" ]; then
+        GCLOUD_BIN="$HOME/.google-cloud-sdk/google-cloud-sdk/bin/gcloud"
+    elif [ -f "$HOME/.google-cloud-sdk/bin/gcloud" ]; then
+        GCLOUD_BIN="$HOME/.google-cloud-sdk/bin/gcloud"
+    elif [ -f "$HOME/google-cloud-sdk/bin/gcloud" ]; then
+        GCLOUD_BIN="$HOME/google-cloud-sdk/bin/gcloud"
+    fi
+
+    if [ -z "$GCLOUD_BIN" ]; then
+        echo "🔍 gcloud CLI (Google Cloud SDK)가 설치되어 있지 않습니다. 설치를 진행합니다..."
+        if command -v brew &> /dev/null; then
+            brew install --cask google-cloud-sdk
+        else
+            echo "Google Cloud SDK 설치 스크립트 실행 중..."
+            curl -sSL https://sdk.cloud.google.com | bash -s -- --disable-prompts --install-dir=$HOME/.google-cloud-sdk
+        fi
+    else
+        echo "[OK] gcloud CLI가 설치되어 있습니다. ($GCLOUD_BIN)"
+    fi
+
+    # ~/.bashrc 의 PATH 자동 등록 통합
+    SHELL_PROFILE="$HOME/.bashrc"
+    INC_PATH=""
+    if [ -f "$HOME/.google-cloud-sdk/google-cloud-sdk/path.bash.inc" ]; then
+        INC_PATH="$HOME/.google-cloud-sdk/google-cloud-sdk/path.bash.inc"
+    elif [ -f "$HOME/.google-cloud-sdk/path.bash.inc" ]; then
+        INC_PATH="$HOME/.google-cloud-sdk/path.bash.inc"
+    fi
+    if [ -n "$INC_PATH" ] && [ -f "$SHELL_PROFILE" ]; then
+        if ! grep -q "$INC_PATH" "$SHELL_PROFILE" 2>/dev/null; then
+            echo "" >> "$SHELL_PROFILE"
+            echo "# Google Cloud SDK PATH 등록" >> "$SHELL_PROFILE"
+            echo "source '$INC_PATH'" >> "$SHELL_PROFILE"
+            echo "✨ $SHELL_PROFILE 에 gcloud PATH 등록이 완료되었습니다."
+        fi
+    fi
+
+# gcloud CLI 설치 상태 확인 및 자동 설치 (Windows)
+[windows]
+check-gcloud:
+    @if (Get-Command gcloud -ErrorAction SilentlyContinue) { echo "[OK] gcloud CLI가 설치되어 있습니다." } else { echo "[INFO] gcloud CLI를 찾을 수 없습니다. winget으로 설치를 시작합니다..."; winget install Google.CloudSDK --silent --accept-source-agreements --accept-package-agreements; echo "⚠ 윈도우 환경 변수 반영을 위해 현재 터미널을 재시작해 주세요."; exit 1 }
+
+# gcloud CLI 패스 등록 및 래퍼 레시피 (Unix)
+[unix]
+gcloud *args: check-gcloud
+    #!/usr/bin/env bash
+    set -e
+    if [ -f "$HOME/.google-cloud-sdk/google-cloud-sdk/path.bash.inc" ]; then
+        source "$HOME/.google-cloud-sdk/google-cloud-sdk/path.bash.inc"
+    elif [ -f "$HOME/.google-cloud-sdk/path.bash.inc" ]; then
+        source "$HOME/.google-cloud-sdk/path.bash.inc"
+    fi
+    export PATH="$HOME/.google-cloud-sdk/google-cloud-sdk/bin:$HOME/.google-cloud-sdk/bin:$HOME/google-cloud-sdk/bin:$PATH"
+    exec gcloud "$@"
+
+# Cloud Run 서비스에 로컬 .env 환경변수를 한 번에 업데이트 (Unix)
+[unix]
+set-cloudrun-env service_name="workshield-mcp-server" region="asia-northeast3" project="": check-gcloud
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if [ -f "$HOME/.google-cloud-sdk/google-cloud-sdk/path.bash.inc" ]; then
+        source "$HOME/.google-cloud-sdk/google-cloud-sdk/path.bash.inc"
+    elif [ -f "$HOME/.google-cloud-sdk/path.bash.inc" ]; then
+        source "$HOME/.google-cloud-sdk/path.bash.inc"
+    fi
+    export PATH="$HOME/.google-cloud-sdk/google-cloud-sdk/bin:$HOME/.google-cloud-sdk/bin:$HOME/google-cloud-sdk/bin:$PATH"
+
+    if ! command -v gcloud &> /dev/null; then
+        echo "오류: gcloud 명령어를 찾을 수 없습니다."
+        exit 1
+    fi
+
+    if [ ! -f .env ]; then
+        echo "오류: .env 파일이 존재하지 않습니다."
+        exit 1
+    fi
+
+    PROJECT_ARG=""
+    if [ -n "{{project}}" ]; then
+        PROJECT_ARG="--project={{project}}"
+    elif [ -n "${GCP_PROJECT_ID:-}" ]; then
+        PROJECT_ARG="--project=${GCP_PROJECT_ID}"
+    elif grep -q "^GCP_PROJECT_ID=" .env; then
+        PROJ_VAL=$(grep "^GCP_PROJECT_ID=" .env | cut -d'=' -f2 | tr -d '\r\n "'\''')
+        if [ -n "$PROJ_VAL" ]; then
+            PROJECT_ARG="--project=${PROJ_VAL}"
+        fi
+    fi
+
+    if [ -z "$PROJECT_ARG" ]; then
+        CURRENT_PROJ=$(gcloud config get-value project 2>/dev/null || true)
+        if [ -z "$CURRENT_PROJ" ] || [ "$CURRENT_PROJ" = "(unset)" ]; then
+            echo "오류: GCP Project ID가 설정되지 않았습니다."
+            echo "사용 방법:"
+            echo "  1) just set-cloudrun-env {{service_name}} {{region}} <YOUR_PROJECT_ID>"
+            echo "  2) .env 파일에 GCP_PROJECT_ID=your-project-id 추가"
+            echo "  3) gcloud config set project <YOUR_PROJECT_ID> 실행"
+            exit 1
+        fi
+    fi
+
+    ENV_VARS=$(grep -v '^#' .env | grep -v '^[[:space:]]*$' | tr '\n' ',' | sed 's/,$//')
+
+    if gcloud run services describe {{service_name}} --region={{region}} $PROJECT_ARG &>/dev/null; then
+        echo "기존 Cloud Run 서비스 '{{service_name}}' 에 .env 환경변수를 업데이트합니다..."
+        gcloud run services update {{service_name}} --region={{region}} $PROJECT_ARG --set-env-vars="$ENV_VARS"
+    else
+        echo "Cloud Run 서비스 '{{service_name}}' 이 존재하지 않아 신규 서비스를 생성하며 .env 환경변수를 등록합니다..."
+        gcloud run deploy {{service_name}} \
+            --image=us-docker.pkg.dev/cloudrun/container/hello \
+            --region={{region}} \
+            $PROJECT_ARG \
+            --set-env-vars="$ENV_VARS" \
+            --port=8000 \
+            --min-instances=0 \
+            --allow-unauthenticated
+    fi
+    echo "Cloud Run 서비스 및 환경변수 설정 완료."
+
+
+# Cloud Run 서비스에 로컬 .env 환경변수를 한 번에 업데이트 (Windows)
+[windows]
+set-cloudrun-env service_name="workshield-mcp-server" region="asia-northeast3" project="": check-gcloud
+    @if (-not (Test-Path .env)) { Write-Error "오류: .env 파일이 존재하지 않습니다."; exit 1 }; $projArg = if ("{{project}}") { "--project={{project}}" } else { "" }; $vars = Get-Content .env | Where-Object { $_ -and -not $_.StartsWith("#") } | ForEach-Object { $_.Trim() } | Where-Object { $_ -ne "" }; $envStr = $vars -join ","; Write-Host "Cloud Run 서비스 '{{service_name}}' (리전: {{region}})에 .env 환경변수를 등록합니다..."; gcloud run services update {{service_name}} --region={{region}} $projArg --set-env-vars=$envStr; Write-Host "Cloud Run 환경변수 설정 완료."
+
+
+
+
