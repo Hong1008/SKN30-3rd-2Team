@@ -1,4 +1,5 @@
 import base64
+import json
 import binascii
 import logging
 import uuid
@@ -562,7 +563,17 @@ async def _execute_review_contract(
                 msg = f"{base_msg} ({done}/{total})"
             else:
                 msg = base_msg
-            anyio.from_thread.run(ctx.report_progress, done, total, msg)
+            progress_message = json.dumps(
+                {"stage": phase.value, "message": msg},
+                ensure_ascii=False,
+                separators=(",", ":"),
+            )
+            anyio.from_thread.run(
+                ctx.report_progress,
+                done,
+                total,
+                progress_message,
+            )
 
     try:
         results = await anyio.to_thread.run_sync(

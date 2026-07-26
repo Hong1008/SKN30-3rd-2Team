@@ -1,3 +1,4 @@
+import json
 from unittest.mock import MagicMock, patch
 import pytest
 from contracts.enums import ContractType, ProgressPhase, Deviation
@@ -68,13 +69,41 @@ async def test_review_contract_async_progress(
     assert response.results[0].deviation == Deviation.NONE
 
     # progress 보고가 올바른 순서와 메시지로 전송되었는지 검증
-    assert ctx.progress_reports == [
-        (0, 2, "검토 준비 중..."),
-        (0, 2, "벡터 DB 배치 검색 중..."),
-        (0, 2, "조항별 재정렬 중..."),
-        (1, 2, "조항별 이탈 분류 중... (1/2)"),
-        (2, 2, "조항별 이탈 분류 중... (2/2)"),
-        (2, 2, "누락 표준조항 분석 중..."),
+    assert [
+        (done, total, json.loads(message))
+        for done, total, message in ctx.progress_reports
+    ] == [
+        (0, 2, {"stage": "PREPARE", "message": "검토 준비 중..."}),
+        (
+            0,
+            2,
+            {"stage": "BATCH_SEARCH", "message": "벡터 DB 배치 검색 중..."},
+        ),
+        (0, 2, {"stage": "RERANK", "message": "조항별 재정렬 중..."}),
+        (
+            1,
+            2,
+            {
+                "stage": "CLAUSE_REVIEW",
+                "message": "조항별 이탈 분류 중... (1/2)",
+            },
+        ),
+        (
+            2,
+            2,
+            {
+                "stage": "CLAUSE_REVIEW",
+                "message": "조항별 이탈 분류 중... (2/2)",
+            },
+        ),
+        (
+            2,
+            2,
+            {
+                "stage": "MISSING_DETECTION",
+                "message": "누락 표준조항 분석 중...",
+            },
+        ),
     ]
 
 
