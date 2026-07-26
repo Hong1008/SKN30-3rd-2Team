@@ -544,10 +544,24 @@ set-cloudrun-env service_name="workshield-mcp-server" region="asia-northeast3" p
         fi
     fi
 
-    echo "Cloud Run 서비스 '{{service_name}}' (리전: {{region}})에 .env 환경변수를 등록합니다..."
     ENV_VARS=$(grep -v '^#' .env | grep -v '^[[:space:]]*$' | tr '\n' ',' | sed 's/,$//')
-    gcloud run services update {{service_name}} --region={{region}} $PROJECT_ARG --set-env-vars="$ENV_VARS"
-    echo "Cloud Run 환경변수 설정 완료."
+
+    if gcloud run services describe {{service_name}} --region={{region}} $PROJECT_ARG &>/dev/null; then
+        echo "기존 Cloud Run 서비스 '{{service_name}}' 에 .env 환경변수를 업데이트합니다..."
+        gcloud run services update {{service_name}} --region={{region}} $PROJECT_ARG --set-env-vars="$ENV_VARS"
+    else
+        echo "Cloud Run 서비스 '{{service_name}}' 이 존재하지 않아 신규 서비스를 생성하며 .env 환경변수를 등록합니다..."
+        gcloud run deploy {{service_name}} \
+            --image=us-docker.pkg.dev/cloudrun/container/hello \
+            --region={{region}} \
+            $PROJECT_ARG \
+            --set-env-vars="$ENV_VARS" \
+            --port=8000 \
+            --min-instances=0 \
+            --allow-unauthenticated
+    fi
+    echo "Cloud Run 서비스 및 환경변수 설정 완료."
+
 
 # Cloud Run 서비스에 로컬 .env 환경변수를 한 번에 업데이트 (Windows)
 [windows]
