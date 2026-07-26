@@ -38,11 +38,18 @@ def main() -> None:
         format="[%(asctime)s] [%(levelname)s] (%(filename)s:%(lineno)d) %(message)s",
     )
     mcp = create_app()
-    transport = os.getenv("MCP_TRANSPORT", "stdio")
+
+    # Cloud Run 또는 프로덕션 환경(PORT/APP_ENV)인 경우 streamable-http를 기본 트랜스포트로 사용
+    default_transport = "streamable-http" if (os.getenv("PORT") or os.getenv("APP_ENV") == "prod") else "stdio"
+    transport = os.getenv("MCP_TRANSPORT", default_transport)
+
     if transport != "stdio":
-        mcp.settings.host = os.getenv("MCP_HOST", mcp.settings.host)
-        mcp.settings.port = int(os.getenv("MCP_PORT", mcp.settings.port))
+        mcp.settings.host = os.getenv("MCP_HOST", "0.0.0.0")
+        port_str = os.getenv("MCP_PORT") or os.getenv("PORT") or "8000"
+        mcp.settings.port = int(port_str)
+
     mcp.run(transport=transport)
+
 
 
 if __name__ == "__main__":

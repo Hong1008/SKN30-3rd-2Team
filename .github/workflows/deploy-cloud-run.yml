@@ -70,4 +70,8 @@ jobs:
           service: ${{ vars.GCP_SERVICE_NAME || 'workshield-mcp-server' }}
           region: ${{ vars.GCP_REGION || 'asia-northeast3' }}
           image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          env_vars: |
+            MCP_TRANSPORT=streamable-http
+            APP_ENV=prod
           flags: '--port=8000 --min-instances=0'
+
