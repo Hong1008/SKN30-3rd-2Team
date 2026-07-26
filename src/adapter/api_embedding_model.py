@@ -1,10 +1,11 @@
 """
-RunPod serverless 엔드포인트를 호출하는 운영용 임베더·리랭커 구현체.
+RunPod Serverless endpoint 또는 Pod proxy를 호출하는 운영용 임베더·리랭커 구현체.
 
 로컬에서는 embedding_model.py(로컬 모델)를 사용하고,
 app_env != "local" 일 때 adapter/__init__.py 가 이 모듈의 인스턴스를 선택한다.
 
 엔드포인트 규격: POST https://api.runpod.ai/v2/<ENDPOINT_ID>/runsync
+또는 POST <RUNPOD_POD_BASE_URL>/runsync
 응답 외피: { "id": "...", "status": "COMPLETED", "output": { <실제 페이로드> } }
 """
 import logging
@@ -12,22 +13,33 @@ from typing import Any, Dict, List
 
 import requests
 
-from config import EMBEDDING_MODEL_NAME, RERANKER_MODEL_NAME, RUNPOD_API_KEY, RUNPOD_ENDPOINT_ID
+from config import (
+    EMBEDDING_MODEL_NAME,
+    RERANKER_MODEL_NAME,
+    RUNPOD_API_KEY,
+    RUNPOD_ENDPOINT_ID,
+    RUNPOD_POD_API_KEY,
+    RUNPOD_POD_BASE_URL,
+)
 
 _TIMEOUT = 180  # RunPod 콜드스타트(이미지 최초 pull + 모델 로딩) 고려
 
 
 def _base_url() -> str:
+    if RUNPOD_POD_BASE_URL:
+        return RUNPOD_POD_BASE_URL.rstrip("/")
     if not RUNPOD_ENDPOINT_ID:
-        raise RuntimeError("RUNPOD_ENDPOINT_ID 환경변수가 설정되지 않았습니다.")
+        raise RuntimeError("RUNPOD_ENDPOINT_ID 또는 RUNPOD_POD_BASE_URL 환경변수가 설정되지 않았습니다.")
     return f"https://api.runpod.ai/v2/{RUNPOD_ENDPOINT_ID}"
 
 
 def _headers() -> Dict[str, str]:
-    if not RUNPOD_API_KEY:
-        raise RuntimeError("RUNPOD_API_KEY 환경변수가 설정되지 않았습니다.")
+    api_key = RUNPOD_POD_API_KEY if RUNPOD_POD_BASE_URL else RUNPOD_API_KEY
+    if not api_key:
+        required_name = "RUNPOD_POD_API_KEY" if RUNPOD_POD_BASE_URL else "RUNPOD_API_KEY"
+        raise RuntimeError(f"{required_name} 환경변수가 설정되지 않았습니다.")
     return {
-        "Authorization": f"Bearer {RUNPOD_API_KEY}",
+        "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json",
     }
 

@@ -13,6 +13,7 @@ RUN pip install --no-cache-dir runpod "sentence-transformers>=5.6.0"
 # 평평하게(flat) 복사해, kordoc·korean_law_mcp·db 등 이 워커에 불필요한 의존성을 배제한다.
 COPY src/config.py ./config.py
 COPY src/adapter/embedding_model.py ./embedding_model.py
+COPY deploy/runpod_worker/service.py ./service.py
 COPY deploy/runpod_worker/handler.py ./handler.py
 
 # 모델 가중치를 빌드 타임에 이미지 안에 구워 넣는다(공식 가이드 방식,
