@@ -34,3 +34,5 @@ RERANKER_MODEL_NAME: str = os.getenv("RERANKER_MODEL_NAME", "dragonkue/bge-reran
 # 운영(RunPod) 전용 — app_env != "local" 일 때 adapter/api_embedding_model.py 가 사용
 RUNPOD_API_KEY: str | None = os.getenv("RUNPOD_API_KEY")
 RUNPOD_ENDPOINT_ID: str | None = os.getenv("RUNPOD_ENDPOINT_ID")
+# Pod proxy를 사용할 때 Serverless endpoint 대신 이 URL의 /runsync로 요청한다.
+RUNPOD_POD_BASE_URL: str | None = os.getenv("RUNPOD_POD_BASE_URL")
