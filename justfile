@@ -377,7 +377,7 @@ embed-pod-image-build:
 embed-pod-image-push:
     {{python}} deploy/runpod_worker/manage_pod.py push --confirm
 
-# /runsync HTTP 포트와 POD_API_KEY를 포함한 Pod Template을 생성합니다.
+# /runsync HTTP 포트를 노출하는 로컬 검증용 Pod Template을 생성합니다.
 embed-pod-template-create:
     {{python}} deploy/runpod_worker/manage_pod.py template-create --confirm
 

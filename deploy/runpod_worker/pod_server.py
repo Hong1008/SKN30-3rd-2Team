@@ -6,7 +6,6 @@ ApiEmbedder·ApiReranker가 Pod URL로 전환돼도 같은 payload를 사용할 
 
 from __future__ import annotations
 
-import hmac
 import json
 import os
 from http import HTTPStatus
@@ -17,7 +16,7 @@ from service import handle_input
 
 
 class PodRequestHandler(BaseHTTPRequestHandler):
-    """인증된 /runsync 요청을 공용 서비스 라우터에 전달한다."""
+    """공개 /runsync 요청을 공용 서비스 라우터에 전달한다."""
 
     server_version = "WorkShieldEmbeddingPod/1.0"
 
@@ -29,13 +28,6 @@ class PodRequestHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(encoded)
 
-    def _authorized(self) -> bool:
-        required_token = os.getenv("POD_API_KEY")
-        if not required_token:
-            return True
-        supplied = self.headers.get("Authorization", "").removeprefix("Bearer ")
-        return hmac.compare_digest(supplied, required_token)
-
     def do_GET(self) -> None:  # noqa: N802
         if self.path == "/health":
             self._write_json(HTTPStatus.OK, {"status": "READY"})
@@ -45,9 +37,6 @@ class PodRequestHandler(BaseHTTPRequestHandler):
     def do_POST(self) -> None:  # noqa: N802
         if self.path != "/runsync":
             self._write_json(HTTPStatus.NOT_FOUND, {"detail": "not found"})
-            return
-        if not self._authorized():
-            self._write_json(HTTPStatus.UNAUTHORIZED, {"detail": "invalid authorization"})
             return
         try:
             content_length = int(self.headers.get("Content-Length", "0"))

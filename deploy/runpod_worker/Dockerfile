@@ -7,7 +7,7 @@ FROM pytorch/pytorch:2.6.0-cuda12.4-cudnn9-runtime
 
 WORKDIR /app
 
-RUN pip install --no-cache-dir runpod "sentence-transformers>=5.6.0"
+RUN pip install --no-cache-dir runpod "sentence-transformers>=5.6.0" python-dotenv
 
 # 어댑터 원본 파일을 그대로 재사용(중복 작성 금지) — adapter 패키지 __init__을 거치지 않도록
 # 평평하게(flat) 복사해, kordoc·korean_law_mcp·db 등 이 워커에 불필요한 의존성을 배제한다.

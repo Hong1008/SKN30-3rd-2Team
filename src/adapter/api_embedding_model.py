@@ -18,7 +18,6 @@ from config import (
     RERANKER_MODEL_NAME,
     RUNPOD_API_KEY,
     RUNPOD_ENDPOINT_ID,
-    RUNPOD_POD_API_KEY,
     RUNPOD_POD_BASE_URL,
 )
 
@@ -34,10 +33,12 @@ def _base_url() -> str:
 
 
 def _headers() -> Dict[str, str]:
-    api_key = RUNPOD_POD_API_KEY if RUNPOD_POD_BASE_URL else RUNPOD_API_KEY
+    if RUNPOD_POD_BASE_URL:
+        return {"Content-Type": "application/json"}
+
+    api_key = RUNPOD_API_KEY
     if not api_key:
-        required_name = "RUNPOD_POD_API_KEY" if RUNPOD_POD_BASE_URL else "RUNPOD_API_KEY"
-        raise RuntimeError(f"{required_name} 환경변수가 설정되지 않았습니다.")
+        raise RuntimeError("RUNPOD_API_KEY 환경변수가 설정되지 않았습니다.")
     return {
         "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json",

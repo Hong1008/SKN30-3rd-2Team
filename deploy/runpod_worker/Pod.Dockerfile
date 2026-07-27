@@ -7,7 +7,7 @@ FROM pytorch/pytorch:2.6.0-cuda12.4-cudnn9-runtime
 
 WORKDIR /app
 
-RUN pip install --no-cache-dir "sentence-transformers>=5.6.0"
+RUN pip install --no-cache-dir "sentence-transformers>=5.6.0" python-dotenv
 
 COPY src/config.py ./config.py
 COPY src/adapter/embedding_model.py ./embedding_model.py

@@ -73,12 +73,10 @@ Serverless 워커가 기동하지 않거나 콜드스타트가 허용되지 않�
 호출할 수 있도록 `pod_server.py`가 `POST /runsync`를 제공한다. 이 경로의 요청·응답 외피는
 Serverless와 같으므로 `ApiEmbedder`와 `ApiReranker`는 변경하지 않는다.
 
-`mcp/.env`에 다음 값을 설정한다. `RUNPOD_POD_API_KEY`는 Pod 이미지의 `POD_API_KEY`로
-주입되며, proxy URL이 알려졌을 때 임의 호출을 막는다.
+`mcp/.env`에 다음 값을 설정한다. Pod 경로는 로컬 검증·비용 절감용이며 별도 인증을 적용하지 않는다.
 
 ```env
 RUNPOD_API_KEY=<RunPod API key>
-RUNPOD_POD_API_KEY=<별도의-충분히-긴-비밀값>
 RUNPOD_EMBED_POD_IMAGE=ghcr.io/<owner>/workshield-embed-rerank-pod:<tag>
 ```
 
@@ -98,7 +96,6 @@ just embed-pod-create
 ```env
 APP_ENV=prod
 RUNPOD_POD_BASE_URL=https://abc123-8000.proxy.runpod.net
-RUNPOD_POD_API_KEY=<위와-같은-비밀값>
 ```
 
 `RUNPOD_POD_BASE_URL`이 설정되면 `RUNPOD_ENDPOINT_ID`보다 우선하며, 요청은
@@ -109,6 +106,6 @@ Pod 상태·저장소 비용이 남을 수 있다.
 | 파일 | 역할 |
 | --- | --- |
 | `service.py` | Serverless handler와 Pod HTTP 서버가 공유하는 입력 라우터 |
-| `pod_server.py` | 인증된 `/runsync`, `/health` HTTP 서버 |
+| `pod_server.py` | 공개 `/runsync`, `/health` HTTP 서버 |
 | `Pod.Dockerfile` | Pod proxy 포트 8000을 노출하는 GPU 이미지 |
 | `manage_pod.py` | 이미지·Template·Pod 생성, 조회, 중지, 삭제 명령 구현 |

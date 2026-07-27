@@ -56,41 +56,13 @@ def require_command(command: str) -> None:
         raise RuntimeError(f"{command}을 찾을 수 없습니다. 설치 후 PATH에 추가하세요.")
 
 
-def display_command(command: list[str]) -> str:
-    """POD_API_KEY가 담긴 JSON 환경변수는 출력할 때만 마스킹한다."""
-    displayed = command.copy()
-    for index, item in enumerate(displayed):
-        if "POD_API_KEY" in item:
-            displayed[index] = '{"POD_API_KEY":"***"}'
-    return shlex.join(displayed)
-
-
-def redact_output(value: object) -> object:
-    """CLI JSON의 API key·token 계열 필드는 화면 출력 전에 마스킹한다."""
-    if isinstance(value, dict):
-        return {
-            key: "***" if any(marker in key.upper() for marker in ("KEY", "TOKEN", "PASSWORD", "SECRET")) else redact_output(item)
-            for key, item in value.items()
-        }
-    if isinstance(value, list):
-        return [redact_output(item) for item in value]
-    return value
-
-
-def display_output(output: str) -> str:
-    try:
-        return json.dumps(redact_output(json.loads(output)), ensure_ascii=False, indent=2)
-    except json.JSONDecodeError:
-        return output
-
-
 def run(command: list[str], *, confirm: bool) -> str:
-    print(display_command(command))
+    print(shlex.join(command))
     if not confirm:
         return ""
     result = subprocess.run(command, check=True, capture_output=True, text=True, env=os.environ.copy())
     if result.stdout.strip():
-        print(display_output(result.stdout.strip()))
+        print(result.stdout.strip())
     return result.stdout
 
 
@@ -118,7 +90,6 @@ def template_command() -> list[str]:
         "--image", setting("RUNPOD_EMBED_POD_IMAGE"),
         "--ports", "8000/http",
         "--container-disk-in-gb", setting("RUNPOD_EMBED_POD_CONTAINER_DISK_GB"),
-        "--env", json.dumps({"POD_API_KEY": setting("RUNPOD_POD_API_KEY", required=True)}),
         "--readme", "WorkShield embedding/rerank Pod. POST /runsync with the Serverless-compatible request envelope.",
     ]
 
