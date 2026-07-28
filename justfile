@@ -366,44 +366,13 @@ deploy-embedding: install-runpod
 # RunPod Pod: 임베딩·리랭커 Serverless 대체 경로
 # ----------------------------------------------------
 
-# Pod 이미지를 linux/amd64로 빌드합니다. 실제 빌드는 `--confirm`으로만 수행됩니다.
-embed-pod-image-build-dry-run:
-    {{python}} deploy/runpod_worker/manage_pod.py build
+# 고정 Template(maqkz41mly)으로 Pod를 생성합니다. GPU만 선택할 수 있습니다.
+embed-pod-create gpu="NVIDIA RTX 2000 Ada":
+    {{python}} deploy/deploy_embed_pod.py --gpu "{{gpu}}"
 
-embed-pod-image-build:
-    {{python}} deploy/runpod_worker/manage_pod.py build --confirm
-
-# Docker registry에 Pod 이미지를 게시합니다. 사전에 docker login이 필요합니다.
-embed-pod-image-push:
-    {{python}} deploy/runpod_worker/manage_pod.py push --confirm
-
-# /runsync HTTP 포트를 노출하는 로컬 검증용 Pod Template을 생성합니다.
-embed-pod-template-create:
-    {{python}} deploy/runpod_worker/manage_pod.py template-create --confirm
-
-embed-pod-template-info:
-    {{python}} deploy/runpod_worker/manage_pod.py template-info
-
-embed-pod-gpu-list:
-    {{python}} deploy/runpod_worker/manage_pod.py gpu-list
-
-# A5000 Community Pod를 생성합니다. Template ID와 Pod API 키가 mcp/.env에 필요합니다.
-embed-pod-create:
-    {{python}} deploy/runpod_worker/manage_pod.py pod-create --confirm
-
-embed-pod-list:
-    {{python}} deploy/runpod_worker/manage_pod.py pod-list
-
-embed-pod-info:
-    {{python}} deploy/runpod_worker/manage_pod.py pod-info
-
-# GPU만 중지합니다. 비용을 완전히 중단하려면 delete를 사용하세요.
-embed-pod-stop:
-    {{python}} deploy/runpod_worker/manage_pod.py pod-stop --confirm
-
-# Pod와 연결된 저장소를 제거합니다. 다음 실행에는 Pod를 다시 생성해야 합니다.
-embed-pod-delete:
-    {{python}} deploy/runpod_worker/manage_pod.py pod-delete --confirm
+# mcp/.env에 기록된 Pod를 삭제하고 연결 정보를 정리합니다.
+rm_embed_pod:
+    {{python}} deploy/rm_embed_pod.py
 
 
 # Runpod 임베딩/리랭커 워커 활성화 (웜업 - workers-min 1)
