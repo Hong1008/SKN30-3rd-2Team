@@ -12,18 +12,22 @@ from pathlib import Path
 # config.py 는 src/ 안에 있으므로, 프로젝트 루트는 parent.parent 입니다.
 # (이 값을 기준으로 data/, .env 등을 해석하므로 src/ 가 아닌 루트여야 합니다.)
 BASE_DIR = Path(__file__).resolve().parent.parent
-env_path = BASE_DIR / '.env'
 
-# 2. .env 파일 로드
+# 2. 환경별 기본 설정 파일 (.env.local 또는 .env.prod) 및 비추적 시크릿(.env) 로드
+app_env = os.getenv("APP_ENV", "local")
+env_file = BASE_DIR / f".env.{app_env}"
+if env_file.exists():
+    load_dotenv(dotenv_path=env_file)
+
+env_path = BASE_DIR / ".env"
 if env_path.exists():
-    load_dotenv(dotenv_path=env_path)
+    load_dotenv(dotenv_path=env_path, override=True)
 else:
-    load_dotenv() # 기본 .env 로드 시도
+    load_dotenv()
 
 app_env = os.getenv("APP_ENV", "local")
 
 LAW_OC: str | None = os.getenv('LAW_OC')
-KOREAN_LAW_MCP_URL: str = os.getenv('KOREAN_LAW_MCP_URL', 'https://korean-law-mcp.fly.dev/mcp')
 DB_BASE_FILE: str = os.getenv('DB_BASE_FILE', 'data/migration/contract.sqlite3')
 # Chroma 는 SQLite(RDB)와 생명주기가 달라(재빌드 시 전체 삭제 후 재생성) 별도 폴더에 격리합니다.
 CHROMA_DIR: str = os.getenv('CHROMA_DIR', 'data/chroma')

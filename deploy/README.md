@@ -1,4 +1,4 @@
-# deploy/runpod_worker/ — 임베딩·리랭커 RunPod 서버리스 워커
+# deploy/ — 임베딩·리랭커 RunPod 배포
 
 `src/adapter/api_embedding_model.py`(ApiEmbedder·ApiReranker)가 호출하는 RunPod 서버리스
 엔드포인트의 실제 구현체. RunPod Hub의 `worker-infinity-embedding`은 rerank 응답을 JSON
@@ -73,39 +73,35 @@ Serverless 워커가 기동하지 않거나 콜드스타트가 허용되지 않�
 호출할 수 있도록 `pod_server.py`가 `POST /runsync`를 제공한다. 이 경로의 요청·응답 외피는
 Serverless와 같으므로 `ApiEmbedder`와 `ApiReranker`는 변경하지 않는다.
 
-`mcp/.env`에 다음 값을 설정한다. Pod 경로는 로컬 검증·비용 절감용이며 별도 인증을 적용하지 않는다.
+`runpodctl`을 설치하고 RunPod API 키로 인증한다. Pod 경로는 로컬 검증·비용 절감용이며 별도 인증을 적용하지 않는다.
 
 ```env
-RUNPOD_API_KEY=<RunPod API key>
-RUNPOD_EMBED_POD_IMAGE=ghcr.io/<owner>/workshield-embed-rerank-pod:<tag>
+# RUNPOD_API_KEY=<RunPod API key>  # runpodctl 인증에 사용
 ```
 
-이미지를 build·push한 뒤 Template과 Pod를 순서대로 만든다.
+Pod 템플릿은 `maqkz41mly`로 고정되어 있으며, `Pod.Dockerfile`의 실행 구성에 추가 파라미터는 필요하지 않다. 기본 GPU는 `NVIDIA RTX 2000 Ada`이며, 필요한 경우 GPU만 인자로 지정한다.
 
 ```text
-just embed-pod-image-build
-just embed-pod-image-push
-just embed-pod-template-create
-# 출력된 Template ID를 RUNPOD_EMBED_POD_TEMPLATE_ID에 기록
 just embed-pod-create
-# 출력된 Pod ID를 RUNPOD_EMBED_POD_ID에 기록
+just embed-pod-create "NVIDIA RTX A5000"
 ```
 
-생성 결과의 Pod ID가 `abc123`이면 MCP 실행 환경에는 다음을 추가한다.
+생성에 성공하면 `mcp/.env`의 아래 값을 자동으로 갱신한다.
 
 ```env
-APP_ENV=prod
-RUNPOD_POD_BASE_URL=https://abc123-8000.proxy.runpod.net
+RUNPOD_EMBED_POD_ID=<pod-id>
+RUNPOD_POD_BASE_URL=https://<pod-id>-8000.proxy.runpod.net
 ```
 
 `RUNPOD_POD_BASE_URL`이 설정되면 `RUNPOD_ENDPOINT_ID`보다 우선하며, 요청은
 `<RUNPOD_POD_BASE_URL>/runsync`로 전송된다. Pod가 떠 있는 동안 GPU 비용이 계속 발생하므로
-작업이 끝난 뒤에는 반드시 `just embed-pod-delete`를 실행한다. `stop`은 GPU 실행만 멈추며
-Pod 상태·저장소 비용이 남을 수 있다.
+작업이 끝난 뒤에는 반드시 `just rm_embed_pod`를 실행한다. 이 명령은 Pod를 삭제하고
+`mcp/.env`의 Pod 연결 정보를 함께 제거한다.
 
 | 파일 | 역할 |
 | --- | --- |
 | `service.py` | Serverless handler와 Pod HTTP 서버가 공유하는 입력 라우터 |
 | `pod_server.py` | 공개 `/runsync`, `/health` HTTP 서버 |
 | `Pod.Dockerfile` | Pod proxy 포트 8000을 노출하는 GPU 이미지 |
-| `manage_pod.py` | 이미지·Template·Pod 생성, 조회, 중지, 삭제 명령 구현 |
+| `deploy_embed_pod.py` | 고정 Template으로 Pod 생성 및 연결 환경변수 갱신 |
+| `rm_embed_pod.py` | 생성된 Pod 삭제 및 연결 환경변수 정리 |
