@@ -6,6 +6,7 @@ from contextlib import asynccontextmanager
 from collections.abc import AsyncIterator
 
 from mcp.server.fastmcp import FastMCP
+from mcp.server.transport_security import TransportSecuritySettings
 
 from adapter.korean_law_mcp import koreanLaw
 from server.korean_law_wrapper import KoreanLawWrapper
@@ -24,7 +25,15 @@ async def _lifespan(_app: FastMCP) -> AsyncIterator[dict[str, object]]:
 
 def create_app() -> FastMCP:
     """새 MCP 서버 인스턴스를 만들고 모든 도구·리소스를 등록한다."""
-    mcp = FastMCP("WorkShield", lifespan=_lifespan)
+    allowed_hosts = [item.strip() for item in os.getenv("MCP_ALLOWED_HOSTS", "mcp:8000").split(",") if item.strip()]
+    mcp = FastMCP(
+        "WorkShield",
+        lifespan=_lifespan,
+        transport_security=TransportSecuritySettings(
+            enable_dns_rebinding_protection=True,
+            allowed_hosts=allowed_hosts,
+        ),
+    )
     WorkShieldTools(mcp)
     # 1차 Grounder와 2차 프록시가 동일한 자식 프로세스/세션/TTL 캐시를 재사용한다.
     KoreanLawWrapper(mcp, client=koreanLaw)
