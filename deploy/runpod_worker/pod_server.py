@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import json
 import os
+import hmac
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from typing import Any
@@ -28,13 +29,28 @@ class PodRequestHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(encoded)
 
+    def _authorized(self) -> bool:
+        """Pod proxy 공개 포트에서 worker 전용 API key를 검증한다."""
+        expected = os.getenv("EMBED_API_KEY")
+        if not expected:
+            # key 없이 기동한 이미지는 운영 readiness를 통과할 수 없게 한다.
+            return False
+        received = self.headers.get("Authorization", "")
+        return hmac.compare_digest(received, f"Bearer {expected}")
+
     def do_GET(self) -> None:  # noqa: N802
+        if not self._authorized():
+            self._write_json(HTTPStatus.UNAUTHORIZED, {"detail": "unauthorized"})
+            return
         if self.path == "/health":
             self._write_json(HTTPStatus.OK, {"status": "READY"})
             return
         self._write_json(HTTPStatus.NOT_FOUND, {"detail": "not found"})
 
     def do_POST(self) -> None:  # noqa: N802
+        if not self._authorized():
+            self._write_json(HTTPStatus.UNAUTHORIZED, {"detail": "unauthorized"})
+            return
         if self.path != "/runsync":
             self._write_json(HTTPStatus.NOT_FOUND, {"detail": "not found"})
             return

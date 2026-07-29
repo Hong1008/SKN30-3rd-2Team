@@ -73,7 +73,11 @@ Serverless 워커가 기동하지 않거나 콜드스타트가 허용되지 않�
 호출할 수 있도록 `pod_server.py`가 `POST /runsync`를 제공한다. 이 경로의 요청·응답 외피는
 Serverless와 같으므로 `ApiEmbedder`와 `ApiReranker`는 변경하지 않는다.
 
-`runpodctl`을 설치하고 RunPod API 키로 인증한다. Pod 경로는 로컬 검증·비용 절감용이며 별도 인증을 적용하지 않는다.
+`runpodctl`을 설치하고 RunPod API 키로 인증한다. Pod proxy는 인터넷에 공개되므로
+별도 워커 API 키를 반드시 요구한다. 생성 스크립트는 `EMBED_API_KEY`를 컨테이너에
+주입하고, 로컬 모드에서는 같은 값을 `mcp/.env`의 `RUNPOD_EMBED_API_KEY`로만 저장한다.
+AWS/CI 모드에서는 환경 파일을 바꾸지 않으며 이 키는 배포 워크플로가 Secrets Manager에서
+안전하게 주입해야 한다.
 
 ```env
 # RUNPOD_API_KEY=<RunPod API key>  # runpodctl 인증에 사용
@@ -91,6 +95,7 @@ just embed-pod-create "NVIDIA RTX A5000"
 ```env
 RUNPOD_EMBED_POD_ID=<pod-id>
 RUNPOD_POD_BASE_URL=https://<pod-id>-8000.proxy.runpod.net
+RUNPOD_EMBED_API_KEY=<worker API key>
 ```
 
 `RUNPOD_POD_BASE_URL`이 설정되면 `RUNPOD_ENDPOINT_ID`보다 우선하며, 요청은
@@ -101,7 +106,7 @@ RUNPOD_POD_BASE_URL=https://<pod-id>-8000.proxy.runpod.net
 | 파일 | 역할 |
 | --- | --- |
 | `service.py` | Serverless handler와 Pod HTTP 서버가 공유하는 입력 라우터 |
-| `pod_server.py` | 공개 `/runsync`, `/health` HTTP 서버 |
+| `pod_server.py` | Bearer 인증을 요구하는 `/runsync`, `/health` HTTP 서버 |
 | `Pod.Dockerfile` | Pod proxy 포트 8000을 노출하는 GPU 이미지 |
 | `deploy_embed_pod.py` | 고정 Template으로 Pod 생성 및 연결 환경변수 갱신 |
 | `rm_embed_pod.py` | 생성된 Pod 삭제 및 연결 환경변수 정리 |

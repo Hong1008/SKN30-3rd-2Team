@@ -19,13 +19,28 @@ def api_embedding_model() -> ModuleType:
     return module
 
 
-def test_local_pod_proxy_has_no_application_auth_header(
+def test_local_pod_proxy_uses_dedicated_embedder_api_key(
     api_embedding_model: ModuleType,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     monkeypatch.setattr(api_embedding_model, "RUNPOD_POD_BASE_URL", "https://pod.example")
+    monkeypatch.setattr(api_embedding_model, "RUNPOD_EMBED_API_KEY", "embed-secret")
 
-    assert api_embedding_model._headers() == {"Content-Type": "application/json"}
+    assert api_embedding_model._headers() == {
+        "Authorization": "Bearer embed-secret",
+        "Content-Type": "application/json",
+    }
+
+
+def test_local_pod_proxy_requires_dedicated_embedder_api_key(
+    api_embedding_model: ModuleType,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(api_embedding_model, "RUNPOD_POD_BASE_URL", "https://pod.example")
+    monkeypatch.setattr(api_embedding_model, "RUNPOD_EMBED_API_KEY", None)
+
+    with pytest.raises(RuntimeError, match="RUNPOD_EMBED_API_KEY"):
+        api_embedding_model._headers()
 
 
 def test_serverless_keeps_runpod_api_key_authentication(

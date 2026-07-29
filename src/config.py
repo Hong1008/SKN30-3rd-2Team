@@ -40,3 +40,6 @@ RUNPOD_API_KEY: str | None = os.getenv("RUNPOD_API_KEY")
 RUNPOD_ENDPOINT_ID: str | None = os.getenv("RUNPOD_ENDPOINT_ID")
 # Pod proxy를 사용할 때 Serverless endpoint 대신 이 URL의 /runsync로 요청한다.
 RUNPOD_POD_BASE_URL: str | None = os.getenv("RUNPOD_POD_BASE_URL")
+# 공개 RunPod Pod proxy의 Embedder·Reranker worker 인증 키다. RunPod Pod 관리
+# 권한을 가진 RUNPOD_API_KEY와 용도가 다르며 runtime에는 관리 키를 주입하지 않는다.
+RUNPOD_EMBED_API_KEY: str | None = os.getenv("RUNPOD_EMBED_API_KEY")
