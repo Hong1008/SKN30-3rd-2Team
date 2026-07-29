@@ -16,7 +16,24 @@ from typing import Any
 
 TEMPLATE_ID = "maqkz41mly"
 DEFAULT_GPU = "NVIDIA RTX 2000 Ada"
+DEFAULT_NAME = "workshield-prod-embed"
 PREFIX = "/workshield/{environment}/runpod/embed"
+LOCAL_KEYS = {
+    "pod-id": "RUNPOD_EMBED_POD_ID",
+    "base-url": "RUNPOD_POD_BASE_URL",
+    "api-key": "RUNPOD_EMBED_API_KEY",
+    "template-id": "RUNPOD_EMBED_POD_TEMPLATE_ID",
+    "name": "RUNPOD_EMBED_POD_NAME",
+    "gpu-id": "RUNPOD_EMBED_POD_GPU_ID",
+}
+
+
+class PodNotFoundError(RuntimeError):
+    """조회 대상 Pod가 이미 사라진 경우다."""
+
+
+class OwnershipError(RuntimeError):
+    """조회된 Pod가 이 스크립트의 관리 대상임을 확인하지 못한 경우다."""
 
 
 def _aws(args: list[str]) -> str:
@@ -24,11 +41,21 @@ def _aws(args: list[str]) -> str:
 
 
 def _state(environment: str) -> dict[str, str]:
-    names = [f"{PREFIX.format(environment=environment)}/{key}" for key in ("pod-id", "base-url", "template-id", "last-provision-run-id")]
+    names = [
+        f"{PREFIX.format(environment=environment)}/{key}"
+        for key in (
+            "pod-id",
+            "base-url",
+            "template-id",
+            "name",
+            "gpu-id",
+            "last-provision-run-id",
+        )
+    ]
     try:
         body = json.loads(_aws(["ssm", "get-parameters", "--names", *names, "--output", "json"]))
-    except subprocess.CalledProcessError:
-        return {}
+    except (json.JSONDecodeError, subprocess.CalledProcessError) as error:
+        raise RuntimeError("AWS Parameter Store의 Embed Pod 상태를 읽지 못했습니다.") from error
     return {item["Name"].rsplit("/", 1)[-1]: item["Value"] for item in body.get("Parameters", [])}
 
 
@@ -54,27 +81,182 @@ def _local_state() -> dict[str, str]:
         if "=" in line and not line.lstrip().startswith("#")
         for key, _, value in (line.partition("="),)
     }
-    pod_id = values.get("RUNPOD_EMBED_POD_ID", "")
+    pod_id = values.get(LOCAL_KEYS["pod-id"], "")
     if not pod_id:
         return {}
     return {
-        "pod-id": pod_id,
-        "base-url": values.get("RUNPOD_POD_BASE_URL", ""),
-        "api-key": values.get("RUNPOD_EMBED_API_KEY", ""),
+        state_key: values.get(env_key, "")
+        for state_key, env_key in LOCAL_KEYS.items()
     }
 
 
-def _run_json(command: list[str]) -> dict[str, Any]:
-    return json.loads(subprocess.run(command, check=True, capture_output=True, text=True).stdout)
+def _existing_state(
+    *,
+    no_env_file: bool,
+    state_backend: str,
+    environment: str,
+) -> dict[str, str]:
+    if no_env_file:
+        return {}
+    return (
+        _state(environment)
+        if state_backend == "aws"
+        else _local_state()
+    )
 
 
-def _usable(runpodctl: str, pod_id: str) -> bool:
+def _run_json_value(command: list[str]) -> Any:
+    result = subprocess.run(
+        command,
+        check=True,
+        capture_output=True,
+        text=True,
+        env=_runpod_env() if Path(command[0]).name.startswith("runpodctl") else None,
+    )
     try:
-        pod = _run_json([runpodctl, "pod", "get", pod_id, "-o", "json"])
-        status = str(pod.get("desiredStatus") or pod.get("status") or "").upper()
-        return status == "RUNNING"
-    except Exception:
-        return False
+        body = json.loads(result.stdout)
+    except json.JSONDecodeError as error:
+        raise RuntimeError(f"명령의 JSON 응답을 해석하지 못했습니다: {' '.join(command[:3])}") from error
+    return body
+
+
+def _run_json(command: list[str]) -> dict[str, Any]:
+    body = _run_json_value(command)
+    if not isinstance(body, dict):
+        raise RuntimeError("RunPod CLI 응답이 JSON 객체가 아닙니다.")
+    return body
+
+
+def _runpod_env() -> dict[str, str]:
+    """부모 저장소의 관리 키 명칭을 runpodctl 전용 명칭으로만 변환한다."""
+    environment = os.environ.copy()
+    management_key = environment.get("RUNPOD_MANAGEMENT_API_KEY")
+    if management_key:
+        environment["RUNPOD_API_KEY"] = management_key
+    return environment
+
+
+def _delete_created_pod(runpodctl: str, pod_id: str) -> None:
+    subprocess.run(
+        [runpodctl, "pod", "delete", pod_id],
+        capture_output=True,
+        text=True,
+        env=_runpod_env(),
+    )
+
+
+def _not_found(error: subprocess.CalledProcessError) -> bool:
+    return "not found" in f"{error.stdout}\n{error.stderr}".lower()
+
+
+def _describe(runpodctl: str, pod_id: str) -> dict[str, Any]:
+    try:
+        return _run_json([runpodctl, "pod", "get", pod_id, "-o", "json"])
+    except subprocess.CalledProcessError as error:
+        if _not_found(error):
+            raise PodNotFoundError(f"RunPod Pod를 찾을 수 없습니다: {pod_id}") from error
+        raise RuntimeError(f"RunPod Pod 조회에 실패했습니다: {pod_id}") from error
+
+
+def _pod_items(body: Any) -> list[dict[str, Any]]:
+    if isinstance(body, list):
+        return [item for item in body if isinstance(item, dict)]
+    if isinstance(body, dict):
+        for key in ("pods", "items", "data"):
+            items = body.get(key)
+            if isinstance(items, list):
+                return [item for item in items if isinstance(item, dict)]
+    raise RuntimeError("RunPod Pod 목록 응답 형식을 해석하지 못했습니다.")
+
+
+def _discover_by_name(runpodctl: str, name: str) -> dict[str, Any] | None:
+    """로컬 상태가 없어도 결정적 이름으로 관리 대상을 재발견한다."""
+    try:
+        items = _pod_items(
+            _run_json_value([runpodctl, "pod", "list", "-o", "json"])
+        )
+    except subprocess.CalledProcessError as error:
+        raise RuntimeError("RunPod Pod 목록 조회에 실패했습니다.") from error
+    matches = [
+        pod for pod in items
+        if _pod_identity(pod)["name"] == name
+    ]
+    if len(matches) > 1:
+        raise OwnershipError(f"동일한 이름의 Embed Pod가 여러 개입니다: {name}")
+    return matches[0] if matches else None
+
+
+def _value(body: dict[str, Any], *paths: tuple[str, ...]) -> str:
+    for path in paths:
+        value: Any = body
+        for key in path:
+            if not isinstance(value, dict):
+                value = None
+                break
+            value = value.get(key)
+        if value not in (None, ""):
+            return str(value)
+    return ""
+
+
+def _pod_identity(pod: dict[str, Any]) -> dict[str, str]:
+    """runpodctl 버전별 응답 차이를 흡수해 소유권 필드를 추출한다."""
+    return {
+        "pod-id": _value(pod, ("id",), ("podId",)),
+        "name": _value(pod, ("name",), ("podName",)),
+        "template-id": _value(
+            pod,
+            ("templateId",),
+            ("template", "id"),
+            ("template", "templateId"),
+        ),
+        "gpu-id": _value(
+            pod,
+            ("gpuDisplayName",),
+            ("gpuTypeId",),
+            ("gpuType",),
+            ("machine", "gpuDisplayName"),
+            ("machine", "gpuTypeId"),
+        ),
+        "status": _value(pod, ("desiredStatus",), ("status",)).upper(),
+    }
+
+
+def _normalized(value: str) -> str:
+    return "".join(character.lower() for character in value if character.isalnum())
+
+
+def _same_gpu(actual: str, expected: str) -> bool:
+    actual_value = _normalized(actual).replace("nvidia", "").replace("generation", "")
+    expected_value = _normalized(expected).replace("nvidia", "").replace("generation", "")
+    return bool(actual_value and expected_value and actual_value == expected_value)
+
+
+def _assert_owned(
+    pod: dict[str, Any],
+    *,
+    pod_id: str,
+    name: str,
+    template_id: str,
+    gpu: str,
+) -> dict[str, str]:
+    """API 조회 결과의 immutable 필드가 원하는 대상과 모두 일치하는지 확인한다."""
+    identity = _pod_identity(pod)
+    mismatches: list[str] = []
+    if identity["pod-id"] != pod_id:
+        mismatches.append(f"pod-id={identity['pod-id'] or '<unknown>'}")
+    if identity["name"] != name:
+        mismatches.append(f"name={identity['name'] or '<unknown>'}")
+    if identity["template-id"] != template_id:
+        mismatches.append(f"template-id={identity['template-id'] or '<unknown>'}")
+    if not _same_gpu(identity["gpu-id"], gpu):
+        mismatches.append(f"gpu-id={identity['gpu-id'] or '<unknown>'}")
+    if mismatches:
+        raise OwnershipError(
+            "Embed Pod 소유권 또는 immutable 설정을 확인하지 못했습니다: "
+            + ", ".join(mismatches)
+        )
+    return identity
 
 
 def _wait(base_url: str, api_key: str, timeout: int) -> None:
@@ -101,24 +283,115 @@ def _wait(base_url: str, api_key: str, timeout: int) -> None:
     raise TimeoutError("Embedder Pod readiness timeout")
 
 
+def _print(output: dict[str, Any], output_format: str, message: str) -> None:
+    print(json.dumps(output, ensure_ascii=False) if output_format == "json" else message)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--pod-id", help="상태 backend 대신 검증하거나 재사용할 Pod ID")
     parser.add_argument("--gpu", default=DEFAULT_GPU)
     parser.add_argument("--output", choices=("text", "json"), default="text")
     parser.add_argument("--state-backend", choices=("local", "aws"), default="local")
     parser.add_argument("--environment", default="prod")
-    parser.add_argument("--name", default="workshield-prod-embed")
+    parser.add_argument("--name", default=DEFAULT_NAME)
+    parser.add_argument("--template-id", default=TEMPLATE_ID)
     parser.add_argument("--no-env-file", action="store_true")
+    parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--status", action="store_true")
+    parser.add_argument(
+        "--replace",
+        action="store_true",
+        help="부모 orchestrator가 검증된 candidate를 만들 때만 사용하는 옵션",
+    )
     parser.add_argument("--wait", action="store_true")
     parser.add_argument("--timeout-seconds", type=int, default=900)
     args = parser.parse_args()
     runpodctl = shutil.which("runpodctl")
     if not runpodctl:
+        print("runpodctl 실행 파일을 찾을 수 없습니다.", file=sys.stderr)
         return 2
-    existing = _state(args.environment) if args.state_backend == "aws" else _local_state()
+    try:
+        existing = _existing_state(
+            no_env_file=args.no_env_file,
+            state_backend=args.state_backend,
+            environment=args.environment,
+        )
+    except RuntimeError as error:
+        print(str(error), file=sys.stderr)
+        return 1
+    if args.pod_id:
+        existing["pod-id"] = args.pod_id
+    expected_name = existing.get("name") or args.name
+    expected_template = existing.get("template-id") or args.template_id
+    expected_gpu = existing.get("gpu-id") or args.gpu
     api_key = os.getenv("RUNPOD_EMBED_API_KEY") or existing.get("api-key", "")
-    if existing.get("pod-id") and _usable(runpodctl, existing["pod-id"]):
-        if args.wait:
+
+    pod: dict[str, Any] | None = None
+    identity: dict[str, str] | None = None
+    if existing.get("pod-id"):
+        try:
+            pod = _describe(runpodctl, existing["pod-id"])
+            identity = _assert_owned(
+                pod,
+                pod_id=existing["pod-id"],
+                name=expected_name,
+                template_id=expected_template,
+                gpu=expected_gpu,
+            )
+        except PodNotFoundError:
+            pod = None
+        except (OwnershipError, RuntimeError) as error:
+            print(str(error), file=sys.stderr)
+            return 1
+    if pod is None:
+        try:
+            discovered = _discover_by_name(runpodctl, expected_name)
+            if discovered is not None:
+                discovered_id = _pod_identity(discovered)["pod-id"]
+                identity = _assert_owned(
+                    discovered,
+                    pod_id=discovered_id,
+                    name=expected_name,
+                    template_id=expected_template,
+                    gpu=expected_gpu,
+                )
+                existing["pod-id"] = discovered_id
+                existing.setdefault(
+                    "base-url",
+                    f"https://{discovered_id}-8000.proxy.runpod.net",
+                )
+                pod = discovered
+        except (OwnershipError, RuntimeError) as error:
+            print(str(error), file=sys.stderr)
+            return 1
+    if identity is not None and not existing.get("base-url"):
+        existing["base-url"] = (
+            f"https://{existing['pod-id']}-8000.proxy.runpod.net"
+        )
+
+    if args.status:
+        output = {
+            "pod_id": existing.get("pod-id"),
+            "base_url": existing.get("base-url", ""),
+            "name": expected_name,
+            "template_id": expected_template,
+            "gpu": expected_gpu,
+            "status": identity["status"] if identity else "NOT_FOUND",
+            "owned": identity is not None,
+            "created": False,
+        }
+        _print(output, args.output, f"Pod 상태: {output['status']}")
+        return 0
+
+    if identity is not None and not args.replace:
+        if identity["status"] != "RUNNING":
+            print(
+                f"기존 Embed Pod가 RUNNING 상태가 아닙니다: {identity['status'] or '<unknown>'}",
+                file=sys.stderr,
+            )
+            return 1
+        if args.wait and not args.dry_run:
             if not api_key:
                 print("기존 Embedder Pod readiness 확인에 RUNPOD_EMBED_API_KEY가 필요합니다.", file=sys.stderr)
                 return 2
@@ -127,33 +400,114 @@ def main() -> int:
             except Exception:
                 print("기존 Embedder Pod가 readiness 검증을 통과하지 못했습니다.", file=sys.stderr)
                 return 1
-        output = {"pod_id": existing["pod-id"], "base_url": existing.get("base-url", ""), "model_id": "embed-rerank", "created": False}
-        print(json.dumps(output) if args.output == "json" else f"기존 Pod 재사용: {output['pod_id']}")
+        output = {
+            "pod_id": existing["pod-id"],
+            "base_url": existing.get("base-url", ""),
+            "model_id": "embed-rerank",
+            "name": expected_name,
+            "template_id": expected_template,
+            "gpu": expected_gpu,
+            "status": identity["status"],
+            "created": False,
+            "action": "reuse",
+            "dry_run": args.dry_run,
+        }
+        _print(output, args.output, f"기존 Pod 재사용: {output['pod_id']}")
         return 0
+
+    if args.dry_run:
+        output = {
+            "pod_id": None,
+            "base_url": "",
+            "model_id": "embed-rerank",
+            "name": args.name,
+            "template_id": args.template_id,
+            "gpu": args.gpu,
+            "status": "ABSENT",
+            "created": False,
+            "action": "replace" if args.replace and identity is not None else "create",
+            "dry_run": True,
+        }
+        _print(output, args.output, f"Pod 생성 예정: {args.name}")
+        return 0
+
+    if args.no_env_file and not api_key:
+        print(
+            "--no-env-file 모드에서는 RUNPOD_EMBED_API_KEY를 환경변수로 제공해야 합니다.",
+            file=sys.stderr,
+        )
+        return 2
+
     api_key = api_key or secrets.token_hex(32)
     pod_id: str | None = None
     try:
-        body = _run_json([runpodctl, "pod", "create", "--template-id", TEMPLATE_ID, "--gpu-id", args.gpu, "--name", args.name, "--env", json.dumps({"EMBED_API_KEY": api_key}), "-o", "json"])
+        body = _run_json(
+            [
+                runpodctl,
+                "pod",
+                "create",
+                "--template-id",
+                args.template_id,
+                "--gpu-id",
+                args.gpu,
+                "--name",
+                args.name,
+                "--env",
+                json.dumps({"EMBED_API_KEY": api_key}),
+                "-o",
+                "json",
+            ]
+        )
         pod_id = str(body["id"])
         base_url = f"https://{pod_id}-8000.proxy.runpod.net"
+        described = _describe(runpodctl, pod_id)
+        identity = _assert_owned(
+            described,
+            pod_id=pod_id,
+            name=args.name,
+            template_id=args.template_id,
+            gpu=args.gpu,
+        )
         if args.wait:
             _wait(base_url, api_key, args.timeout_seconds)
         values = {
             "pod-id": pod_id,
             "base-url": base_url,
-            "template-id": TEMPLATE_ID,
+            "template-id": args.template_id,
+            "name": args.name,
+            "gpu-id": args.gpu,
             "last-provision-run-id": os.getenv("GITHUB_RUN_ID", "manual"),
         }
         if args.state_backend == "aws":
             _put_state(values, args.environment)
         elif not args.no_env_file:
-            _local_update({"RUNPOD_EMBED_POD_ID": pod_id, "RUNPOD_POD_BASE_URL": base_url, "RUNPOD_EMBED_API_KEY": api_key})
-        output = {"pod_id": pod_id, "base_url": base_url, "model_id": "embed-rerank", "created": True}
-        print(json.dumps(output) if args.output == "json" else f"Pod 생성 완료: {pod_id}")
+            _local_update(
+                {
+                    LOCAL_KEYS["pod-id"]: pod_id,
+                    LOCAL_KEYS["base-url"]: base_url,
+                    LOCAL_KEYS["api-key"]: api_key,
+                    LOCAL_KEYS["template-id"]: args.template_id,
+                    LOCAL_KEYS["name"]: args.name,
+                    LOCAL_KEYS["gpu-id"]: args.gpu,
+                }
+            )
+        output = {
+            "pod_id": pod_id,
+            "base_url": base_url,
+            "model_id": "embed-rerank",
+            "name": args.name,
+            "template_id": args.template_id,
+            "gpu": args.gpu,
+            "status": identity["status"],
+            "created": True,
+            "action": "replace" if args.replace else "create",
+            "dry_run": False,
+        }
+        _print(output, args.output, f"Pod 생성 완료: {pod_id}")
         return 0
     except subprocess.CalledProcessError as error:
         if pod_id:
-            subprocess.run([runpodctl, "pod", "delete", pod_id], capture_output=True, text=True)
+            _delete_created_pod(runpodctl, pod_id)
         detail = (error.stderr or error.stdout or "").strip()
         if detail:
             print(detail, file=sys.stderr)
@@ -161,7 +515,7 @@ def main() -> int:
         return 1
     except Exception as error:
         if pod_id:
-            subprocess.run([runpodctl, "pod", "delete", pod_id], capture_output=True, text=True)
+            _delete_created_pod(runpodctl, pod_id)
         print(str(error), file=sys.stderr)
         print("Embedder Pod 생성 실패", file=sys.stderr)
         return 1

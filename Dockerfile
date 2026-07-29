@@ -44,5 +44,5 @@ EXPOSE 8000
 HEALTHCHECK --interval=15s --timeout=5s --start-period=30s --retries=5 \
     CMD python -c "import socket; socket.create_connection(('127.0.0.1', 8000), timeout=5).close()"
 
-# RUNPOD_API_KEY / RUNPOD_ENDPOINT_ID / LAW_OC 는 런타임에 --env-file 등으로 주입
+# RUNPOD_SERVERLESS_API_KEY / RUNPOD_ENDPOINT_ID / LAW_OC 는 런타임에 --env-file 등으로 주입
 CMD ["python", "src/app.py"]

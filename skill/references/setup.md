@@ -9,7 +9,7 @@ cp .env.example .env
 uv sync
 ```
 
-`.env`에는 환경에 맞게 `LAW_OC`를 설정한다. 로컬 모델 대신 운영 임베딩을 쓸 때는 `APP_ENV=prod`, `RUNPOD_API_KEY`, `RUNPOD_ENDPOINT_ID`도 설정한다.
+`.env`에는 환경에 맞게 `LAW_OC`를 설정한다. 로컬 모델 대신 운영 임베딩을 쓸 때는 `APP_ENV=prod`, `RUNPOD_SERVERLESS_API_KEY`, `RUNPOD_ENDPOINT_ID`도 설정한다.
 
 SQLite와 Chroma는 재생성물이다. 처음 실행하거나 원천 데이터가 바뀐 경우 다음을 실행한다. 이 명령은 Node.js 기반 `kordoc`와 `korean-law-mcp` CLI가 준비돼 있어야 한다.
 

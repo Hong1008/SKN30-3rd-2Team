@@ -43,12 +43,12 @@ def test_local_pod_proxy_requires_dedicated_embedder_api_key(
         api_embedding_model._headers()
 
 
-def test_serverless_keeps_runpod_api_key_authentication(
+def test_serverless_uses_dedicated_invocation_api_key(
     api_embedding_model: ModuleType,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     monkeypatch.setattr(api_embedding_model, "RUNPOD_POD_BASE_URL", None)
-    monkeypatch.setattr(api_embedding_model, "RUNPOD_API_KEY", "runpod-secret")
+    monkeypatch.setattr(api_embedding_model, "RUNPOD_SERVERLESS_API_KEY", "runpod-secret")
 
     assert api_embedding_model._headers() == {
         "Authorization": "Bearer runpod-secret",

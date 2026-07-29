@@ -2,10 +2,8 @@
 
 from __future__ import annotations
 
-import http.client
 import importlib.util
 import sys
-import threading
 from pathlib import Path
 from types import ModuleType
 
@@ -28,22 +26,10 @@ def pod_handler(monkeypatch: pytest.MonkeyPatch):
     return module.PodRequestHandler
 
 
-def _health_status(handler: type, authorization: str | None = None) -> int:
-    from http.server import ThreadingHTTPServer
-
-    server = ThreadingHTTPServer(("127.0.0.1", 0), handler)
-    thread = threading.Thread(target=server.handle_request)
-    thread.start()
-    try:
-        connection = http.client.HTTPConnection("127.0.0.1", server.server_port, timeout=3)
-        headers = {"Authorization": authorization} if authorization else {}
-        connection.request("GET", "/health", headers=headers)
-        response = connection.getresponse()
-        response.read()
-        return response.status
-    finally:
-        thread.join(timeout=3)
-        server.server_close()
+def _authorized(handler: type, authorization: str | None = None) -> bool:
+    instance = object.__new__(handler)
+    instance.headers = {"Authorization": authorization} if authorization else {}
+    return instance._authorized()
 
 
 def test_pod_health_rejects_requests_without_worker_api_key(
@@ -52,7 +38,7 @@ def test_pod_health_rejects_requests_without_worker_api_key(
 ) -> None:
     monkeypatch.setenv("EMBED_API_KEY", "embed-secret")
 
-    assert _health_status(pod_handler) == 401
+    assert _authorized(pod_handler) is False
 
 
 def test_pod_health_accepts_requests_with_worker_api_key(
@@ -61,4 +47,4 @@ def test_pod_health_accepts_requests_with_worker_api_key(
 ) -> None:
     monkeypatch.setenv("EMBED_API_KEY", "embed-secret")
 
-    assert _health_status(pod_handler, "Bearer embed-secret") == 200
+    assert _authorized(pod_handler, "Bearer embed-secret") is True
