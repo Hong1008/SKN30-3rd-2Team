@@ -73,17 +73,25 @@ Serverless 워커가 기동하지 않거나 콜드스타트가 허용되지 않�
 호출할 수 있도록 `pod_server.py`가 `POST /runsync`를 제공한다. 이 경로의 요청·응답 외피는
 Serverless와 같으므로 `ApiEmbedder`와 `ApiReranker`는 변경하지 않는다.
 
-`runpodctl`을 설치하고 RunPod API 키로 인증한다. Pod 경로는 로컬 검증·비용 절감용이며 별도 인증을 적용하지 않는다.
+`runpodctl`을 설치하고 로컬 전용 RunPod 관리 키로 인증한다. 이 관리 키는
+`RUNPOD_MANAGEMENT_API_KEY`라는 비추적 로컬 변수로 구분하고 MCP runtime이나 GitHub에는
+주입하지 않는다. Pod proxy는 인터넷에 공개되므로
+별도 워커 API 키를 반드시 요구한다. 생성 스크립트는 `EMBED_API_KEY`를 컨테이너에
+주입하고, 로컬 모드에서는 같은 값을 `mcp/.env`의 `RUNPOD_EMBED_API_KEY`로만 저장한다.
+부모 저장소 모드에서는 생성·삭제 스크립트 모두 `--no-env-file --output json`과
+`RUNPOD_EMBED_API_KEY`를 사용하며, 스크립트는 AWS나 환경 파일을 변경하지 않는다.
 
 ```env
-# RUNPOD_API_KEY=<RunPod API key>  # runpodctl 인증에 사용
+RUNPOD_MANAGEMENT_API_KEY=<RunPod management API key>
 ```
 
 Pod 템플릿은 `maqkz41mly`로 고정되어 있으며, `Pod.Dockerfile`의 실행 구성에 추가 파라미터는 필요하지 않다. 기본 GPU는 `NVIDIA RTX 2000 Ada`이며, 필요한 경우 GPU만 인자로 지정한다.
 
 ```text
-just embed-pod-create
-just embed-pod-create "NVIDIA RTX A5000"
+just deploy_embed_pod
+just deploy_embed_pod "NVIDIA RTX A5000"
+just embed-pod-status
+just embed-pod-plan
 ```
 
 생성에 성공하면 `mcp/.env`의 아래 값을 자동으로 갱신한다.
@@ -91,6 +99,10 @@ just embed-pod-create "NVIDIA RTX A5000"
 ```env
 RUNPOD_EMBED_POD_ID=<pod-id>
 RUNPOD_POD_BASE_URL=https://<pod-id>-8000.proxy.runpod.net
+RUNPOD_EMBED_API_KEY=<worker API key>
+RUNPOD_EMBED_POD_TEMPLATE_ID=maqkz41mly
+RUNPOD_EMBED_POD_NAME=workshield-prod-embed
+RUNPOD_EMBED_POD_GPU_ID=NVIDIA RTX 2000 Ada
 ```
 
 `RUNPOD_POD_BASE_URL`이 설정되면 `RUNPOD_ENDPOINT_ID`보다 우선하며, 요청은
@@ -98,10 +110,15 @@ RUNPOD_POD_BASE_URL=https://<pod-id>-8000.proxy.runpod.net
 작업이 끝난 뒤에는 반드시 `just rm_embed_pod`를 실행한다. 이 명령은 Pod를 삭제하고
 `mcp/.env`의 Pod 연결 정보를 함께 제거한다.
 
+Pod 이미지는 이 저장소의 `Publish Embed/Rerank Pod image` workflow를 수동 실행해 게시한다.
+workflow는 `deploy/runpod_worker/Pod.Dockerfile`을 한 번 빌드하여 commit SHA tag를 먼저
+게시하고, 그 digest를 `latest`로 승격한다. 이미지 게시 자체는 Pod나 Template을 변경하지
+않으므로 실행 중인 Pod 교체는 별도 lifecycle 명령에서 명시적으로 수행한다.
+
 | 파일 | 역할 |
 | --- | --- |
 | `service.py` | Serverless handler와 Pod HTTP 서버가 공유하는 입력 라우터 |
-| `pod_server.py` | 공개 `/runsync`, `/health` HTTP 서버 |
+| `pod_server.py` | Bearer 인증을 요구하는 `/runsync`, `/health` HTTP 서버 |
 | `Pod.Dockerfile` | Pod proxy 포트 8000을 노출하는 GPU 이미지 |
 | `deploy_embed_pod.py` | 고정 Template으로 Pod 생성 및 연결 환경변수 갱신 |
 | `rm_embed_pod.py` | 생성된 Pod 삭제 및 연결 환경변수 정리 |

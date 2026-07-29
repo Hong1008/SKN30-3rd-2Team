@@ -35,8 +35,11 @@ CHROMA_DIR: str = os.getenv('CHROMA_DIR', 'data/chroma')
 EMBEDDING_MODEL_NAME: str = os.getenv("EMBEDDING_MODEL_NAME", "dragonkue/BGE-m3-ko")
 RERANKER_MODEL_NAME: str = os.getenv("RERANKER_MODEL_NAME", "dragonkue/bge-reranker-v2-m3-ko")
 
-# 운영(RunPod) 전용 — app_env != "local" 일 때 adapter/api_embedding_model.py 가 사용
-RUNPOD_API_KEY: str | None = os.getenv("RUNPOD_API_KEY")
+# 운영 RunPod Serverless 호출 전용 — Pod 생성·삭제 관리 키와 분리한다.
+RUNPOD_SERVERLESS_API_KEY: str | None = os.getenv("RUNPOD_SERVERLESS_API_KEY")
 RUNPOD_ENDPOINT_ID: str | None = os.getenv("RUNPOD_ENDPOINT_ID")
 # Pod proxy를 사용할 때 Serverless endpoint 대신 이 URL의 /runsync로 요청한다.
 RUNPOD_POD_BASE_URL: str | None = os.getenv("RUNPOD_POD_BASE_URL")
+# 공개 RunPod Pod proxy의 Embedder·Reranker worker 인증 키다. RunPod 관리 키와
+# 용도가 다르며 runtime에는 관리 키를 주입하지 않는다.
+RUNPOD_EMBED_API_KEY: str | None = os.getenv("RUNPOD_EMBED_API_KEY")

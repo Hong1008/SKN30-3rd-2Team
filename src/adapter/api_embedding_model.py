@@ -16,9 +16,10 @@ import requests
 from config import (
     EMBEDDING_MODEL_NAME,
     RERANKER_MODEL_NAME,
-    RUNPOD_API_KEY,
+    RUNPOD_EMBED_API_KEY,
     RUNPOD_ENDPOINT_ID,
     RUNPOD_POD_BASE_URL,
+    RUNPOD_SERVERLESS_API_KEY,
 )
 
 _TIMEOUT = 180  # RunPod 콜드스타트(이미지 최초 pull + 모델 로딩) 고려
@@ -34,11 +35,17 @@ def _base_url() -> str:
 
 def _headers() -> Dict[str, str]:
     if RUNPOD_POD_BASE_URL:
-        return {"Content-Type": "application/json"}
+        api_key = RUNPOD_EMBED_API_KEY
+        if not api_key:
+            raise RuntimeError("RUNPOD_EMBED_API_KEY 환경변수가 설정되지 않았습니다.")
+        return {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+        }
 
-    api_key = RUNPOD_API_KEY
+    api_key = RUNPOD_SERVERLESS_API_KEY
     if not api_key:
-        raise RuntimeError("RUNPOD_API_KEY 환경변수가 설정되지 않았습니다.")
+        raise RuntimeError("RUNPOD_SERVERLESS_API_KEY 환경변수가 설정되지 않았습니다.")
     return {
         "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json",

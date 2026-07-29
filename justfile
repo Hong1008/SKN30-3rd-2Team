@@ -367,8 +367,20 @@ deploy-embedding: install-runpod
 # ----------------------------------------------------
 
 # 고정 Template(maqkz41mly)으로 Pod를 생성합니다. GPU만 선택할 수 있습니다.
+deploy_embed_pod gpu="NVIDIA RTX 2000 Ada":
+    {{python}} deploy/deploy_embed_pod.py --gpu "{{gpu}}"
+
+# 이전 명령도 standalone 사용자를 위해 유지합니다.
 embed-pod-create gpu="NVIDIA RTX 2000 Ada":
     {{python}} deploy/deploy_embed_pod.py --gpu "{{gpu}}"
+
+# 환경 파일에 기록된 Pod의 상태와 소유권을 JSON으로 확인합니다.
+embed-pod-status:
+    {{python}} deploy/deploy_embed_pod.py --status --output json
+
+# 실제 생성 없이 현재 상태에 따른 작업 계획을 JSON으로 확인합니다.
+embed-pod-plan gpu="NVIDIA RTX 2000 Ada":
+    {{python}} deploy/deploy_embed_pod.py --gpu "{{gpu}}" --dry-run --output json
 
 # mcp/.env에 기록된 Pod를 삭제하고 연결 정보를 정리합니다.
 rm_embed_pod:
@@ -424,7 +436,7 @@ docker_image := "workshield-mcp"
 docker-build:
     docker build -t {{docker_image}} .
 
-# 포그라운드 실행 (streamable-http :8000). .env의 RUNPOD_API_KEY/RUNPOD_ENDPOINT_ID/LAW_OC 필요
+# 포그라운드 실행 (streamable-http :8000). .env의 RUNPOD_SERVERLESS_API_KEY/RUNPOD_ENDPOINT_ID/LAW_OC 필요
 docker-run: docker-build
     docker run --rm -it \
         --env-file .env \
