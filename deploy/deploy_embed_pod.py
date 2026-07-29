@@ -11,12 +11,17 @@ import shutil
 import subprocess
 import sys
 import time
+import urllib.error
+import urllib.parse
+import urllib.request
 from pathlib import Path
 from typing import Any
 
 TEMPLATE_ID = "maqkz41mly"
 DEFAULT_GPU = "NVIDIA RTX 2000 Ada"
 DEFAULT_NAME = "workshield-prod-embed"
+HTTP_USER_AGENT = "workshield-infra/1.0"
+RUNPOD_REST_API = "https://rest.runpod.io/v1"
 PREFIX = "/workshield/{environment}/runpod/embed"
 LOCAL_KEYS = {
     "pod-id": "RUNPOD_EMBED_POD_ID",
@@ -150,6 +155,11 @@ def _not_found(error: subprocess.CalledProcessError) -> bool:
 
 
 def _describe(runpodctl: str, pod_id: str) -> dict[str, Any]:
+    if _management_key():
+        body = _rest_json(f"/pods/{urllib.parse.quote(pod_id, safe='')}")
+        if not isinstance(body, dict):
+            raise RuntimeError("RunPod REST Pod 상세 응답이 객체가 아닙니다.")
+        return body
     try:
         return _run_json([runpodctl, "pod", "get", pod_id, "-o", "json"])
     except subprocess.CalledProcessError as error:
@@ -172,9 +182,12 @@ def _pod_items(body: Any) -> list[dict[str, Any]]:
 def _discover_by_name(runpodctl: str, name: str) -> dict[str, Any] | None:
     """로컬 상태가 없어도 결정적 이름으로 관리 대상을 재발견한다."""
     try:
-        items = _pod_items(
-            _run_json_value([runpodctl, "pod", "list", "-o", "json"])
+        body = (
+            _rest_json("/pods")
+            if _management_key()
+            else _run_json_value([runpodctl, "pod", "list", "-o", "json"])
         )
+        items = _pod_items(body)
     except subprocess.CalledProcessError as error:
         raise RuntimeError("RunPod Pod 목록 조회에 실패했습니다.") from error
     matches = [
@@ -197,6 +210,39 @@ def _value(body: dict[str, Any], *paths: tuple[str, ...]) -> str:
         if value not in (None, ""):
             return str(value)
     return ""
+
+
+def _management_key() -> str:
+    return (
+        os.getenv("RUNPOD_MANAGEMENT_API_KEY")
+        or os.getenv("RUNPOD_API_KEY")
+        or ""
+    )
+
+
+def _rest_json(path: str) -> Any:
+    management_key = _management_key()
+    if not management_key:
+        raise RuntimeError("RunPod REST 조회에는 관리 API key가 필요합니다.")
+    request = urllib.request.Request(
+        f"{RUNPOD_REST_API}{path}",
+        headers={
+            "Authorization": f"Bearer {management_key}",
+            "Accept": "application/json",
+            "User-Agent": HTTP_USER_AGENT,
+        },
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=20) as response:
+            return json.loads(response.read())
+    except urllib.error.HTTPError as error:
+        if error.code == 404:
+            raise PodNotFoundError(path) from error
+        raise RuntimeError(
+            f"RunPod REST 조회 실패: HTTP {error.code}, path={path}"
+        ) from error
+    except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as error:
+        raise RuntimeError(f"RunPod REST 조회 실패: path={path}") from error
 
 
 def _pod_identity(pod: dict[str, Any]) -> dict[str, str]:
@@ -249,7 +295,7 @@ def _assert_owned(
         mismatches.append(f"name={identity['name'] or '<unknown>'}")
     if identity["template-id"] != template_id:
         mismatches.append(f"template-id={identity['template-id'] or '<unknown>'}")
-    if not _same_gpu(identity["gpu-id"], gpu):
+    if identity["gpu-id"] and not _same_gpu(identity["gpu-id"], gpu):
         mismatches.append(f"gpu-id={identity['gpu-id'] or '<unknown>'}")
     if mismatches:
         raise OwnershipError(
@@ -260,27 +306,72 @@ def _assert_owned(
 
 
 def _wait(base_url: str, api_key: str, timeout: int) -> None:
-    import urllib.error
-    import urllib.request
-
-    deadline = time.monotonic() + timeout
+    endpoint = f"{base_url}/health"
+    started_at = time.monotonic()
+    deadline = started_at + timeout
     delay = 2.0
+    last_status = "endpoint 연결 대기"
     while time.monotonic() < deadline:
         try:
-            request = urllib.request.Request(f"{base_url}/health", headers={"Authorization": f"Bearer {api_key}"})
+            request = urllib.request.Request(
+                endpoint,
+                headers={
+                    "Authorization": f"Bearer {api_key}",
+                    "Accept": "application/json",
+                    "User-Agent": HTTP_USER_AGENT,
+                },
+            )
             with urllib.request.urlopen(request, timeout=10) as response:
                 if response.status == 200:
+                    anonymous = urllib.request.Request(
+                        endpoint,
+                        headers={
+                            "Accept": "application/json",
+                            "User-Agent": HTTP_USER_AGENT,
+                        },
+                    )
                     try:
-                        urllib.request.urlopen(f"{base_url}/health", timeout=10)
+                        with urllib.request.urlopen(anonymous, timeout=10):
+                            pass
                     except urllib.error.HTTPError as error:
                         if error.code in (401, 403):
+                            detail = error.read(256).decode(
+                                "utf-8",
+                                "replace",
+                            ).strip()
+                            if "error code: 1010" in detail:
+                                raise RuntimeError(
+                                    "RunPod proxy가 무인증 health check를 "
+                                    "Cloudflare 1010으로 차단했습니다."
+                                ) from error
                             return
-                        raise RuntimeError(f"Embedder 무인증 요청이 {error.code}으로 거부되었습니다.") from error
+                        last_status = f"무인증 요청 HTTP {error.code}"
+                        raise
                     raise RuntimeError("Embedder 무인증 요청이 허용되었습니다.")
-        except Exception:
-            time.sleep(delay)
-            delay = min(delay * 2, 15)
-    raise TimeoutError("Embedder Pod readiness timeout")
+        except urllib.error.HTTPError as error:
+            detail = error.read(256).decode("utf-8", "replace").strip()
+            if error.code in (401, 403) and "error code: 1010" in detail:
+                raise RuntimeError(
+                    "RunPod proxy가 health check 요청을 Cloudflare 1010으로 "
+                    "차단했습니다."
+                ) from error
+            if error.code in (401, 403):
+                raise RuntimeError(
+                    f"Embedder 인증 요청이 HTTP {error.code}으로 거부되었습니다."
+                ) from error
+            last_status = f"HTTP {error.code}"
+        except (urllib.error.URLError, TimeoutError) as error:
+            last_status = str(error) or type(error).__name__
+        elapsed = int(time.monotonic() - started_at)
+        print(
+            f"Embedder readiness 대기 중: {elapsed}s, 최근 상태={last_status}",
+            file=sys.stderr,
+        )
+        time.sleep(min(delay, max(0.0, deadline - time.monotonic())))
+        delay = min(delay * 1.5, 15.0)
+    raise TimeoutError(
+        f"Embedder Pod readiness timeout: {timeout}s, 최근 상태={last_status}"
+    )
 
 
 def _print(output: dict[str, Any], output_format: str, message: str) -> None:

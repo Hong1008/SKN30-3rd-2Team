@@ -1,6 +1,8 @@
 """Embed Pod lifecycle의 소유권 판정을 외부 CLI 없이 검증한다."""
 
+import io
 import os
+import urllib.error
 
 import pytest
 
@@ -31,6 +33,24 @@ def test_pod_identity_accepts_expected_immutable_configuration() -> None:
         gpu="NVIDIA RTX 2000 Ada",
     )
 
+    assert identity["status"] == "RUNNING"
+
+
+def test_pod_identity_accepts_rest_response_without_gpu_name() -> None:
+    identity = _assert_owned(
+        {
+            "id": "pod-123",
+            "name": "workshield-prod-embed",
+            "templateId": "maqkz41mly",
+            "desiredStatus": "RUNNING",
+        },
+        pod_id="pod-123",
+        name="workshield-prod-embed",
+        template_id="maqkz41mly",
+        gpu="NVIDIA RTX 2000 Ada",
+    )
+
+    assert identity["gpu-id"] == ""
     assert identity["status"] == "RUNNING"
 
 
@@ -139,3 +159,41 @@ def test_parent_deploy_mode_can_skip_standalone_state(
     )
 
     assert existing == {}
+
+
+class _Response:
+    status = 200
+
+    def __enter__(self) -> "_Response":
+        return self
+
+    def __exit__(self, *_args: object) -> None:
+        return None
+
+
+def test_embed_health_uses_user_agent_and_requires_anonymous_rejection(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    requests: list[object] = []
+
+    def urlopen(request: object, timeout: int) -> _Response:
+        requests.append(request)
+        if request.get_header("Authorization"):  # type: ignore[attr-defined]
+            return _Response()
+        raise urllib.error.HTTPError(
+            "https://pod/health",
+            401,
+            "Unauthorized",
+            {},
+            io.BytesIO(b'{"error":"Unauthorized"}'),
+        )
+
+    monkeypatch.setattr("urllib.request.urlopen", urlopen)
+
+    lifecycle._wait("https://pod", "embed-key", 1)
+
+    assert len(requests) == 2
+    assert all(
+        request.get_header("User-agent") == "workshield-infra/1.0"  # type: ignore[attr-defined]
+        for request in requests
+    )
