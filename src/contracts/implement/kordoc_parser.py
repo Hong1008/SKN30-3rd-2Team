@@ -21,6 +21,11 @@ class KordocParser(Parser):
     # "### 제12조(제목)" · "제 2 조 (용어의 정의)" · "제1조 (목적) 본문…" 를 모두 매칭.
     # ^ 라인 시작에 고정 — 본문 중간의 "…전 제3조의 규정…" 같은 언급으로 인한 오분할 방지.
     HEADER_RE = re.compile(r"^\s*#*\s*제\s*(\d+)\s*조\s*[\(\（]?\s*([^\)\）\n]*)")
+    # PDF 텍스트 레이어가 다음 조항 제목을 이전 본문 줄 끝에 붙이는 경우만 보수적으로 복구한다.
+    # 괄호 제목이 줄 끝에 있고 직전 조항의 다음 번호일 때만 허용해 본문 속 조항 참조를 피한다.
+    TRAILING_INLINE_HEADER_RE = re.compile(
+        r"제\s*(\d+)\s*조\s*[\(\（]\s*([^\)\）\n]+?)\s*[\)\）]\s*(?:\*{1,2})?\s*$"
+    )
 
     def parse(self, file_path: str) -> List[Clause]:
         if not os.path.exists(file_path):
@@ -48,8 +53,23 @@ class KordocParser(Parser):
                 num = f"제{match.group(1)}조"  # '제 1 조' 등 공백 변형을 정규화
                 title = match.group(2).strip().strip("()").strip()
                 segments.append((num, title, [line]))
-            elif segments:  # 첫 "제N조" 이전의 전문은 무시, 이후엔 현재 조항 본문에 누적
-                segments[-1][2].append(line)
+                continue
+
+            if not segments:  # 첫 "제N조" 이전의 전문은 무시
+                continue
+
+            inline_match = self.TRAILING_INLINE_HEADER_RE.search(line)
+            previous_article = int(segments[-1][0].removeprefix("제").removesuffix("조"))
+            if inline_match and int(inline_match.group(1)) == previous_article + 1:
+                previous_text = line[:inline_match.start()].rstrip()
+                if previous_text:
+                    segments[-1][2].append(previous_text)
+                num = f"제{inline_match.group(1)}조"
+                title = inline_match.group(2).strip()
+                segments.append((num, title, [line[inline_match.start():].strip()]))
+                continue
+
+            segments[-1][2].append(line)
 
         return [
             Clause(idx=idx, num=num, title=title, text="\n".join(body).strip())

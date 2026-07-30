@@ -16,8 +16,6 @@ core 의 순수 함수를 조립하고, 외부 작업(검색·재정렬·법령�
 from typing import Any, Dict, List, Optional, Tuple, Callable
 import logging
 
-logger = logging.getLogger(__name__)
-
 from contracts.enums import Category, ContractType, Deviation, ToxicPattern, ProgressPhase
 from contracts.models import Clause, StandardClause, DeviationResult, GroundingLaw
 from contracts.ports import Grounder, Graph
@@ -31,11 +29,22 @@ from core import (
     select_best_match,
 )
 from core.splitter import normalize_for_search
+from pipe.exceptions import PipelineIntegrityError
+
+logger = logging.getLogger(__name__)
 
 # Chroma 컬렉션 이름 (build_index.py 와 일치)
 STANDARD_COLLECTION = "standard_clauses"
 SUB_CHUNK_COLLECTION = "standard_sub_chunks"
 TOXIC_COLLECTION = "toxic_patterns"
+
+
+def _require_batch_size(stage: str, batch: List[Any], expected: int) -> None:
+    """외부 배치 응답이 입력 조항 수를 보존하는지 검증한다."""
+    if len(batch) != expected:
+        raise PipelineIntegrityError(
+            f"{stage} 배치 수 불일치: expected={expected}, actual={len(batch)}"
+        )
 
 
 def _normalized_score(hit: Dict[str, Any]) -> float:
@@ -219,6 +228,7 @@ def review_contract(
         progress_callback(0, len(clauses), ProgressPhase.BATCH_SEARCH)
     logger.info("[review_contract] 1단계: 벡터 DB 배치 검색을 수행합니다 (표준/서브청크/독소).")
     clause_vectors = embedder.embed_documents(clause_texts) if clause_texts else []
+    _require_batch_size("embedding", clause_vectors, len(clauses))
     empty_batch: List[List[Dict[str, Any]]] = [[] for _ in clauses]
     std_batch = (
         retriever.hybrid_search_many(STANDARD_COLLECTION, clause_vectors, clause_texts, type_filter, top_k)
@@ -232,6 +242,9 @@ def review_contract(
         retriever.hybrid_search_many(TOXIC_COLLECTION, clause_vectors, clause_texts, None, toxic_top_k)
         if (clause_texts and use_toxic) else empty_batch
     )
+    _require_batch_size("standard search", std_batch, len(clauses))
+    _require_batch_size("sub-chunk search", sub_batch, len(clauses))
+    _require_batch_size("toxic search", toxic_batch, len(clauses))
     logger.info(
         f"[review_contract] 배치 검색 완료: std_batch={len(std_batch)}건, "
         f"sub_batch={len(sub_batch)}건, toxic_batch={len(toxic_batch)}건"
@@ -249,6 +262,9 @@ def review_contract(
         text_key="rerank_text",
         top_k=toxic_top_k,
     )
+    _require_batch_size("standard rerank", std_hits_batch, len(clauses))
+    _require_batch_size("sub-chunk rerank", sub_hits_batch, len(clauses))
+    _require_batch_size("toxic rerank", toxic_hits_batch, len(clauses))
 
     for i, (clause, std_hits, sub_hits, toxic_hits) in enumerate(
         zip(clauses, std_hits_batch, sub_hits_batch, toxic_hits_batch), 1
@@ -297,6 +313,11 @@ def review_contract(
 
         if progress_callback:
             progress_callback(i, len(clauses), ProgressPhase.CLAUSE_REVIEW)
+
+    if len(results) != len(clauses):
+        raise PipelineIntegrityError(
+            f"사용자 조항 결과 수 불일치: expected={len(clauses)}, actual={len(results)}"
+        )
 
     logger.info(f"[review_contract] 조항별 재정렬/분류 완료. 매칭된 유니크 표준조항 수: {len(matched_ids)}개")
 

@@ -6,8 +6,11 @@
 """
 from typing import Any, Dict, List
 
+import pytest
+
 from contracts.enums import ContractType, Category, Deviation, ToxicPattern, ProgressPhase
 from contracts.models import Clause, StandardClause, GroundingLaw, DeviationResult
+from pipe.exceptions import PipelineIntegrityError
 from pipe.review_pipe import review_contract
 
 
@@ -123,6 +126,18 @@ class _CapturingReranker(_Reranker):
         return super().rerank_many(queries, items_per_query, text_key=text_key, top_k=top_k)
 
 
+class _ShortBatchReranker(_Reranker):
+    """운영 리랭커가 질의 수보다 짧은 배치를 반환하는 장애를 재현한다."""
+
+    def rerank_many(self, queries, items_per_query, text_key="text", top_k=None):
+        return super().rerank_many(
+            queries[:-1],
+            items_per_query[:-1],
+            text_key=text_key,
+            top_k=top_k,
+        )
+
+
 HIGH_RERANKER = _Reranker(0.9997)  # 매칭 인정 (match_threshold=0.5 이상)
 LOW_RERANKER = _Reranker(0.0003)   # 임계 미달
 
@@ -169,6 +184,16 @@ def test_검색결과_없으면_NO_MATCH():
     results = _review([clause])
     target = [r for r in results if r.user_clause == clause.text]
     assert target and target[0].deviation == Deviation.NO_MATCH
+
+
+def test_리랭크_배치가_짧으면_조항을_누락하지_않고_무결성_오류():
+    clauses = [
+        Clause(idx=1, num="제1조", title="목적", text="일반 목적"),
+        Clause(idx=2, num="제2조", title="정의", text="일반 정의"),
+    ]
+
+    with pytest.raises(PipelineIntegrityError, match="rerank"):
+        _review(clauses, reranker=_ShortBatchReranker(0.9))
 
 
 def test_후보는_있으나_임계미달이면_EXTRA():

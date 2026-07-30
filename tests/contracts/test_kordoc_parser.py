@@ -55,6 +55,42 @@ def test_mid_body_article_reference_not_split():
     assert [c.num for c in clauses] == ["제1조", "제2조"]
 
 
+def test_trailing_inline_article_header_is_recovered():
+    """PDF 추출기가 이전 본문 끝에 붙인 다음 조항 제목을 독립 조항으로 복구한다."""
+    md = (
+        "제1조 (계약의 목적)\n"
+        "계약의 목적을 정한다. 제2조 (용어의 정의)\n"
+        "용어의 정의는 다음과 같다.\n"
+        "1. 용역의 뜻\n"
+        "2. 산출물의 뜻\n"
+        "제3조(계약기간)\n"
+        "계약기간은 3개월로 한다.\n"
+    )
+
+    clauses = parser._segment_by_article(md)
+
+    assert [c.num for c in clauses] == ["제1조", "제2조", "제3조"]
+    assert [c.title for c in clauses] == ["계약의 목적", "용어의 정의", "계약기간"]
+    assert clauses[0].text.endswith("계약의 목적을 정한다.")
+    assert "1. 용역의 뜻" in clauses[1].text
+    assert "2. 산출물의 뜻" in clauses[1].text
+
+
+def test_inline_article_reference_with_following_text_is_not_split():
+    """본문 속 '제2조(용어의 정의)에 따른다' 같은 참조는 조항 경계가 아니다."""
+    md = (
+        "제1조 (목적)\n"
+        "이 계약의 용어는 제2조(용어의 정의)에 따른다.\n"
+        "제2조 (용어의 정의)\n"
+        "본문\n"
+    )
+
+    clauses = parser._segment_by_article(md)
+
+    assert [c.num for c in clauses] == ["제1조", "제2조"]
+    assert "제2조(용어의 정의)에 따른다." in clauses[0].text
+
+
 def test_no_article_returns_empty():
     """'제N조' 가 전혀 없으면 빈 리스트를 반환한다 (빈 응답이 아니라 명시적 0건)."""
     assert parser._segment_by_article("아무 조항도 없는 일반 문서\n둘째 줄\n") == []
